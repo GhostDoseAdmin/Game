@@ -23,6 +23,7 @@ public class NetworkDriver : MonoBehaviour
     private float PING = 0.0f;
     void Start()
     {
+        Debug.Log("GIT IS FUCKING DOPE");
 //=================================================================  S E T  U P  ===============================================================
         
         //-----------------CONNECT TO SERVER----------------->
