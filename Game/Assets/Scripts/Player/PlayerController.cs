@@ -8,7 +8,7 @@ using Newtonsoft.Json;
 using Firesplash.UnityAssets.SocketIO;
 using Unity.VisualScripting;
 
-public class PlayerController : MonoBehaviour
+public class PlayerController2 : MonoBehaviour
 {
     
     [SerializeField] private InputAction playerControls;

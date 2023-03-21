@@ -13,7 +13,7 @@ public class MovementNetworker : MonoBehaviour
     public void Start()
     {
         ND = GameObject.Find("NetworkDriver").GetComponent<NetworkDriver>();
-        if (this.name.Contains("objOtherPlayer")) { speed = GameObject.Find("objPlayer").GetComponent<PlayerController>().speed;  }
+       // if (this.name.Contains("objOtherPlayer")) { speed = GameObject.Find("objPlayer").GetComponent<PlayerController>().speed;  }
         
     }
     public void FixedUpdate()
