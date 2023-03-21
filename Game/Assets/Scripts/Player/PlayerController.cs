@@ -39,16 +39,12 @@ public class PlayerController : MonoBehaviour
         GetComponent<Rigidbody>().AddForce(Vector3.up * jump_force, ForceMode.VelocityChange);
     }*/
 
-
-    public void FixedUpdate()
+    public void Update()
     {
 
-        //GetComponent<Rigidbody>().mass = 0f;
-        GetComponent<Rigidbody>().AddForce(Vector3.up * gravity, ForceMode.VelocityChange);//gravity
-        //GetComponent<Rigidbody>().AddForce(Vector3.up * gravity, ForceMode.VelocityChange);//gravity
-
         //---------------------------JUMP---------------------------------
-        if (JumpControl.triggered){
+        if (JumpControl.triggered)
+        {
             if (Time.time > jump_timer + jump_delay)
             {
                 GetComponent<Rigidbody>().AddForce(Vector3.up * jump_force, ForceMode.VelocityChange);
@@ -59,13 +55,22 @@ public class PlayerController : MonoBehaviour
         }
 
 
+    }
+
+    public void FixedUpdate()
+    {
+
+        //GetComponent<Rigidbody>().mass = 0f;
+        GetComponent<Rigidbody>().AddForce(Vector3.up * gravity, ForceMode.VelocityChange);//gravity
+        //GetComponent<Rigidbody>().AddForce(Vector3.up * gravity, ForceMode.VelocityChange);//gravity
+
 
 
 
 
         //-------------------------MOVEMENT--------------------------------
                 moveDirection = playerControls.ReadValue<Vector2>();
-                Vector3 velocity = new Vector3(moveDirection.x * speed, 0f, moveDirection.y * speed);
+                Vector3 velocity = new Vector3(moveDirection.x * speed, GetComponent<Rigidbody>().velocity.y, moveDirection.y * speed);
                 GetComponent<Rigidbody>().velocity = velocity;
 
                 if (transform.position != previousPosition)  
