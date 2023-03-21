@@ -150,7 +150,7 @@ public class PlayerController : MonoBehaviour
 
 	private void Running()
 	{
-		staminaLevel.fillAmount += (restoringStamina/150) * Time.deltaTime;
+		//staminaLevel.fillAmount += (restoringStamina/150) * Time.deltaTime;
 
 		if (Input.GetKey(InputManager.instance.running) && walk != 0)
         {
