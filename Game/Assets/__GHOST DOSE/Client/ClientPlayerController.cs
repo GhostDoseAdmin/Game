@@ -2,9 +2,9 @@
 using UnityEngine;
 using System.Collections;
 using UnityEngine.UI;
-using Newtonsoft.Json;
+using Unity.VisualScripting;
 
-public class PlayerController : MonoBehaviour
+public class ClientPlayerController : MonoBehaviour
 {
 	[Header("PLAYER PARAMETRS")]
 	[Space(10)]
@@ -14,7 +14,6 @@ public class PlayerController : MonoBehaviour
 	public float angularSpeed;
 	bool isPlayerRot;
 	public float luft;
-	public Camera_Controller cameraController;
 	public ShootingSystem shootPistol;
 
 	[Header("HAND PARAMETRS")]
@@ -48,12 +47,6 @@ public class PlayerController : MonoBehaviour
 
 	[Space(10)]
 
-	[Header("STAMINA UI")]
-	[Space(10)]
-	[SerializeField] public Image staminaLevel = null;
-	[Space(10)]
-	public float restoringStamina;
-	public float reducedStamina;
 
 	[Header("PLAYER SOUND")]
 	[Space(10)]
@@ -64,23 +57,24 @@ public class PlayerController : MonoBehaviour
 
 	Animator anim;
 
-	Vector3 targetPosVec;
+	public Vector3 targetPosVec;
 	float newRunWeight = 1f;
-	float walk = 0f;
-	float strafe = 0f;
+	public float walk = 0f;
+	public float strafe = 0f;
+    public float targStrafe = 0f;
+    public float targWalk = 0f;
 
-    private NetworkDriver ND;
-	private float prevWalk, prevStrafe;
-    private float action_timer = 0.0f;
-    private float action_delay = 0.25f;//0.1
-    private Vector3 prevPosition;
-    private float prevTime;
+    //NETWORKER
+    public string animation;
+	public bool state = false;
+	public float Float;
+	public Vector3 destination;
 	public float speed;
-	public float prevSpeed;
+	public bool running;
+	public Vector3 targetRotation;
 
-
-    #region Start
-    /*void CmdClientState(Vector3 targetPosVec, float newHandWeight, float handWeight,  float newRunWeight, float walk, float strafe)
+	#region Start
+	/*void CmdClientState(Vector3 targetPosVec, float newHandWeight, float handWeight,  float newRunWeight, float walk, float strafe)
 	{
 		this.targetPosVec = targetPosVec;
 		this.newRunWeight = newRunWeight;
@@ -92,12 +86,10 @@ public class PlayerController : MonoBehaviour
 	}*/
 
 
-    void Start()
+	void Start()
 	{
 		anim = GetComponent<Animator>();
-        ND = GameObject.Find("NetworkDriver").GetComponent<NetworkDriver>();
-
-        GetComponent<FlashlightSystem>().EnableInventory();//ENABLE FLASHLIGHT
+        GetComponent<ClientFlashlightSystem>().EnableInventory();//ENABLE FLASHLIGHT
 
 
         rightHandTrans = rightHand != null ? rightHand.GetComponentsInChildren<Transform>() : new Transform[0];
@@ -108,102 +100,95 @@ public class PlayerController : MonoBehaviour
 	}
     #endregion
 
-    #region Update
-    void Update() 
-	{
-
-
-
-        Locomotion();
-		Running();
-
-		CheckKnife();
-		KnifeAttack();
-
-		CheckPistol();
-		PistolAttack();
-
-		CheckFlashlight();
-
-		if (Input.GetKeyUp(KeyCode.Escape))
-        {
-			Cursor.visible = true;
-			Cursor.lockState = CursorLockMode.None;
-		}
-
-		
-		//---------------------EMIT ACTION----------------------
-        //AnimatorClipInfo[] clipInfo = anim.GetCurrentAnimatorClipInfo(0);
-        //string animName = clipInfo[0].clip.name;
-
-		//if (walk != prevWalk || strafe != prevStrafe)
+    private void FixedUpdate()
+    {
+		if(speed>0f)
 		{
-            //Debug.Log("ANIMATION CHANGED TO " + animName);
-            // Calculate speed based on current and previous position
+			strafe = Mathf.Lerp(strafe, targStrafe, 0.1f);
+            walk = Mathf.Lerp(walk, targWalk, 0.1f);
 
-            Vector3 currentPosition = transform.position;
-            float currentTime = Time.time;
-            float distance = Vector3.Distance(currentPosition, prevPosition);
-            float timeElapsed = currentTime - prevTime;
-            //speed = Mathf.CeilToInt(distance / timeElapsed);
-            prevPosition = currentPosition;
-            prevTime = currentTime;
-
-			
-
-
-            if (Time.time > action_timer + action_delay)
-            {
-
-                 //string dict = $"{{'walk':'{walk}','strafe':'{strafe}','x':'{transform.eulerAngles.x}','y':'{transform.eulerAngles.y}','z':'{transform.eulerAngles.z}','run':'{Input.GetKey(InputManager.instance.running)}'}}";
-                string dict = $"{{'walk':'{walk}','strafe':'{strafe}','run':'{Input.GetKey(InputManager.instance.running)}','x':'{transform.position.x}','y':'{transform.position.y}','z':'{transform.position.z}','speed':'{speed}','rx':'{transform.eulerAngles.x}','ry':'{transform.eulerAngles.y}','rz':'{transform.eulerAngles.z}'}}";
-
-                ND.sioCom.Instance.Emit("player_action", JsonConvert.SerializeObject(dict), false);
-                action_timer = Time.time;
-            }
-
-            //prevWalk = walk;
-			//prevStrafe = strafe;
+            anim.SetFloat("Strafe", strafe);
+            anim.SetFloat("Walk", walk);
+			if (running) { anim.SetBool("Running", true); Debug.Log("RUNNING WHOOOOOOOOO"); }
+			else { anim.SetBool("Running", false); }
 
         }
 
-
-
+		if (speed == 0) { speed = 4f; } //almost move to target destination
+		//KEEP POS UPDATED
+        if(Vector3.Distance(transform.position, destination)>1.5)
+		{
+            transform.position = new Vector3(destination.x, destination.y, destination.z);
+        }
+        transform.position = Vector3.MoveTowards(transform.position, destination, speed *0.95f * Time.deltaTime);
+        transform.rotation = Quaternion.RotateTowards(transform.rotation, Quaternion.Euler(targetRotation), 150f * Time.deltaTime);
 
     }
-	#endregion
 
-	#region Locomotion
-	void Locomotion()
+
+    #region Update
+    void Update() 
 	{
-		targetPosVec = targetPos.position;
+		//setAction();
+		Locomotion();
+         //Running();
 
-       // walk = Mathf.Round(Input.GetAxis("Vertical"));
-        //strafe = Mathf.Round(Input.GetAxis("Horizontal"));
+        //CheckKnife();
+        //KnifeAttack();
 
-        walk = Input.GetAxis("Vertical");
-        strafe =Input.GetAxis("Horizontal");
+        //CheckPistol();
+        //PistolAttack();
 
-        anim.SetFloat("Strafe", strafe); 
-		anim.SetFloat("Walk", walk);
+        //CheckFlashlight();www
 
-        //Debug.Log(anim.GetFloat("Walk"));
-        AnimatorClipInfo[] clipInfo = anim.GetCurrentAnimatorClipInfo(0);
-        string animName = clipInfo[0].clip.name;
-
-       // Debug.Log(clipInfo[0].clip.name);
-
-
-
-
-        if (walk != 0 || strafe != 0 || is_FlashlightAim == true || is_KnifeAim == true || is_PistolAim == true || CameraType.FPS == cameraController.cameraType)
+        /*if (Input.GetKeyUp(KeyCode.Escape))
         {
-			Vector3 rot = transform.eulerAngles;
-			transform.LookAt(targetPosVec);
+			Cursor.visible = true;
+			Cursor.lockState = CursorLockMode.None;
+		}*/
+    }
+    #endregion
+
+    public void setAction()
+    {
+
+        /*if (animation == "Walk") { anim.SetFloat("Walk", 1f); }
+        if (animation == "WalkBack") { anim.SetFloat("Walk", -1f); }
+        if (animation == "WalkLeft") { anim.SetFloat("Strafe", -1f); }
+        if (animation == "WalkRight") { anim.SetFloat("Strafe", 1f); }
+
+        Debug.Log("SETTING CLIENT STATE " + animation + " " + state + " " + Float);
+
+        anim.SetBool(animation, state);
+		*/
+
+    }
 
 
 
-            float angleBetween = Mathf.DeltaAngle(transform.eulerAngles.y, rot.y);
+
+
+
+        #region Locomotion
+        void Locomotion()
+		{
+
+        //targetPosVec = targetPos.position; 
+
+        //walk = Input.GetAxis("Vertical");
+        //strafe = Input.GetAxis("Horizontal");
+
+
+
+       
+
+
+        /*if (walk != 0 || strafe != 0 || is_FlashlightAim == true || is_KnifeAim == true || is_PistolAim == true)
+        {
+            
+            Vector3 rot = transform.eulerAngles;
+			//transform.LookAt(targetPosVec);
+			float angleBetween = Mathf.DeltaAngle(transform.eulerAngles.y, rot.y);
 			if ((Mathf.Abs(angleBetween) > luft) || strafe != 0)
 			{
 				isPlayerRot = true;
@@ -218,45 +203,35 @@ public class PlayerController : MonoBehaviour
 				transform.eulerAngles = new Vector3(0f, rot.y, 0f);
 			}
 		}
-
-		transform.eulerAngles = new Vector3(0f, transform.eulerAngles.y, 0f);
-
-
-        if (animName == "Idle") { speed = 0; }
-        else if (animName == "Running") { speed = 4f; }
-        else { speed = 2f; }//walk
-
-        Vector3 movement = new Vector3(strafe, 0.0f, walk);
-        movement = movement.normalized;
-        transform.Translate(movement * speed * Time.deltaTime);
-
+		transform.eulerAngles = new Vector3(0f, transform.eulerAngles.y, 0f);*/
     }
 
 	private void Running()
 	{
-		//staminaLevel.fillAmount += (restoringStamina/150) * Time.deltaTime;
+		//int staminaLevel = 100;
 
-		if (Input.GetKey(InputManager.instance.running) && walk != 0)
-        {
-			anim.SetBool("Running", true);
 
-            //staminaLevel.fillAmount -= (reducedStamina/100) * Time.deltaTime;
+               if (running && walk != 0)
+               {
+                   anim.SetBool("Running", true);
 
-            //if (staminaLevel.fillAmount <= 0)
-            //{
-            //	anim.SetBool("Running", false);
-            //}
-        }
-		else if (Input.GetKeyUp(InputManager.instance.running))
-		{
-			anim.SetBool("Running", false);
-        }
+                  // staminaLevel.fillAmount -= (reducedStamina/100) * Time.deltaTime;
 
-		if (is_KnifeAim == true || is_PistolAim == true)
-        {
-			anim.SetBool("Running", false);
-        }
-	}
+                   //if (staminaLevel.fillAmount <= 0)
+                   {
+                       anim.SetBool("Running", false);
+                   }
+               }
+               else if (running)
+               {
+                   anim.SetBool("Running", false);
+               }
+
+               if (is_KnifeAim == true || is_PistolAim == true)
+               {
+                   anim.SetBool("Running", false);
+               }
+    }
 	#endregion
 
 	#region Melee Сombat

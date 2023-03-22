@@ -21,11 +21,16 @@ public class NetworkDriver : MonoBehaviour
     private bool connected = false;
     private float pingTimer = 0.0f;
     private float PING = 0.0f;
+
+    private bool swap;
+    private GameObject Client; //the player on ur local game that ISNT you
+    private GameObject Player;
     void Start()
     {
-        Debug.Log("GIT IS FUCKING DOPE");
-//=================================================================  S E T  U P  ===============================================================
-        
+
+        //=================================================================  S E T  U P  ===============================================================
+        Client = GameObject.Find("Client");
+        Player = GameObject.Find("Player");
         //-----------------CONNECT TO SERVER----------------->
         sioCom = GetComponent<SocketIOCommunicator>();
         StartCoroutine(connectSIO());
@@ -77,7 +82,10 @@ public class NetworkDriver : MonoBehaviour
                 Debug.Log("THEIR PING IS " + dict["ping"]);
                 if (float.Parse(dict["ping"]) == 0) //THEY JUST JOINED
                 {
-                    Debug.Log("SENDING MY PING SPEED TO OTHER PLAYER");
+                    Debug.Log("PLAYER JOINED SENDING MY PING SPEED TO OTHER PLAYER");
+
+                    swap = true;
+
                     dict = new Dictionary<string, string> {
                         { "sid", sioCom.Instance.SocketID },
                         { "ping", PING.ToString() }
@@ -96,19 +104,27 @@ public class NetworkDriver : MonoBehaviour
         {
             Debug.Log("HOST DETERMINED " + payload);
             if (payload.ToString() == sioCom.Instance.SocketID) { HOST = true; }
-            //if (!HOST) { GameObject.Find("objPlayer").GetComponent<Rigidbody>().mass = 0; }
+            
         });
 
 //=================================================================E N D   S E T   U P ===============================================================
-        //-----------------MOVE ----------------->
-        sioCom.Instance.On("move", (payload) =>
+        //-----------------PLAYER ACTION ----------------->
+        sioCom.Instance.On("player_action", (payload) =>
         {
             JObject data = JObject.Parse(payload);
-            Debug.Log("RECEIVING UPDATE " + data);
+          // Debug.Log("PLAYER ACTION" + data);
             Dictionary<string, string> dict = data.ToObject<Dictionary<string, string>>();
-            GameObject thisObj = GameObject.Find(dict["object"]);
-            Vector3 newPosition = new Vector3(float.Parse(dict["x"]), float.Parse(dict["y"]), float.Parse(dict["z"]));
-            thisObj.GetComponent<MovementNetworker>().destination = newPosition; 
+            //Client.GetComponent<ClientPlayerController>().animation = dict["animation"];
+            Client.GetComponent<ClientPlayerController>().targWalk = float.Parse(dict["walk"]);
+            Client.GetComponent<ClientPlayerController>().targStrafe = float.Parse(dict["strafe"]);
+            Client.GetComponent<ClientPlayerController>().running = bool.Parse(dict["run"]);
+            Client.GetComponent<ClientPlayerController>().targetRotation = new Vector3(float.Parse(dict["rx"]), float.Parse(dict["ry"]), float.Parse(dict["rz"]));
+            Client.GetComponent<ClientPlayerController>().destination = new Vector3(float.Parse(dict["x"]), float.Parse(dict["y"]), float.Parse(dict["z"]));
+            Client.GetComponent<ClientPlayerController>().speed = float.Parse(dict["speed"]);
+
+            //Client.GetComponent<ClientPlayerController>().setAction();
+            //Vector3 newPosition = new Vector3(float.Parse(dict["x"]), float.Parse(dict["y"]), float.Parse(dict["z"]));
+            //thisObj.GetComponent<MovementNetworker>().destination = newPosition; 
 
         });
         //-----------------JUMP ----------------->
@@ -144,7 +160,7 @@ public class NetworkDriver : MonoBehaviour
         //--------------------SYNC ROOM--------------------
         sioCom.Instance.On("sync", (payload) =>
         {
-            JObject data = JObject.Parse(payload);
+            /*JObject data = JObject.Parse(payload);
             Debug.Log("SYNCING " + data);
             Dictionary<string, Dictionary<string, string>> dict = data.ToObject<Dictionary<string, Dictionary<string, string>>>();
             // Log the object positions to the console
@@ -153,7 +169,7 @@ public class NetworkDriver : MonoBehaviour
                 GameObject thisObj = GameObject.Find(obj.Key);
                 Vector3 newPosition = new Vector3(float.Parse(obj.Value["x"]), float.Parse(obj.Value["y"]), float.Parse(obj.Value["z"]));
                 thisObj.transform.position = newPosition;
-            }
+            }*/
 
         });
         //-----------------CREATE----------------->
@@ -174,6 +190,18 @@ public class NetworkDriver : MonoBehaviour
         sioCom.Instance.On("player_disconnect", (payload) => { Debug.LogWarning("GAME ENDING PLAYER DISCONNECTED "); HOST = true; }); // sioCom.Instance.Close(); SceneManager.LoadScene("Lobby");
     }
 
+    private void FixedUpdate()
+    {
+        if (swap)
+        {
+            swap = false;
+            Vector3 tempCl = Client.transform.position;
+            Vector3 tempPl = Player.transform.position;
+            Client.transform.position = new Vector3(0f, 50f, 0f);
+            Player.transform.position = tempCl;
+            Client.transform.position = tempPl;
+        }
+    }
     //-----------------------------SYNC UP EVERYTHING----------------------------
     public void Update()
     {
