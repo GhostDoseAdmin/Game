@@ -42,7 +42,7 @@ public class PlayerController : MonoBehaviour
 	public bool is_KnifeAim = false;
 
 	[Space(10)]
-	public bool is_Pistol = false;
+	public bool is_Pistol = true;
 	public bool is_PistolAim = false;
 	public bool canShoot { get; private set; }
 
@@ -85,8 +85,9 @@ public class PlayerController : MonoBehaviour
 	{
 		anim = GetComponent<Animator>();
         ND = GameObject.Find("NetworkDriver").GetComponent<NetworkDriver>();
+        GetComponent<WeaponParameters>().EnableInventoryPistol();
 
-       // GetComponent<FlashlightSystem>().EnableInventory();//ENABLE FLASHLIGHT
+        // GetComponent<FlashlightSystem>().EnableInventory();//ENABLE FLASHLIGHT
 
 
         rightHandTrans = rightHand != null ? rightHand.GetComponentsInChildren<Transform>() : new Transform[0];
@@ -101,6 +102,11 @@ public class PlayerController : MonoBehaviour
     void Update() 
 	{
 
+
+
+
+        // Move the crosshair to the calculated position
+      // GameObject.Find("TARG").transform.position = crosshairPos;
 
 
         Locomotion();
@@ -128,17 +134,18 @@ public class PlayerController : MonoBehaviour
             prevPosition = currentPosition;
             prevTime = currentTime;
 
-			
 
+        Ray ray = GameObject.Find("PlayerCamera").GetComponent<Camera>().ViewportPointToRay(new Vector3(0.5f, 0.5f, 0f));
+        Vector3 crosshairPos = ray.origin + ray.direction * 10f;///USE TO EMIT targPos
 
-            if (Time.time > action_timer + action_delay)
+        if (Time.time > action_timer + action_delay)
             {
 
                  //string dict = $"{{'walk':'{walk}','strafe':'{strafe}','x':'{transform.eulerAngles.x}','y':'{transform.eulerAngles.y}','z':'{transform.eulerAngles.z}','run':'{Input.GetKey(InputManager.instance.running)}'}}";
-                string dict = $"{{'walk':'{walk}','strafe':'{strafe}','run':'{Input.GetKey(InputManager.instance.running)}','x':'{transform.position.x}','y':'{transform.position.y}','z':'{transform.position.z}','speed':'{speed}','rx':'{transform.eulerAngles.x}','ry':'{transform.eulerAngles.y}','rz':'{transform.eulerAngles.z}','ax':'{targetPos.position.x}','ay':'{targetPos.position.y}','az':'{targetPos.position.z}'}}";
+                string dict = $"{{'aim':'{Input.GetMouseButton(1)}','walk':'{walk}','strafe':'{strafe}','run':'{Input.GetKey(InputManager.instance.running)}','x':'{transform.position.x}','y':'{transform.position.y}','z':'{transform.position.z}','speed':'{speed}','rx':'{transform.eulerAngles.x}','ry':'{transform.eulerAngles.y}','rz':'{transform.eulerAngles.z}','ax':'{crosshairPos.x}','ay':'{crosshairPos.y}','az':'{crosshairPos.z}'}}";
                 ND.sioCom.Instance.Emit("player_action", JsonConvert.SerializeObject(dict), false);
-                action_timer = Time.time;
-            }
+                action_timer = Time.time; 
+        }
 
 		//Debug.Log(" FLASH LIGHT SWITCH " + Input.GetKeyDown(InputManager.instance.flashlightSwitch));
 
@@ -290,7 +297,7 @@ public class PlayerController : MonoBehaviour
 	{
 		if (is_Pistol)
 		{
-			if (Input.GetMouseButton(1))
+			if (Input.GetMouseButton(1)) //AIMING
 			{
 				if (is_FlashlightAim)
                 {
@@ -368,7 +375,7 @@ public class PlayerController : MonoBehaviour
 		}
 	}
 
-	protected void IKFlashlight()
+	/*protected void IKFlashlight1()
 	{
 		this.pivot.position = this.shoulder.position;
 
@@ -381,13 +388,13 @@ public class PlayerController : MonoBehaviour
 		{
 			this.SetisFlashlightWeight(0.3f, 0, 0);
 		}
-	}
+	}*/
 
-	private void SetisFlashlightWeight(float weight, float bodyWeight, float headWeight)
+	/*private void SetisFlashlightWeight(float weight, float bodyWeight, float headWeight)
 	{
 		this.anim.SetLookAtWeight(weight, bodyWeight, headWeight);
 		this.anim.SetLookAtPosition(this.targetPos.position);
-	}
+	}*/
 	#endregion
 
 	void OnAnimatorIK()

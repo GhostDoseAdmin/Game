@@ -43,7 +43,7 @@ public class WeaponParameters : MonoBehaviour
         inventoryKnife.SetActive(false);
         handKnife.GetComponent<Collider>().enabled = false;
 
-        handPistol.SetActive(false);
+        handPistol.SetActive(true);
         inventoryPistol.SetActive(false);
     }
 

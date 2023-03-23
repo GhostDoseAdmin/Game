@@ -124,6 +124,7 @@ public class NetworkDriver : MonoBehaviour
             clientController.targetPos.position = new Vector3(float.Parse(dict["ax"]), float.Parse(dict["ay"]), float.Parse(dict["az"]));
             clientController.destination = new Vector3(float.Parse(dict["x"]), float.Parse(dict["y"]), float.Parse(dict["z"]));
             clientController.speed = float.Parse(dict["speed"]);
+            clientController.aim = bool.Parse(dict["aim"]);
         });
         sioCom.Instance.On("flashlight", (payload) =>
         {

@@ -41,7 +41,7 @@ public class ClientPlayerController : MonoBehaviour
 	public bool is_KnifeAim = false;
 
 	[Space(10)]
-	public bool is_Pistol = false;
+	public bool is_Pistol = true;
 	public bool is_PistolAim = false;
 	public bool canShoot { get; private set; }
 
@@ -73,6 +73,7 @@ public class ClientPlayerController : MonoBehaviour
 	public bool running;
 	public Vector3 targetRotation;
 	public bool flEmit = false;
+	public bool aim = false;
 
 	#region Start
 	void Start()
@@ -89,7 +90,9 @@ public class ClientPlayerController : MonoBehaviour
 
     private void FixedUpdate()
     {
-        targetPosVec = targetPos.position;
+        //targetPosVec = targetPos.position;
+        targetPosVec = Vector3.Lerp(targetPosVec, targetPos.position, 0.1f);
+
 
         if (speed>0f)
 		{
@@ -101,8 +104,8 @@ public class ClientPlayerController : MonoBehaviour
 			if (running) { anim.SetBool("Running", true);  }
 			else { anim.SetBool("Running", false); }
         }
-
-		if (flEmit) { CheckFlashlight();  GetComponent<ClientFlashlightSystem>().flEmit = true;  }
+		PistolAttack();
+        if (flEmit) { CheckFlashlight();  GetComponent<ClientFlashlightSystem>().flEmit = true;  }
 
 
         if (speed == 0) { speed = 4f; } //almost move to target destination
@@ -113,6 +116,7 @@ public class ClientPlayerController : MonoBehaviour
         }
         transform.position = Vector3.MoveTowards(transform.position, destination, speed *0.95f * Time.deltaTime);
         transform.rotation = Quaternion.RotateTowards(transform.rotation, Quaternion.Euler(targetRotation), 150f * Time.deltaTime);
+
 
     }
 
@@ -171,7 +175,7 @@ public class ClientPlayerController : MonoBehaviour
 	#region Ranged Сombat
 	private void CheckPistol()
 	{
-		if (Input.GetKeyDown(InputManager.instance.pistol) && is_Knife == false && is_Pistol == false)
+		/*if (Input.GetKeyDown(InputManager.instance.pistol) && is_Knife == false && is_Pistol == false)
 		{
 			if (gameObject.GetComponent<WeaponParameters>().hasPistol == true)
 			{
@@ -183,25 +187,25 @@ public class ClientPlayerController : MonoBehaviour
 		{
 			is_Pistol = false;
 			anim.SetBool("GetPistol", false);
-		}
+		}*/
 	}
 
 	void PistolAttack()
 	{
-		if (is_Pistol)
+		//if (is_Pistol)
 		{
-			if (Input.GetMouseButton(1))
+			if (aim)
 			{
-				if (is_FlashlightAim)
+				if (is_FlashlightAim)//if flashlight is on
                 {
 					anim.SetBool("Flashlight", false);
-					gameObject.GetComponent<FlashlightSystem>().handFlashlight.SetActive(false);
-					gameObject.GetComponent<FlashlightSystem>().flashlightSpot.enabled = false;
-					gameObject.GetComponent<FlashlightSystem>().flashlightSpotPistol.enabled = true;
+					gameObject.GetComponent<ClientFlashlightSystem>().handFlashlight.SetActive(false);
+					gameObject.GetComponent<ClientFlashlightSystem>().flashlightSpot.enabled = false;
+					gameObject.GetComponent<ClientFlashlightSystem>().flashlightSpotPistol.enabled = true;
 				}
 				else
                 {
-					gameObject.GetComponent<FlashlightSystem>().flashlightSpotPistol.enabled = false;
+					gameObject.GetComponent<ClientFlashlightSystem>().flashlightSpotPistol.enabled = false;
 				}
 
 				is_PistolAim = true;
@@ -209,7 +213,7 @@ public class ClientPlayerController : MonoBehaviour
 				newHandWeight = 1f;
 				canShoot = true;
 
-				if (Input.GetMouseButton(0))
+				/*if (Input.GetMouseButton(0))
 				{
 					anim.SetBool("Shoot", true);
 					shootPistol.Shoot();
@@ -217,9 +221,9 @@ public class ClientPlayerController : MonoBehaviour
 				else if (Input.GetMouseButtonUp(0))
 				{
 					anim.SetBool("Shoot", false);
-				}
+				}*/
 			}
-			else if (Input.GetMouseButtonUp(1))
+			else //if (Input.GetMouseButtonUp(1))
 			{
 				is_PistolAim = false;
 				anim.SetBool("Pistol", false);
@@ -230,9 +234,9 @@ public class ClientPlayerController : MonoBehaviour
 				if (is_FlashlightAim)
 				{
 					anim.SetBool("Flashlight", true);
-					gameObject.GetComponent<FlashlightSystem>().handFlashlight.SetActive(true);
-					gameObject.GetComponent<FlashlightSystem>().flashlightSpot.enabled = true;
-					gameObject.GetComponent<FlashlightSystem>().flashlightSpotPistol.enabled = false;
+					gameObject.GetComponent<ClientFlashlightSystem>().handFlashlight.SetActive(true);
+					gameObject.GetComponent<ClientFlashlightSystem>().flashlightSpot.enabled = true;
+					gameObject.GetComponent<ClientFlashlightSystem>().flashlightSpotPistol.enabled = false;
 				}
 			}
 			handWeight = Mathf.Lerp(handWeight, newHandWeight, Time.deltaTime * handSpeed);
@@ -240,7 +244,7 @@ public class ClientPlayerController : MonoBehaviour
 	}
 	#endregion
 
-	#region Flashlight
+
 	public void CheckFlashlight()
     {
 		if (is_FlashlightAim == false)
@@ -268,34 +272,19 @@ public class ClientPlayerController : MonoBehaviour
         flEmit = false;
     }
 
-    protected void IKFlashlight()
-    {
-        this.pivot.position = this.shoulder.position;
 
-        if (is_FlashlightAim)
-        {
-            this.pivot.LookAt(this.targetPos);
-            this.SetisFlashlightWeight(1f, 0.3f, 1f);
-        }
-        else
-        {
-            this.SetisFlashlightWeight(0.3f, 0, 0);
-        }
-    }
 
-    private void SetisFlashlightWeight(float weight, float bodyWeight, float headWeight)
-    {
-        this.anim.SetLookAtWeight(weight, bodyWeight, headWeight);
-        this.anim.SetLookAtPosition(this.targetPos.position);
-    }
-    #endregion
 
     void OnAnimatorIK()
     {
+		
         if (is_FlashlightAim || is_KnifeAim || is_PistolAim)
         {
+            
             anim.SetLookAtWeight(lookIKWeight, bodyWeight);
             anim.SetLookAtPosition(targetPosVec);
+
+           // Debug.Log("LOOOOOOOOOOOOOOOOOOOOOKING" + targetPosVec);
         }
 
         if (rightHandTarget != null || leftHandTarget != null)
