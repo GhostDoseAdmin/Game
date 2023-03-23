@@ -52,13 +52,9 @@ public class ClientPlayerController : MonoBehaviour
 	[Space(10)]
 	[SerializeField] private string getFrom;
 
-	private Transform shoulder;
-	private Transform pivot;
-
 	Animator anim;
 
 	public Vector3 targetPosVec;
-	float newRunWeight = 1f;
 	public float walk = 0f;
 	public float strafe = 0f;
     public float targStrafe = 0f;
@@ -72,7 +68,7 @@ public class ClientPlayerController : MonoBehaviour
 	public float speed;
 	public bool running;
 	public Vector3 targetRotation;
-	public bool flEmit = false;
+	public bool toggleFlashlight = false;//command sent from other player to turn on/off flashlight
 	public bool aim = false;
 
 	#region Start
@@ -90,11 +86,12 @@ public class ClientPlayerController : MonoBehaviour
 
     private void FixedUpdate()
     {
-        //targetPosVec = targetPos.position;
+		//------------------------------------- M A I N ---------------------------------------------------
         targetPosVec = Vector3.Lerp(targetPosVec, targetPos.position, 0.1f);
 
 
-        if (speed>0f)
+		//---- locomotion animations ------
+        if (speed>0f || Vector3.Distance(transform.position, destination)>0.1)
 		{
 			strafe = Mathf.Lerp(strafe, targStrafe, 0.1f);
             walk = Mathf.Lerp(walk, targWalk, 0.1f);
@@ -104,17 +101,19 @@ public class ClientPlayerController : MonoBehaviour
 			if (running) { anim.SetBool("Running", true);  }
 			else { anim.SetBool("Running", false); }
         }
+
+
 		PistolAttack();
-        if (flEmit) { CheckFlashlight();  GetComponent<ClientFlashlightSystem>().flEmit = true;  }
+        if (toggleFlashlight) { CheckFlashlight();  GetComponent<ClientFlashlightSystem>().toggleFlashlight = true;  }
 
-
-        if (speed == 0) { speed = 4f; } //almost move to target destination
-		//KEEP POS UPDATED
-        if(Vector3.Distance(transform.position, destination)>1.5)
+		if (Vector3.Distance(transform.position, destination) > 0.1) { if (speed == 0) { speed = 4f; }  }//catch up to destination
+        // if (speed == 0) { speed = 4f; } 
+        //KEEP POS UPDATED
+        if (Vector3.Distance(transform.position, destination)>2)//1.5
 		{
             transform.position = new Vector3(destination.x, destination.y, destination.z);
         }
-        transform.position = Vector3.MoveTowards(transform.position, destination, speed *0.95f * Time.deltaTime);
+        transform.position = Vector3.Lerp(transform.position, destination, speed * 0.95f * Time.deltaTime);
         transform.rotation = Quaternion.RotateTowards(transform.rotation, Quaternion.Euler(targetRotation), 150f * Time.deltaTime);
 
 
@@ -213,17 +212,8 @@ public class ClientPlayerController : MonoBehaviour
 				newHandWeight = 1f;
 				canShoot = true;
 
-				/*if (Input.GetMouseButton(0))
-				{
-					anim.SetBool("Shoot", true);
-					shootPistol.Shoot();
-				}
-				else if (Input.GetMouseButtonUp(0))
-				{
-					anim.SetBool("Shoot", false);
-				}*/
 			}
-			else //if (Input.GetMouseButtonUp(1))
+			else 
 			{
 				is_PistolAim = false;
 				anim.SetBool("Pistol", false);
@@ -261,15 +251,7 @@ public class ClientPlayerController : MonoBehaviour
 			is_FlashlightAim = false;
 			anim.SetBool("Flashlight", false);
 		}
-
-        /*if (gameObject.GetComponent<FlashlightSystem>().flashlightSpot.intensity <= 0)
-        {
-			is_Flashlight = false;
-			is_FlashlightAim = false;
-			anim.SetBool("Flashlight", false);
-		}*/
-
-        flEmit = false;
+        toggleFlashlight = false;
     }
 
 
@@ -283,8 +265,6 @@ public class ClientPlayerController : MonoBehaviour
             
             anim.SetLookAtWeight(lookIKWeight, bodyWeight);
             anim.SetLookAtPosition(targetPosVec);
-
-           // Debug.Log("LOOOOOOOOOOOOOOOOOOOOOKING" + targetPosVec);
         }
 
         if (rightHandTarget != null || leftHandTarget != null)

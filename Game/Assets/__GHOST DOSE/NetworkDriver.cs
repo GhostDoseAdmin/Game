@@ -26,6 +26,9 @@ public class NetworkDriver : MonoBehaviour
     private GameObject Client; //the player on ur local game that ISNT you
     private ClientPlayerController clientController;
     private GameObject Player;
+
+    Vector3 clientStart;
+    Vector3 PlayerStart;
     void Start()
     {
 
@@ -33,6 +36,9 @@ public class NetworkDriver : MonoBehaviour
         Client = GameObject.Find("Client");
         clientController = Client.GetComponent<ClientPlayerController>();
         Player = GameObject.Find("Player");
+        clientStart = Client.transform.position;
+        PlayerStart = Player.transform.position;
+
         //-----------------CONNECT TO SERVER----------------->
         sioCom = GetComponent<SocketIOCommunicator>();
         StartCoroutine(connectSIO());
@@ -125,12 +131,10 @@ public class NetworkDriver : MonoBehaviour
             clientController.destination = new Vector3(float.Parse(dict["x"]), float.Parse(dict["y"]), float.Parse(dict["z"]));
             clientController.speed = float.Parse(dict["speed"]);
             clientController.aim = bool.Parse(dict["aim"]);
-        });
-        sioCom.Instance.On("flashlight", (payload) =>
-        {
-            clientController.flEmit = true;
-        });
+            if((bool.Parse(dict["flashlight"]) && !clientController.is_FlashlightAim)   || (!bool.Parse(dict["flashlight"]) && clientController.is_FlashlightAim)    ) {clientController.toggleFlashlight = true;}
 
+        });
+        
 
         //-----------------JUMP ----------------->
         sioCom.Instance.On("JUPM", (payload) =>
@@ -200,11 +204,9 @@ public class NetworkDriver : MonoBehaviour
         if (swap)
         {
             swap = false;
-            Vector3 tempCl = Client.transform.position;
-            Vector3 tempPl = Player.transform.position;
             Client.transform.position = new Vector3(0f, 50f, 0f);
-            Player.transform.position = tempCl;
-            Client.transform.position = tempPl;
+            Player.transform.position = clientStart;
+            Client.transform.position = PlayerStart;
         }
     }
     //-----------------------------SYNC UP EVERYTHING----------------------------

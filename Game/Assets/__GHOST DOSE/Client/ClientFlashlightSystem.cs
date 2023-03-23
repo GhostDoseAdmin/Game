@@ -39,7 +39,7 @@ public class ClientFlashlightSystem : MonoBehaviour
     private bool isFlashlightOn;
 
     public static ClientFlashlightSystem instance;
-    public bool flEmit = false;
+    public bool toggleFlashlight = false;
 
     private void Awake()
     {
@@ -90,7 +90,7 @@ public class ClientFlashlightSystem : MonoBehaviour
         if (hasFlashlight)
         {
             //Debug.Log(" HAS A FLASHLIGHT");
-            if (flEmit && !showOnce)
+            if (toggleFlashlight && !showOnce)
             {
                // Debug.Log(" FLASH LIGHT TRIGGERED ");
                 if (flashlightSpot.enabled == false)
@@ -116,7 +116,7 @@ public class ClientFlashlightSystem : MonoBehaviour
                     flashlightSpot.enabled = false;
                     //GameObject.Find("ClientSpot_Light_Flashlight").GetComponent<Light>().enabled = true;
                 }
-                flEmit = false;
+                toggleFlashlight = false;
             }
 
             if (isFlashlightOn)

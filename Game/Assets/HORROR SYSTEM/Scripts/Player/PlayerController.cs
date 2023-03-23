@@ -59,25 +59,19 @@ public class PlayerController : MonoBehaviour
 	[Space(10)]
 	[SerializeField] private string getFrom;
 
-	private Transform shoulder;
-	private Transform pivot;
-
 	Animator anim;
 
 	Vector3 targetPosVec;
-	float newRunWeight = 1f;
+
 	float walk = 0f;
 	float strafe = 0f;
 
     private NetworkDriver ND;
-	private float prevWalk, prevStrafe;
     private float action_timer = 0.0f;
-    private float action_delay = 0.25f;//0.1
-    private Vector3 prevPosition;
-    private float prevTime;
+    private float action_delay = 0.33f;//0.25
 	public float speed;
 	public float prevSpeed;
-
+	private string prevEmit;
 
     #region Start
 
@@ -86,8 +80,6 @@ public class PlayerController : MonoBehaviour
 		anim = GetComponent<Animator>();
         ND = GameObject.Find("NetworkDriver").GetComponent<NetworkDriver>();
         GetComponent<WeaponParameters>().EnableInventoryPistol();
-
-        // GetComponent<FlashlightSystem>().EnableInventory();//ENABLE FLASHLIGHT
 
 
         rightHandTrans = rightHand != null ? rightHand.GetComponentsInChildren<Transform>() : new Transform[0];
@@ -101,14 +93,6 @@ public class PlayerController : MonoBehaviour
     #region Update
     void Update() 
 	{
-
-
-
-
-        // Move the crosshair to the calculated position
-      // GameObject.Find("TARG").transform.position = crosshairPos;
-
-
         Locomotion();
 		Running();
 
@@ -126,33 +110,16 @@ public class PlayerController : MonoBehaviour
 			Cursor.lockState = CursorLockMode.None;
 		}
 
-            Vector3 currentPosition = transform.position;
-            float currentTime = Time.time;
-            float distance = Vector3.Distance(currentPosition, prevPosition);
-            float timeElapsed = currentTime - prevTime;
-            //speed = Mathf.CeilToInt(distance / timeElapsed);
-            prevPosition = currentPosition;
-            prevTime = currentTime;
-
-
+		//----------------------------------  E M I T          P L A Y E R             A C T I O N S -----------------------------------------------
         Ray ray = GameObject.Find("PlayerCamera").GetComponent<Camera>().ViewportPointToRay(new Vector3(0.5f, 0.5f, 0f));
         Vector3 crosshairPos = ray.origin + ray.direction * 10f;///USE TO EMIT targPos
 
         if (Time.time > action_timer + action_delay)
             {
-
-                 //string dict = $"{{'walk':'{walk}','strafe':'{strafe}','x':'{transform.eulerAngles.x}','y':'{transform.eulerAngles.y}','z':'{transform.eulerAngles.z}','run':'{Input.GetKey(InputManager.instance.running)}'}}";
-                string dict = $"{{'aim':'{Input.GetMouseButton(1)}','walk':'{walk}','strafe':'{strafe}','run':'{Input.GetKey(InputManager.instance.running)}','x':'{transform.position.x}','y':'{transform.position.y}','z':'{transform.position.z}','speed':'{speed}','rx':'{transform.eulerAngles.x}','ry':'{transform.eulerAngles.y}','rz':'{transform.eulerAngles.z}','ax':'{crosshairPos.x}','ay':'{crosshairPos.y}','az':'{crosshairPos.z}'}}";
-                ND.sioCom.Instance.Emit("player_action", JsonConvert.SerializeObject(dict), false);
-                action_timer = Time.time; 
-        }
-
-		//Debug.Log(" FLASH LIGHT SWITCH " + Input.GetKeyDown(InputManager.instance.flashlightSwitch));
-
-		if (Input.GetKeyDown(InputManager.instance.flashlightSwitch)) { ND.sioCom.Instance.Emit("flashlight", "", true); }
-        //ND.sioCom.Instance.Emit("flashlight", "", false);
-
-
+                string actions = $"{{'flashlight':'{is_FlashlightAim}','aim':'{Input.GetMouseButton(1)}','walk':'{walk.ToString("F0")}','strafe':'{strafe.ToString("F0")}','run':'{Input.GetKey(InputManager.instance.running)}','x':'{transform.position.x.ToString("F6")}','y':'{transform.position.y.ToString("F6")}','z':'{transform.position.z.ToString("F6")}','speed':'{speed.ToString("F2")}','rx':'{transform.eulerAngles.x.ToString("F0")}','ry':'{transform.eulerAngles.y.ToString("F0")}','rz':'{transform.eulerAngles.z.ToString("F0")}','ax':'{crosshairPos.x.ToString("F0")}','ay':'{crosshairPos.y.ToString("F0")}','az':'{crosshairPos.z.ToString("F0")}'}}";
+				if (actions != prevEmit) { ND.sioCom.Instance.Emit("player_action", JsonConvert.SerializeObject(actions), false); prevEmit = actions; }
+                action_timer = Time.time;
+			}
 
     }
 	#endregion
@@ -162,30 +129,20 @@ public class PlayerController : MonoBehaviour
 	{
 		targetPosVec = targetPos.position;
 
-       // walk = Mathf.Round(Input.GetAxis("Vertical"));
-        //strafe = Mathf.Round(Input.GetAxis("Horizontal"));
-
         walk = Input.GetAxis("Vertical");
         strafe =Input.GetAxis("Horizontal");
 
         anim.SetFloat("Strafe", strafe); 
 		anim.SetFloat("Walk", walk);
 
-        //Debug.Log(anim.GetFloat("Walk"));
         AnimatorClipInfo[] clipInfo = anim.GetCurrentAnimatorClipInfo(0);
         string animName = clipInfo[0].clip.name;
-
-       // Debug.Log(clipInfo[0].clip.name);
-
-
-
+		Debug.Log(" ANIMATION " + animName);
 
         if (walk != 0 || strafe != 0 || is_FlashlightAim == true || is_KnifeAim == true || is_PistolAim == true || CameraType.FPS == cameraController.cameraType)
         {
 			Vector3 rot = transform.eulerAngles;
 			transform.LookAt(targetPosVec);
-
-
 
             float angleBetween = Mathf.DeltaAngle(transform.eulerAngles.y, rot.y);
 			if ((Mathf.Abs(angleBetween) > luft) || strafe != 0)
@@ -205,8 +162,8 @@ public class PlayerController : MonoBehaviour
 
 		transform.eulerAngles = new Vector3(0f, transform.eulerAngles.y, 0f);
 
-
-        if (animName == "Idle") { speed = 0; }
+		//------------------S P E E D -------------------------
+        if (animName == "Idle" || animName =="Idle_Flashlight" || animName == "Idle_Pistol") { speed = 0; }
         else if (animName == "Running") { speed = 4f; }
         else { speed = 2f; }//walk
 
@@ -218,21 +175,10 @@ public class PlayerController : MonoBehaviour
 
 	private void Running()
 	{
-		//staminaLevel.fillAmount += (restoringStamina/150) * Time.deltaTime;
+		if (Input.GetKey(InputManager.instance.running) && walk != 0)        {			anim.SetBool("Running", true);        }		
+		else if (Input.GetKeyUp(InputManager.instance.running))		{			anim.SetBool("Running", false);        }
 
-		if (Input.GetKey(InputManager.instance.running) && walk != 0)
-        {
-			anim.SetBool("Running", true);
-        }
-		else if (Input.GetKeyUp(InputManager.instance.running))
-		{
-			anim.SetBool("Running", false);
-        }
-
-		if (is_KnifeAim == true || is_PistolAim == true)
-        {
-			anim.SetBool("Running", false);
-        }
+		if (is_KnifeAim == true || is_PistolAim == true)        {			anim.SetBool("Running", false);        }
 	}
 	#endregion
 
