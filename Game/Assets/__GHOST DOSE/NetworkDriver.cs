@@ -24,12 +24,14 @@ public class NetworkDriver : MonoBehaviour
 
     private bool swap;
     private GameObject Client; //the player on ur local game that ISNT you
+    private ClientPlayerController clientController;
     private GameObject Player;
     void Start()
     {
 
         //=================================================================  S E T  U P  ===============================================================
         Client = GameObject.Find("Client");
+        clientController = Client.GetComponent<ClientPlayerController>();
         Player = GameObject.Find("Player");
         //-----------------CONNECT TO SERVER----------------->
         sioCom = GetComponent<SocketIOCommunicator>();
@@ -115,18 +117,20 @@ public class NetworkDriver : MonoBehaviour
           // Debug.Log("PLAYER ACTION" + data);
             Dictionary<string, string> dict = data.ToObject<Dictionary<string, string>>();
             //Client.GetComponent<ClientPlayerController>().animation = dict["animation"];
-            Client.GetComponent<ClientPlayerController>().targWalk = float.Parse(dict["walk"]);
-            Client.GetComponent<ClientPlayerController>().targStrafe = float.Parse(dict["strafe"]);
-            Client.GetComponent<ClientPlayerController>().running = bool.Parse(dict["run"]);
-            Client.GetComponent<ClientPlayerController>().targetRotation = new Vector3(float.Parse(dict["rx"]), float.Parse(dict["ry"]), float.Parse(dict["rz"]));
-            Client.GetComponent<ClientPlayerController>().destination = new Vector3(float.Parse(dict["x"]), float.Parse(dict["y"]), float.Parse(dict["z"]));
-            Client.GetComponent<ClientPlayerController>().speed = float.Parse(dict["speed"]);
-
-            //Client.GetComponent<ClientPlayerController>().setAction();
-            //Vector3 newPosition = new Vector3(float.Parse(dict["x"]), float.Parse(dict["y"]), float.Parse(dict["z"]));
-            //thisObj.GetComponent<MovementNetworker>().destination = newPosition; 
-
+            clientController.targWalk = float.Parse(dict["walk"]);
+            clientController.targStrafe = float.Parse(dict["strafe"]);
+            clientController.running = bool.Parse(dict["run"]);
+            clientController.targetRotation = new Vector3(float.Parse(dict["rx"]), float.Parse(dict["ry"]), float.Parse(dict["rz"]));
+            clientController.targetPos.position = new Vector3(float.Parse(dict["ax"]), float.Parse(dict["ay"]), float.Parse(dict["az"]));
+            clientController.destination = new Vector3(float.Parse(dict["x"]), float.Parse(dict["y"]), float.Parse(dict["z"]));
+            clientController.speed = float.Parse(dict["speed"]);
         });
+        sioCom.Instance.On("flashlight", (payload) =>
+        {
+            clientController.flEmit = true;
+        });
+
+
         //-----------------JUMP ----------------->
         sioCom.Instance.On("JUPM", (payload) =>
         {

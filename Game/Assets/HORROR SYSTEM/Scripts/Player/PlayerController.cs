@@ -80,24 +80,13 @@ public class PlayerController : MonoBehaviour
 
 
     #region Start
-    /*void CmdClientState(Vector3 targetPosVec, float newHandWeight, float handWeight,  float newRunWeight, float walk, float strafe)
-	{
-		this.targetPosVec = targetPosVec;
-		this.newRunWeight = newRunWeight;
-		this.walk = walk;
-		this.strafe = strafe;
-
-		this.handWeight = handWeight;
-		this.newHandWeight = newHandWeight;
-	}*/
-
 
     void Start()
 	{
 		anim = GetComponent<Animator>();
         ND = GameObject.Find("NetworkDriver").GetComponent<NetworkDriver>();
 
-        GetComponent<FlashlightSystem>().EnableInventory();//ENABLE FLASHLIGHT
+       // GetComponent<FlashlightSystem>().EnableInventory();//ENABLE FLASHLIGHT
 
 
         rightHandTrans = rightHand != null ? rightHand.GetComponentsInChildren<Transform>() : new Transform[0];
@@ -131,16 +120,6 @@ public class PlayerController : MonoBehaviour
 			Cursor.lockState = CursorLockMode.None;
 		}
 
-		
-		//---------------------EMIT ACTION----------------------
-        //AnimatorClipInfo[] clipInfo = anim.GetCurrentAnimatorClipInfo(0);
-        //string animName = clipInfo[0].clip.name;
-
-		//if (walk != prevWalk || strafe != prevStrafe)
-		{
-            //Debug.Log("ANIMATION CHANGED TO " + animName);
-            // Calculate speed based on current and previous position
-
             Vector3 currentPosition = transform.position;
             float currentTime = Time.time;
             float distance = Vector3.Distance(currentPosition, prevPosition);
@@ -156,17 +135,15 @@ public class PlayerController : MonoBehaviour
             {
 
                  //string dict = $"{{'walk':'{walk}','strafe':'{strafe}','x':'{transform.eulerAngles.x}','y':'{transform.eulerAngles.y}','z':'{transform.eulerAngles.z}','run':'{Input.GetKey(InputManager.instance.running)}'}}";
-                string dict = $"{{'walk':'{walk}','strafe':'{strafe}','run':'{Input.GetKey(InputManager.instance.running)}','x':'{transform.position.x}','y':'{transform.position.y}','z':'{transform.position.z}','speed':'{speed}','rx':'{transform.eulerAngles.x}','ry':'{transform.eulerAngles.y}','rz':'{transform.eulerAngles.z}'}}";
-
+                string dict = $"{{'walk':'{walk}','strafe':'{strafe}','run':'{Input.GetKey(InputManager.instance.running)}','x':'{transform.position.x}','y':'{transform.position.y}','z':'{transform.position.z}','speed':'{speed}','rx':'{transform.eulerAngles.x}','ry':'{transform.eulerAngles.y}','rz':'{transform.eulerAngles.z}','ax':'{targetPos.position.x}','ay':'{targetPos.position.y}','az':'{targetPos.position.z}'}}";
                 ND.sioCom.Instance.Emit("player_action", JsonConvert.SerializeObject(dict), false);
                 action_timer = Time.time;
             }
 
-            //prevWalk = walk;
-			//prevStrafe = strafe;
+		//Debug.Log(" FLASH LIGHT SWITCH " + Input.GetKeyDown(InputManager.instance.flashlightSwitch));
 
-        }
-
+		if (Input.GetKeyDown(InputManager.instance.flashlightSwitch)) { ND.sioCom.Instance.Emit("flashlight", "", true); }
+        //ND.sioCom.Instance.Emit("flashlight", "", false);
 
 
 
@@ -239,13 +216,6 @@ public class PlayerController : MonoBehaviour
 		if (Input.GetKey(InputManager.instance.running) && walk != 0)
         {
 			anim.SetBool("Running", true);
-
-            //staminaLevel.fillAmount -= (reducedStamina/100) * Time.deltaTime;
-
-            //if (staminaLevel.fillAmount <= 0)
-            //{
-            //	anim.SetBool("Running", false);
-            //}
         }
 		else if (Input.GetKeyUp(InputManager.instance.running))
 		{
@@ -380,7 +350,8 @@ public class PlayerController : MonoBehaviour
 				is_Flashlight = true;
 				is_FlashlightAim = true;
 				anim.SetBool("Flashlight", true);
-			}
+                
+            }
 		}
 		else if (Input.GetKeyDown(InputManager.instance.flashlightSwitch) && is_FlashlightAim == true)
 		{

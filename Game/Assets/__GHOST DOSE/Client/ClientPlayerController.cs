@@ -72,25 +72,12 @@ public class ClientPlayerController : MonoBehaviour
 	public float speed;
 	public bool running;
 	public Vector3 targetRotation;
+	public bool flEmit = false;
 
 	#region Start
-	/*void CmdClientState(Vector3 targetPosVec, float newHandWeight, float handWeight,  float newRunWeight, float walk, float strafe)
-	{
-		this.targetPosVec = targetPosVec;
-		this.newRunWeight = newRunWeight;
-		this.walk = walk;
-		this.strafe = strafe;
-
-		this.handWeight = handWeight;
-		this.newHandWeight = newHandWeight;
-	}*/
-
-
 	void Start()
 	{
 		anim = GetComponent<Animator>();
-        GetComponent<ClientFlashlightSystem>().EnableInventory();//ENABLE FLASHLIGHT
-
 
         rightHandTrans = rightHand != null ? rightHand.GetComponentsInChildren<Transform>() : new Transform[0];
 		leftHandTrans = leftHand != null ? leftHand.GetComponentsInChildren<Transform>() : new Transform[0];
@@ -102,19 +89,23 @@ public class ClientPlayerController : MonoBehaviour
 
     private void FixedUpdate()
     {
-		if(speed>0f)
+        targetPosVec = targetPos.position;
+
+        if (speed>0f)
 		{
 			strafe = Mathf.Lerp(strafe, targStrafe, 0.1f);
             walk = Mathf.Lerp(walk, targWalk, 0.1f);
 
             anim.SetFloat("Strafe", strafe);
             anim.SetFloat("Walk", walk);
-			if (running) { anim.SetBool("Running", true); Debug.Log("RUNNING WHOOOOOOOOO"); }
+			if (running) { anim.SetBool("Running", true);  }
 			else { anim.SetBool("Running", false); }
-
         }
 
-		if (speed == 0) { speed = 4f; } //almost move to target destination
+		if (flEmit) { CheckFlashlight();  GetComponent<ClientFlashlightSystem>().flEmit = true;  }
+
+
+        if (speed == 0) { speed = 4f; } //almost move to target destination
 		//KEEP POS UPDATED
         if(Vector3.Distance(transform.position, destination)>1.5)
 		{
@@ -129,110 +120,14 @@ public class ClientPlayerController : MonoBehaviour
     #region Update
     void Update() 
 	{
-		//setAction();
-		Locomotion();
-         //Running();
+		
 
-        //CheckKnife();
-        //KnifeAttack();
 
-        //CheckPistol();
-        //PistolAttack();
-
-        //CheckFlashlight();www
-
-        /*if (Input.GetKeyUp(KeyCode.Escape))
-        {
-			Cursor.visible = true;
-			Cursor.lockState = CursorLockMode.None;
-		}*/
     }
     #endregion
 
-    public void setAction()
-    {
-
-        /*if (animation == "Walk") { anim.SetFloat("Walk", 1f); }
-        if (animation == "WalkBack") { anim.SetFloat("Walk", -1f); }
-        if (animation == "WalkLeft") { anim.SetFloat("Strafe", -1f); }
-        if (animation == "WalkRight") { anim.SetFloat("Strafe", 1f); }
-
-        Debug.Log("SETTING CLIENT STATE " + animation + " " + state + " " + Float);
-
-        anim.SetBool(animation, state);
-		*/
-
-    }
 
 
-
-
-
-
-        #region Locomotion
-        void Locomotion()
-		{
-
-        //targetPosVec = targetPos.position; 
-
-        //walk = Input.GetAxis("Vertical");
-        //strafe = Input.GetAxis("Horizontal");
-
-
-
-       
-
-
-        /*if (walk != 0 || strafe != 0 || is_FlashlightAim == true || is_KnifeAim == true || is_PistolAim == true)
-        {
-            
-            Vector3 rot = transform.eulerAngles;
-			//transform.LookAt(targetPosVec);
-			float angleBetween = Mathf.DeltaAngle(transform.eulerAngles.y, rot.y);
-			if ((Mathf.Abs(angleBetween) > luft) || strafe != 0)
-			{
-				isPlayerRot = true;
-			}
-			if (isPlayerRot == true)
-			{
-				float bodyY = Mathf.LerpAngle(rot.y, transform.eulerAngles.y, Time.deltaTime * angularSpeed);
-				transform.eulerAngles = new Vector3(0, bodyY, 0);
-			}
-			else
-			{
-				transform.eulerAngles = new Vector3(0f, rot.y, 0f);
-			}
-		}
-		transform.eulerAngles = new Vector3(0f, transform.eulerAngles.y, 0f);*/
-    }
-
-	private void Running()
-	{
-		//int staminaLevel = 100;
-
-
-               if (running && walk != 0)
-               {
-                   anim.SetBool("Running", true);
-
-                  // staminaLevel.fillAmount -= (reducedStamina/100) * Time.deltaTime;
-
-                   //if (staminaLevel.fillAmount <= 0)
-                   {
-                       anim.SetBool("Running", false);
-                   }
-               }
-               else if (running)
-               {
-                   anim.SetBool("Running", false);
-               }
-
-               if (is_KnifeAim == true || is_PistolAim == true)
-               {
-                   anim.SetBool("Running", false);
-               }
-    }
-	#endregion
 
 	#region Melee Сombat
 	private void CheckKnife()
@@ -346,83 +241,85 @@ public class ClientPlayerController : MonoBehaviour
 	#endregion
 
 	#region Flashlight
-	private void CheckFlashlight()
+	public void CheckFlashlight()
     {
-		if (Input.GetKeyDown(InputManager.instance.flashlightSwitch) && is_FlashlightAim == false)
+		if (is_FlashlightAim == false)
 		{
-			if (gameObject.GetComponent<FlashlightSystem>().hasFlashlight == true)
-            {
 				is_Flashlight = true;
 				is_FlashlightAim = true;
 				anim.SetBool("Flashlight", true);
-			}
+
+			
 		}
-		else if (Input.GetKeyDown(InputManager.instance.flashlightSwitch) && is_FlashlightAim == true)
+		else if (is_FlashlightAim == true)
 		{
 			is_Flashlight = false;
 			is_FlashlightAim = false;
 			anim.SetBool("Flashlight", false);
 		}
 
-		if (gameObject.GetComponent<FlashlightSystem>().flashlightSpot.intensity <= 0)
+        /*if (gameObject.GetComponent<FlashlightSystem>().flashlightSpot.intensity <= 0)
         {
 			is_Flashlight = false;
 			is_FlashlightAim = false;
 			anim.SetBool("Flashlight", false);
-		}
-	}
+		}*/
 
-	protected void IKFlashlight()
-	{
-		this.pivot.position = this.shoulder.position;
+        flEmit = false;
+    }
 
-		if (is_FlashlightAim)
-		{
-			this.pivot.LookAt(this.targetPos);
-			this.SetisFlashlightWeight(1f, 0.3f, 1f);
-		}
-		else
-		{
-			this.SetisFlashlightWeight(0.3f, 0, 0);
-		}
-	}
+    protected void IKFlashlight()
+    {
+        this.pivot.position = this.shoulder.position;
 
-	private void SetisFlashlightWeight(float weight, float bodyWeight, float headWeight)
-	{
-		this.anim.SetLookAtWeight(weight, bodyWeight, headWeight);
-		this.anim.SetLookAtPosition(this.targetPos.position);
-	}
-	#endregion
+        if (is_FlashlightAim)
+        {
+            this.pivot.LookAt(this.targetPos);
+            this.SetisFlashlightWeight(1f, 0.3f, 1f);
+        }
+        else
+        {
+            this.SetisFlashlightWeight(0.3f, 0, 0);
+        }
+    }
 
-	void OnAnimatorIK()
-	{
-		if (is_FlashlightAim || is_KnifeAim || is_PistolAim)
-		{
-			anim.SetLookAtWeight(lookIKWeight, bodyWeight);
-			anim.SetLookAtPosition(targetPosVec);
-		}
+    private void SetisFlashlightWeight(float weight, float bodyWeight, float headWeight)
+    {
+        this.anim.SetLookAtWeight(weight, bodyWeight, headWeight);
+        this.anim.SetLookAtPosition(this.targetPos.position);
+    }
+    #endregion
 
-		if (rightHandTarget != null || leftHandTarget != null)
-		{
-            if (is_PistolAim) 
-			{
-				anim.SetIKPositionWeight(AvatarIKGoal.RightHand, handWeight);
-				anim.SetIKPosition(AvatarIKGoal.RightHand, rightHandTarget.position);
+    void OnAnimatorIK()
+    {
+        if (is_FlashlightAim || is_KnifeAim || is_PistolAim)
+        {
+            anim.SetLookAtWeight(lookIKWeight, bodyWeight);
+            anim.SetLookAtPosition(targetPosVec);
+        }
 
-				anim.SetIKRotationWeight(AvatarIKGoal.RightHand, handWeight);
-				anim.SetIKRotation(AvatarIKGoal.RightHand, rightHandTarget.rotation);
+        if (rightHandTarget != null || leftHandTarget != null)
+        {
+            if (is_PistolAim)
+            {
+                anim.SetIKPositionWeight(AvatarIKGoal.RightHand, handWeight);
+                anim.SetIKPosition(AvatarIKGoal.RightHand, rightHandTarget.position);
+
+                anim.SetIKRotationWeight(AvatarIKGoal.RightHand, handWeight);
+                anim.SetIKRotation(AvatarIKGoal.RightHand, rightHandTarget.rotation);
 
 
-				anim.SetIKPositionWeight(AvatarIKGoal.LeftHand, handWeight);
-				anim.SetIKPosition(AvatarIKGoal.LeftHand, leftHandTarget.position);
+                anim.SetIKPositionWeight(AvatarIKGoal.LeftHand, handWeight);
+                anim.SetIKPosition(AvatarIKGoal.LeftHand, leftHandTarget.position);
 
-				anim.SetIKRotationWeight(AvatarIKGoal.LeftHand, handWeight);
-				anim.SetIKRotation(AvatarIKGoal.LeftHand, leftHandTarget.rotation);
-			}
-		}
-	}
+                anim.SetIKRotationWeight(AvatarIKGoal.LeftHand, handWeight);
+                anim.SetIKRotation(AvatarIKGoal.LeftHand, leftHandTarget.rotation);
+            }
+        }
+    }
 
-	void GetFromSoundEvent()
+
+    void GetFromSoundEvent()
 	{
 		AudioManager.instance.Play(getFrom);
 	}

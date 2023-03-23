@@ -36,7 +36,7 @@ public class FlashlightSystem : MonoBehaviour
 
     private bool shouldUpdate = false;
     private bool showOnce = false;
-    private bool isFlashlightOn;
+    public bool isFlashlightOn;
 
     public static FlashlightSystem instance;
 
