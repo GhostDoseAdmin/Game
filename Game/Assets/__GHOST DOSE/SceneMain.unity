@@ -3775,7 +3775,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2497274552679678970, guid: 32b911980278cc34e9ff5cbaf531fe13, type: 3}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 3018477545963657536, guid: 32b911980278cc34e9ff5cbaf531fe13, type: 3}
       propertyPath: m_RootOrder
@@ -12685,7 +12685,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2497274552679678970, guid: 32b911980278cc34e9ff5cbaf531fe13, type: 3}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 3018477545963657536, guid: 32b911980278cc34e9ff5cbaf531fe13, type: 3}
       propertyPath: m_RootOrder
@@ -12767,7 +12767,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 8484338992936690112, guid: a8473ea05bbe44340813dfb7fc442695, type: 3}
       propertyPath: HOST
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8484338993644790938, guid: a8473ea05bbe44340813dfb7fc442695, type: 3}
       propertyPath: m_Name
@@ -13701,7 +13701,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   sioCom: {fileID: 0}
-  HOST: 1
+  HOST: 0
   twoPlayer: 0
 --- !u!114 &1008491631
 MonoBehaviour:
@@ -14857,7 +14857,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2497274552679678970, guid: 32b911980278cc34e9ff5cbaf531fe13, type: 3}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 3018477545963657536, guid: 32b911980278cc34e9ff5cbaf531fe13, type: 3}
       propertyPath: m_RootOrder
@@ -32607,6 +32607,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Enemy_Eating
       objectReference: {fileID: 0}
+    - target: {fileID: 6353770079274734823, guid: 45691cb21e08cf84793e63dfdff840a9, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 6622905491532871612, guid: 45691cb21e08cf84793e63dfdff840a9, type: 3}
       propertyPath: m_IsActive
       value: 1
@@ -33440,7 +33444,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 2497274552679678970, guid: 32b911980278cc34e9ff5cbaf531fe13, type: 3}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 3018477545963657536, guid: 32b911980278cc34e9ff5cbaf531fe13, type: 3}
       propertyPath: m_RootOrder

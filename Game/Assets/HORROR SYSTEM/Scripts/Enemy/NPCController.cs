@@ -54,7 +54,7 @@ public class NPCController : MonoBehaviour
     public bool attacking = false;
 
     private float attack_emit_timer = 0.0f;
-    private float attack_emit_delay = 1.5f;//0.25
+    private float attack_emit_delay = 0.25f;//0.25
 
     void Start()
     {
@@ -85,10 +85,17 @@ public class NPCController : MonoBehaviour
             if (actions != prevActions) //actions change
             {
                 Debug.LogWarning(attacking);
-                //if (attacking) {  Debug.Log("AAAAAAAAAAAAAAAAAAAAAATAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAk"); }
-                // send = $"{{'object':'{this.name}','target':'{target}','Attack':'{animEnemy.GetBool("Attack")}', 'Run':'{animEnemy.GetBool("Run")}', 'Walk':'{animEnemy.GetBool("Walk")}','x':'{transform.position.x}','y':'{transform.position.y}','z':'{transform.position.z}','dx':'{destination.x}','dy':'{destination.y}','dz':'{destination.z}'}}";
-                send = $"{{'object':'{this.name}','Attack':'{attacking}','target':'{target}','curWayPoint':'{curWayPoint}','x':'{transform.position.x}','y':'{transform.position.y}','z':'{transform.position.z}','dx':'{destination.x}','dy':'{destination.y}','dz':'{destination.z}'}}";
-                ND.sioCom.Instance.Emit("enemy", JsonConvert.SerializeObject(send), false);
+
+                
+                //if (Time.time > attack_emit_timer + attack_emit_delay)//prevent sending 2 msgs at once
+                {
+                    //if (attacking) {  Debug.Log("AAAAAAAAAAAAAAAAAAAAAATAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAk"); }
+                    // send = $"{{'object':'{this.name}','target':'{target}','Attack':'{animEnemy.GetBool("Attack")}', 'Run':'{animEnemy.GetBool("Run")}', 'Walk':'{animEnemy.GetBool("Walk")}','x':'{transform.position.x}','y':'{transform.position.y}','z':'{transform.position.z}','dx':'{destination.x}','dy':'{destination.y}','dz':'{destination.z}'}}";
+                    send = $"{{'object':'{this.name}','Attack':'{attacking}','target':'{target}','curWayPoint':'{curWayPoint}','x':'{transform.position.x}','y':'{transform.position.y}','z':'{transform.position.z}','dx':'{destination.x}','dy':'{destination.y}','dz':'{destination.z}'}}";
+                    ND.sioCom.Instance.Emit("enemy", JsonConvert.SerializeObject(send), false);
+
+                    //attack_emit_timer = Time.time;//cooldown
+                }
                 prevActions = actions;
             }
         }
@@ -177,11 +184,11 @@ public class NPCController : MonoBehaviour
             //RUN TO TARGET
             if (distance > 1.5f)
             {
-                if (attacking && ND.HOST)
+                if (attacking)
                 {
                     attacking = false;
-                    send = $"{{'object':'{this.name}','Attack':'{attacking}','target':'{target}','curWayPoint':'{curWayPoint}','x':'{transform.position.x}','y':'{transform.position.y}','z':'{transform.position.z}','dx':'{destination.x}','dy':'{destination.y}','dz':'{destination.z}'}}";
-                    ND.sioCom.Instance.Emit("enemy", JsonConvert.SerializeObject(send), false);
+                    //send = $"{{'object':'{this.name}','Attack':'{attacking}','target':'{target}','curWayPoint':'{curWayPoint}','x':'{transform.position.x}','y':'{transform.position.y}','z':'{transform.position.z}','dx':'{destination.x}','dy':'{destination.y}','dz':'{destination.z}'}}";
+                    //ND.sioCom.Instance.Emit("enemy", JsonConvert.SerializeObject(send), false);
 
                 }
                 navmesh.isStopped = false;
@@ -194,11 +201,11 @@ public class NPCController : MonoBehaviour
             {
                 attacking = true;
 
-                if (!attacking && ND.HOST)
+                if (!attacking)
                 {
                     attacking = true;
-                    send = $"{{'object':'{this.name}','Attack':'{attacking}','target':'{target}','curWayPoint':'{curWayPoint}','x':'{transform.position.x}','y':'{transform.position.y}','z':'{transform.position.z}','dx':'{destination.x}','dy':'{destination.y}','dz':'{destination.z}'}}";
-                    ND.sioCom.Instance.Emit("enemy", JsonConvert.SerializeObject(send), false);
+                    //send = $"{{'object':'{this.name}','Attack':'{attacking}','target':'{target}','curWayPoint':'{curWayPoint}','x':'{transform.position.x}','y':'{transform.position.y}','z':'{transform.position.z}','dx':'{destination.x}','dy':'{destination.y}','dz':'{destination.z}'}}";
+                    //ND.sioCom.Instance.Emit("enemy", JsonConvert.SerializeObject(send), false);
 
                 }
                 navmesh.isStopped = true;
@@ -291,9 +298,9 @@ public class NPCController : MonoBehaviour
                 if (angle <= angleView) // can u see target
                 {
                     RaycastHit hit;
-                    Debug.DrawLine(head.position, targetPlayer.position + Vector3.up * 1.2f); //1.6
+                    Debug.DrawLine(head.position, targetPlayer.position + Vector3.up * 1.4f); //1.6
 
-                    if (Physics.Linecast(head.position, targetPlayer.position + Vector3.up * 1.2f, out hit) && hit.transform != head && hit.transform != transform)
+                    if (Physics.Linecast(head.position, targetPlayer.position + Vector3.up * 1.4f, out hit) && hit.transform != head && hit.transform != transform)
                     {
                         //Debug.Log("LOOKING AT TARGET");
                         if (hit.transform == targetPlayer)
@@ -319,9 +326,9 @@ public class NPCController : MonoBehaviour
         else //DISENGAGE WHEN OUT OF SIGHT
         {
             RaycastHit hit;
-            Debug.DrawLine(head.position, targetPlayer.position + Vector3.up * 1.2f); //
+            Debug.DrawLine(head.position, targetPlayer.position + Vector3.up * 1.4f); //
 
-            if (Physics.Linecast(head.position, targetPlayer.position + Vector3.up * 1.2f, out hit) && hit.transform != head && hit.transform != transform)
+            if (Physics.Linecast(head.position, targetPlayer.position + Vector3.up * 1.4f, out hit) && hit.transform != head && hit.transform != transform)
             {
                 if (hit.transform == targetPlayer)
                 {
