@@ -8,6 +8,7 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System.Net.NetworkInformation;
 using UnityEngine.UIElements;
+using UnityEngine.AI;
 
 
 public class NetworkDriver : MonoBehaviour
@@ -22,10 +23,10 @@ public class NetworkDriver : MonoBehaviour
     private float pingTimer = 0.0f;
     private float PING = 0.0f;
 
-    private bool swap;
     private GameObject Client; //the player on ur local game that ISNT you
     private ClientPlayerController clientController;
     private GameObject Player;
+    public bool twoPlayer = false;
 
     Vector3 clientStart;
     Vector3 PlayerStart;
@@ -91,8 +92,10 @@ public class NetworkDriver : MonoBehaviour
                 if (float.Parse(dict["ping"]) == 0) //THEY JUST JOINED
                 {
                     Debug.Log("PLAYER JOINED SENDING MY PING SPEED TO OTHER PLAYER");
-
-                    swap = true;
+                    twoPlayer = true;
+                    Client.transform.position = new Vector3(0f, 50f, 0f);
+                    Player.transform.position = clientStart;
+                    Client.transform.position = PlayerStart;
 
                     dict = new Dictionary<string, string> {
                         { "sid", sioCom.Instance.SocketID },
@@ -100,8 +103,10 @@ public class NetworkDriver : MonoBehaviour
                     };
                     sioCom.Instance.Emit("ping", JsonConvert.SerializeObject(dict), false);//MAKE OTHER TEST PINGS
                 }
-                else
-                { // COMPARE PING VALUES
+                else//they were in room first
+                {
+                    twoPlayer = true;
+                    // COMPARE PING VALUES
                     if (float.Parse(dict["ping"]) > PING) { Debug.Log("IM HOST"); sioCom.Instance.Emit("host", sioCom.Instance.SocketID, true); }
                     else { Debug.Log("THEYRE HOST"); sioCom.Instance.Emit("host", dict["sid"], true); }
                 }
@@ -111,16 +116,21 @@ public class NetworkDriver : MonoBehaviour
         sioCom.Instance.On("host", (payload) =>
         {
             Debug.Log("HOST DETERMINED " + payload);
-            if (payload.ToString() == sioCom.Instance.SocketID) { HOST = true; }
+           // if (payload.ToString() == sioCom.Instance.SocketID) { HOST = true; }
             
         });
 
 //=================================================================E N D   S E T   U P ===============================================================
+        
+        
+        
+        
+        
         //-----------------PLAYER ACTION ----------------->
         sioCom.Instance.On("player_action", (payload) =>
         {
             JObject data = JObject.Parse(payload);
-          // Debug.Log("PLAYER ACTION" + data);
+           //Debug.Log("PLAYER ACTION" + data);
             Dictionary<string, string> dict = data.ToObject<Dictionary<string, string>>();
             //Client.GetComponent<ClientPlayerController>().animation = dict["animation"];
             clientController.targWalk = float.Parse(dict["walk"]);
@@ -134,7 +144,30 @@ public class NetworkDriver : MonoBehaviour
             if((bool.Parse(dict["flashlight"]) && !clientController.is_FlashlightAim)   || (!bool.Parse(dict["flashlight"]) && clientController.is_FlashlightAim)    ) {clientController.toggleFlashlight = true;}
 
         });
+        //-----------------SHOOT  ----------------->
+        sioCom.Instance.On("shoot", (payload) =>
+        {
+            Debug.Log("RECEIVING SHOOT ");
+            clientController.triggerShoot =true;
+        });
+
+        //-----------------ENEMY  ----------------->
+        sioCom.Instance.On("enemy", (payload) =>
+        {
         
+        JObject data = JObject.Parse(payload);
+        Dictionary<string, string> dict = data.ToObject<Dictionary<string, string>>();
+        Debug.Log("RECEIVING enemy " + data);
+        GameObject enemy = GameObject.Find(dict["object"]);
+            string target = dict["target"];
+            if (target.Length <= 1) { enemy.GetComponent<NPCController>().target = null; }
+            else if (target.Contains("Player")){ enemy.GetComponent<NPCController>().target = Client.transform;}
+            else if (target.Contains("Client")) { enemy.GetComponent<NPCController>().target = Player.transform; }
+            //enemy.GetComponent<NPCController>().animEnemy.SetBool("Attack", bool.Parse(dict["Attack"]));
+            //enemy.GetComponent<NPCController>().animEnemy.SetBool("Run", bool.Parse(dict["Run"]));
+            //enemy.GetComponent<NPCController>().animEnemy.SetBool("Walk", bool.Parse(dict["Walk"]));
+            //enemy.GetComponent<NPCController>().navmesh.SetDestination(new Vector3(float.Parse(dict["wx"]), float.Parse(dict["wy"]), float.Parse(dict["wz"])));
+        });
 
         //-----------------JUMP ----------------->
         sioCom.Instance.On("JUPM", (payload) =>
@@ -196,24 +229,14 @@ public class NetworkDriver : MonoBehaviour
         //--------------DISCONNECT-----------------
         sioCom.Instance.On("disconnect", (payload) => { Debug.LogWarning("Disconnected: " + payload); });
         //--------------PLAYER DISCONNECT-----------------
-        sioCom.Instance.On("player_disconnect", (payload) => { Debug.LogWarning("GAME ENDING PLAYER DISCONNECTED "); HOST = true; }); // sioCom.Instance.Close(); SceneManager.LoadScene("Lobby");
+        sioCom.Instance.On("player_disconnect", (payload) => { Debug.LogWarning("GAME ENDING PLAYER DISCONNECTED "); PlayerPrefs.SetString("message", "PLAYER DISCONNECTED"); HOST = true; }); // sioCom.Instance.Close(); SceneManager.LoadScene("Lobby");
     }
 
-    private void FixedUpdate()
-    {
-        if (swap)
-        {
-            swap = false;
-            Client.transform.position = new Vector3(0f, 50f, 0f);
-            Player.transform.position = clientStart;
-            Client.transform.position = PlayerStart;
-        }
-    }
     //-----------------------------SYNC UP EVERYTHING----------------------------
     public void Update()
     {
         
-             if ((Time.time > sync_timer + delay) && HOST)
+             /*if ((Time.time > sync_timer + delay) && HOST)
              {
                  Debug.Log("SYNCING ");
                  //Create a dictionary for this object's position in structure {"objPlayer":{"x":-2.17,"y":-0.01,"z":0.0},"objOtherPlayer":{"x":4.06,"y":-0.01,"z":0.0}}
@@ -237,7 +260,7 @@ public class NetworkDriver : MonoBehaviour
                 }
                 sioCom.Instance.Emit("sync", JsonConvert.SerializeObject(objStates), false);
                 sync_timer = Time.time;
-            }
+            }*/
 
     }
 

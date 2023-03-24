@@ -3,6 +3,7 @@ using UnityEngine;
 using System.Collections;
 using UnityEngine.UI;
 using Unity.VisualScripting;
+using UnityEditor;
 
 public class ClientPlayerController : MonoBehaviour
 {
@@ -10,13 +11,13 @@ public class ClientPlayerController : MonoBehaviour
 	[Space(10)]
 	public float lookIKWeight;
 	public float bodyWeight;
-	public Transform targetPos;
+	public Transform targetPos;//determined by other player
 	public float angularSpeed;
 	bool isPlayerRot;
 	public float luft;
-	public ShootingSystem shootPistol;
+    public int hp = 100;
 
-	[Header("HAND PARAMETRS")]
+    [Header("HAND PARAMETRS")]
 	[Space(10)]
 	public Transform rightHandTarget;
 	public Transform rightHand;
@@ -60,6 +61,8 @@ public class ClientPlayerController : MonoBehaviour
     public float targStrafe = 0f;
     public float targWalk = 0f;
 
+
+
     //NETWORKER
     public string animation;
 	public bool state = false;
@@ -70,11 +73,29 @@ public class ClientPlayerController : MonoBehaviour
 	public Vector3 targetRotation;
 	public bool toggleFlashlight = false;//command sent from other player to turn on/off flashlight
 	public bool aim = false;
+	public bool triggerShoot;
+    private NetworkDriver ND;
+	
 
-	#region Start
-	void Start()
+    [Header("SHOOTING")]
+    [Space(10)]
+    [SerializeField] private string shootSound;
+    [SerializeField] private string reloadSound;
+    public ParticleSystem muzzleFlash;
+    public ParticleSystem Shell;
+    //public Transform shootPoint;
+    public float distance;
+    public GameObject bullet;
+    public float shootFireLifeTime;
+    public float force;
+    public Transform shootPoint;
+
+    #region Start
+    void Start()
 	{
-		anim = GetComponent<Animator>();
+        ND = GameObject.Find("NetworkDriver").GetComponent<NetworkDriver>();
+
+        anim = GetComponent<Animator>();
 
         rightHandTrans = rightHand != null ? rightHand.GetComponentsInChildren<Transform>() : new Transform[0];
 		leftHandTrans = leftHand != null ? leftHand.GetComponentsInChildren<Transform>() : new Transform[0];
@@ -86,6 +107,8 @@ public class ClientPlayerController : MonoBehaviour
 
     private void FixedUpdate()
     {
+		if (!ND.twoPlayer){ return; }
+
 		//------------------------------------- M A I N ---------------------------------------------------
         targetPosVec = Vector3.Lerp(targetPosVec, targetPos.position, 0.1f);
 
@@ -212,7 +235,37 @@ public class ClientPlayerController : MonoBehaviour
 				newHandWeight = 1f;
 				canShoot = true;
 
-			}
+				// SHOOT
+                if (triggerShoot)
+                {
+                    shootPoint.LookAt(targetPos);
+                    Debug.Log("TRIGGER  SHOOT ");
+                    anim.SetBool("Shoot", true);
+                    AudioManager.instance.Play(shootSound);
+                    muzzleFlash.Play();
+                    Shell.Play();
+                    RaycastHit hit;
+                    if (Physics.Raycast(shootPoint.position, shootPoint.forward, out hit, distance))
+                    {
+                        if (hit.transform.GetComponent<Rigidbody>())
+                        {
+                            hit.transform.GetComponent<Rigidbody>().AddForceAtPosition(shootPoint.forward * force, hit.point);
+                        }
+                    }
+                    GameObject myBullet = Instantiate(bullet);
+                    myBullet.transform.position = shootPoint.position;
+                    myBullet.transform.rotation = shootPoint.rotation;
+                    Destroy(myBullet, shootFireLifeTime);
+					
+					triggerShoot = false;
+
+                }
+                else // if (Input.GetMouseButtonUp(0))
+                {
+                    anim.SetBool("Shoot", false);
+                }
+
+            }
 			else 
 			{
 				is_PistolAim = false;

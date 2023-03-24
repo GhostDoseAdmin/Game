@@ -101,12 +101,12 @@ public class ShootingSystem : MonoBehaviour
         }
     }
 
-    public void Shoot()
+    public bool Shoot()
     {
-        if (AmmoShoot)
+        //if (AmmoShoot)
         {
-            if (!this.canShoot)
-                return;
+            //if (!this.canShoot)
+               // return;
 
             AudioManager.instance.Play(shootSound);
             muzzleFlash.Play();
@@ -121,13 +121,13 @@ public class ShootingSystem : MonoBehaviour
             }
             GameObject myBullet = Instantiate(bullet);
             ammoClipCount--;
-            ammo—lipCountUI.text = ammoClipCount.ToString("0");
+            //ammo—lipCountUI.text = ammoClipCount.ToString("0");
             myBullet.transform.position = shootPoint.position;
             myBullet.transform.rotation = shootPoint.rotation;
             Destroy(myBullet, shootFireLifeTime);
         }
 
-        if (ammoClipCount <= 0)
+        /*if (ammoClipCount <= 0)
         {
             AmmoShoot = false;
 
@@ -138,7 +138,9 @@ public class ShootingSystem : MonoBehaviour
         else
         {
             AmmoShoot = true;
-        }
+        }*/
+
+        return true;
     }
 
     void ReloadAmmo()

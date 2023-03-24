@@ -142,7 +142,7 @@ public class HealthSystem : MonoBehaviour
 	public void Death()
 	{
 		gameObject.SetActive(false);
-		cameraPlayer.SetActive(false);
+		//cameraPlayer.SetActive(false);
 		Instantiate(ragdoll, transform.position, transform.rotation);
 		dead = true;
 		deadPlayer = true;

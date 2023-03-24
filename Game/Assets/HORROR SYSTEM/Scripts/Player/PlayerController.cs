@@ -59,13 +59,12 @@ public class PlayerController : MonoBehaviour
 	[Space(10)]
 	[SerializeField] private string getFrom;
 
-	Animator anim;
+
+    Animator anim;
 
 	Vector3 targetPosVec;
-
 	float walk = 0f;
 	float strafe = 0f;
-
     private NetworkDriver ND;
     private float action_timer = 0.0f;
     private float action_delay = 0.33f;//0.25
@@ -116,9 +115,9 @@ public class PlayerController : MonoBehaviour
 
         if (Time.time > action_timer + action_delay)
             {
-                string actions = $"{{'flashlight':'{is_FlashlightAim}','aim':'{Input.GetMouseButton(1)}','walk':'{walk.ToString("F0")}','strafe':'{strafe.ToString("F0")}','run':'{Input.GetKey(InputManager.instance.running)}','x':'{transform.position.x.ToString("F6")}','y':'{transform.position.y.ToString("F6")}','z':'{transform.position.z.ToString("F6")}','speed':'{speed.ToString("F2")}','rx':'{transform.eulerAngles.x.ToString("F0")}','ry':'{transform.eulerAngles.y.ToString("F0")}','rz':'{transform.eulerAngles.z.ToString("F0")}','ax':'{crosshairPos.x.ToString("F0")}','ay':'{crosshairPos.y.ToString("F0")}','az':'{crosshairPos.z.ToString("F0")}'}}";
+                string actions = $"{{'flashlight':'{is_FlashlightAim}','aim':'{Input.GetMouseButton(1)}','walk':'{walk.ToString("F0")}','strafe':'{strafe.ToString("F0")}','run':'{Input.GetKey(InputManager.instance.running)}','x':'{transform.position.x.ToString("F2")}','y':'{transform.position.y.ToString("F2")}','z':'{transform.position.z.ToString("F2")}','speed':'{speed.ToString("F2")}','rx':'{transform.eulerAngles.x.ToString("F0")}','ry':'{transform.eulerAngles.y.ToString("F0")}','rz':'{transform.eulerAngles.z.ToString("F0")}','ax':'{crosshairPos.x.ToString("F0")}','ay':'{crosshairPos.y.ToString("F0")}','az':'{crosshairPos.z.ToString("F0")}'}}";
 				if (actions != prevEmit) { ND.sioCom.Instance.Emit("player_action", JsonConvert.SerializeObject(actions), false); prevEmit = actions; }
-                action_timer = Time.time;
+                action_timer = Time.time;//cooldown
 			}
 
     }
@@ -137,7 +136,7 @@ public class PlayerController : MonoBehaviour
 
         AnimatorClipInfo[] clipInfo = anim.GetCurrentAnimatorClipInfo(0);
         string animName = clipInfo[0].clip.name;
-		Debug.Log(" ANIMATION " + animName);
+        //Debug.Log(" ANIMATION " + GetComponent<Animator>().GetCurrentAnimatorClipInfo(0)[0].clip.name);
 
         if (walk != 0 || strafe != 0 || is_FlashlightAim == true || is_KnifeAim == true || is_PistolAim == true || CameraType.FPS == cameraController.cameraType)
         {
@@ -262,11 +261,14 @@ public class PlayerController : MonoBehaviour
 				newHandWeight = 1f;
 				canShoot = true;
 
-				if (Input.GetMouseButton(0))
-				{
+                //shoot
+                //if (Input.GetMouseButton(0))
+                if (Input.GetMouseButtonDown(0))
+                {
 					anim.SetBool("Shoot", true);
-					shootPistol.Shoot();
-				}
+					if (shootPistol.Shoot()) { ND.sioCom.Instance.Emit("shoot", JsonConvert.SerializeObject($"{{'weapon':'camera'}}"), false); }
+
+                }
 				else if (Input.GetMouseButtonUp(0))
 				{
 					anim.SetBool("Shoot", false);
@@ -353,7 +355,7 @@ public class PlayerController : MonoBehaviour
 
 		if (rightHandTarget != null || leftHandTarget != null)
 		{
-            if (is_PistolAim) 
+            if (is_PistolAim) //changes stance
 			{
 				anim.SetIKPositionWeight(AvatarIKGoal.RightHand, handWeight);
 				anim.SetIKPosition(AvatarIKGoal.RightHand, rightHandTarget.position);

@@ -1,4 +1,5 @@
 using InteractionSystem;
+using Newtonsoft.Json;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -18,8 +19,8 @@ public class NPCController : MonoBehaviour
 
     [Header("ENEMY TARGET")]
     [Space(10)]
-    public Transform player;
-    Transform target;
+    //public Transform player;
+    public Transform target;
     public Transform head;
     public int visible;
     public int angleView;
@@ -32,17 +33,31 @@ public class NPCController : MonoBehaviour
     [Space(10)]
     [SerializeField] private string knife;
 
-    Animator animEnemy;
+    public Animator animEnemy;
 
-    NavMeshAgent navmesh;
+    public NavMeshAgent navmesh;
 
+    //NETWORK
+    private NetworkDriver ND;
+    public Transform targetPlayer;
+    private GameObject Player;
+    private GameObject Client;
+    private string prevAni;
+    private string currentAni;
+    private string actions;
+    private string prevActions;
+    private Vector3 destination;
 
     void Start()
     {
+        ND = GameObject.Find("NetworkDriver").GetComponent<NetworkDriver>();
+        Player = GameObject.Find("Player");
+        Client = GameObject.Find("Client");
+
         animEnemy = GetComponent<Animator>();
         navmesh = GetComponent<NavMeshAgent>();
 
-        player = GameObject.FindGameObjectWithTag("Player").transform;
+        //targetPlayer = GameObject.FindGameObjectWithTag("Player").transform;
         head = animEnemy.GetBoneTransform(HumanBodyBones.Head).transform;
 
         handKnife.GetComponent<Collider>().enabled = false;
@@ -50,8 +65,34 @@ public class NPCController : MonoBehaviour
 
     void Update()
     {
-        FindTargetRayCast();
-        Walking();
+        if (ND.HOST)
+        {
+            FindTargetRayCast();//dtermines & finds target
+
+            actions = $"{{'object':'{this.name}','target':'{target}'}}";
+            if (actions != prevActions) //target changes
+            {
+                Debug.Log(actions);
+                ND.sioCom.Instance.Emit("enemy", JsonConvert.SerializeObject(actions), false);
+                prevActions = actions;
+            }
+        }
+            Walking();
+
+            //bool isDmg; 
+            //if (animEnemy.GetCurrentAnimatorStateInfo(0).IsName("Damage")) { isDmg = true; };
+
+           /* actions = $"{{'object':'{this.name}','Attack':'{animEnemy.GetBool("Attack")}', 'Run':'{animEnemy.GetBool("Run")}', 'Walk':'{animEnemy.GetBool("Walk")}', 'wx':'{destination.x}' , 'wy':'{destination.y}', 'wz':'{destination.z}'}}";
+
+            if (actions != prevActions)
+            {
+                Debug.Log("SENDING ENEMY DATA");
+                ND.sioCom.Instance.Emit("enemy", JsonConvert.SerializeObject(actions), false);
+                prevActions = actions;
+            }*/
+
+        //}
+        
     }
 
     public void Walking()
@@ -70,6 +111,7 @@ public class NPCController : MonoBehaviour
                 if (wayPoint.Count > curWayPoint)
                 {
                     navmesh.SetDestination(wayPoint[curWayPoint].position);
+                    destination = wayPoint[curWayPoint].position;
                     float distance = Vector3.Distance(transform.position, wayPoint[curWayPoint].position);
 
                     if (distance > 1f)
@@ -89,6 +131,7 @@ public class NPCController : MonoBehaviour
             else if (wayPoint.Count == 1)
             {
                 navmesh.SetDestination(wayPoint[0].position);
+                destination = wayPoint[0].position;
                 float distance = Vector3.Distance(transform.position, wayPoint[curWayPoint].position);
 
                 if (distance > 1f)
@@ -112,15 +155,17 @@ public class NPCController : MonoBehaviour
 
     public void Attack()
     {
+        //Debug.Log("ATTACKING");
         navmesh.SetDestination(target.position);
         float distance = Vector3.Distance(transform.position, target.position);
 
         if (distance > 1.5f)
         {
+            //Debug.Log("APPROACH PLAYER");
             navmesh.isStopped = false;
             animEnemy.SetBool("Run", true);
             animEnemy.SetBool("Attack", false);
-            transform.LookAt(player);
+            transform.LookAt(targetPlayer);
         }
         else
         {
@@ -132,13 +177,28 @@ public class NPCController : MonoBehaviour
             transform.rotation = Quaternion.Slerp(transform.rotation, lookRotation, Time.deltaTime * 10);
 
             animEnemy.SetBool("Attack", true);
-            transform.LookAt(player);
+            transform.LookAt(targetPlayer);
+            //Debug.Log("ATTACKING PLAYER");
         }
 
-        if (target.GetComponent<HealthSystem>().Health <= 0)
+        if (target != null)
         {
-            target = null;
-            navmesh.isStopped = false;
+            if (target == Player)
+            {
+                if (target.GetComponent<HealthSystem>().Health <= 0)
+                {
+                    target = null;
+                    navmesh.isStopped = false;
+                }
+            }
+            if (target == Client)
+            {
+                if (target.GetComponent<ClientPlayerController>().hp <= 0)
+                {
+                    target = null;
+                    navmesh.isStopped = false;
+                }
+            }
         }
     }
 
@@ -146,23 +206,36 @@ public class NPCController : MonoBehaviour
     {
         if (target == null)
         {
-            float distance = Vector3.Distance(head.position, player.position);
+            
+            //DETERMINE TARGET
+            float distance;
+            float p1_dist = Vector3.Distance(head.position, Player.transform.position);
+            float p2_dist = Vector3.Distance(head.position, Client.transform.position);
+
+            if (p1_dist < p2_dist) { distance = p1_dist; targetPlayer = Player.transform; } else { distance = p2_dist; targetPlayer =Client.transform; }
+
+           // Debug.Log("DISTANCE FROM TARGET " + distance);
 
             if (distance <= visible)
             {
-                Quaternion look = Quaternion.LookRotation(player.position - head.position);
-                float angle = Quaternion.Angle(head.rotation, look);
+                
+                // Debug.Log("TARGET IS " + targetPlayer.gameObject.name + " DISTANCE " + distance);
 
-                if (angle <= angleView)
+                Quaternion look = Quaternion.LookRotation(targetPlayer.position - head.position);
+                float angle = Quaternion.Angle(head.rotation, look);
+                //Debug.Log("TARGET VISIBLE  " + angle + " VIEW ANGLE " + angleView);
+
+                if (angle <= angleView) // can u see target
                 {
                     RaycastHit hit;
-                    Debug.DrawLine(head.position, player.position + Vector3.up * 1.6f);
+                    Debug.DrawLine(head.position, targetPlayer.position + Vector3.up * 1.2f); //1.6
 
-                    if (Physics.Linecast(head.position, player.position + Vector3.up * 1.6f, out hit) && hit.transform != head && hit.transform != transform)
+                    if (Physics.Linecast(head.position, targetPlayer.position + Vector3.up * 1.2f, out hit) && hit.transform != head && hit.transform != transform)
                     {
-                        if (hit.transform == player)
+                        //Debug.Log("LOOKING AT TARGET");
+                        if (hit.transform == targetPlayer)
                         {
-                            target = player;
+                            target = targetPlayer;
                         }
                         else
                         {
@@ -180,16 +253,16 @@ public class NPCController : MonoBehaviour
                 target = null;
             }
         }
-        else
+        else //DISENGAGE WHEN OUT OF SIGHT
         {
             RaycastHit hit;
-            Debug.DrawLine(head.position, player.position + Vector3.up * 1.6f);
+            Debug.DrawLine(head.position, targetPlayer.position + Vector3.up * 1.2f); //
 
-            if (Physics.Linecast(head.position, player.position + Vector3.up * 1.6f, out hit) && hit.transform != head && hit.transform != transform)
+            if (Physics.Linecast(head.position, targetPlayer.position + Vector3.up * 1.2f, out hit) && hit.transform != head && hit.transform != transform)
             {
-                if (hit.transform == player)
+                if (hit.transform == targetPlayer)
                 {
-                    target = player;;
+                    target = targetPlayer; ;
                 }
                 else
                 {
