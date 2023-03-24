@@ -3,6 +3,7 @@ using UnityEngine;
 using System.Collections;
 using UnityEngine.UI;
 using Newtonsoft.Json;
+using System.Linq;
 
 public class PlayerController : MonoBehaviour
 {
@@ -72,6 +73,8 @@ public class PlayerController : MonoBehaviour
 	public float prevSpeed;
 	private string prevEmit;
 
+
+	Animator Westin;
     #region Start
 
     void Start()
@@ -86,12 +89,20 @@ public class PlayerController : MonoBehaviour
 
 		Cursor.lockState = CursorLockMode.Locked;
 		Cursor.visible = false;
-	}
+
+		Westin = GameObject.Find("WESTIN").GetComponent<Animator>();
+    }
     #endregion
 
     #region Update
+    private void FixedUpdate()
+    {
+        
+
+    }
     void Update() 
 	{
+
         Locomotion();
 		Running();
 
@@ -120,11 +131,32 @@ public class PlayerController : MonoBehaviour
                 action_timer = Time.time;//cooldown
 			}
 
-    }
-	#endregion
+		anim = Westin;
 
-	#region Locomotion
-	void Locomotion()
+        /*AnimatorClipInfo[] clipInfo = anim.GetCurrentAnimatorClipInfo(0);
+        if (clipInfo != null && clipInfo.Length > 0)
+        {
+            // Cycle through the clipInfo array to get the name of the current animation clip
+            foreach (AnimatorClipInfo info in clipInfo)
+            {
+                string animName = info.clip.name;
+
+				// Set the boolean parameter on the Westin object's Animator Controller
+				if (Westin.parameters.Any(p => p.name == animName))
+				{
+					//Westin.SetBool(animName, true);
+					Debug.LogWarning(animName + anim.GetBool(animName));
+				}
+            }
+        }
+		*/
+
+
+    }
+    #endregion
+
+    #region Locomotion
+    void Locomotion()
 	{
 		targetPosVec = targetPos.position;
 
@@ -133,6 +165,10 @@ public class PlayerController : MonoBehaviour
 
         anim.SetFloat("Strafe", strafe); 
 		anim.SetFloat("Walk", walk);
+
+        //Westin.SetFloat("Strafe", strafe);
+        //Westin.SetFloat("Walk", walk);
+
 
         AnimatorClipInfo[] clipInfo = anim.GetCurrentAnimatorClipInfo(0);
         string animName = clipInfo[0].clip.name;
