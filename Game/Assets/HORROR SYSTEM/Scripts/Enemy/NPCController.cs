@@ -47,9 +47,14 @@ public class NPCController : MonoBehaviour
     private string prevAni;
     private string currentAni;
     private string actions;
-    private string allActions;
+    private string send;
     private string prevActions;
     public Vector3 destination;
+    public Vector3 truePosition;
+    public bool attacking = false;
+
+    private float attack_emit_timer = 0.0f;
+    private float attack_emit_delay = 1.5f;//0.25
 
     void Start()
     {
@@ -68,50 +73,38 @@ public class NPCController : MonoBehaviour
 
     void Update()
     {
+        AI();
+
         if (ND.HOST)
         {
             FindTargetRayCast();//dtermines & finds target
 
-            actions = $"{{'object':'{this.name}','target':'{target}' {destination}}}";
-            if (actions != prevActions) //target changes
+
+            //actions = this.name + target + destination + attacking; //  + animEnemy.GetCurrentAnimatorClipInfo(0)[0].clip.name; //+ attacking
+            actions = $"{{{target} {destination} {attacking}'}}";
+            if (actions != prevActions) //actions change
             {
-                Debug.Log(actions);
-                allActions = $"{{'object':'{this.name}','target':'{target}','x':'{transform.position.x}','y':'{transform.position.y}','z':'{transform.position.z}'}}";
-                ND.sioCom.Instance.Emit("enemy", JsonConvert.SerializeObject(allActions), false);
+                Debug.LogWarning(attacking);
+                //if (attacking) {  Debug.Log("AAAAAAAAAAAAAAAAAAAAAATAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAk"); }
+                // send = $"{{'object':'{this.name}','target':'{target}','Attack':'{animEnemy.GetBool("Attack")}', 'Run':'{animEnemy.GetBool("Run")}', 'Walk':'{animEnemy.GetBool("Walk")}','x':'{transform.position.x}','y':'{transform.position.y}','z':'{transform.position.z}','dx':'{destination.x}','dy':'{destination.y}','dz':'{destination.z}'}}";
+                send = $"{{'object':'{this.name}','Attack':'{attacking}','target':'{target}','curWayPoint':'{curWayPoint}','x':'{transform.position.x}','y':'{transform.position.y}','z':'{transform.position.z}','dx':'{destination.x}','dy':'{destination.y}','dz':'{destination.z}'}}";
+                ND.sioCom.Instance.Emit("enemy", JsonConvert.SerializeObject(send), false);
                 prevActions = actions;
             }
         }
-        else
-        {
-            if (Vector3.Distance(transform.position, destination) > 0.1 && target != null)
-            {
-                transform.position = Vector3.Lerp(transform.position, destination, 4f * Time.deltaTime);
-            }
-        }
-            Walking();
 
-            //bool isDmg; 
-            //if (animEnemy.GetCurrentAnimatorStateInfo(0).IsName("Damage")) { isDmg = true; };
+       
 
-           /* actions = $"{{'object':'{this.name}','Attack':'{animEnemy.GetBool("Attack")}', 'Run':'{animEnemy.GetBool("Run")}', 'Walk':'{animEnemy.GetBool("Walk")}', 'wx':'{destination.x}' , 'wy':'{destination.y}', 'wz':'{destination.z}'}}";
 
-            if (actions != prevActions)
-            {
-                Debug.Log("SENDING ENEMY DATA");
-                ND.sioCom.Instance.Emit("enemy", JsonConvert.SerializeObject(actions), false);
-                prevActions = actions;
-            }*/
-
-        //}
-        
     }
 
-    public void Walking()
+    public void AI()
     {
         if (target != null)
         {
             Attack();
         }
+        //-------------------------WAY POINTS ------------------------
         else if (target == null)
         {
             animEnemy.SetBool("Attack", false);
@@ -121,8 +114,10 @@ public class NPCController : MonoBehaviour
             {
                 if (wayPoint.Count > curWayPoint)
                 {
-                    navmesh.SetDestination(wayPoint[curWayPoint].position);
-                    destination = wayPoint[curWayPoint].position;
+
+                    if (ND.HOST){destination = wayPoint[curWayPoint].position;    navmesh.SetDestination(wayPoint[curWayPoint].position);}
+                    else {navmesh.SetDestination(destination);}
+
                     float distance = Vector3.Distance(transform.position, wayPoint[curWayPoint].position);
 
                     if (distance > 1f)
@@ -141,8 +136,10 @@ public class NPCController : MonoBehaviour
             }
             else if (wayPoint.Count == 1)
             {
-                navmesh.SetDestination(wayPoint[0].position);
-                destination = wayPoint[0].position;
+                
+                if (ND.HOST) {                    navmesh.SetDestination(wayPoint[0].position);                    destination = wayPoint[0].position;                }
+                else                {                    navmesh.SetDestination(destination);                }
+
                 float distance = Vector3.Distance(transform.position, wayPoint[curWayPoint].position);
 
                 if (distance > 1f)
@@ -166,33 +163,88 @@ public class NPCController : MonoBehaviour
 
     public void Attack()
     {
-        //Debug.Log("ATTACKING");
-        navmesh.SetDestination(target.position);
-        float distance = Vector3.Distance(transform.position, target.position);
 
-        if (distance > 1.5f)
+        //MOVE TOWARDS TARGET
+        navmesh.SetDestination(target.position);
+        //if (ND.HOST)        {            navmesh.SetDestination(target.position); if (destination != target.position) { destination = target.position; } } // destination = target.position;  
+        //else        {            navmesh.SetDestination(destination);        }
+
+        float distance = Vector3.Distance(transform.position, target.position);
+        //if(!ND.HOST) { distance -= 0.35f; }// IS THE DELAY FOR PLAYER ACTION EMITS 
+
+        if (ND.HOST)
         {
-            //Debug.Log("APPROACH PLAYER");
-            navmesh.isStopped = false;
-            animEnemy.SetBool("Run", true);
-            animEnemy.SetBool("Attack", false);
-            transform.LookAt(targetPlayer);
+            //RUN TO TARGET
+            if (distance > 1.5f)
+            {
+                if (attacking && ND.HOST)
+                {
+                    attacking = false;
+                    send = $"{{'object':'{this.name}','Attack':'{attacking}','target':'{target}','curWayPoint':'{curWayPoint}','x':'{transform.position.x}','y':'{transform.position.y}','z':'{transform.position.z}','dx':'{destination.x}','dy':'{destination.y}','dz':'{destination.z}'}}";
+                    ND.sioCom.Instance.Emit("enemy", JsonConvert.SerializeObject(send), false);
+
+                }
+                navmesh.isStopped = false;
+                animEnemy.SetBool("Run", true);
+                animEnemy.SetBool("Attack", false);
+                transform.LookAt(targetPlayer);
+            }
+            //ATTACK TARGET
+            if (distance <= 1.5f)
+            {
+                attacking = true;
+
+                if (!attacking && ND.HOST)
+                {
+                    attacking = true;
+                    send = $"{{'object':'{this.name}','Attack':'{attacking}','target':'{target}','curWayPoint':'{curWayPoint}','x':'{transform.position.x}','y':'{transform.position.y}','z':'{transform.position.z}','dx':'{destination.x}','dy':'{destination.y}','dz':'{destination.z}'}}";
+                    ND.sioCom.Instance.Emit("enemy", JsonConvert.SerializeObject(send), false);
+
+                }
+                navmesh.isStopped = true;
+                animEnemy.SetBool("Run", false);
+
+                Vector3 direction = (target.position - transform.position).normalized;
+                Quaternion lookRotation = Quaternion.LookRotation(new Vector3(direction.x, 0, direction.z));
+                transform.rotation = Quaternion.Slerp(transform.rotation, lookRotation, Time.deltaTime * 10);
+
+                animEnemy.SetBool("Attack", true);
+                transform.LookAt(targetPlayer);
+            }
         }
         else
         {
-            navmesh.isStopped = true;
-            animEnemy.SetBool("Run", false);
 
-            Vector3 direction = (target.position - transform.position).normalized;
-            Quaternion lookRotation = Quaternion.LookRotation(new Vector3(direction.x, 0, direction.z));
-            transform.rotation = Quaternion.Slerp(transform.rotation, lookRotation, Time.deltaTime * 10);
+            //RUN TO TARGET
+            if (!attacking)
+            {
 
-            animEnemy.SetBool("Attack", true);
-            transform.LookAt(targetPlayer);
-            //Debug.Log("ATTACKING PLAYER");
+                navmesh.isStopped = false;
+                animEnemy.SetBool("Run", true);
+                animEnemy.SetBool("Attack", false);
+                transform.LookAt(targetPlayer);
+            }
+            //ATTACK TARGET
+            else
+            {
+                navmesh.isStopped = true;
+                animEnemy.SetBool("Run", false);
+
+                Vector3 direction = (target.position - transform.position).normalized;
+                Quaternion lookRotation = Quaternion.LookRotation(new Vector3(direction.x, 0, direction.z));
+                transform.rotation = Quaternion.Slerp(transform.rotation, lookRotation, Time.deltaTime * 10);
+
+                animEnemy.SetBool("Attack", true);
+                transform.LookAt(targetPlayer);
+            }
+
         }
 
-        if (target != null)
+
+
+
+
+        if (target != null && ND.HOST)
         {
             if (target == Player)
             {

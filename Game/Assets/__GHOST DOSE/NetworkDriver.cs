@@ -49,7 +49,7 @@ public class NetworkDriver : MonoBehaviour
             {
                 connected = true;
                 Debug.Log(payload + " CONNECTING TO ROOM " + PlayerPrefs.GetString("room"));
-                sioCom.Instance.Emit("join", PlayerPrefs.GetString("room"), true); //PlayerPrefs.GetString("room")
+                sioCom.Instance.Emit("join", "room1", true); //PlayerPrefs.GetString("room")
             }
         });
         IEnumerator connectSIO()//--------CONNECT HELPER--------->
@@ -163,11 +163,15 @@ public class NetworkDriver : MonoBehaviour
             if (target.Length <= 1) { enemy.GetComponent<NPCController>().target = null; }
             else if (target.Contains("Player")){ enemy.GetComponent<NPCController>().target = Client.transform;}
             else if (target.Contains("Client")) { enemy.GetComponent<NPCController>().target = Player.transform; }
-            enemy.GetComponent<NPCController>().destination= new Vector3(float.Parse(dict["x"]), float.Parse(dict["y"]), float.Parse(dict["z"]));
+            enemy.transform.position = new Vector3(float.Parse(dict["x"]), float.Parse(dict["y"]), float.Parse(dict["z"]));
+            //if (enemy.GetComponent<NPCController>().target != null) { enemy.transform.position = ((enemy.GetComponent<NPCController>().target.position - enemy.transform.position).normalized) * 0.25f; }
+            enemy.GetComponent<NPCController>().destination = new Vector3(float.Parse(dict["dx"]), float.Parse(dict["dy"]), float.Parse(dict["dz"]));
+            enemy.GetComponent<NPCController>().curWayPoint = int.Parse(dict["curWayPoint"]);
+            enemy.GetComponent<NPCController>().attacking =  bool.Parse(dict["Attack"]);
             //enemy.GetComponent<NPCController>().animEnemy.SetBool("Attack", bool.Parse(dict["Attack"]));
             //enemy.GetComponent<NPCController>().animEnemy.SetBool("Run", bool.Parse(dict["Run"]));
             //enemy.GetComponent<NPCController>().animEnemy.SetBool("Walk", bool.Parse(dict["Walk"]));
-            //enemy.GetComponent<NPCController>().navmesh.SetDestination(new Vector3(float.Parse(dict["wx"]), float.Parse(dict["wy"]), float.Parse(dict["wz"])));
+            //enemy.GetComponent<NPCController>().navmesh.SetDestination(new Vector3(float.Parse(dict["dx"]), float.Parse(dict["dy"]), float.Parse(dict["dz"])));
         });
 
         //-----------------JUMP ----------------->
