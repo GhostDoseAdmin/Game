@@ -2,8 +2,10 @@ using InteractionSystem;
 using Newtonsoft.Json;
 using System.Collections;
 using System.Collections.Generic;
+using System.Xml.Schema;
 using UnityEngine;
 using UnityEngine.AI;
+using UnityEngine.UIElements;
 
 public class NPCController : MonoBehaviour
 {
@@ -45,8 +47,9 @@ public class NPCController : MonoBehaviour
     private string prevAni;
     private string currentAni;
     private string actions;
+    private string allActions;
     private string prevActions;
-    private Vector3 destination;
+    public Vector3 destination;
 
     void Start()
     {
@@ -69,12 +72,20 @@ public class NPCController : MonoBehaviour
         {
             FindTargetRayCast();//dtermines & finds target
 
-            actions = $"{{'object':'{this.name}','target':'{target}'}}";
+            actions = $"{{'object':'{this.name}','target':'{target}' {destination}}}";
             if (actions != prevActions) //target changes
             {
                 Debug.Log(actions);
-                ND.sioCom.Instance.Emit("enemy", JsonConvert.SerializeObject(actions), false);
+                allActions = $"{{'object':'{this.name}','target':'{target}','x':'{transform.position.x}','y':'{transform.position.y}','z':'{transform.position.z}'}}";
+                ND.sioCom.Instance.Emit("enemy", JsonConvert.SerializeObject(allActions), false);
                 prevActions = actions;
+            }
+        }
+        else
+        {
+            if (Vector3.Distance(transform.position, destination) > 0.1 && target != null)
+            {
+                transform.position = Vector3.Lerp(transform.position, destination, 4f * Time.deltaTime);
             }
         }
             Walking();

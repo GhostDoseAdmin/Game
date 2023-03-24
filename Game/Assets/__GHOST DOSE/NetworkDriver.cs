@@ -163,6 +163,7 @@ public class NetworkDriver : MonoBehaviour
             if (target.Length <= 1) { enemy.GetComponent<NPCController>().target = null; }
             else if (target.Contains("Player")){ enemy.GetComponent<NPCController>().target = Client.transform;}
             else if (target.Contains("Client")) { enemy.GetComponent<NPCController>().target = Player.transform; }
+            enemy.GetComponent<NPCController>().destination= new Vector3(float.Parse(dict["x"]), float.Parse(dict["y"]), float.Parse(dict["z"]));
             //enemy.GetComponent<NPCController>().animEnemy.SetBool("Attack", bool.Parse(dict["Attack"]));
             //enemy.GetComponent<NPCController>().animEnemy.SetBool("Run", bool.Parse(dict["Run"]));
             //enemy.GetComponent<NPCController>().animEnemy.SetBool("Walk", bool.Parse(dict["Walk"]));
