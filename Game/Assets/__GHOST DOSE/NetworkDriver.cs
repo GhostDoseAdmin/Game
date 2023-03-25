@@ -157,17 +157,24 @@ public class NetworkDriver : MonoBehaviour
         
         JObject data = JObject.Parse(payload);
         Dictionary<string, string> dict = data.ToObject<Dictionary<string, string>>();
-        Debug.Log("RECEIVING enemy " + data);
+       // Debug.Log("RECEIVING enemy " + data);
         GameObject enemy = GameObject.Find(dict["object"]);
-            string target = dict["target"];
-            if (target.Length <= 1) { enemy.GetComponent<NPCController>().target = null; }
-            else if (target.Contains("Player")){ enemy.GetComponent<NPCController>().target = Client.transform;}
-            else if (target.Contains("Client")) { enemy.GetComponent<NPCController>().target = Player.transform; }
-            enemy.transform.position = new Vector3(float.Parse(dict["x"]), float.Parse(dict["y"]), float.Parse(dict["z"]));
-            //if (enemy.GetComponent<NPCController>().target != null) { enemy.transform.position = ((enemy.GetComponent<NPCController>().target.position - enemy.transform.position).normalized) * 0.25f; }
-            enemy.GetComponent<NPCController>().destination = new Vector3(float.Parse(dict["dx"]), float.Parse(dict["dy"]), float.Parse(dict["dz"]));
-            enemy.GetComponent<NPCController>().curWayPoint = int.Parse(dict["curWayPoint"]);
-            enemy.GetComponent<NPCController>().attacking =  bool.Parse(dict["Attack"]);
+            if (enemy != null)
+            {
+
+
+                string target = dict["target"];
+                if (target.Length <= 1) { enemy.GetComponent<NPCController>().target = null; }
+                else if (target.Contains("Player")) { enemy.GetComponent<NPCController>().target = Client.transform; }
+                else if (target.Contains("Client")) { enemy.GetComponent<NPCController>().target = Player.transform; }
+                enemy.transform.position = new Vector3(float.Parse(dict["x"]), float.Parse(dict["y"]), float.Parse(dict["z"]));
+                //if (enemy.GetComponent<NPCController>().target != null) { enemy.transform.position = ((enemy.GetComponent<NPCController>().target.position - enemy.transform.position).normalized) * 0.25f; }
+                enemy.GetComponent<NPCController>().destination = new Vector3(float.Parse(dict["dx"]), float.Parse(dict["dy"]), float.Parse(dict["dz"]));
+                enemy.GetComponent<NPCController>().curWayPoint = int.Parse(dict["curWayPoint"]);
+                enemy.GetComponent<NPCController>().attacking = bool.Parse(dict["Attack"]);
+                if (bool.Parse(dict["dead"])) { enemy.GetComponent<NPCController>().healthEnemy = 0; Debug.Log("KILLED A ZOMBIE"); }
+            }
+           
             //enemy.GetComponent<NPCController>().animEnemy.SetBool("Attack", bool.Parse(dict["Attack"]));
             //enemy.GetComponent<NPCController>().animEnemy.SetBool("Run", bool.Parse(dict["Run"]));
             //enemy.GetComponent<NPCController>().animEnemy.SetBool("Walk", bool.Parse(dict["Walk"]));
@@ -226,7 +233,7 @@ public class NetworkDriver : MonoBehaviour
             Debug.Log("RECEIVING CREATE " + data);
             Dictionary<string, string> dict = data.ToObject<Dictionary<string, string>>();
             Vector3 newPosition = new Vector3(float.Parse(dict["x"]), float.Parse(dict["y"]), float.Parse(dict["z"]));
-            GameObject newObject = Instantiate(Resources.Load<GameObject>(dict["object"]), newPosition, Quaternion.identity);
+            GameObject newObject = Instantiate(GameObject.Find("Spawner").GetComponent<Spawner>().prefab, newPosition, Quaternion.identity);
             newObject.name = dict["name"];
 
         });

@@ -73,7 +73,7 @@ public class NPCController : MonoBehaviour
 
     void Update()
     {
-        AI();
+        if (this.gameObject.activeSelf) { AI(); }
 
         if (ND.HOST)
         {
@@ -91,7 +91,7 @@ public class NPCController : MonoBehaviour
                 {
                     //if (attacking) {  Debug.Log("AAAAAAAAAAAAAAAAAAAAAATAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAk"); }
                     // send = $"{{'object':'{this.name}','target':'{target}','Attack':'{animEnemy.GetBool("Attack")}', 'Run':'{animEnemy.GetBool("Run")}', 'Walk':'{animEnemy.GetBool("Walk")}','x':'{transform.position.x}','y':'{transform.position.y}','z':'{transform.position.z}','dx':'{destination.x}','dy':'{destination.y}','dz':'{destination.z}'}}";
-                    send = $"{{'object':'{this.name}','Attack':'{attacking}','target':'{target}','curWayPoint':'{curWayPoint}','x':'{transform.position.x}','y':'{transform.position.y}','z':'{transform.position.z}','dx':'{destination.x}','dy':'{destination.y}','dz':'{destination.z}'}}";
+                    send = $"{{'object':'{this.name}','dead':'false','Attack':'{attacking}','target':'{target}','curWayPoint':'{curWayPoint}','x':'{transform.position.x}','y':'{transform.position.y}','z':'{transform.position.z}','dx':'{destination.x}','dy':'{destination.y}','dz':'{destination.z}'}}";
                     ND.sioCom.Instance.Emit("enemy", JsonConvert.SerializeObject(send), false);
 
                     //attack_emit_timer = Time.time;//cooldown
@@ -348,6 +348,8 @@ public class NPCController : MonoBehaviour
 
         if (healthEnemy <= 0)
         {
+            send = $"{{'object':'{this.name}','dead':'true','Attack':'{attacking}','target':'{target}','curWayPoint':'{curWayPoint}','x':'{transform.position.x}','y':'{transform.position.y}','z':'{transform.position.z}','dx':'{destination.x}','dy':'{destination.y}','dz':'{destination.z}'}}";
+            ND.sioCom.Instance.Emit("enemy", JsonConvert.SerializeObject(send), false);
             gameObject.SetActive(false);
             Instantiate(ragdollEnemy, transform.position, transform.rotation);
         }
