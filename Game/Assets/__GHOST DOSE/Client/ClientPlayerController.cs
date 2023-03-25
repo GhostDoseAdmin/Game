@@ -95,7 +95,7 @@ public class ClientPlayerController : MonoBehaviour
 	{
         ND = GameObject.Find("NetworkDriver").GetComponent<NetworkDriver>();
 
-        anim = this.gameObject.transform.GetChild(0).GetComponent<Animator>();
+        anim = GetComponent<Animator>();
 
         rightHandTrans = rightHand != null ? rightHand.GetComponentsInChildren<Transform>() : new Transform[0];
 		leftHandTrans = leftHand != null ? leftHand.GetComponentsInChildren<Transform>() : new Transform[0];

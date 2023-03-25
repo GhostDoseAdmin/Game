@@ -49,7 +49,7 @@ public class NetworkDriver : MonoBehaviour
             {
                 connected = true;
                 Debug.Log(payload + " CONNECTING TO ROOM " + PlayerPrefs.GetString("room"));
-                sioCom.Instance.Emit("join", "room1", true); //PlayerPrefs.GetString("room")
+                sioCom.Instance.Emit("join", "room2", true); //PlayerPrefs.GetString("room")
             }
         });
         IEnumerator connectSIO()//--------CONNECT HELPER--------->

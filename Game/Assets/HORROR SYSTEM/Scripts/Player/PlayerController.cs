@@ -89,8 +89,10 @@ public class PlayerController : MonoBehaviour
 		Cursor.lockState = CursorLockMode.Locked;
 		Cursor.visible = false;
 
-		//anim = this.gameObject.transform.GetChild(0).GetComponent<Animator>();
-		anim = GetComponent<Animator>();
+        //anim = this.gameObject.transform.GetChild(0).GetComponent<Animator>();
+        //Transform childTransform = transform.Find("WESTIN");
+        //anim = childTransform.GetComponent<Animator>();
+        anim = GetComponent<Animator>();
     }
     #endregion
 
