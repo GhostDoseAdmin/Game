@@ -22387,6 +22387,89 @@ RectTransform:
   m_AnchoredPosition: {x: 0.505, y: 0.469}
   m_SizeDelta: {x: 25, y: 5}
   m_Pivot: {x: 0.5, y: 0.5}
+--- !u!1 &878297367
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 878297370}
+  - component: {fileID: 878297369}
+  - component: {fileID: 878297368}
+  m_Layer: 3
+  m_Name: Pistol_Inventory
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!23 &878297368
+MeshRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 878297367}
+  m_Enabled: 1
+  m_CastShadows: 1
+  m_ReceiveShadows: 1
+  m_DynamicOccludee: 1
+  m_StaticShadowCaster: 0
+  m_MotionVectors: 1
+  m_LightProbeUsage: 1
+  m_ReflectionProbeUsage: 1
+  m_RayTracingMode: 2
+  m_RayTraceProcedural: 0
+  m_RenderingLayerMask: 1
+  m_RendererPriority: 0
+  m_Materials:
+  - {fileID: 2100000, guid: 301874391bb9e9f48ad1393bb1b41b3f, type: 2}
+  m_StaticBatchInfo:
+    firstSubMesh: 0
+    subMeshCount: 0
+  m_StaticBatchRoot: {fileID: 0}
+  m_ProbeAnchor: {fileID: 0}
+  m_LightProbeVolumeOverride: {fileID: 0}
+  m_ScaleInLightmap: 1
+  m_ReceiveGI: 1
+  m_PreserveUVs: 0
+  m_IgnoreNormalsForChartDetection: 0
+  m_ImportantGI: 0
+  m_StitchLightmapSeams: 1
+  m_SelectedEditorRenderState: 3
+  m_MinimumChartSize: 4
+  m_AutoUVMaxDistance: 0.5
+  m_AutoUVMaxAngle: 89
+  m_LightmapParameters: {fileID: 0}
+  m_SortingLayerID: 0
+  m_SortingLayer: 0
+  m_SortingOrder: 0
+  m_AdditionalVertexStreams: {fileID: 0}
+--- !u!33 &878297369
+MeshFilter:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 878297367}
+  m_Mesh: {fileID: 1220828769319070387, guid: de05bcfe367ee8340a762b4a34420309, type: 3}
+--- !u!4 &878297370
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 878297367}
+  m_LocalRotation: {x: -0.11980092, y: -0.72923136, z: -0.6572863, w: 0.14779766}
+  m_LocalPosition: {x: -0.0889, y: 0.1157, z: 0.018}
+  m_LocalScale: {x: 1.2000002, y: 1.2000008, z: 1.2000003}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 8169382869778570210}
+  m_RootOrder: 1
+  m_LocalEulerAnglesHint: {x: -83.741, y: -147.813, z: 349.661}
 --- !u!1001 &881019512
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -65730,10 +65813,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   hasKnife: 0
   handKnife: {fileID: 1597967443}
-  inventoryKnife: {fileID: 4283764343774650804}
+  inventoryKnife: {fileID: 15287137}
   hasPistol: 1
   handPistol: {fileID: 247009271}
-  inventoryPistol: {fileID: 4283764342538865641}
+  inventoryPistol: {fileID: 878297367}
   pickUp: PickUp
   attackKnife: AttackKnife
 --- !u!4 &3982881787313010211
@@ -67299,7 +67382,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 4890665110377383658}
   m_LocalRotation: {x: -0.04334625, y: -0.0008172355, z: 0.031985458, w: 0.9985477}
-  m_LocalPosition: {x: 3.7933112e-10, y: 0.4478888, z: 2.354573e-10}
+  m_LocalPosition: {x: 0, y: 0.4478888, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -68330,10 +68413,10 @@ MonoBehaviour:
   luft: 1
   cameraController: {fileID: 1155529471}
   shootPistol: {fileID: 8017286499230544273}
-  rightHandTarget: {fileID: 4013715695299142826}
-  rightHand: {fileID: 4703207671640685379}
-  leftHandTarget: {fileID: 4013715694266927310}
-  leftHand: {fileID: 201798216189055304}
+  rightHandTarget: {fileID: 2145045594}
+  rightHand: {fileID: 1852576805503587434}
+  leftHandTarget: {fileID: 1840369001}
+  leftHand: {fileID: 6502182840730533473}
   handSpeed: 60
   is_Flashlight: 1
   is_FlashlightAim: 0
@@ -69818,6 +69901,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 5477181765018101112}
+  - {fileID: 878297370}
   m_Father: {fileID: 5465940245477567709}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
