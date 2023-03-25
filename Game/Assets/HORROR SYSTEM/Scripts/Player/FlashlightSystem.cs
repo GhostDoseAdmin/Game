@@ -41,7 +41,7 @@ public class FlashlightSystem : MonoBehaviour
     public static FlashlightSystem instance;
 
 
-    private void Awake()
+   /* private void Awake()
     {
         if (instance != null) 
         { 
@@ -60,7 +60,7 @@ public class FlashlightSystem : MonoBehaviour
         {
             batteryUI.enabled = true;
         }
-    }
+    }*/
 
     void Start()
     {

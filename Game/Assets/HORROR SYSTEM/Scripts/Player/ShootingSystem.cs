@@ -50,7 +50,7 @@ public class ShootingSystem : MonoBehaviour
 
     public static ShootingSystem instance;
 
-    private void Awake()
+    /*private void Awake()
     {
         if (instance != null)
         {
@@ -60,7 +60,7 @@ public class ShootingSystem : MonoBehaviour
         {
             instance = this;
         }
-    }
+    }*/
 
     void Start()
     {
