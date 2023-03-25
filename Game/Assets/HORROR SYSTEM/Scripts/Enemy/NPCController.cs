@@ -69,6 +69,7 @@ public class NPCController : MonoBehaviour
         head = animEnemy.GetBoneTransform(HumanBodyBones.Head).transform;
 
         handKnife.GetComponent<Collider>().enabled = false;
+
     }
 
     void Update()

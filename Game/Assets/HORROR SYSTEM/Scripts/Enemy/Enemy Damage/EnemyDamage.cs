@@ -9,6 +9,10 @@ public class EnemyDamage : MonoBehaviour
     public int damage;
     public Transform player;
 
+    public void Start()
+    {
+        player =  GameObject.Find("Player").transform;
+    }
     private void OnTriggerEnter(Collider other)
     {
         if (other.tag == "Player")

@@ -1014,7 +1014,7 @@ Transform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!95 &9152411211652252474
 Animator:
-  serializedVersion: 4
+  serializedVersion: 5
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -1031,7 +1031,8 @@ Animator:
   m_WarningMessage: 
   m_HasTransformHierarchy: 1
   m_AllowConstantClipSamplingOptimization: 1
-  m_KeepAnimatorControllerStateOnDisable: 0
+  m_KeepAnimatorStateOnDisable: 0
+  m_WriteDefaultValuesOnDisable: 0
 --- !u!136 &3344327517879445885
 CapsuleCollider:
   m_ObjectHideFlags: 0
@@ -1183,12 +1184,18 @@ MonoBehaviour:
   curWayPoint: 0
   healthEnemy: 100
   handKnife: {fileID: 2497274551949693752}
-  player: {fileID: 0}
+  target: {fileID: 0}
   head: {fileID: 0}
   visible: 5
   angleView: 180
   ragdollEnemy: {fileID: 1317643838833452006, guid: addb0d0aa50fa0943b9818f4cc49eea2, type: 3}
   knife: KnifeAttackEnemy
+  animEnemy: {fileID: 0}
+  navmesh: {fileID: 0}
+  targetPlayer: {fileID: 0}
+  destination: {x: 0, y: 0, z: 0}
+  truePosition: {x: 0, y: 0, z: 0}
+  attacking: 0
 --- !u!1 &3158797449160480395
 GameObject:
   m_ObjectHideFlags: 0
@@ -2437,7 +2444,6 @@ PrefabInstance:
   m_ObjectHideFlags: 0
   serializedVersion: 2
   m_Modification:
-    serializedVersion: 2
     m_TransformParent: {fileID: 4025335033781715299}
     m_Modifications:
     - target: {fileID: -8679921383154817045, guid: ee53726bf37b6d449bef76472e162c97, type: 3}
@@ -2493,7 +2499,6 @@ PrefabInstance:
       value: Knife_Enemy
       objectReference: {fileID: 0}
     m_RemovedComponents: []
-    m_AddedGameObjects: []
   m_SourcePrefab: {fileID: 100100000, guid: ee53726bf37b6d449bef76472e162c97, type: 3}
 --- !u!1 &2497274551949693752 stripped
 GameObject:
