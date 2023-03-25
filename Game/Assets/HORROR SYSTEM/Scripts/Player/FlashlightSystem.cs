@@ -41,15 +41,17 @@ public class FlashlightSystem : MonoBehaviour
     public static FlashlightSystem instance;
 
 
-   /* private void Awake()
+   private void Awake()
     {
-        if (instance != null) 
+        instance = this;
+
+       /* if (instance != null) 
         { 
             Destroy(gameObject); 
         }
         else 
         { 
-            instance = this;
+           
         }
 
         if (batteryCount < 1)
@@ -59,8 +61,8 @@ public class FlashlightSystem : MonoBehaviour
         else if (batteryCount > 0)
         {
             batteryUI.enabled = true;
-        }
-    }*/
+        }*/
+    }
 
     void Start()
     {

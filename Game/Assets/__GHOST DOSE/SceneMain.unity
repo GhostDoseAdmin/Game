@@ -27551,7 +27551,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8484338993687504844, guid: a8473ea05bbe44340813dfb7fc442695, type: 3}
       propertyPath: m_IsActive
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents:
     - {fileID: 0}
@@ -31306,13 +31306,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1324682735}
-  - component: {fileID: 1324682742}
-  - component: {fileID: 1324682741}
-  - component: {fileID: 1324682740}
-  - component: {fileID: 1324682739}
-  - component: {fileID: 1324682738}
-  - component: {fileID: 1324682737}
-  - component: {fileID: 1324682736}
   m_Layer: 0
   m_Name: <PLAYER>
   m_TagString: Untagged
@@ -31339,247 +31332,6 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 4
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!70 &1324682736
-CapsuleCollider2D:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1324682734}
-  m_Enabled: 1
-  m_Density: 1
-  m_Material: {fileID: 0}
-  m_IsTrigger: 0
-  m_UsedByEffector: 0
-  m_UsedByComposite: 0
-  m_Offset: {x: 0, y: 0}
-  m_Size: {x: 0.5, y: 1}
-  m_Direction: 0
---- !u!82 &1324682737
-AudioSource:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1324682734}
-  m_Enabled: 0
-  serializedVersion: 4
-  OutputAudioMixerGroup: {fileID: 0}
-  m_audioClip: {fileID: 0}
-  m_PlayOnAwake: 1
-  m_Volume: 1
-  m_Pitch: 1
-  Loop: 0
-  Mute: 0
-  Spatialize: 0
-  SpatializePostEffects: 0
-  Priority: 128
-  DopplerLevel: 1
-  MinDistance: 1
-  MaxDistance: 500
-  Pan2D: 0
-  rolloffMode: 0
-  BypassEffects: 0
-  BypassListenerEffects: 0
-  BypassReverbZones: 0
-  rolloffCustomCurve:
-    serializedVersion: 2
-    m_Curve:
-    - serializedVersion: 3
-      time: 0
-      value: 1
-      inSlope: 0
-      outSlope: 0
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0.33333334
-      outWeight: 0.33333334
-    - serializedVersion: 3
-      time: 1
-      value: 0
-      inSlope: 0
-      outSlope: 0
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0.33333334
-      outWeight: 0.33333334
-    m_PreInfinity: 2
-    m_PostInfinity: 2
-    m_RotationOrder: 4
-  panLevelCustomCurve:
-    serializedVersion: 2
-    m_Curve:
-    - serializedVersion: 3
-      time: 0
-      value: 0
-      inSlope: 0
-      outSlope: 0
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0.33333334
-      outWeight: 0.33333334
-    m_PreInfinity: 2
-    m_PostInfinity: 2
-    m_RotationOrder: 4
-  spreadCustomCurve:
-    serializedVersion: 2
-    m_Curve:
-    - serializedVersion: 3
-      time: 0
-      value: 0
-      inSlope: 0
-      outSlope: 0
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0.33333334
-      outWeight: 0.33333334
-    m_PreInfinity: 2
-    m_PostInfinity: 2
-    m_RotationOrder: 4
-  reverbZoneMixCustomCurve:
-    serializedVersion: 2
-    m_Curve:
-    - serializedVersion: 3
-      time: 0
-      value: 1
-      inSlope: 0
-      outSlope: 0
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0.33333334
-      outWeight: 0.33333334
-    m_PreInfinity: 2
-    m_PostInfinity: 2
-    m_RotationOrder: 4
---- !u!114 &1324682738
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1324682734}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 01edfb709ec7848458e0940184f85d58, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  maxHealth: 0
-  Health: 0
-  restoringHealth: 0
-  reducedHealth: 0
-  kitCount: 1
-  replaceKitTimer: 1
-  maxReplaceKitTimer: 1
-  healthLevel: {fileID: 0}
-  kitCountUI: {fileID: 0}
-  kitIndicator: {fileID: 0}
-  bloodEffect: {fileID: 0}
-  healthPrecent: 0
-  ragdoll: {fileID: 0}
-  cameraPlayer: {fileID: 0}
-  deadPlayer: 0
-  pickUp: 
-  treatmentKit: 
---- !u!114 &1324682739
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1324682734}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 25147644c2c19074a800003e2a1724f9, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  flashlightUI: {fileID: 0}
---- !u!114 &1324682740
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1324682734}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: cb5f12d578fc95c418bf0a6d277952a1, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  bullet: {fileID: 0}
-  shootPoint: {fileID: 0}
-  targetLook: {fileID: 0}
-  distance: 0
-  force: 0
-  shootFireLifeTime: 0
-  rateOfFire: 0
-  playerController: {fileID: 0}
-  ammoCount: 1
-  ammoClipCount: 1
-  maxAmmoClipCount: 1
-  ammoCountUI: {fileID: 0}
-  "ammo\xD1lipCountUI": {fileID: 0}
-  pickUp: 
-  shootSound: 
-  reloadSound: 
-  noAmmo: 
-  muzzleFlash: {fileID: 0}
-  Shell: {fileID: 0}
---- !u!114 &1324682741
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1324682734}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 3b17d41fe919a1c4a8451006c0d69f77, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  hasKnife: 0
-  handKnife: {fileID: 0}
-  inventoryKnife: {fileID: 0}
-  hasPistol: 0
-  handPistol: {fileID: 0}
-  inventoryPistol: {fileID: 0}
-  pickUp: 
-  attackKnife: 
---- !u!114 &1324682742
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1324682734}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: e9cc0e1e829cf8b4ab739676048daf81, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  lookIKWeight: 0
-  bodyWeight: 0
-  targetPos: {fileID: 0}
-  angularSpeed: 0
-  luft: 0
-  cameraController: {fileID: 0}
-  shootPistol: {fileID: 0}
-  rightHandTarget: {fileID: 0}
-  rightHand: {fileID: 0}
-  leftHandTarget: {fileID: 0}
-  leftHand: {fileID: 0}
-  handSpeed: 0
-  is_Flashlight: 0
-  is_FlashlightAim: 0
-  is_Knife: 0
-  is_KnifeAim: 0
-  is_Pistol: 1
-  is_PistolAim: 0
-  staminaLevel: {fileID: 0}
-  restoringStamina: 0
-  reducedStamina: 0
-  getFrom: 
-  speed: 0
-  prevSpeed: 0
 --- !u!1 &1335031541
 GameObject:
   m_ObjectHideFlags: 0
@@ -38783,7 +38535,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &1604108127
 Transform:
   m_ObjectHideFlags: 0
@@ -38812,10 +38564,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   prefab: {fileID: 6353770079274734823, guid: 45691cb21e08cf84793e63dfdff840a9, type: 3}
-  xMin: -9
-  xMax: 9
-  zMin: -9
-  zMax: 9
 --- !u!1 &1606912699
 GameObject:
   m_ObjectHideFlags: 0
@@ -48211,7 +47959,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 919132147507220689}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -0.59, y: -0.26, z: -4.48}
+  m_LocalPosition: {x: -0.59, y: -0.524, z: -4.48}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -53302,8 +53050,8 @@ MonoBehaviour:
   characterRigidbody: {fileID: 0}
   characterController: {fileID: 0}
   audioSource: {fileID: 6408774824491627730}
-  minVolume: 1
-  maxVolume: 1.8
+  minVolume: 10
+  maxVolume: 10
   debugMode: 1
   groundCheckHeight: 0.5
   groundCheckRadius: 0.5
