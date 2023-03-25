@@ -27,14 +27,14 @@ public class WeaponParameters : MonoBehaviour
 
     private void Awake()
     {
-        if (instance != null)
+       /* if (instance != null)
         {
-            Destroy(gameObject);
+            //Destroy(gameObject);
         }
         else
         {
             instance = this;
-        }
+        }*/
     }
 
     void Start()
