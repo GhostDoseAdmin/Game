@@ -45,7 +45,7 @@ public class HealthSystem : MonoBehaviour
 	public static HealthSystem kitinstance;
 
 
-	/*private void Awake()
+	private void Awake()
 	{
 		if (kitinstance != null) 
 		{ 
@@ -64,7 +64,7 @@ public class HealthSystem : MonoBehaviour
 		{
 			kitIndicator.enabled = true;
 		}
-	}*/
+	}
 
 	void Start()
 	{

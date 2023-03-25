@@ -74,11 +74,12 @@ public class PlayerController : MonoBehaviour
 	private string prevEmit;
 
 
-
+	Animator Westin;
     #region Start
 
     void Start()
 	{
+		anim = GetComponent<Animator>();
         ND = GameObject.Find("NetworkDriver").GetComponent<NetworkDriver>();
         GetComponent<WeaponParameters>().EnableInventoryPistol();
 
@@ -89,8 +90,7 @@ public class PlayerController : MonoBehaviour
 		Cursor.lockState = CursorLockMode.Locked;
 		Cursor.visible = false;
 
-		//anim = this.gameObject.transform.GetChild(0).GetComponent<Animator>();
-		anim = GetComponent<Animator>();
+		Westin = GameObject.Find("WESTIN").GetComponent<Animator>();
     }
     #endregion
 
@@ -131,7 +131,7 @@ public class PlayerController : MonoBehaviour
                 action_timer = Time.time;//cooldown
 			}
 
-		//anim = Westin;
+		anim = Westin;
 
         /*AnimatorClipInfo[] clipInfo = anim.GetCurrentAnimatorClipInfo(0);
         if (clipInfo != null && clipInfo.Length > 0)
