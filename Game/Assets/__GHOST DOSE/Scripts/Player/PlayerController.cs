@@ -79,7 +79,7 @@ public class PlayerController : MonoBehaviour
 
     void Start()
 	{
-        ND = GameObject.Find("NetworkDriver").GetComponent<NetworkDriver>();
+        ND = GameObject.Find("GameController").GetComponent<NetworkDriver>();
         GetComponent<WeaponParameters>().EnableInventoryPistol();
 
 
@@ -128,7 +128,7 @@ public class PlayerController : MonoBehaviour
 
         if (Time.time > action_timer + action_delay)
             {
-                string actions = $"{{'flashlight':'{is_FlashlightAim}','aim':'{Input.GetMouseButton(1)}','walk':'{walk.ToString("F0")}','strafe':'{strafe.ToString("F0")}','run':'{Input.GetKey(InputManager.instance.running)}','x':'{transform.position.x.ToString("F2")}','y':'{transform.position.y.ToString("F2")}','z':'{transform.position.z.ToString("F2")}','speed':'{speed.ToString("F2")}','rx':'{transform.eulerAngles.x.ToString("F0")}','ry':'{transform.eulerAngles.y.ToString("F0")}','rz':'{transform.eulerAngles.z.ToString("F0")}','ax':'{crosshairPos.x.ToString("F0")}','ay':'{crosshairPos.y.ToString("F0")}','az':'{crosshairPos.z.ToString("F0")}'}}";
+                string actions = $"{{'flashlight':'{is_FlashlightAim}','flintensity':'{gameObject.GetComponent<FlashlightSystem>().FlashLight.intensity}','aim':'{Input.GetMouseButton(1)}','walk':'{walk.ToString("F0")}','strafe':'{strafe.ToString("F0")}','run':'{Input.GetKey(InputManager.instance.running)}','x':'{transform.position.x.ToString("F2")}','y':'{transform.position.y.ToString("F2")}','z':'{transform.position.z.ToString("F2")}','speed':'{speed.ToString("F2")}','rx':'{transform.eulerAngles.x.ToString("F0")}','ry':'{transform.eulerAngles.y.ToString("F0")}','rz':'{transform.eulerAngles.z.ToString("F0")}','ax':'{crosshairPos.x.ToString("F0")}','ay':'{crosshairPos.y.ToString("F0")}','az':'{crosshairPos.z.ToString("F0")}'}}";
 				if (actions != prevEmit) { ND.sioCom.Instance.Emit("player_action", JsonConvert.SerializeObject(actions), false); prevEmit = actions; }
                 action_timer = Time.time;//cooldown
 			}
@@ -282,16 +282,19 @@ public class PlayerController : MonoBehaviour
 		{
 			if (Input.GetMouseButton(1)) //AIMING
 			{
-				if (is_FlashlightAim)
+               
+                if (is_FlashlightAim)
                 {
 					anim.SetBool("Flashlight", false);
 					gameObject.GetComponent<FlashlightSystem>().handFlashlight.SetActive(false);
-					gameObject.GetComponent<FlashlightSystem>().flashlightSpot.enabled = false;
-					gameObject.GetComponent<FlashlightSystem>().flashlightSpotPistol.enabled = true;
-				}
+					gameObject.GetComponent<FlashlightSystem>().FlashLight.enabled = false;
+					gameObject.GetComponent<FlashlightSystem>().WeaponLight.enabled = true;
+					
+
+                }
 				else
                 {
-					gameObject.GetComponent<FlashlightSystem>().flashlightSpotPistol.enabled = false;
+					gameObject.GetComponent<FlashlightSystem>().WeaponLight.enabled = false;
 				}
 
 				is_PistolAim = true;
@@ -324,8 +327,8 @@ public class PlayerController : MonoBehaviour
 				{
 					anim.SetBool("Flashlight", true);
 					gameObject.GetComponent<FlashlightSystem>().handFlashlight.SetActive(true);
-					gameObject.GetComponent<FlashlightSystem>().flashlightSpot.enabled = true;
-					gameObject.GetComponent<FlashlightSystem>().flashlightSpotPistol.enabled = false;
+					gameObject.GetComponent<FlashlightSystem>().FlashLight.enabled = true;
+					gameObject.GetComponent<FlashlightSystem>().WeaponLight.enabled = false;
 				}
 			}
 			handWeight = Mathf.Lerp(handWeight, newHandWeight, Time.deltaTime * handSpeed);
@@ -353,7 +356,7 @@ public class PlayerController : MonoBehaviour
 			anim.SetBool("Flashlight", false);
 		}
 
-		if (gameObject.GetComponent<FlashlightSystem>().flashlightSpot.intensity <= 0)
+		if (gameObject.GetComponent<FlashlightSystem>().FlashLight.intensity <= 0)
         {
 			is_Flashlight = false;
 			is_FlashlightAim = false;

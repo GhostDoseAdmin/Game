@@ -9,10 +9,10 @@ public class FlashlightSystem : MonoBehaviour
     [Header("FLASHLIGHT PARAMETERS")]
     [Space(10)]
     [SerializeField] public bool hasFlashlight = false;
-    [SerializeField] public GameObject handFlashlight;
+    [HideInInspector] public GameObject handFlashlight;
     [SerializeField] public GameObject inventoryFlashlight;
-    [SerializeField] public Light flashlightSpot = null;
-    [SerializeField] public Light flashlightSpotPistol = null;
+    [HideInInspector] public Light FlashLight = null;
+    [HideInInspector] public Light WeaponLight = null;
     [SerializeField] public float maxFlashlightIntensity = 1.0f;
 
     [Header("BATTERY PARAMETERS")]
@@ -44,32 +44,42 @@ public class FlashlightSystem : MonoBehaviour
    private void Awake()
     {
         instance = this;
-
-       /* if (instance != null) 
-        { 
-            Destroy(gameObject); 
-        }
-        else 
-        { 
-           
-        }
-
-        if (batteryCount < 1)
-        {
-            batteryUI.enabled = false;
-        }
-        else if (batteryCount > 0)
-        {
-            batteryUI.enabled = true;
-        }*/
     }
+
+
+    public GameObject FindChildObject(Transform parentTransform, string name)
+    {
+        if (parentTransform.gameObject.name == name)
+        {
+            return parentTransform.gameObject;
+        }
+
+        foreach (Transform childTransform in parentTransform)
+        {
+            GameObject foundObject = FindChildObject(childTransform, name);
+            if (foundObject != null)
+            {
+                return foundObject;
+            }
+        }
+        return null;
+    }
+
+
 
     void Start()
     {
+
+        WeaponLight = FindChildObject(this.gameObject.transform, "WeaponLight").GetComponent<Light>();
+        FlashLight = FindChildObject(this.gameObject.transform, "FlashLight").GetComponent<Light>();
+        handFlashlight = FindChildObject(this.gameObject.transform, "Flashlight_Hand");
+
+        WeaponLight.enabled = false;
+        FlashLight.enabled =false;
         handFlashlight.SetActive(false);
+
         inventoryFlashlight.SetActive(false);
-        flashlightSpot.intensity = maxFlashlightIntensity;
-        flashlightSpotPistol.enabled = false;
+        FlashLight.intensity = maxFlashlightIntensity;
         batteryCountUI.text = batteryCount.ToString("0");
     }
 
@@ -100,7 +110,7 @@ public class FlashlightSystem : MonoBehaviour
         {
             if (Input.GetKeyDown(InputManager.instance.flashlightSwitch) && !showOnce)
             {
-                if (flashlightSpot.enabled == false)
+                if (FlashLight.enabled == false)
                 {
                     isFlashlightOn = true;
 
@@ -108,7 +118,7 @@ public class FlashlightSystem : MonoBehaviour
                     inventoryFlashlight.SetActive(false);
 
                     AudioManager.instance.Play(this.flashlightClick);
-                    flashlightSpot.enabled = true;
+                    FlashLight.enabled = true;
 
                 }
                 else
@@ -118,40 +128,40 @@ public class FlashlightSystem : MonoBehaviour
                     handFlashlight.SetActive(false);
                     inventoryFlashlight.SetActive(true);
                     AudioManager.instance.Play(this.flashlightClick);
-                    flashlightSpot.enabled = false;
+                    FlashLight.enabled = false;
                 }
             }
 
             if (isFlashlightOn)
             {
-                if (flashlightSpot.intensity <= maxFlashlightIntensity && flashlightSpot.intensity > 0)
+                if (FlashLight.intensity <= maxFlashlightIntensity && FlashLight.intensity > 0)
                 {
-                    flashlightSpot.intensity -= (0.007f * Time.deltaTime) * maxFlashlightIntensity;
+                    FlashLight.intensity -= (0.007f * Time.deltaTime) * maxFlashlightIntensity;
                     batteryLevel.fillAmount -= 0.007f * Time.deltaTime;
                 }
 
-                if (flashlightSpot.intensity >= maxFlashlightIntensity)
+                if (FlashLight.intensity >= maxFlashlightIntensity)
                 {
-                    flashlightSpot.intensity = maxFlashlightIntensity;
+                    FlashLight.intensity = maxFlashlightIntensity;
                 }
 
-                if (flashlightSpot.intensity <= 0)
+                if (FlashLight.intensity <= 0)
                 {
-                    flashlightSpot.intensity = 0;
+                    FlashLight.intensity = 0;
                     isFlashlightOn = false;
                 }
             }
 
-            if (flashlightSpot.enabled == false)
+            if (FlashLight.enabled == false)
             {
                 {
-                    flashlightSpot.intensity += (0.05f * Time.deltaTime) * maxFlashlightIntensity;
+                    FlashLight.intensity += (0.05f * Time.deltaTime) * maxFlashlightIntensity;
                     batteryLevel.fillAmount += 0.05f * Time.deltaTime;
                 }
 
-                if (flashlightSpot.intensity >= maxFlashlightIntensity)
+                if (FlashLight.intensity >= maxFlashlightIntensity)
                 {
-                    flashlightSpot.intensity = maxFlashlightIntensity;
+                    FlashLight.intensity = maxFlashlightIntensity;
                 }
             }
         }
@@ -159,7 +169,7 @@ public class FlashlightSystem : MonoBehaviour
 
     void ReloadBattery()
     {
-        if (Input.GetKey(InputManager.instance.reloadBattery) && batteryCount > 0 && flashlightSpot.intensity < maxFlashlightIntensity)
+        if (Input.GetKey(InputManager.instance.reloadBattery) && batteryCount > 0 && FlashLight.intensity < maxFlashlightIntensity)
         {
             shouldUpdate = false;
             replaceBatteryTimer -= Time.deltaTime;
@@ -170,7 +180,7 @@ public class FlashlightSystem : MonoBehaviour
             {
                 batteryCount--;
                 batteryCountUI.text = batteryCount.ToString("0");
-                flashlightSpot.intensity += maxFlashlightIntensity;
+                FlashLight.intensity += maxFlashlightIntensity;
                 AudioManager.instance.Play(reloadBattery);
                 batteryLevel.fillAmount = maxFlashlightIntensity;
                 replaceBatteryTimer = maxReplaceBatteryTimer;
@@ -224,7 +234,7 @@ public class FlashlightSystem : MonoBehaviour
         }
     }
 
-    void EnableFlashlight()
+    /*void EnableFlashlight()
     {
         handFlashlight.SetActive(true);
         inventoryFlashlight.SetActive(false);
@@ -240,13 +250,13 @@ public class FlashlightSystem : MonoBehaviour
     {
         AudioManager.instance.Play(this.flashlightClick);
 
-        if (flashlightSpot.enabled == false)
+        if (FlashLight.enabled == false)
         {
-            flashlightSpot.enabled = true;
+            FlashLight.enabled = true;
         }
         else
         {
-            flashlightSpot.enabled = false;
+            FlashLight.enabled = false;
         }
-    }
+    }*/
 }

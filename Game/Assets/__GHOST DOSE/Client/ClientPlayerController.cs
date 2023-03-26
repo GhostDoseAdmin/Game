@@ -93,7 +93,7 @@ public class ClientPlayerController : MonoBehaviour
     #region Start
     void Start()
 	{
-        ND = GameObject.Find("NetworkDriver").GetComponent<NetworkDriver>();
+        ND = GameObject.Find("GameController").GetComponent<NetworkDriver>();
 
         anim = GetComponent<Animator>();
 
@@ -222,12 +222,12 @@ public class ClientPlayerController : MonoBehaviour
                 {
 					anim.SetBool("Flashlight", false);
 					gameObject.GetComponent<ClientFlashlightSystem>().handFlashlight.SetActive(false);
-					gameObject.GetComponent<ClientFlashlightSystem>().flashlightSpot.enabled = false;
-					gameObject.GetComponent<ClientFlashlightSystem>().flashlightSpotPistol.enabled = true;
+					gameObject.GetComponent<ClientFlashlightSystem>().FlashLight.enabled = false;
+					gameObject.GetComponent<ClientFlashlightSystem>().WeaponLight.enabled = true;
 				}
 				else
                 {
-					gameObject.GetComponent<ClientFlashlightSystem>().flashlightSpotPistol.enabled = false;
+					gameObject.GetComponent<ClientFlashlightSystem>().WeaponLight.enabled = false;
 				}
 
 				is_PistolAim = true;
@@ -278,8 +278,8 @@ public class ClientPlayerController : MonoBehaviour
 				{
 					anim.SetBool("Flashlight", true);
 					gameObject.GetComponent<ClientFlashlightSystem>().handFlashlight.SetActive(true);
-					gameObject.GetComponent<ClientFlashlightSystem>().flashlightSpot.enabled = true;
-					gameObject.GetComponent<ClientFlashlightSystem>().flashlightSpotPistol.enabled = false;
+					gameObject.GetComponent<ClientFlashlightSystem>().FlashLight.enabled = true;
+					gameObject.GetComponent<ClientFlashlightSystem>().WeaponLight.enabled = false;
 				}
 			}
 			handWeight = Mathf.Lerp(handWeight, newHandWeight, Time.deltaTime * handSpeed);

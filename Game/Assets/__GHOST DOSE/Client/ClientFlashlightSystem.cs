@@ -11,8 +11,8 @@ public class ClientFlashlightSystem : MonoBehaviour
     [SerializeField] public bool hasFlashlight = false;
     [SerializeField] public GameObject handFlashlight;
     [SerializeField] public GameObject inventoryFlashlight;
-    [SerializeField] public Light flashlightSpot = null;
-    [SerializeField] public Light flashlightSpotPistol = null;
+    [SerializeField] public Light FlashLight = null;
+    [SerializeField] public Light WeaponLight = null;
     [SerializeField] public float maxFlashlightIntensity = 1.0f;
 
     [Header("BATTERY PARAMETERS")]
@@ -20,13 +20,6 @@ public class ClientFlashlightSystem : MonoBehaviour
     [SerializeField] public int batteryCount = 1;
     [SerializeField] private float replaceBatteryTimer = 1.0f;
     [SerializeField] private float maxReplaceBatteryTimer = 1.0f;
-
-    [Header("FLASHLIGHT UI")]
-    [Space(10)]
-    [SerializeField] private Image batteryLevel = null;
-    [SerializeField] private Image batteryUI = null;
-    [SerializeField] private Text batteryCountUI = null;
-    [SerializeField] private Image radialIndicator = null;
 
     [Header("FLASHLIGHT SOUNDS")]
     [Space(10)]
@@ -38,7 +31,9 @@ public class ClientFlashlightSystem : MonoBehaviour
     private bool showOnce = false;
     private bool isFlashlightOn;
 
+    public static FlashlightSystem FLS;
     public static ClientFlashlightSystem instance;
+
     public bool toggleFlashlight = false;
 
     private void Awake()
@@ -56,26 +51,18 @@ public class ClientFlashlightSystem : MonoBehaviour
 
     void Start()
     {
+
+
+        WeaponLight = FLS.FindChildObject(this.gameObject.transform, "WeaponLight").GetComponent<Light>();
+        FlashLight = FLS.FindChildObject(this.gameObject.transform, "FlashLight").GetComponent<Light>();
+        handFlashlight = FLS.FindChildObject(this.gameObject.transform, "Flashlight_Hand");
+
+        WeaponLight.enabled = false;
+        FlashLight.enabled = false;
         handFlashlight.SetActive(false);
+
         inventoryFlashlight.SetActive(false);
-        flashlightSpot.intensity = maxFlashlightIntensity;
-        flashlightSpotPistol.enabled = false;
-        //batteryCountUI.text = batteryCount.ToString("0");
-    }
-
-    public void EnableInventory()
-    {
-        hasFlashlight = true;
-        inventoryFlashlight.SetActive(true);
-        AudioManager.instance.Play(pickUp);
-    }
-
-    public void CollectBattery(int batteries)
-    {
-        batteryCount = batteryCount + batteries;
-        batteryCountUI.text = batteryCount.ToString("0");
-        batteryUI.enabled = true;
-        AudioManager.instance.Play(pickUp);
+        FlashLight.intensity = maxFlashlightIntensity;
     }
 
     void Update()
@@ -92,28 +79,27 @@ public class ClientFlashlightSystem : MonoBehaviour
             //Debug.Log(" HAS A FLASHLIGHT");
             if (toggleFlashlight && !showOnce)
             {
-               // Debug.Log(" FLASH LIGHT TRIGGERED ");
-                if (flashlightSpot.enabled == false)
+
+                if (FlashLight.enabled == false)
                 {
-                    //Debug.Log(" CLIENT FLASH LIGHT IS ON ");
                     isFlashlightOn = true;
 
                     handFlashlight.SetActive(true);
                     inventoryFlashlight.SetActive(false);
 
                     AudioManager.instance.Play(this.flashlightClick);
-                    flashlightSpot.enabled = true;
+                    FlashLight.enabled = true;
                    // GameObject.Find("ClientSpot_Light_Flashlight").GetComponent<Light>().enabled = true;
 
                 }
                 else
                 {
                     isFlashlightOn = false;
-                    Debug.Log(" CLIENT FLASH LIGHT IS OFF ");
+                    //Debug.Log(" CLIENT FLASH LIGHT IS OFF ");
                     handFlashlight.SetActive(false);
                     inventoryFlashlight.SetActive(true);
                     AudioManager.instance.Play(this.flashlightClick);
-                    flashlightSpot.enabled = false;
+                    FlashLight.enabled = false;
                     //GameObject.Find("ClientSpot_Light_Flashlight").GetComponent<Light>().enabled = true;
                 }
                 toggleFlashlight = false;
@@ -121,20 +107,20 @@ public class ClientFlashlightSystem : MonoBehaviour
 
             if (isFlashlightOn)
             {
-                if (flashlightSpot.intensity <= maxFlashlightIntensity && flashlightSpot.intensity > 0)
+                /*if (FlashLight.intensity <= maxFlashlightIntensity && FlashLight.intensity > 0)
                 {
-                    flashlightSpot.intensity -= (0.007f * Time.deltaTime) * maxFlashlightIntensity;
+                    FlashLight.intensity -= (0.007f * Time.deltaTime) * maxFlashlightIntensity;
                     //batteryLevel.fillAmount -= 0.007f * Time.deltaTime;
-                }
+                }*/
 
-                if (flashlightSpot.intensity >= maxFlashlightIntensity)
+               /* if (FlashLight.intensity >= maxFlashlightIntensity)
                 {
-                    flashlightSpot.intensity = maxFlashlightIntensity;
-                }
+                    FlashLight.intensity = maxFlashlightIntensity;
+                }*/
 
-                if (flashlightSpot.intensity <= 0)
+                if (FlashLight.intensity <= 0)
                 {
-                    flashlightSpot.intensity = 0;
+                    FlashLight.intensity = 0;
                     isFlashlightOn = false;
                 }
             }
@@ -156,7 +142,7 @@ public class ClientFlashlightSystem : MonoBehaviour
 
     void ReloadBattery()
     {
-        if (Input.GetKey(InputManager.instance.reloadBattery) && batteryCount > 0 && flashlightSpot.intensity < maxFlashlightIntensity)
+        /*if (Input.GetKey(InputManager.instance.reloadBattery) && batteryCount > 0 && flashlightSpot.intensity < maxFlashlightIntensity)
         {
             shouldUpdate = false;
             replaceBatteryTimer -= Time.deltaTime;
@@ -204,9 +190,9 @@ public class ClientFlashlightSystem : MonoBehaviour
                     shouldUpdate = false;
                 }
             }
-        }
+        }*/
 
-        if (Input.GetKeyUp(InputManager.instance.reloadBattery))
+        /*if (Input.GetKeyUp(InputManager.instance.reloadBattery))
         {
             shouldUpdate = true;
 
@@ -218,10 +204,10 @@ public class ClientFlashlightSystem : MonoBehaviour
             {
                 gameObject.GetComponent<ClientPlayerController>().is_FlashlightAim = false;
             }
-        }
+        }*/
     }
 
-    void EnableFlashlight()
+   /* void EnableFlashlight()
     {
         handFlashlight.SetActive(true);
         inventoryFlashlight.SetActive(false);
@@ -237,13 +223,14 @@ public class ClientFlashlightSystem : MonoBehaviour
     {
         AudioManager.instance.Play(this.flashlightClick);
 
-        if (flashlightSpot.enabled == false)
+        if (FlashLight.enabled == false)
         {
-            flashlightSpot.enabled = true;
+            FlashLight.enabled = true;
         }
         else
         {
-            flashlightSpot.enabled = false;
+            FlashLight.enabled = false;
         }
     }
+   */
 }

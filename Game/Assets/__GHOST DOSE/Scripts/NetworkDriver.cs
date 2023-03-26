@@ -141,6 +141,7 @@ public class NetworkDriver : MonoBehaviour
             clientController.destination = new Vector3(float.Parse(dict["x"]), float.Parse(dict["y"]), float.Parse(dict["z"]));
             clientController.speed = float.Parse(dict["speed"]);
             clientController.aim = bool.Parse(dict["aim"]);
+            clientController.gameObject.GetComponent<ClientFlashlightSystem>().FlashLight.intensity = float.Parse(dict["flintensity"]);
             //clientController.aim = bool.Parse(dict["dead"]);
             if ((bool.Parse(dict["flashlight"]) && !clientController.is_FlashlightAim)   || (!bool.Parse(dict["flashlight"]) && clientController.is_FlashlightAim)    ) {clientController.toggleFlashlight = true;}
 

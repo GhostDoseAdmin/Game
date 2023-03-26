@@ -58,7 +58,7 @@ public class NPCController : MonoBehaviour
 
     void Start()
     {
-        ND = GameObject.Find("NetworkDriver").GetComponent<NetworkDriver>();
+        ND = GameObject.Find("GameController").GetComponent<NetworkDriver>();
         Player = GameObject.Find("Player");
         Client = GameObject.Find("Client");
 
