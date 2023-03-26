@@ -7,10 +7,12 @@ using UnityEngine.Experimental.GlobalIllumination;
 public class Reveal : MonoBehaviour
 {
     private SkinnedMeshRenderer renderer;
-    [SerializeField] Light SpotLight1;
-    [SerializeField] Light SpotLight2;
+    Material[] materials;
+    [SerializeField] Light PlayerLight;
+    [SerializeField] Light ClientLight;
     private int materialIndex = 0;
     private string newMaterialName = "Copy";
+    private float maxDistance = 10;
 
     public void Start()
     {
@@ -35,7 +37,7 @@ public class Reveal : MonoBehaviour
             {
                 Material newMaterial = new Material(material);
                 newMaterial.name = newMaterialName;
-                Material[] materials = renderer.sharedMaterials;
+                materials = renderer.sharedMaterials;
                 Array.Resize(ref materials, materials.Length + 1);
                 materials[materials.Length - 1] = newMaterial;
                 renderer.sharedMaterials = materials;
@@ -45,16 +47,22 @@ public class Reveal : MonoBehaviour
 
     void Update()
     {
-        renderer = GetComponent<SkinnedMeshRenderer>();
         Material[] materials = renderer.sharedMaterials;
 
-        materials[0].SetVector("_LightPosition", SpotLight1.transform.position);
-        materials[0].SetVector("_LightDirection", -SpotLight1.transform.forward);
-        materials[0].SetFloat("_LightAngle", SpotLight1.spotAngle);
+       
+        materials[0].SetVector("_LightPosition", PlayerLight.transform.position);
+        materials[0].SetVector("_LightDirection", -PlayerLight.transform.forward);
+        materials[0].SetFloat("_LightAngle", PlayerLight.spotAngle);
+        if (!PlayerLight.isActiveAndEnabled) { materials[0].SetFloat("_MaxDistance", 0); }
+        else { materials[0].SetFloat("_MaxDistance", maxDistance); }
 
-        materials[1].SetVector("_LightPosition", SpotLight2.transform.position);
-        materials[1].SetVector("_LightDirection", -SpotLight2.transform.forward);
-        materials[1].SetFloat("_LightAngle", SpotLight2.spotAngle);
+        materials[1].SetVector("_LightPosition", ClientLight.transform.position);
+        materials[1].SetVector("_LightDirection", -ClientLight.transform.forward);
+        materials[1].SetFloat("_LightAngle", ClientLight.spotAngle);
+        materials[1].SetFloat("_MaxDistance", 10);
+        if (!ClientLight.isActiveAndEnabled) { materials[1].SetFloat("_MaxDistance", 0); }
+        else { materials[1].SetFloat("_MaxDistance", maxDistance); }
+
     }
 
 
