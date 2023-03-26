@@ -3,7 +3,7 @@ using System;
 using UnityEngine;
 using UnityEngine.Experimental.GlobalIllumination;
 
-[ExecuteInEditMode]
+//[ExecuteInEditMode]
 public class Reveal : MonoBehaviour
 {
     private SkinnedMeshRenderer renderer;
