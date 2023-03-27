@@ -44,6 +44,20 @@ public class FlashlightSystem : MonoBehaviour
    private void Awake()
     {
         instance = this;
+
+        WeaponLight = FindChildObject(this.gameObject.transform, "WeaponLight").GetComponent<Light>();
+        FlashLight = FindChildObject(this.gameObject.transform, "FlashLight").GetComponent<Light>();
+        handFlashlight = FindChildObject(this.gameObject.transform, "Flashlight_Hand");
+
+        WeaponLight.enabled = false;
+        FlashLight.enabled = false;
+        handFlashlight.SetActive(false);
+
+        inventoryFlashlight.SetActive(false);
+        FlashLight.intensity = maxFlashlightIntensity;
+        batteryCountUI.text = batteryCount.ToString("0");
+
+        Debug.Log("LIGHTS SET");
     }
 
 
@@ -70,17 +84,7 @@ public class FlashlightSystem : MonoBehaviour
     void Start()
     {
 
-        WeaponLight = FindChildObject(this.gameObject.transform, "WeaponLight").GetComponent<Light>();
-        FlashLight = FindChildObject(this.gameObject.transform, "FlashLight").GetComponent<Light>();
-        handFlashlight = FindChildObject(this.gameObject.transform, "Flashlight_Hand");
 
-        WeaponLight.enabled = false;
-        FlashLight.enabled =false;
-        handFlashlight.SetActive(false);
-
-        inventoryFlashlight.SetActive(false);
-        FlashLight.intensity = maxFlashlightIntensity;
-        batteryCountUI.text = batteryCount.ToString("0");
     }
 
     public void EnableInventory()
@@ -234,29 +238,4 @@ public class FlashlightSystem : MonoBehaviour
         }
     }
 
-    /*void EnableFlashlight()
-    {
-        handFlashlight.SetActive(true);
-        inventoryFlashlight.SetActive(false);
-    }
-
-    void DisableFlashlight()
-    {
-        handFlashlight.SetActive(false);
-        inventoryFlashlight.SetActive(true);
-    }
-
-    void FlashlightClickSound()
-    {
-        AudioManager.instance.Play(this.flashlightClick);
-
-        if (FlashLight.enabled == false)
-        {
-            FlashLight.enabled = true;
-        }
-        else
-        {
-            FlashLight.enabled = false;
-        }
-    }*/
 }

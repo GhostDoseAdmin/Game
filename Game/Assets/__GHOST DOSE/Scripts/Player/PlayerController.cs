@@ -128,7 +128,9 @@ public class PlayerController : MonoBehaviour
 
         if (Time.time > action_timer + action_delay)
             {
-                string actions = $"{{'flashlight':'{is_FlashlightAim}','flintensity':'{gameObject.GetComponent<FlashlightSystem>().FlashLight.intensity}','aim':'{Input.GetMouseButton(1)}','walk':'{walk.ToString("F0")}','strafe':'{strafe.ToString("F0")}','run':'{Input.GetKey(InputManager.instance.running)}','x':'{transform.position.x.ToString("F2")}','y':'{transform.position.y.ToString("F2")}','z':'{transform.position.z.ToString("F2")}','speed':'{speed.ToString("F2")}','rx':'{transform.eulerAngles.x.ToString("F0")}','ry':'{transform.eulerAngles.y.ToString("F0")}','rz':'{transform.eulerAngles.z.ToString("F0")}','ax':'{crosshairPos.x.ToString("F0")}','ay':'{crosshairPos.y.ToString("F0")}','az':'{crosshairPos.z.ToString("F0")}'}}";
+			bool flashlighton = false;
+			if (gameObject.GetComponent<FlashlightSystem>().FlashLight.enabled || gameObject.GetComponent<FlashlightSystem>().WeaponLight.enabled) { flashlighton = true; }
+                string actions = $"{{'flashlight':'{flashlighton}','flintensity':'{gameObject.GetComponent<FlashlightSystem>().FlashLight.intensity}','aim':'{Input.GetMouseButton(1)}','walk':'{walk.ToString("F0")}','strafe':'{strafe.ToString("F0")}','run':'{Input.GetKey(InputManager.instance.running)}','x':'{transform.position.x.ToString("F2")}','y':'{transform.position.y.ToString("F2")}','z':'{transform.position.z.ToString("F2")}','speed':'{speed.ToString("F2")}','rx':'{transform.eulerAngles.x.ToString("F0")}','ry':'{transform.eulerAngles.y.ToString("F0")}','rz':'{transform.eulerAngles.z.ToString("F0")}','ax':'{crosshairPos.x.ToString("F0")}','ay':'{crosshairPos.y.ToString("F0")}','az':'{crosshairPos.z.ToString("F0")}'}}";
 				if (actions != prevEmit) { ND.sioCom.Instance.Emit("player_action", JsonConvert.SerializeObject(actions), false); prevEmit = actions; }
                 action_timer = Time.time;//cooldown
 			}
@@ -282,7 +284,7 @@ public class PlayerController : MonoBehaviour
 		{
 			if (Input.GetMouseButton(1)) //AIMING
 			{
-               
+				
                 if (is_FlashlightAim)
                 {
 					anim.SetBool("Flashlight", false);
@@ -301,6 +303,7 @@ public class PlayerController : MonoBehaviour
 				anim.SetBool("Pistol", true);
 				newHandWeight = 1f;
 				canShoot = true;
+
 
                 //shoot
                 //if (Input.GetMouseButton(0))
