@@ -26,13 +26,10 @@ public class NetworkDriver : MonoBehaviour
     Vector3 PlayerStart;
     
     
-    public void Setup()
+    public void NetworkSetup()
     {
-
         //=================================================================  S E T  U P  ===============================================================
         GD = gameObject.GetComponent<GameDriver>();
-       
-
 
         //-----------------CONNECT TO SERVER----------------->
         sioCom = GetComponent<SocketIOCommunicator>();
@@ -55,7 +52,7 @@ public class NetworkDriver : MonoBehaviour
                 sioCom.Instance.Close();
                 yield return new WaitForSeconds(1f); //refresh socket
                 Debug.Log("attempting connection ");
-                sioCom.Instance.Connect();
+                sioCom.Instance.Connect("https://twrecks.io:8080",true);
                 yield return new WaitForSeconds(1f);
             }
         }
@@ -130,6 +127,14 @@ public class NetworkDriver : MonoBehaviour
             //GetComponent<LobbyControl>().BroSelector();
 
         });
+        //-----------------READY----------------->
+        sioCom.Instance.On("start", (payload) =>
+        {
+            Debug.Log(" RECEIVED start " + payload);
+            GetComponent<LobbyControl>().startOther = bool.Parse(payload.ToString());
+            //GetComponent<LobbyControl>().BroSelector();
+        });
+
         //=================================================================E N D   S E T   U P ===============================================================
 
 

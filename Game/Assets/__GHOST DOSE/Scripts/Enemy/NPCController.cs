@@ -85,7 +85,7 @@ public class NPCController : MonoBehaviour
             actions = $"{{{target} {destination} {attacking}'}}";
             if (actions != prevActions) //actions change
             {
-                Debug.LogWarning(attacking);
+                //Debug.LogWarning(attacking);
 
                 
                 //if (Time.time > attack_emit_timer + attack_emit_delay)//prevent sending 2 msgs at once

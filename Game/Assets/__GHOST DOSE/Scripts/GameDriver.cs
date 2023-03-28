@@ -1,11 +1,12 @@
 using System.Collections;
 using System.Collections.Generic;
+using UnityEditor.SceneManagement;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
 public class GameDriver : MonoBehaviour
 {
-    public bool TRAVIS;//which character is the player playing
+    public bool TRAVIS = true;//which character is the player playing
     [HideInInspector] public GameObject Player;
     [HideInInspector] public GameObject Client;
     public string ROOM;
@@ -27,40 +28,46 @@ public class GameDriver : MonoBehaviour
         else { Destroy(gameObject); }
 
         //PREEMPTIVE START - FOR TESTING
-        if (SceneManager.GetActiveScene().name != "Lobby")
+        if (SceneManager.GetActiveScene().name != "Lobby" && !GetComponent<LobbyControl>().start)
         {
             SetupScene();
-            GetComponent<NetworkDriver>().Setup();
+            GetComponent<NetworkDriver>().NetworkSetup();
             GAMESTART = true;
         }
-    }
-    //SYSTEM CONSOLE
-    void OnGUI()
-    {
-        GUIStyle style = new GUIStyle();
-        style.fontSize = 20;
-        style.normal.textColor = Color.white;
-        Vector2 textSize = style.CalcSize(new GUIContent(MSG));
-        float posX = Screen.width / 2f; 
-        float posY = Screen.height / 2f;
-        if (SceneManager.GetActiveScene().name == "Lobby") {
-            posY += 100;
-        }
-        else{
-            posX = textSize.x/2f; posY = textSize.y;
-        }
-        Rect labelRect = new Rect(posX - (textSize.x / 2f), posY - (textSize.y / 2f), textSize.x, textSize.y);
-        GUI.Label(labelRect, MSG, style);
-    }
-    // Update is called once per frame
-    void Update()
-    {
-        
+
+       
     }
 
-    private void SetupScene()
+    public void Start()
+    {
+        SceneManager.sceneLoaded += OnSceneLoaded;
+    }
+
+    public GameObject duplicateObject;
+    // Called when a new scene is loaded
+    private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
+    {
+        // Check if the duplicate object is present in the scene
+        /*GameObject[] objects = scene.GetRootGameObjects();
+        foreach (GameObject obj in objects)
+        {
+            if (obj.name == "GameController" && obj != gameObject)
+            {
+                // Destroy the duplicate object before it becomes active
+                DestroyImmediate(obj);
+            }
+        }
+        */
+        GetComponent<LobbyControl>().enabled = false;
+        SetupScene();
+        Debug.Log("OnSceneLoad");
+    }
+
+
+    public void SetupScene()
     {
         {
+            Debug.Log("SCENE SETUP");
             //DISABLE MODELS
             if (!TRAVIS) { 
                 GameObject.Find("TRAVIS").SetActive(false);
@@ -87,5 +94,29 @@ public class GameDriver : MonoBehaviour
             GAMESTART = true;
 
         }
+    }
+
+
+
+
+    //----------------SYSTEM CONSOLE-------------------------
+    void OnGUI()
+    {
+        GUIStyle style = new GUIStyle();
+        style.fontSize = 20;
+        style.normal.textColor = Color.white;
+        Vector2 textSize = style.CalcSize(new GUIContent(MSG));
+        float posX = Screen.width / 2f;
+        float posY = Screen.height / 2f;
+        if (SceneManager.GetActiveScene().name == "Lobby")
+        {
+            posY += 100;
+        }
+        else
+        {
+            posX = textSize.x / 2f; posY = textSize.y;
+        }
+        Rect labelRect = new Rect(posX - (textSize.x / 2f), posY - (textSize.y / 2f), textSize.x, textSize.y);
+        GUI.Label(labelRect, MSG, style);
     }
 }
