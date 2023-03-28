@@ -2,7 +2,7 @@ using UnityEngine.SceneManagement;
 using UnityEngine;
 using System.Collections;
 using System;
-using UnityEditor.SearchService;
+
 
 public class LobbyControl : MonoBehaviour
 {
@@ -132,17 +132,6 @@ public class LobbyControl : MonoBehaviour
         if (selectedBro == "WESTIN") { GetComponent<GameDriver>().TRAVIS = false; }
         SceneManager.LoadScene("SceneMain");
         
-        /*Debug.Log("ASYNC SCENE");
-        UnityEngine.SceneManagement.Scene activeScene = SceneManager.GetActiveScene();
-        GameObject[] objects = activeScene.GetRootGameObjects();
-        foreach (GameObject obj in objects)
-        {
-            if (obj.name == "GameController" && obj != gameObject)
-            {
-                // Destroy the duplicate object before it becomes active
-                DestroyImmediate(obj);
-            }
-        }*/
     }
 
 

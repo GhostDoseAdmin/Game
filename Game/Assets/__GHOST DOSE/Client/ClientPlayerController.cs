@@ -98,7 +98,7 @@ public class ClientPlayerController : MonoBehaviour
     #region Start
     void Start()
 	{
-        ND = GameObject.Find("GameController").GetComponent<NetworkDriver>();
+        ND = GameObject.Find("GameController").GetComponent<GameDriver>().ND;
 
         anim = GetComponent<Animator>();
 

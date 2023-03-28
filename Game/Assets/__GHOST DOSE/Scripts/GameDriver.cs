@@ -1,6 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
-using UnityEditor.SceneManagement;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -16,22 +13,32 @@ public class GameDriver : MonoBehaviour
     public bool twoPlayer = false;
 
     public static GameDriver instance;
+    public NetworkDriver ND;
 
     // Start is called before the first frame update
     void Awake()
     {
+
         MSG = "Welcome to GhostDose";
         ROOM = "room";
 
+
         //ONLY ONE CAN EXIST
         if (instance == null) { instance = this; DontDestroyOnLoad(gameObject); }
-        else { Destroy(gameObject); }
+        else { Debug.Log("IM DYING"); DestroyImmediate(gameObject); }
 
-        //PREEMPTIVE START - FOR TESTING
+
+        ND = this.gameObject.AddComponent<NetworkDriver>();
+
+
+        //NON LOBBY INSTANCE
         if (SceneManager.GetActiveScene().name != "Lobby" && !GetComponent<LobbyControl>().start)
         {
+            Debug.Log("PRE EMPTIVE CALL");
+            GetComponent<LobbyControl>().enabled = false;
+            ND = this.gameObject.AddComponent<NetworkDriver>();
+            ND.NetworkSetup();
             SetupScene();
-            GetComponent<NetworkDriver>().NetworkSetup();
             GAMESTART = true;
         }
 
@@ -47,17 +54,6 @@ public class GameDriver : MonoBehaviour
     // Called when a new scene is loaded
     private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
     {
-        // Check if the duplicate object is present in the scene
-        /*GameObject[] objects = scene.GetRootGameObjects();
-        foreach (GameObject obj in objects)
-        {
-            if (obj.name == "GameController" && obj != gameObject)
-            {
-                // Destroy the duplicate object before it becomes active
-                DestroyImmediate(obj);
-            }
-        }
-        */
         GetComponent<LobbyControl>().enabled = false;
         SetupScene();
         Debug.Log("OnSceneLoad");

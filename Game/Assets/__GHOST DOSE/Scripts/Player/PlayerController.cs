@@ -79,7 +79,7 @@ public class PlayerController : MonoBehaviour
 
     void Start()
 	{
-        ND = GameObject.Find("GameController").GetComponent<NetworkDriver>();
+        ND = GameObject.Find("GameController").GetComponent<GameDriver>().ND;
         GetComponent<WeaponParameters>().EnableInventoryPistol();
 
 

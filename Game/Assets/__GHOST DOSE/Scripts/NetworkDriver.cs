@@ -24,12 +24,17 @@ public class NetworkDriver : MonoBehaviour
 
     Vector3 clientStart;
     Vector3 PlayerStart;
-    
-    
+
+
+
     public void NetworkSetup()
     {
         //=================================================================  S E T  U P  ===============================================================
         GD = gameObject.GetComponent<GameDriver>();
+
+
+       sioCom = gameObject.AddComponent<SocketIOCommunicator>();
+       sioCom.secureConnection = true;
 
         //-----------------CONNECT TO SERVER----------------->
         sioCom = GetComponent<SocketIOCommunicator>();
