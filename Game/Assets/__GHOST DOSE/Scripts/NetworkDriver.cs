@@ -14,7 +14,7 @@ public class NetworkDriver : MonoBehaviour
     private float sync_timer = 0.0f;
     private float delay = 15f;//SYNC DELAY
 
-    public bool HOST = false;
+    public bool HOST;
     public bool connected = false;
     private float pingTimer = 0.0f;
     private float PING = 0.0f;
@@ -120,14 +120,15 @@ public class NetworkDriver : MonoBehaviour
         sioCom.Instance.On("host", (payload) =>
         {
             GD.MSG = "Two Player Mode";
-            Debug.Log("HOST DETERMINED " + payload);
+            //Debug.Log("HOST DETERMINED " + payload);
            if (payload.ToString() == sioCom.Instance.SocketID) { HOST = true; }
             
         });
         //-----------------CHOOSE BRO----------------->
         sioCom.Instance.On("bro", (payload) =>
         {
-            Debug.Log(" RECEIVED BRO " + payload);
+            GD.MSG = "Other Player Selected " + payload.ToString();
+            //Debug.Log(" RECEIVED BRO " + payload);
             GetComponent<LobbyControl>().otherBro = payload.ToString();
             //GetComponent<LobbyControl>().BroSelector();
 
@@ -135,7 +136,8 @@ public class NetworkDriver : MonoBehaviour
         //-----------------READY----------------->
         sioCom.Instance.On("start", (payload) =>
         {
-            Debug.Log(" RECEIVED start " + payload);
+            GD.MSG = "Other Player is Ready ";
+            //Debug.Log(" RECEIVED start " + payload);
             GetComponent<LobbyControl>().startOther = bool.Parse(payload.ToString());
             //GetComponent<LobbyControl>().BroSelector();
         });
@@ -151,6 +153,7 @@ public class NetworkDriver : MonoBehaviour
         {
             if (GD.GAMESTART)
             {
+                GD.MSG = "";
                 JObject data = JObject.Parse(payload);
                 //Debug.Log("PLAYER ACTION" + data);
                 Dictionary<string, string> dict = data.ToObject<Dictionary<string, string>>();
@@ -206,7 +209,7 @@ public class NetworkDriver : MonoBehaviour
         });
 
         //-----------------JUMP ----------------->
-        sioCom.Instance.On("JUPM", (payload) =>
+        sioCom.Instance.On("JUMP", (payload) =>
         {
             JObject data = JObject.Parse(payload);
             Debug.Log("RECEIVING JUMP " + data);

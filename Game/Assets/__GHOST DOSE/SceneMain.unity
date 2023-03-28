@@ -13816,7 +13816,7 @@ Light:
   serializedVersion: 10
   m_Type: 0
   m_Shape: 0
-  m_Color: {r: 0.15881987, g: 0.7830189, b: 0.16715755, a: 1}
+  m_Color: {r: 0.75, g: 1, b: 0.7546875, a: 1}
   m_Intensity: 2
   m_Range: 20
   m_SpotAngle: 45
@@ -25657,6 +25657,11 @@ Transform:
   m_Father: {fileID: 387816961}
   m_RootOrder: 3
   m_LocalEulerAnglesHint: {x: 0, y: -90, z: 0}
+--- !u!1 &664011622 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 2497274552679678970, guid: 32b911980278cc34e9ff5cbaf531fe13, type: 3}
+  m_PrefabInstance: {fileID: 3344327519390521842}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &690093608
 GameObject:
   m_ObjectHideFlags: 0
@@ -26186,7 +26191,7 @@ Light:
   serializedVersion: 10
   m_Type: 0
   m_Shape: 0
-  m_Color: {r: 1, g: 0.95686275, b: 0.8352941, a: 1}
+  m_Color: {r: 1, g: 0.78426373, b: 0.7783019, a: 1}
   m_Intensity: 2
   m_Range: 20
   m_SpotAngle: 45
@@ -37388,7 +37393,7 @@ Light:
   serializedVersion: 10
   m_Type: 0
   m_Shape: 0
-  m_Color: {r: 1, g: 0.95488197, b: 0.8349056, a: 1}
+  m_Color: {r: 1, g: 0.83855337, b: 0.8352941, a: 1}
   m_Intensity: 2
   m_Range: 20
   m_SpotAngle: 40
@@ -38555,7 +38560,7 @@ Light:
   serializedVersion: 10
   m_Type: 0
   m_Shape: 0
-  m_Color: {r: 1, g: 0.95488197, b: 0.8349056, a: 1}
+  m_Color: {r: 0.8352941, g: 1, b: 0.83678865, a: 1}
   m_Intensity: 2
   m_Range: 20
   m_SpotAngle: 40
@@ -49832,6 +49837,30 @@ PrefabInstance:
       propertyPath: crosshair
       value: 
       objectReference: {fileID: 1619438138}
+    - target: {fileID: 752902073928897433, guid: a5eec31c7d27d2449ac6389707a21908, type: 3}
+      propertyPath: m_Color.b
+      value: 0.7130442
+      objectReference: {fileID: 0}
+    - target: {fileID: 752902073928897433, guid: a5eec31c7d27d2449ac6389707a21908, type: 3}
+      propertyPath: m_Color.g
+      value: 0.6986472
+      objectReference: {fileID: 0}
+    - target: {fileID: 752902073928897433, guid: a5eec31c7d27d2449ac6389707a21908, type: 3}
+      propertyPath: m_Color.r
+      value: 0.9433962
+      objectReference: {fileID: 0}
+    - target: {fileID: 752902073959083493, guid: a5eec31c7d27d2449ac6389707a21908, type: 3}
+      propertyPath: m_Color.b
+      value: 0.6179246
+      objectReference: {fileID: 0}
+    - target: {fileID: 752902073959083493, guid: a5eec31c7d27d2449ac6389707a21908, type: 3}
+      propertyPath: m_Color.g
+      value: 0.6216274
+      objectReference: {fileID: 0}
+    - target: {fileID: 752902073959083493, guid: a5eec31c7d27d2449ac6389707a21908, type: 3}
+      propertyPath: m_Color.r
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 5945405498589890057, guid: a5eec31c7d27d2449ac6389707a21908, type: 3}
       propertyPath: batteryUI
       value: 
@@ -50201,6 +50230,14 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 4064168208931720106, guid: a635d842b268cd644bd244bf9a301bc9, type: 3}
+      propertyPath: prefab
+      value: 
+      objectReference: {fileID: 664011622}
+    - target: {fileID: 4064168208931720106, guid: a635d842b268cd644bd244bf9a301bc9, type: 3}
+      propertyPath: m_Enabled
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 7086521903310356791, guid: a635d842b268cd644bd244bf9a301bc9, type: 3}
       propertyPath: m_Enabled
       value: 1
@@ -50252,6 +50289,14 @@ PrefabInstance:
     - target: {fileID: 7086521903310356811, guid: a635d842b268cd644bd244bf9a301bc9, type: 3}
       propertyPath: m_Name
       value: GameController
+      objectReference: {fileID: 0}
+    - target: {fileID: 7086521903310356823, guid: a635d842b268cd644bd244bf9a301bc9, type: 3}
+      propertyPath: TRAVIS
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7086521903310356823, guid: a635d842b268cd644bd244bf9a301bc9, type: 3}
+      propertyPath: FORCE_HOST
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: a635d842b268cd644bd244bf9a301bc9, type: 3}
@@ -53462,6 +53507,18 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 7418651112561857491, guid: f0913f7497ca31f4aa4cf9ccbdf2ecd2, type: 3}
+      propertyPath: m_Color.b
+      value: 0.84472364
+      objectReference: {fileID: 0}
+    - target: {fileID: 7418651112561857491, guid: f0913f7497ca31f4aa4cf9ccbdf2ecd2, type: 3}
+      propertyPath: m_Color.g
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7418651112561857491, guid: f0913f7497ca31f4aa4cf9ccbdf2ecd2, type: 3}
+      propertyPath: m_Color.r
+      value: 0.8352941
+      objectReference: {fileID: 0}
     - target: {fileID: 7418651112905497756, guid: f0913f7497ca31f4aa4cf9ccbdf2ecd2, type: 3}
       propertyPath: m_RootOrder
       value: 5
@@ -53522,6 +53579,30 @@ PrefabInstance:
       propertyPath: kitCountUI
       value: 
       objectReference: {fileID: 1611068429}
+    - target: {fileID: 7418651113424814414, guid: f0913f7497ca31f4aa4cf9ccbdf2ecd2, type: 3}
+      propertyPath: bloodEffect
+      value: 
+      objectReference: {fileID: 1276014123}
+    - target: {fileID: 7418651113424814414, guid: f0913f7497ca31f4aa4cf9ccbdf2ecd2, type: 3}
+      propertyPath: healthLevel
+      value: 
+      objectReference: {fileID: 658111604}
+    - target: {fileID: 7418651113424814414, guid: f0913f7497ca31f4aa4cf9ccbdf2ecd2, type: 3}
+      propertyPath: kitIndicator
+      value: 
+      objectReference: {fileID: 244506457}
+    - target: {fileID: 7418651113907241515, guid: f0913f7497ca31f4aa4cf9ccbdf2ecd2, type: 3}
+      propertyPath: m_Color.b
+      value: 0.72691625
+      objectReference: {fileID: 0}
+    - target: {fileID: 7418651113907241515, guid: f0913f7497ca31f4aa4cf9ccbdf2ecd2, type: 3}
+      propertyPath: m_Color.g
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7418651113907241515, guid: f0913f7497ca31f4aa4cf9ccbdf2ecd2, type: 3}
+      propertyPath: m_Color.r
+      value: 0.7216981
+      objectReference: {fileID: 0}
     - target: {fileID: 7418651114247907113, guid: f0913f7497ca31f4aa4cf9ccbdf2ecd2, type: 3}
       propertyPath: crosshair
       value: 

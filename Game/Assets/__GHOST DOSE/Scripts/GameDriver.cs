@@ -6,14 +6,15 @@ public class GameDriver : MonoBehaviour
     public bool TRAVIS = true;//which character is the player playing
     [HideInInspector] public GameObject Player;
     [HideInInspector] public GameObject Client;
-    public string ROOM;
-    public bool ROOM_VALID;//they joined valid room
-    public string MSG = "";
+    [HideInInspector] public string ROOM;
+    [HideInInspector] public bool ROOM_VALID;//they joined valid room
+    [HideInInspector] public string MSG = "";
     public bool GAMESTART = false;
     public bool twoPlayer = false;
+    public bool FORCE_HOST;
 
     public static GameDriver instance;
-    public NetworkDriver ND;
+    [HideInInspector] public NetworkDriver ND;
 
     // Start is called before the first frame update
     void Awake()
@@ -30,17 +31,16 @@ public class GameDriver : MonoBehaviour
 
         ND = this.gameObject.AddComponent<NetworkDriver>();
 
-
         //NON LOBBY INSTANCE
         if (SceneManager.GetActiveScene().name != "Lobby" && !GetComponent<LobbyControl>().start)
         {
             Debug.Log("PRE EMPTIVE CALL");
             GetComponent<LobbyControl>().enabled = false;
-            ND = this.gameObject.AddComponent<NetworkDriver>();
             ND.NetworkSetup();
             SetupScene();
             GAMESTART = true;
         }
+
 
        
     }
@@ -48,6 +48,7 @@ public class GameDriver : MonoBehaviour
     public void Start()
     {
         SceneManager.sceneLoaded += OnSceneLoaded;
+        if (FORCE_HOST) { ND.HOST = true; }
     }
 
     public GameObject duplicateObject;

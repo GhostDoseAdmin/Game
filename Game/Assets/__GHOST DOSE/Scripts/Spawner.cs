@@ -13,7 +13,7 @@ public class Spawner : MonoBehaviour
     {
         // Call SpawnPrefab() method every 5 seconds
         InvokeRepeating("SpawnPrefab", 0f, 5f);
-        ND = GameObject.Find("NetworkDriver").GetComponent<NetworkDriver>();
+        ND = GameObject.Find("GameController").GetComponent<GameDriver>().ND;
     }
 
     void SpawnPrefab()

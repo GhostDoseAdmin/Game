@@ -12,10 +12,10 @@ public class LobbyControl : MonoBehaviour
     private GameObject TRAVIS;
     private GameObject startButton;
     private string MSG;
-    public bool READY = false; 
+    [HideInInspector] public bool READY = false; 
     private bool chooseBro = false;
-    public bool start = false;
-    public bool startOther = false; //receives 1 for ready 2 go
+    [HideInInspector] public bool start = false;
+    [HideInInspector] public bool startOther = false; //receives 1 for ready 2 go
 
     public string selectedBro ="";
     public string otherBro ="";

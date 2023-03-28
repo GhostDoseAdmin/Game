@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: 7086521903310356810}
   - component: {fileID: 7086521903310356823}
   - component: {fileID: 7086521903310356791}
+  - component: {fileID: 4064168208931720106}
   m_Layer: 0
   m_Name: GameController
   m_TagString: Untagged
@@ -53,6 +54,8 @@ MonoBehaviour:
   MSG: 
   GAMESTART: 0
   twoPlayer: 0
+  FORCE_HOST: 0
+  ND: {fileID: 0}
   duplicateObject: {fileID: 7086521903310356811}
 --- !u!114 &7086521903310356791
 MonoBehaviour:
@@ -71,3 +74,16 @@ MonoBehaviour:
   startOther: 0
   selectedBro: 
   otherBro: 
+--- !u!114 &4064168208931720106
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7086521903310356811}
+  m_Enabled: 0
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 946188278a36d294e8bc97cab3d3c386, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  prefab: {fileID: 2049129976229121859, guid: def4f5f80c57fb543a980a334bb2679d, type: 3}
