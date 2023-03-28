@@ -9,8 +9,8 @@ public class ReadInput : MonoBehaviour
 {
     public TMP_InputField inputField;
 
-    private void Update()
+    /*private void Update()
     {
         Debug.Log("Input field text: " + inputField.text);
-    }
+    }*/
 }

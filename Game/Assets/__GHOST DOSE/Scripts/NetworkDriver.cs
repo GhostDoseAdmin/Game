@@ -1,14 +1,10 @@
 using Firesplash.UnityAssets.SocketIO;
 using System.Collections;
 using System.Collections.Generic;
-using UnityEngine.SceneManagement;
 using UnityEngine;
-using UnityEngine.UI;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
-using System.Net.NetworkInformation;
-using UnityEngine.UIElements;
-using UnityEngine.AI;
+
 
 
 public class NetworkDriver : MonoBehaviour
@@ -19,26 +15,24 @@ public class NetworkDriver : MonoBehaviour
     private float delay = 15f;//SYNC DELAY
 
     public bool HOST = false;
-    private bool connected = false;
+    public bool connected = false;
     private float pingTimer = 0.0f;
     private float PING = 0.0f;
 
-    private GameObject Client; //the player on ur local game that ISNT you
+    private GameDriver GD;
     private ClientPlayerController clientController;
-    private GameObject Player;
-    public bool twoPlayer = false;
 
     Vector3 clientStart;
     Vector3 PlayerStart;
-    void Start()
+    
+    
+    public void Setup()
     {
 
         //=================================================================  S E T  U P  ===============================================================
-        Client = GameObject.Find("Client");
-        clientController = Client.GetComponent<ClientPlayerController>();
-        Player = GameObject.Find("Player");
-        clientStart = Client.transform.position;
-        PlayerStart = Player.transform.position;
+        GD = gameObject.GetComponent<GameDriver>();
+       
+
 
         //-----------------CONNECT TO SERVER----------------->
         sioCom = GetComponent<SocketIOCommunicator>();
@@ -48,14 +42,16 @@ public class NetworkDriver : MonoBehaviour
             if (payload != null)
             {
                 connected = true;
-                Debug.Log(payload + " CONNECTING TO ROOM " + PlayerPrefs.GetString("room"));
-                sioCom.Instance.Emit("join", "room2", true); //PlayerPrefs.GetString("room")
+                GD.MSG = "Checking Room " + GD.ROOM;
+                //Debug.Log(payload + " CONNECTING TO ROOM " + PlayerPrefs.GetString("room"));
+                sioCom.Instance.Emit("join", GD.ROOM, true); //PlayerPrefs.GetString("room")
             }
         });
         IEnumerator connectSIO()//--------CONNECT HELPER--------->
         {
             while (!connected)
             {
+                GD.MSG = "Attempting to connect to Ghost Servers";
                 sioCom.Instance.Close();
                 yield return new WaitForSeconds(1f); //refresh socket
                 Debug.Log("attempting connection ");
@@ -67,21 +63,29 @@ public class NetworkDriver : MonoBehaviour
         //-----------------JOIN ROOM----------------->
         sioCom.Instance.On("join", (payload) =>
         {
+            GD.ROOM_VALID = false;
             Debug.Log(payload);
-            if (payload == "full"){SceneManager.LoadScene("Lobby");}
+            if (payload == "full"){
+                GD.MSG = "Room is full!";
+                sioCom.Instance.Close();
+            }
             else
             {
+                GD.ROOM_VALID = true;
+                GD.MSG = "Found Room " + GD.ROOM;
                 var dict = new Dictionary<string, string> {
                     { "sid", sioCom.Instance.SocketID },
                     { "ping", PING.ToString() }
                 };
-                if (PING == 0) { pingTimer = Time.time; sioCom.Instance.Emit("ping", JsonConvert.SerializeObject(dict), false); Debug.Log("PINGING"); }
+                if (PING == 0) { pingTimer = Time.time; sioCom.Instance.Emit("ping", JsonConvert.SerializeObject(dict), false); Debug.Log("PINGING"); 
+                }
             }
         });
 
         //-----------------PING----------------->
         sioCom.Instance.On("pong", (payload) =>
         {
+            GD.MSG = "Looking For Players - you may start alone";
             Debug.Log("PONG RECEIVED " + payload);
             if (PING == 0) { PING = Time.time - pingTimer; Debug.Log("MY PING IS " + PING); }
             JObject data = JObject.Parse(payload);
@@ -91,11 +95,9 @@ public class NetworkDriver : MonoBehaviour
                 Debug.Log("THEIR PING IS " + dict["ping"]);
                 if (float.Parse(dict["ping"]) == 0) //THEY JUST JOINED
                 {
+                    GD.MSG = "Player Joined";
                     Debug.Log("PLAYER JOINED SENDING MY PING SPEED TO OTHER PLAYER");
-                    twoPlayer = true;
-                    Client.transform.position = new Vector3(0f, 50f, 0f);
-                    Player.transform.position = clientStart;
-                    Client.transform.position = PlayerStart;
+                    GD.twoPlayer = true;
 
                     dict = new Dictionary<string, string> {
                         { "sid", sioCom.Instance.SocketID },
@@ -105,7 +107,7 @@ public class NetworkDriver : MonoBehaviour
                 }
                 else//they were in room first
                 {
-                    twoPlayer = true;
+                    GD.twoPlayer = true;
                     // COMPARE PING VALUES
                     if (float.Parse(dict["ping"]) > PING) { Debug.Log("IM HOST"); sioCom.Instance.Emit("host", sioCom.Instance.SocketID, true); }
                     else { Debug.Log("THEYRE HOST"); sioCom.Instance.Emit("host", dict["sid"], true); }
@@ -115,41 +117,52 @@ public class NetworkDriver : MonoBehaviour
         //-----------------HOST / GAME START----------------->
         sioCom.Instance.On("host", (payload) =>
         {
+            GD.MSG = "Two Player Mode";
             Debug.Log("HOST DETERMINED " + payload);
-           // if (payload.ToString() == sioCom.Instance.SocketID) { HOST = true; }
+           if (payload.ToString() == sioCom.Instance.SocketID) { HOST = true; }
             
         });
+        //-----------------CHOOSE BRO----------------->
+        sioCom.Instance.On("bro", (payload) =>
+        {
+            Debug.Log(" RECEIVED BRO " + payload);
+            GetComponent<LobbyControl>().otherBro = payload.ToString();
+            //GetComponent<LobbyControl>().BroSelector();
 
-//=================================================================E N D   S E T   U P ===============================================================
-        
-        
-        
-        
-        
+        });
+        //=================================================================E N D   S E T   U P ===============================================================
+
+
+
+
+
         //-----------------PLAYER ACTION ----------------->
         sioCom.Instance.On("player_action", (payload) =>
         {
-            JObject data = JObject.Parse(payload);
-           //Debug.Log("PLAYER ACTION" + data);
-            Dictionary<string, string> dict = data.ToObject<Dictionary<string, string>>();
-            //Client.GetComponent<ClientPlayerController>().animation = dict["animation"];
-            clientController.targWalk = float.Parse(dict["walk"]);
-            clientController.targStrafe = float.Parse(dict["strafe"]);
-            clientController.running = bool.Parse(dict["run"]);
-            clientController.targetRotation = new Vector3(float.Parse(dict["rx"]), float.Parse(dict["ry"]), float.Parse(dict["rz"]));
-            clientController.targetPos.position = new Vector3(float.Parse(dict["ax"]), float.Parse(dict["ay"]), float.Parse(dict["az"]));
-            clientController.destination = new Vector3(float.Parse(dict["x"]), float.Parse(dict["y"]), float.Parse(dict["z"]));
-            clientController.speed = float.Parse(dict["speed"]);
-            clientController.aim = bool.Parse(dict["aim"]);
-            clientController.gameObject.GetComponent<ClientFlashlightSystem>().FlashLight.intensity = float.Parse(dict["flintensity"]);
-            clientController.Flashlight(bool.Parse(dict["flashlight"]));
+            if (GD.GAMESTART)
+            {
+                JObject data = JObject.Parse(payload);
+                //Debug.Log("PLAYER ACTION" + data);
+                Dictionary<string, string> dict = data.ToObject<Dictionary<string, string>>();
+                //Client.GetComponent<ClientPlayerController>().animation = dict["animation"];
+                GD.Client.GetComponent<ClientPlayerController>().targWalk = float.Parse(dict["walk"]);
+                GD.Client.GetComponent<ClientPlayerController>().targStrafe = float.Parse(dict["strafe"]);
+                GD.Client.GetComponent<ClientPlayerController>().running = bool.Parse(dict["run"]);
+                GD.Client.GetComponent<ClientPlayerController>().targetRotation = new Vector3(float.Parse(dict["rx"]), float.Parse(dict["ry"]), float.Parse(dict["rz"]));
+                GD.Client.GetComponent<ClientPlayerController>().targetPos.position = new Vector3(float.Parse(dict["ax"]), float.Parse(dict["ay"]), float.Parse(dict["az"]));
+                GD.Client.GetComponent<ClientPlayerController>().destination = new Vector3(float.Parse(dict["x"]), float.Parse(dict["y"]), float.Parse(dict["z"]));
+                GD.Client.GetComponent<ClientPlayerController>().speed = float.Parse(dict["speed"]);
+                GD.Client.GetComponent<ClientPlayerController>().aim = bool.Parse(dict["aim"]);
+                GD.Client.GetComponent<ClientPlayerController>().gameObject.GetComponent<ClientFlashlightSystem>().FlashLight.intensity = float.Parse(dict["flintensity"]);
+                GD.Client.GetComponent<ClientPlayerController>().Flashlight(bool.Parse(dict["flashlight"]));
+            }
 
         });
         //-----------------SHOOT  ----------------->
         sioCom.Instance.On("shoot", (payload) =>
         {
             Debug.Log("RECEIVING SHOOT ");
-            clientController.triggerShoot =true;
+            GD.Client.GetComponent<ClientPlayerController>().triggerShoot =true;
         });
 
         //-----------------ENEMY  ----------------->
@@ -166,8 +179,8 @@ public class NetworkDriver : MonoBehaviour
 
                 string target = dict["target"];
                 if (target.Length <= 1) { enemy.GetComponent<NPCController>().target = null; }
-                else if (target.Contains("Player")) { enemy.GetComponent<NPCController>().target = Client.transform; }
-                else if (target.Contains("Client")) { enemy.GetComponent<NPCController>().target = Player.transform; }
+                else if (target.Contains("Player")) { enemy.GetComponent<NPCController>().target = GD.Client.transform; }
+                else if (target.Contains("Client")) { enemy.GetComponent<NPCController>().target = GD.Player.transform; }
                 enemy.transform.position = new Vector3(float.Parse(dict["x"]), float.Parse(dict["y"]), float.Parse(dict["z"]));
                 //if (enemy.GetComponent<NPCController>().target != null) { enemy.transform.position = ((enemy.GetComponent<NPCController>().target.position - enemy.transform.position).normalized) * 0.25f; }
                 enemy.GetComponent<NPCController>().destination = new Vector3(float.Parse(dict["dx"]), float.Parse(dict["dy"]), float.Parse(dict["dz"]));

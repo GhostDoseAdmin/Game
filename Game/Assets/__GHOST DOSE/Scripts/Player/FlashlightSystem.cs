@@ -48,6 +48,7 @@ public class FlashlightSystem : MonoBehaviour
         WeaponLight = FindChildObject(this.gameObject.transform, "WeaponLight").GetComponent<Light>();
         FlashLight = FindChildObject(this.gameObject.transform, "FlashLight").GetComponent<Light>();
         handFlashlight = FindChildObject(this.gameObject.transform, "Flashlight_Hand");
+        inventoryFlashlight = FindChildObject(this.gameObject.transform, "Flashlight_Inventory");
 
         WeaponLight.enabled = false;
         FlashLight.enabled = false;

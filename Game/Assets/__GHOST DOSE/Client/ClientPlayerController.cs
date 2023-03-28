@@ -112,7 +112,7 @@ public class ClientPlayerController : MonoBehaviour
 
     private void FixedUpdate()
     {
-		if (!ND.twoPlayer){ return; }
+		if (!ND.gameObject.GetComponent<GameDriver>().twoPlayer){ return; }
 
 		//------------------------------------- M A I N ---------------------------------------------------
         targetPosVec = Vector3.Lerp(targetPosVec, targetPos.position, 0.1f);
