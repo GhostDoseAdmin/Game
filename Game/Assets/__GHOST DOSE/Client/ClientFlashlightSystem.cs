@@ -33,12 +33,22 @@ public class ClientFlashlightSystem : MonoBehaviour
 
         instance = this;
 
+    }
+
+ 
+    public void setupLightRefs()
+    {
         util = new utilities();
 
         WeaponLight = util.FindChildObject(this.gameObject.transform, "WeaponLight").GetComponent<Light>();
         FlashLight = util.FindChildObject(this.gameObject.transform, "FlashLight").GetComponent<Light>();
         handFlashlight = util.FindChildObject(this.gameObject.transform, "Flashlight_Hand");
         inventoryFlashlight = util.FindChildObject(this.gameObject.transform, "Flashlight_Inventory");
+        Debug.Log("Client Lights Setup");
+    }
+
+    public void Start()
+    {
 
         WeaponLight.enabled = false;
         FlashLight.enabled = false;
@@ -46,11 +56,7 @@ public class ClientFlashlightSystem : MonoBehaviour
 
         inventoryFlashlight.SetActive(false);
         FlashLight.intensity = maxFlashlightIntensity;
-
-        Debug.Log("CLIENT LIGHTING SET");
     }
-
- 
     public void Flashlight()
     {
                 if (FlashLight.enabled == false)

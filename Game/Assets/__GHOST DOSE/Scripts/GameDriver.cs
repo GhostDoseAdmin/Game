@@ -4,8 +4,8 @@ using UnityEngine.SceneManagement;
 public class GameDriver : MonoBehaviour
 {
     public bool TRAVIS = true;//which character is the player playing
-    [HideInInspector] public GameObject Player;
-    [HideInInspector] public GameObject Client;
+    public GameObject Player;
+    public GameObject Client;
     public string ROOM;
     public bool ROOM_VALID;//they joined valid room
     public string MSG = "";
@@ -15,7 +15,12 @@ public class GameDriver : MonoBehaviour
     public static GameDriver instance;
     public NetworkDriver ND;
 
-    // Start is called before the first frame update
+    //GHOST EFFECT LIGHT REFS
+    public Light PlayerWeapLight;
+    public Light PlayerFlashLight;
+    public Light ClientWeapLight;
+    public Light ClientFlashLight;
+
     void Awake()
     {
 
@@ -36,10 +41,9 @@ public class GameDriver : MonoBehaviour
         {
             Debug.Log("PRE EMPTIVE CALL");
             GetComponent<LobbyControl>().enabled = false;
-            ND = this.gameObject.AddComponent<NetworkDriver>();
+            //ND = this.gameObject.AddComponent<NetworkDriver>();
             ND.NetworkSetup();
             SetupScene();
-            GAMESTART = true;
         }
 
        
@@ -50,8 +54,6 @@ public class GameDriver : MonoBehaviour
         SceneManager.sceneLoaded += OnSceneLoaded;
     }
 
-    public GameObject duplicateObject;
-    // Called when a new scene is loaded
     private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
     {
         GetComponent<LobbyControl>().enabled = false;
@@ -63,19 +65,37 @@ public class GameDriver : MonoBehaviour
     public void SetupScene()
     {
         {
-            Debug.Log("SCENE SETUP");
+
+            Debug.Log("SETTING UP SCENE");
+            Client = GameObject.Find("Client");
+           
+           
             //DISABLE MODELS
-            if (!TRAVIS) { 
+            if (!TRAVIS) { //PLAYING WESTIN
+                Instantiate(GameObject.Find("TRAVIS").transform.GetChild(0).transform.GetChild(0).gameObject, Client.transform); //gets TRAVIS rig and copys as client
                 GameObject.Find("TRAVIS").SetActive(false);
-                GameObject.Find("CLIENTWES").SetActive(false);
+                
             }
-            else { 
+            else {  //PLAYING TRAVIS
+                Instantiate(GameObject.Find("WESTIN").transform.GetChild(0).transform.GetChild(0).gameObject, Client.transform); //gets WESTIN rig and copys as client
                 GameObject.Find("WESTIN").SetActive(false);
-                GameObject.Find("CLIENTTRAV").SetActive(false);
             }
 
             Player = GameObject.Find("Player");
-            Client = GameObject.Find("Client");
+
+            //Setup flashlights 
+            Player.GetComponent<FlashlightSystem>().setupLightRefs();//find lights on heiarchy and create a ref to them
+            Client.GetComponent<ClientFlashlightSystem>().setupLightRefs();
+            //store light refs for ghost fx - this must happen before start where we disable lights
+            PlayerWeapLight = Player.GetComponent<FlashlightSystem>().WeaponLight; 
+            PlayerFlashLight = Player.GetComponent<FlashlightSystem>().FlashLight;
+            ClientWeapLight = Client.GetComponent<ClientFlashlightSystem>().WeaponLight;
+            ClientFlashLight = Client.GetComponent<ClientFlashlightSystem>().FlashLight;
+
+            //----CLEAR ANIMATOR CACHE---
+            Client.SetActive(false);
+            Client.SetActive(true);
+
 
             Vector3 clientStart = Client.transform.position;
             Vector3 playerStart = Player.transform.position;

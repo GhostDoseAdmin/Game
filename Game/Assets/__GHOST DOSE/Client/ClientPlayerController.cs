@@ -95,17 +95,22 @@ public class ClientPlayerController : MonoBehaviour
 
     private void Awake()
     {
+
+    }
+
+    #region Start
+    void Start()
+	{
         util = new utilities();
 
         rightHandTarget = util.FindChildObject(this.gameObject.transform, "RHTarget").transform;
         rightHand = util.FindChildObject(this.gameObject.transform, "mixamorig:RightHand").transform;
         leftHandTarget = util.FindChildObject(this.gameObject.transform, "LHTarget").transform;
         leftHand = util.FindChildObject(this.gameObject.transform, "mixamorig:LeftHand").transform;
-    }
+        shootPoint = util.FindChildObject(this.gameObject.transform, "ShootPoint").transform;
+        muzzleFlash = util.FindChildObject(this.gameObject.transform, "MuzzleFlashEffect").GetComponent<ParticleSystem>();
+        Shell = util.FindChildObject(this.gameObject.transform, "Puff").GetComponent<ParticleSystem>();
 
-    #region Start
-    void Start()
-	{
         ND = GameObject.Find("GameController").GetComponent<GameDriver>().ND;
 
         anim = GetComponent<Animator>();

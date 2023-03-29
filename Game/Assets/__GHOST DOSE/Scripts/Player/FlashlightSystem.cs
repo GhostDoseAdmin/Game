@@ -44,13 +44,23 @@ public class FlashlightSystem : MonoBehaviour
     private void Awake()
     {
         instance = this;
+    }
 
+    public void setupLightRefs()
+    {
         util = new utilities();
 
         WeaponLight = util.FindChildObject(this.gameObject.transform, "WeaponLight").GetComponent<Light>();
         FlashLight = util.FindChildObject(this.gameObject.transform, "FlashLight").GetComponent<Light>();
         handFlashlight = util.FindChildObject(this.gameObject.transform, "Flashlight_Hand");
         inventoryFlashlight = util.FindChildObject(this.gameObject.transform, "Flashlight_Inventory");
+        Debug.Log("Player Lights Setup");
+
+    }
+
+
+    void Start()
+    {
 
         WeaponLight.enabled = false;
         FlashLight.enabled = false;
@@ -59,16 +69,6 @@ public class FlashlightSystem : MonoBehaviour
         inventoryFlashlight.SetActive(false);
         FlashLight.intensity = maxFlashlightIntensity;
         batteryCountUI.text = batteryCount.ToString("0");
-
-        Debug.Log("LIGHTS SET");
-    }
-
-
-
-    void Start()
-    {
-
-
     }
 
     public void EnableInventory()

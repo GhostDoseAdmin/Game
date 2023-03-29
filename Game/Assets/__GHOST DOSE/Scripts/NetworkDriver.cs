@@ -20,18 +20,14 @@ public class NetworkDriver : MonoBehaviour
     private float PING = 0.0f;
 
     private GameDriver GD;
-    private ClientPlayerController clientController;
-
-    Vector3 clientStart;
-    Vector3 PlayerStart;
-
-
 
     public void NetworkSetup()
     {
         //=================================================================  S E T  U P  ===============================================================
-        GD = gameObject.GetComponent<GameDriver>();
 
+        Debug.Log("SETTING UP NETWORK");
+
+        GD = GetComponent<GameDriver>();
 
        sioCom = gameObject.AddComponent<SocketIOCommunicator>();
        sioCom.secureConnection = true;
@@ -152,7 +148,7 @@ public class NetworkDriver : MonoBehaviour
             if (GD.GAMESTART)
             {
                 JObject data = JObject.Parse(payload);
-                //Debug.Log("PLAYER ACTION" + data);
+                Debug.Log("PLAYER ACTION" + data);
                 Dictionary<string, string> dict = data.ToObject<Dictionary<string, string>>();
                 //Client.GetComponent<ClientPlayerController>().animation = dict["animation"];
                 GD.Client.GetComponent<ClientPlayerController>().targWalk = float.Parse(dict["walk"]);
