@@ -57,6 +57,8 @@ public class ShootingSystem : MonoBehaviour
         util = new utilities();
 
         shootPoint = util.FindChildObject(this.gameObject.transform, "ShootPoint").transform;
+        muzzleFlash = util.FindChildObject(this.gameObject.transform, "MuzzleFlashEffect").GetComponent<ParticleSystem>();
+        Shell = util.FindChildObject(this.gameObject.transform, "Puff").GetComponent<ParticleSystem>();
     }
 
 
