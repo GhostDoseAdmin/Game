@@ -15,8 +15,8 @@ public class WeaponParameters : MonoBehaviour
     [Header("PISTOL PARAMETERS")]
     [Space(10)]
     [SerializeField] public bool hasPistol = false;
-    [SerializeField] public GameObject handPistol;
-    [SerializeField] public GameObject inventoryPistol;
+    [SerializeField] public GameObject weapHand;
+    [SerializeField] public GameObject inventoryWeap;
 
     [Header("KNIFE SOUNDS")]
     [Space(10)]
@@ -24,28 +24,33 @@ public class WeaponParameters : MonoBehaviour
     [SerializeField] private string attackKnife;
 
     public static WeaponParameters instance;
-
+    private static utilities util;
+    
     private void Awake()
     {
-        /* if (instance != null)
-         {
-             //Destroy(gameObject);
-         }
-         else
-         {
-             instance = this;
-         }*/
-        instance = this;
+
+        //handKnife = util.FindChildObject(this.gameObject.transform, "Knife_Hand");
+        //inventoryKnife = util.FindChildObject(this.gameObject.transform, "Knife_Inventory");
+        //weapHand = util.FindChildObject(this.gameObject.transform, "WeapHand");
+        //inventoryWeap = util.FindChildObject(this.gameObject.transform, "WeapInventory");
     }
+
 
     void Start()
     {
+        util = new utilities();
+
+        handKnife = util.FindChildObject(this.gameObject.transform, "Knife_Hand");
+        inventoryKnife = util.FindChildObject(this.gameObject.transform, "Knife_Inventory");
+        weapHand = util.FindChildObject(this.gameObject.transform, "WeapHand");
+        inventoryWeap = util.FindChildObject(this.gameObject.transform, "WeapInventory");
+
         handKnife.SetActive(false);
         inventoryKnife.SetActive(false);
         handKnife.GetComponent<Collider>().enabled = false;
 
-        handPistol.SetActive(true);
-        inventoryPistol.SetActive(false);
+        weapHand.SetActive(true);
+        inventoryWeap.SetActive(false);
     }
 
     public void EnableInventoryKnife()
@@ -58,7 +63,7 @@ public class WeaponParameters : MonoBehaviour
     public void EnableInventoryPistol()
     {
         hasPistol = true;
-        inventoryPistol.SetActive(true);
+        inventoryWeap.SetActive(true);
         AudioManager.instance.Play(pickUp);
     }
 
@@ -92,13 +97,13 @@ public class WeaponParameters : MonoBehaviour
     #region Pistol
     void EnablePistol()
     {
-        handPistol.SetActive(true);
-        inventoryPistol.SetActive(false);
+        weapHand.SetActive(true);
+        inventoryWeap.SetActive(false);
     }
     void DisablePistol()
     {
-        handPistol.SetActive(false);
-        inventoryPistol.SetActive(true);
+        weapHand.SetActive(false);
+        inventoryWeap.SetActive(true);
     }
     #endregion
 }

@@ -50,17 +50,17 @@ public class ShootingSystem : MonoBehaviour
 
     public static ShootingSystem instance;
 
-    /*private void Awake()
+    private static utilities util;
+
+    private void Awake()
     {
-        if (instance != null)
-        {
-            Destroy(gameObject);
-        }
-        else
-        {
-            instance = this;
-        }
-    }*/
+        util = new utilities();
+
+        shootPoint = util.FindChildObject(this.gameObject.transform, "ShootPoint").transform;
+        muzzleFlash = util.FindChildObject(this.gameObject.transform, "MuzzleFlashEffect").GetComponent<ParticleSystem>();
+        Shell = util.FindChildObject(this.gameObject.transform, "Puff").GetComponent<ParticleSystem>();
+    }
+
 
     void Start()
     {

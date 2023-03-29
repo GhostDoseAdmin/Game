@@ -19,12 +19,12 @@ public class ClientPlayerController : MonoBehaviour
 
     [Header("HAND PARAMETRS")]
 	[Space(10)]
-	public Transform rightHandTarget;
-	public Transform rightHand;
+    [HideInInspector] public Transform rightHandTarget;
+    [HideInInspector] public Transform rightHand;
 	Transform[] rightHandTrans;
 
-	public Transform leftHandTarget;
-	public Transform leftHand;
+    [HideInInspector] public Transform leftHandTarget;
+    [HideInInspector] public Transform leftHand;
 	Transform[] leftHandTrans;
 
 	float handWeight;
@@ -91,9 +91,17 @@ public class ClientPlayerController : MonoBehaviour
     public Transform shootPoint;
 	public bool flashlighton =false;
 
+	private static utilities util;
 
+    private void Awake()
+    {
+        util = new utilities();
 
-
+        rightHandTarget = util.FindChildObject(this.gameObject.transform, "RHTarget").transform;
+        rightHand = util.FindChildObject(this.gameObject.transform, "mixamorig:RightHand").transform;
+        leftHandTarget = util.FindChildObject(this.gameObject.transform, "LHTarget").transform;
+        leftHand = util.FindChildObject(this.gameObject.transform, "mixamorig:LeftHand").transform;
+    }
 
     #region Start
     void Start()

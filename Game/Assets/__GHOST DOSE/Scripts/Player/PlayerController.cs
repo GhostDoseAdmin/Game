@@ -20,12 +20,12 @@ public class PlayerController : MonoBehaviour
 
 	[Header("HAND PARAMETRS")]
 	[Space(10)]
-	public Transform rightHandTarget;
-	public Transform rightHand;
+	[HideInInspector] public Transform rightHandTarget;
+   public Transform rightHand;
 	Transform[] rightHandTrans;
 
-	public Transform leftHandTarget;
-	public Transform leftHand;
+    [HideInInspector] public Transform leftHandTarget;
+   public Transform leftHand;
 	Transform[] leftHandTrans;
 
 	float handWeight;
@@ -73,7 +73,17 @@ public class PlayerController : MonoBehaviour
 	public float prevSpeed;
 	private string prevEmit;
 
+	private static utilities util;
 
+    private void Awake()
+    {
+        util = new utilities();
+
+        rightHandTarget = util.FindChildObject(this.gameObject.transform, "RHTarget").transform;
+        rightHand = util.FindChildObject(this.gameObject.transform, "mixamorig:RightHand").transform;
+        leftHandTarget = util.FindChildObject(this.gameObject.transform, "LHTarget").transform;
+        leftHand = util.FindChildObject(this.gameObject.transform, "mixamorig:LeftHand").transform;
+    }
 
     #region Start
 
@@ -89,9 +99,6 @@ public class PlayerController : MonoBehaviour
 		Cursor.lockState = CursorLockMode.Locked;
 		Cursor.visible = false;
 
-        //anim = this.gameObject.transform.GetChild(0).GetComponent<Animator>();
-        //Transform childTransform = transform.Find("WESTIN");
-        //anim = childTransform.GetComponent<Animator>();
         anim = GetComponent<Animator>();
     }
     #endregion
@@ -421,4 +428,8 @@ public class PlayerController : MonoBehaviour
 	{
 		AudioManager.instance.Play(getFrom);
 	}
+
+
+
 }
+
