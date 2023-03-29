@@ -33,16 +33,18 @@ public class ReplaceReferences : EditorWindow
                 return;
             }
 
-            ReplaceComponentReferences(parentObject.transform, firstChild.transform, secondChild.transform);
+            ReplaceComponentReferences(parentObject, firstChild, secondChild);
 
             Debug.Log("References replaced successfully.");
         }
     }
 
-    void ReplaceComponentReferences(Transform parentTransform, Transform firstChildTransform, Transform secondChildTransform)
+    void ReplaceComponentReferences(GameObject parentObject, GameObject firstChild, GameObject secondChild)
     {
-        // Loop through all the components on the parent object
-        Component[] components = parentTransform.GetComponents<Component>();
+        // Get all components on the parent object
+        Component[] components = parentObject.GetComponents<Component>();
+
+        // Loop through each component and its serialized properties
         foreach (Component component in components)
         {
             SerializedObject serializedObject = new SerializedObject(component);
@@ -52,23 +54,70 @@ public class ReplaceReferences : EditorWindow
             {
                 if (serializedProperty.propertyType == SerializedPropertyType.ObjectReference)
                 {
-                    // Check if the object reference points to the first child object
                     Object objectRef = serializedProperty.objectReferenceValue;
-                    if (objectRef != null && objectRef.Equals(firstChildTransform.gameObject))
+
+                    // Check if the object reference points to the first child object or any of its descendants
+                    if (objectRef != null && IsDescendantOf(objectRef, firstChild))
                     {
-                        // Replace the object reference with the second child object
-                        serializedProperty.objectReferenceValue = secondChildTransform.gameObject;
-                        serializedObject.ApplyModifiedProperties();
+                        // Traverse the hierarchy of the first child object and find the corresponding object in the second child object
+                        GameObject firstChildObject = (objectRef as Component).gameObject;
+                        GameObject secondChildObject = FindEquivalentObject(firstChildObject, firstChild, secondChild);
+
+                        if (secondChildObject != null)
+                        {
+                            // Replace the object reference with a reference to the corresponding object in the second child object
+                            serializedProperty.objectReferenceValue = secondChildObject;
+                            serializedObject.ApplyModifiedProperties();
+                        }
                     }
                 }
             }
         }
+    }
 
-        // Recursively call this function on all the children of the parent object
-        for (int i = 0; i < parentTransform.childCount; i++)
+    bool IsDescendantOf(Object objectRef, GameObject parent)
+    {
+        // Check if the object reference is a child or descendant of the specified parent object
+        Transform transform = (objectRef as Component)?.transform;
+
+        while (transform != null)
         {
-            Transform childTransform = parentTransform.GetChild(i);
-            ReplaceComponentReferences(childTransform, firstChildTransform, secondChildTransform);
+            if (transform.gameObject == parent)
+            {
+                return true;
+            }
+
+            transform = transform.parent;
         }
+
+        return false;
+    }
+
+    GameObject FindEquivalentObject(GameObject firstChildObject, GameObject firstChild, GameObject secondChild)
+    {
+        // Traverse the hierarchy of the first child object and find the corresponding object in the second child object
+        Transform transform = firstChildObject.transform;
+        GameObject secondChildObject = secondChild;
+
+        while (transform != firstChild.transform && transform != null)
+        {
+            Transform childTransform = transform.parent.Find(transform.name);
+
+            if (childTransform == null)
+            {
+                return null;
+            }
+
+            secondChildObject = secondChildObject.transform.Find(childTransform.name)?.gameObject;
+
+
+            if (secondChildObject == null)
+            {
+                return null;
+            }
+            transform = childTransform;
+        }
+
+        return secondChildObject;
     }
 }
