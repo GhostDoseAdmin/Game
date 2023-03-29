@@ -36,8 +36,8 @@ public class CopySkeletonObjects : EditorWindow
             }
 
             //UPACK
-            PrefabUtility.UnpackPrefabInstance(originSkeletonRoot.transform.root.gameObject, PrefabUnpackMode.Completely, InteractionMode.AutomatedAction);
-            PrefabUtility.UnpackPrefabInstance(destSkeletonRoot.transform.root.gameObject, PrefabUnpackMode.Completely, InteractionMode.AutomatedAction);
+            //PrefabUtility.UnpackPrefabInstance(originSkeletonRoot.transform.root.gameObject, PrefabUnpackMode.Completely, InteractionMode.AutomatedAction);
+            //PrefabUtility.UnpackPrefabInstance(destSkeletonRoot.transform.root.gameObject, PrefabUnpackMode.Completely, InteractionMode.AutomatedAction);
 
             //newBody = destSkeletonRoot.transform.root.gameObject;//travisBones
             //player = originSkeletonRoot.transform.root.gameObject.transform.GetChild(0).gameObject;
