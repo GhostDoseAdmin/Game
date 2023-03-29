@@ -108,7 +108,7 @@ public class ReplaceReferences : EditorWindow
                 return null;
             }
 
-            secondChildObject = secondChildObject.transform.Find(childTransform.name)?.gameObject;
+            secondChildObject = secondChild.transform.Find(childTransform.name)?.gameObject;
 
 
             if (secondChildObject == null)
