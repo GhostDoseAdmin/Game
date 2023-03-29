@@ -11,8 +11,8 @@ public class FlashlightSystem : MonoBehaviour
     [SerializeField] public bool hasFlashlight = false;
     [HideInInspector] public GameObject handFlashlight;
     [SerializeField] public GameObject inventoryFlashlight;
-    [HideInInspector] public Light FlashLight = null;
-    [HideInInspector] public Light WeaponLight = null;
+    public Light FlashLight = null;
+     public Light WeaponLight = null;
     [SerializeField] public float maxFlashlightIntensity = 1.0f;
 
     [Header("BATTERY PARAMETERS")]
