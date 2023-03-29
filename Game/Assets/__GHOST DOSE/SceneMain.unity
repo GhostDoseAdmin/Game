@@ -35070,7 +35070,7 @@ Transform:
   m_Children:
   - {fileID: 1894484757}
   m_Father: {fileID: 0}
-  m_RootOrder: 5
+  m_RootOrder: 6
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &1098436273
 PrefabInstance:
@@ -50325,6 +50325,10 @@ PrefabInstance:
     - target: {fileID: 7086521903310356811, guid: a635d842b268cd644bd244bf9a301bc9, type: 3}
       propertyPath: m_Name
       value: GameController
+      objectReference: {fileID: 0}
+    - target: {fileID: 7086521903310356823, guid: a635d842b268cd644bd244bf9a301bc9, type: 3}
+      propertyPath: TRAVIS
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: a635d842b268cd644bd244bf9a301bc9, type: 3}
