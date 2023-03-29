@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using System.Collections;
 
 public class GameDriver : MonoBehaviour
 {
@@ -19,10 +20,8 @@ public class GameDriver : MonoBehaviour
     // Start is called before the first frame update
     void Awake()
     {
-
         MSG = "Welcome to GhostDose";
         ROOM = "room";
-
 
         //ONLY ONE CAN EXIST
         if (instance == null) { instance = this; DontDestroyOnLoad(gameObject); }
@@ -31,28 +30,25 @@ public class GameDriver : MonoBehaviour
 
         ND = this.gameObject.AddComponent<NetworkDriver>();
 
-        //NON LOBBY INSTANCE
+        //STARTING IN A GAME ROOM
         if (SceneManager.GetActiveScene().name != "Lobby" && !GetComponent<LobbyControl>().start)
         {
             Debug.Log("PRE EMPTIVE CALL");
             GetComponent<LobbyControl>().enabled = false;
             ND.NetworkSetup();
             SetupScene();
-            GAMESTART = true;
+           
         }
+     }
 
-
-       
-    }
-
+    //-------------SET VARS FOR ND HERE-------------
     public void Start()
     {
         SceneManager.sceneLoaded += OnSceneLoaded;
         if (FORCE_HOST) { ND.HOST = true; }
     }
 
-    public GameObject duplicateObject;
-    // Called when a new scene is loaded
+
     private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
     {
         GetComponent<LobbyControl>().enabled = false;
@@ -63,7 +59,7 @@ public class GameDriver : MonoBehaviour
 
     public void SetupScene()
     {
-        {
+        
             Debug.Log("SCENE SETUP");
             //DISABLE MODELS
             if (!TRAVIS) { 
@@ -90,7 +86,16 @@ public class GameDriver : MonoBehaviour
 
             GAMESTART = true;
 
-        }
+
+            StartCoroutine(PostStart());
+
+            //-----------POST START EXECUTION--------------
+            IEnumerator PostStart()
+            {
+                yield return new WaitForSeconds(5f);
+                MSG = " ";
+            }
+        
     }
 
 

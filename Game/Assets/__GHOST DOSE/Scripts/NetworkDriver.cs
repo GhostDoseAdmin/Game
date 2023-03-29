@@ -153,7 +153,7 @@ public class NetworkDriver : MonoBehaviour
         {
             if (GD.GAMESTART)
             {
-                GD.MSG = "";
+               
                 JObject data = JObject.Parse(payload);
                 //Debug.Log("PLAYER ACTION" + data);
                 Dictionary<string, string> dict = data.ToObject<Dictionary<string, string>>();
