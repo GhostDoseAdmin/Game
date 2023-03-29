@@ -7,7 +7,7 @@ public class CopySkeletonObjects : EditorWindow
     GameObject destSkeletonRoot;
     [HideInInspector] GameObject newBody;
     [HideInInspector] GameObject player;
-
+    public string myField;
     [MenuItem("Window/Copy Skeleton Objects")]
     public static void ShowWindow()
     {
@@ -17,6 +17,8 @@ public class CopySkeletonObjects : EditorWindow
     void OnGUI()
     {
         GUILayout.Label("Copy Skeleton Objects", EditorStyles.boldLabel);
+        
+        EditorGUILayout.TextField("Unpack Prefabs First! Select root Hips");
 
         EditorGUILayout.Space();
 
