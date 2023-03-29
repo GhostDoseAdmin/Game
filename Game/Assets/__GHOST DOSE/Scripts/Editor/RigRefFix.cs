@@ -1,73 +1,85 @@
 using UnityEngine;
 using UnityEditor;
 
-public class ReplaceReferences : EditorWindow
+public class ReferenceSwitcherEditor : EditorWindow
 {
-    GameObject parentObject;
-    GameObject firstChild;
-    GameObject secondChild;
+    private GameObject parentObject;
+    private GameObject child1;
+    private GameObject child2;
 
-    [MenuItem("Window/Replace References")]
+    [MenuItem("Window/Reference Switcher")]
     public static void ShowWindow()
     {
-        GetWindow<ReplaceReferences>("Replace References");
+        GetWindow<ReferenceSwitcherEditor>("Reference Switcher");
     }
 
-    void OnGUI()
+    private void OnGUI()
     {
-        GUILayout.Label("Replace References", EditorStyles.boldLabel);
+        GUILayout.Label("Reference Switcher", EditorStyles.boldLabel);
 
-        EditorGUILayout.Space();
+        parentObject = (GameObject)EditorGUILayout.ObjectField("Parent Object", parentObject, typeof(GameObject), true);
+        child1 = (GameObject)EditorGUILayout.ObjectField("Child 1", child1, typeof(GameObject), true);
+        child2 = (GameObject)EditorGUILayout.ObjectField("Child 2", child2, typeof(GameObject), true);
 
-        parentObject = EditorGUILayout.ObjectField("Parent Object", parentObject, typeof(GameObject), true) as GameObject;
-        firstChild = EditorGUILayout.ObjectField("First Child", firstChild, typeof(GameObject), true) as GameObject;
-        secondChild = EditorGUILayout.ObjectField("Second Child", secondChild, typeof(GameObject), true) as GameObject;
-
-        EditorGUILayout.Space();
-
-        if (GUILayout.Button("Replace References"))
+        if (GUILayout.Button("Switch References"))
         {
-            if (parentObject == null || firstChild == null || secondChild == null)
+            if (parentObject == null || child1 == null || child2 == null)
             {
-                Debug.LogError("Please select the parent object, first child, and second child.");
-                return;
+                Debug.LogError("All fields must be assigned.");
             }
-
-            ReplaceComponentReferences(parentObject, firstChild, secondChild);
-
-            Debug.Log("References replaced successfully.");
+            else
+            {
+                SwitchReferences();
+            }
         }
     }
 
-    void ReplaceComponentReferences(GameObject parentObject, GameObject firstChild, GameObject secondChild)
+    private void SwitchReferences()
     {
-        // Get all components on the parent object
-        Component[] components = parentObject.GetComponents<Component>();
-
-        // Loop through each component and its serialized properties
-        foreach (Component component in components)
+        if (parentObject == null || child1 == null || child2 == null)
         {
-            SerializedObject serializedObject = new SerializedObject(component);
-            SerializedProperty serializedProperty = serializedObject.GetIterator();
+            Debug.LogError("All fields must be assigned.");
+            return;
+        }
 
-            while (serializedProperty.Next(true))
+        Component[] parentComponents = parentObject.GetComponents<Component>();
+
+        foreach (Component component in parentComponents)
+        {
+            SerializedObject serializedComponent = new SerializedObject(component);
+            SerializedProperty property = serializedComponent.GetIterator();
+
+            while (property.NextVisible(true))
             {
-                if (serializedProperty.propertyType == SerializedPropertyType.ObjectReference)
+                if (property.propertyType == SerializedPropertyType.ObjectReference &&
+                    (property.objectReferenceValue is GameObject || property.objectReferenceValue is Transform))
                 {
-                    Object objectRef = serializedProperty.objectReferenceValue;
+                    Transform refTransform = null;
 
-                    // Check if the object reference points to the first child object or any of its descendants
-                    if (objectRef != null && IsDescendantOf(objectRef, firstChild))
+                    if (property.objectReferenceValue is GameObject)
                     {
-                        // Traverse the hierarchy of the first child object and find the corresponding object in the second child object
-                        GameObject firstChildObject = (objectRef as Component).gameObject;
-                        GameObject secondChildObject = FindEquivalentObject(firstChildObject, firstChild, secondChild);
+                        refTransform = ((GameObject)property.objectReferenceValue).transform;
+                    }
+                    else if (property.objectReferenceValue is Transform)
+                    {
+                        refTransform = (Transform)property.objectReferenceValue;
+                    }
 
-                        if (secondChildObject != null)
+                    if (refTransform != null && refTransform.IsChildOf(child1.transform))
+                    {
+                        string path = GetRelativePath(child1.transform, refTransform);
+                        Transform newReference = child2.transform.Find(path);
+                        if (newReference)
                         {
-                            // Replace the object reference with a reference to the corresponding object in the second child object
-                            serializedProperty.objectReferenceValue = secondChildObject;
-                            serializedObject.ApplyModifiedProperties();
+                            if (property.objectReferenceValue is GameObject)
+                            {
+                                property.objectReferenceValue = newReference.gameObject;
+                            }
+                            else if (property.objectReferenceValue is Transform)
+                            {
+                                property.objectReferenceValue = newReference;
+                            }
+                            serializedComponent.ApplyModifiedProperties();
                         }
                     }
                 }
@@ -75,49 +87,18 @@ public class ReplaceReferences : EditorWindow
         }
     }
 
-    bool IsDescendantOf(Object objectRef, GameObject parent)
+    private string GetRelativePath(Transform root, Transform target)
     {
-        // Check if the object reference is a child or descendant of the specified parent object
-        Transform transform = (objectRef as Component)?.transform;
-
-        while (transform != null)
+        System.Text.StringBuilder path = new System.Text.StringBuilder();
+        while (target != root)
         {
-            if (transform.gameObject == parent)
+            if (path.Length > 0)
             {
-                return true;
+                path.Insert(0, "/");
             }
-
-            transform = transform.parent;
+            path.Insert(0, target.name);
+            target = target.parent;
         }
-
-        return false;
-    }
-
-    GameObject FindEquivalentObject(GameObject firstChildObject, GameObject firstChild, GameObject secondChild)
-    {
-        // Traverse the hierarchy of the first child object and find the corresponding object in the second child object
-        Transform transform = firstChildObject.transform;
-        GameObject secondChildObject = secondChild;
-
-        while (transform != firstChild.transform && transform != null)
-        {
-            Transform childTransform = transform.parent.Find(transform.name);
-
-            if (childTransform == null)
-            {
-                return null;
-            }
-
-            secondChildObject = secondChild.transform.Find(childTransform.name)?.gameObject;
-
-
-            if (secondChildObject == null)
-            {
-                return null;
-            }
-            transform = childTransform;
-        }
-
-        return secondChildObject;
+        return path.ToString();
     }
 }

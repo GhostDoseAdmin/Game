@@ -50,17 +50,15 @@ public class ShootingSystem : MonoBehaviour
 
     public static ShootingSystem instance;
 
-    /*private void Awake()
+    private static utilities util;
+
+    private void Awake()
     {
-        if (instance != null)
-        {
-            Destroy(gameObject);
-        }
-        else
-        {
-            instance = this;
-        }
-    }*/
+        util = new utilities();
+
+        shootPoint = util.FindChildObject(this.gameObject.transform, "ShootPoint").transform;
+    }
+
 
     void Start()
     {

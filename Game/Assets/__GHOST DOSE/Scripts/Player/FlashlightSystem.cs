@@ -40,15 +40,17 @@ public class FlashlightSystem : MonoBehaviour
 
     public static FlashlightSystem instance;
 
-
-   private void Awake()
+    private static utilities util;
+    private void Awake()
     {
         instance = this;
 
-        WeaponLight = FindChildObject(this.gameObject.transform, "WeaponLight").GetComponent<Light>();
-        FlashLight = FindChildObject(this.gameObject.transform, "FlashLight").GetComponent<Light>();
-        handFlashlight = FindChildObject(this.gameObject.transform, "Flashlight_Hand");
-        inventoryFlashlight = FindChildObject(this.gameObject.transform, "Flashlight_Inventory");
+        util = new utilities();
+
+        WeaponLight = util.FindChildObject(this.gameObject.transform, "WeaponLight").GetComponent<Light>();
+        FlashLight = util.FindChildObject(this.gameObject.transform, "FlashLight").GetComponent<Light>();
+        handFlashlight = util.FindChildObject(this.gameObject.transform, "Flashlight_Hand");
+        inventoryFlashlight = util.FindChildObject(this.gameObject.transform, "Flashlight_Inventory");
 
         WeaponLight.enabled = false;
         FlashLight.enabled = false;
@@ -59,25 +61,6 @@ public class FlashlightSystem : MonoBehaviour
         batteryCountUI.text = batteryCount.ToString("0");
 
         Debug.Log("LIGHTS SET");
-    }
-
-
-    public GameObject FindChildObject(Transform parentTransform, string name)
-    {
-        if (parentTransform.gameObject.name == name)
-        {
-            return parentTransform.gameObject;
-        }
-
-        foreach (Transform childTransform in parentTransform)
-        {
-            GameObject foundObject = FindChildObject(childTransform, name);
-            if (foundObject != null)
-            {
-                return foundObject;
-            }
-        }
-        return null;
     }
 
 
