@@ -5,6 +5,8 @@ public class CopySkeletonObjects : EditorWindow
 {
     GameObject originSkeletonRoot;
     GameObject destSkeletonRoot;
+    [HideInInspector] GameObject newBody;
+    [HideInInspector] GameObject player;
 
     [MenuItem("Window/Copy Skeleton Objects")]
     public static void ShowWindow()
@@ -31,9 +33,49 @@ public class CopySkeletonObjects : EditorWindow
                 return;
             }
 
+            //UPACK
             PrefabUtility.UnpackPrefabInstance(originSkeletonRoot.transform.root.gameObject, PrefabUnpackMode.Completely, InteractionMode.AutomatedAction);
             PrefabUtility.UnpackPrefabInstance(destSkeletonRoot.transform.root.gameObject, PrefabUnpackMode.Completely, InteractionMode.AutomatedAction);
+
+            //newBody = destSkeletonRoot.transform.root.gameObject;//travisBones
+            //player = originSkeletonRoot.transform.root.gameObject.transform.GetChild(0).gameObject;
+
+            //newBody.transform.SetParent(player.transform);//assumes player is child of TRAVIS
+            
+            
+            /*for (int i = 0; i < player.transform.childCount; i++)
+            {
+                Transform child = player.transform.GetChild(i);
+                if (child.name == "Body")
+                {
+                    GameObject.DestroyImmediate(child.gameObject);
+                    newBody.name = "Player";
+                    break;
+                }
+            }*/
+
+
+
             CopyObjectsOnSkeletonPart(originSkeletonRoot.transform, destSkeletonRoot.transform);
+            //destSkeletonRoot.transform.transform.SetParent(player.transform);
+            originSkeletonRoot.SetActive(false);
+
+            //GameObject.DestroyImmediate(originSkeletonRoot);
+
+            /*COPY PLAYER COMPONENTS 
+            Component[] components = player.GetComponents<Component>();
+            foreach (Component component in components)
+            {
+                // Ignore Transform and GameObject components, which are automatically added to every GameObject
+                if (!(component is Transform) && !(component is GameObject))
+                {
+                    // Add the component to the target object
+                    UnityEditorInternal.ComponentUtility.CopyComponent(component);
+                    UnityEditorInternal.ComponentUtility.PasteComponentAsNew(newBody);
+                }
+            }
+
+            */
 
             Debug.Log("Objects and components copied successfully.");
         }
