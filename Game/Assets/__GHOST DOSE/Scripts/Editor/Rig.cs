@@ -1,12 +1,15 @@
 using UnityEngine;
 using UnityEditor;
+using static UnityEngine.ParticleSystem;
 
 public class Rig : EditorWindow
 {
     GameObject originSkeletonRoot;
     GameObject destSkeletonRoot;
+    [HideInInspector] GameObject currentRig;
+    private bool isTravis;
 
-    public string myField;
+
     [MenuItem("Window/Rig Model with BasicRig")]
     public static void ShowWindow()
     {
@@ -15,9 +18,10 @@ public class Rig : EditorWindow
 
     void OnGUI()
     {
-        GUILayout.Label("Copy Skeleton Objects", EditorStyles.boldLabel);
+        isTravis = EditorGUILayout.Toggle("Is Travis Rig?", isTravis);
 
-        EditorGUILayout.TextField("Unpack Prefabs First! Select root Hips");
+
+        //EditorGUILayout.TextField("Unpack Prefabs First! Select root Hips");
 
         EditorGUILayout.Space();
 
@@ -28,7 +32,7 @@ public class Rig : EditorWindow
 
         if (GUILayout.Button("Copy Skeleton Objects"))
         {
-            if (originSkeletonRoot == null || destSkeletonRoot == null)
+           if (originSkeletonRoot == null || destSkeletonRoot == null)
             {
                 Debug.LogError("Please select both origin and destination skeleton root objects.");
                 return;
@@ -38,7 +42,52 @@ public class Rig : EditorWindow
                 Debug.LogError("Please select HIPS");
                 return;
             }
+
+            //--------LOOK FOR CURRENT RIG
+            if (isTravis)
+            {
+                if (GameObject.Find("TRAVIS").transform.GetChild(0).childCount > 0)
+                {
+                    currentRig = GameObject.Find("TRAVIS").transform.GetChild(0).GetChild(0).gameObject;
+                }
+            }
+            else
+            {
+                if (GameObject.Find("WESTIN").transform.GetChild(0).childCount > 0)
+                {
+                    currentRig = GameObject.Find("WESTIN").transform.GetChild(0).GetChild(0).gameObject;
+                }
+            }
+
+            GUILayout.Label("Rig Model", EditorStyles.boldLabel);
+
+
+            //----CHECK IF CURRRENT RIG EXISTS
+            if (currentRig != null)
+            {
+                bool deleteObject = EditorUtility.DisplayDialog("Warning", "Do you want to delete the current Rig?", "Delete", "Cancel");
+                if (deleteObject)
+                {
+                    DestroyImmediate(currentRig);
+                }
+            }
+            else
+            {
+                Debug.Log("No previous rig");
+            }
+            //DEEP COPY
             CopyObjectsOnSkeletonPart(originSkeletonRoot.transform, destSkeletonRoot.transform);
+            //CHANGE PARENT to CORRECT PLAYER
+            if (isTravis) {
+                destSkeletonRoot.transform.root.gameObject.transform.position = GameObject.Find("TRAVIS").transform.GetChild(0).transform.position;
+                destSkeletonRoot.transform.root.gameObject.transform.SetParent(GameObject.Find("TRAVIS").transform.GetChild(0)); 
+            }
+            else {
+                destSkeletonRoot.transform.root.gameObject.transform.position = GameObject.Find("WESTIN").transform.GetChild(0).transform.position;
+                destSkeletonRoot.transform.root.gameObject.transform.SetParent(GameObject.Find("WESTIN").transform.GetChild(0));
+            }
+            destSkeletonRoot = null;
+            Debug.Log("Copy Completed");
         }
     }
 
