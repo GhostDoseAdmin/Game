@@ -124,9 +124,13 @@ public class NetworkDriver : MonoBehaviour
         sioCom.Instance.On("bro", (payload) =>
         {
             Debug.Log(" RECEIVED BRO " + payload);
-            GetComponent<LobbyControl>().otherBro = payload.ToString();
-            //GetComponent<LobbyControl>().BroSelector();
-
+            JObject data = JObject.Parse(payload);
+            Dictionary<string, string> dict = data.ToObject<Dictionary<string, string>>();
+            GetComponent<LobbyControl>().otherBro = dict["bro"];
+            GetComponent<GameDriver>().otherBroRig = dict["rig"];
+            GetComponent<LobbyControl>().otherSelects = true;
+            GetComponent<LobbyControl>().otherIndex = int.Parse(dict["index"]);
+            GetComponent<LobbyControl>().BroSelector();
         });
         //-----------------READY----------------->
         sioCom.Instance.On("start", (payload) =>

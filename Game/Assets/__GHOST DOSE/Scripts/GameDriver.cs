@@ -25,6 +25,12 @@ public class GameDriver : MonoBehaviour
     public Light ClientFlashLight;
 
     public string selectedRig;
+    public string otherBroRig;
+    public string wesRigPath = "Prefabs/Rigs/Westin/";
+    public string travRigPath = "Prefabs/Rigs/Travis/";
+
+    public int travLIMIT = 2; //Limits the length of array based on if the skin is unlocked
+    public int wesLIMIT = 2;
 
     private static utilities util;
 
@@ -83,30 +89,44 @@ public class GameDriver : MonoBehaviour
 
             Client = GameObject.Find("Client");
 
-            //-------------LOBBY SELECTED RIGS---------------------------------
+            //-----------------------------------CUSTOM RIGS---------------------------------
             if (selectedRig.Length > 1)
             {
-                
-                //TRAVIS RIGS
-                if (isTRAVIS){  
-                    if (TRAVIS.transform.GetChild(0).childCount > 0) { Debug.Log("Destroying Travis Rig "); DestroyImmediate(TRAVIS.transform.GetChild(0).GetChild(0).gameObject);}
-                    Instantiate(Resources.Load<GameObject>(selectedRig), TRAVIS.transform.GetChild(0).transform);
-                }
-                //WESTIN RIGS
-                else{
-                    if (WESTIN.transform.GetChild(0).childCount > 0) { Debug.Log("Destroying Westin Rig "); DestroyImmediate(WESTIN.transform.GetChild(0).GetChild(0).gameObject); }
-                        Instantiate(Resources.Load<GameObject>(selectedRig), WESTIN.transform.GetChild(0).transform);
-                }
-                Debug.Log(" INSTANTIATING RIG " + selectedRig);
+                //MY TRAVIS RIGS
+                if (isTRAVIS)
+                {
+                    if (TRAVIS.transform.GetChild(0).childCount > 0) { Debug.Log("Destroying Travis Rig "); DestroyImmediate(TRAVIS.transform.GetChild(0).GetChild(0).gameObject); }
+                    Instantiate(Resources.Load<GameObject>(travRigPath + selectedRig), TRAVIS.transform.GetChild(0).transform);
 
+                    //THEIR WESTIN RIGS
+                    if (otherBroRig.Length > 1)
+                    {
+                        if (WESTIN.transform.GetChild(0).childCount > 0) { Debug.Log("Destroying Westin Rig "); DestroyImmediate(WESTIN.transform.GetChild(0).GetChild(0).gameObject); }
+                        Instantiate(Resources.Load<GameObject>(wesRigPath + otherBroRig), WESTIN.transform.GetChild(0).transform);
+                    }
+                }
+                //MY WESTIN RIGS
+                else
+                {
+                    if (WESTIN.transform.GetChild(0).childCount > 0) { Debug.Log("Destroying Westin Rig "); DestroyImmediate(WESTIN.transform.GetChild(0).GetChild(0).gameObject); }
+                    Instantiate(Resources.Load<GameObject>(wesRigPath + selectedRig), WESTIN.transform.GetChild(0).transform);
+
+                    //THEIR TRAVIS RIGS
+                    if (otherBroRig.Length > 1)
+                    {
+                        if (TRAVIS.transform.GetChild(0).childCount > 0) { Debug.Log("Destroying Travis Rig "); DestroyImmediate(TRAVIS.transform.GetChild(0).GetChild(0).gameObject); }
+                        Instantiate(Resources.Load<GameObject>(travRigPath + otherBroRig), TRAVIS.transform.GetChild(0).transform);
+                    }
+
+                    Debug.Log(" INSTANTIATING RIG MY RIG " + selectedRig + " AN THEIR RIG " + otherBroRig);
+
+                }
             }
 
-            
-
-           // Debug.Log("---------------------------------------------" + TRAVIS.transform.GetChild(0).childCount);
+            // Debug.Log("---------------------------------------------" + TRAVIS.transform.GetChild(0).childCount);
             //------------CHECK FOR MISSING A RIG------------    
-                if (TRAVIS.transform.GetChild(0).childCount <= 0) { Debug.Log("Creating Default Rig for Travis"); Instantiate(Resources.Load<GameObject>("Prefabs/Rigs/Travis/TravisRigBasic"), TRAVIS.transform.GetChild(0).transform); }
-                if (WESTIN.transform.GetChild(0).childCount <= 0) { Debug.Log("Creating Default Rig for Westin"); Instantiate(Resources.Load<GameObject>("Prefabs/Rigs/Westin/WestinRigBasic"), WESTIN.transform.GetChild(0).transform); }
+            if (TRAVIS.transform.GetChild(0).childCount <= 0) { Debug.Log("Creating Default Rig for Travis"); Instantiate(Resources.Load<GameObject>(travRigPath + "TravisRigBasic"), TRAVIS.transform.GetChild(0).transform); }
+                if (WESTIN.transform.GetChild(0).childCount <= 0) { Debug.Log("Creating Default Rig for Westin"); Instantiate(Resources.Load<GameObject>(wesRigPath + "WestinRigBasic"), WESTIN.transform.GetChild(0).transform); }
             
 
 

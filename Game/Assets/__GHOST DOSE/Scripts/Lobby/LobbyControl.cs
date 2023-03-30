@@ -2,7 +2,8 @@ using UnityEngine.SceneManagement;
 using UnityEngine;
 using System.Collections;
 using System;
-
+using Newtonsoft.Json;
+using static UnityEngine.ParticleSystem;
 
 public class LobbyControl : MonoBehaviour
 {
@@ -21,12 +22,19 @@ public class LobbyControl : MonoBehaviour
     public string otherBro ="";
 
     private string[] animations = { "Walk_Flashlight", "Pistol_Shot", "Knife_Attack", "Idle", "Running" };
-    private string[] travisRigs = { "Prefabs/Rigs/Travis/TravisRigBasic", "Prefabs/Rigs/EnemyRig", "Prefabs/Rigs/BasicDudeRig" };
-    private int travisRigIndex = 0;
-    private string[] westinRigs = { "Prefabs/Rigs/Westin/WestinRigBasic", "Prefabs/Rigs/EnemyRig", "Prefabs/Rigs/BasicDudeRig" };
-    private int westinRigIndex = 0;
-    private static utilities util;
+    private string[] travisRigs = { "TravisRigBasic", "EnemyRig", "BasicDudeRig" };
 
+    private int travisRigIndex = 0;
+    
+    private string[] westinRigs = { "WestinRigBasic", "EnemyRig", "BasicDudeRig" };
+    private int westinRigIndex = 0;
+
+    public int otherIndex; //used to determine other persons rig choice
+
+    public bool otherSelects; //used to toggle a selection action from the other play to update model
+
+    private static utilities util;
+    
     public void Awake()
     {
         if(SceneManager.GetActiveScene().name == "Lobby")
@@ -112,7 +120,11 @@ public class LobbyControl : MonoBehaviour
                         }
                         else
                         {
-                            if (selectedBro.Length > 1 && otherBro.Length > 1) { MSG = "CANT BE SAME BRO "; }
+                            if (selectedBro.Length > 1 && otherBro.Length > 1) { 
+                                MSG = "CANT BE SAME BRO "; 
+                                if(otherIndex>GetComponent<GameDriver>().travLIMIT && selectedBro.ToString() == "TRAVIS") { MSG = "SKIN NOT AVAILABLE TO YOU "; }
+                                if (otherIndex > GetComponent<GameDriver>().wesLIMIT && selectedBro.ToString() == "WESTIN") { MSG = "SKIN NOT AVAILABLE TO YOU "; }
+                            }
 
                         }
                     }
@@ -134,8 +146,8 @@ public class LobbyControl : MonoBehaviour
 
     public void NextScene()
     {
-        if (selectedBro == "TRAVIS") { GetComponent<GameDriver>().isTRAVIS = true; GetComponent<GameDriver>().selectedRig = travisRigs[travisRigIndex]; }
-        if (selectedBro == "WESTIN") { GetComponent<GameDriver>().isTRAVIS = false; GetComponent<GameDriver>().selectedRig = westinRigs[westinRigIndex]; }
+        if (selectedBro == "TRAVIS") { GetComponent<GameDriver>().isTRAVIS = true; }
+        if (selectedBro == "WESTIN") { GetComponent<GameDriver>().isTRAVIS = false; }
         SceneManager.LoadScene("SceneMain");
         
     }
@@ -145,24 +157,31 @@ public class LobbyControl : MonoBehaviour
     public void BroSelector()
     {
         Debug.Log("BRO SELECTOR " + selectedBro + otherBro);
-        //-----------GET SELECTED BRO ------------------ !!!!! ENSURE BOTH BROS HAVE COLLIDERS
-            RaycastHit hit;
+        if (otherSelects) { Debug.Log("OTHER BRO SELECTED "); }
+        int rigIndex =0;
+        bool otherChose = false;
+         //-----------GET SELECTED BRO ------------------ !!!!! ENSURE BOTH BROS HAVE COLLIDERS
+           RaycastHit hit;
             Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
 
-            if (Physics.Raycast(ray, out hit))
+            if (Physics.Raycast(ray, out hit) || otherSelects)
             {
-                GameObject clickedObject = hit.collider.gameObject;
-                selectedBro = GetTopParentName(clickedObject);
+                if (!otherSelects)
+                {
+                    GameObject clickedObject = hit.collider.gameObject;
+                    selectedBro = GetTopParentName(clickedObject);
+                }
 
             //-----------------------RIG SELECTOR------------------------------------
-            if(selectedBro.ToString()=="TRAVIS")
+            if((selectedBro.ToString()=="TRAVIS" && !otherSelects ) || (otherBro.ToString() == "TRAVIS") && otherSelects)
             {
                 //CYCLE THROUGH RIGS ARRAY
-                travisRigIndex = (travisRigIndex + 1) % travisRigs.Length;
+                travisRigIndex = (travisRigIndex + 1) % GetComponent<GameDriver>().travLIMIT;
                 //DESTROY CURRENT RIG 
                 Destroy(GameObject.Find("TRAVIS").transform.GetChild(0).gameObject.transform.GetChild(0).gameObject);
                 //CREATE RIG BASED ON INDEX OF RIGS ARRAY
-                GameObject newRig = Instantiate(Resources.Load<GameObject>(travisRigs[travisRigIndex]), GameObject.Find("TRAVIS").transform.GetChild(0).transform);
+                if (otherSelects) {Instantiate(Resources.Load<GameObject>(GetComponent<GameDriver>().travRigPath + travisRigs[otherIndex]), GameObject.Find("TRAVIS").transform.GetChild(0).transform); }
+                else {Instantiate(Resources.Load<GameObject>(GetComponent<GameDriver>().travRigPath + travisRigs[travisRigIndex]), GameObject.Find("TRAVIS").transform.GetChild(0).transform); }
                 //DESTROY OUTLINE 
                 DestroyImmediate(GameObject.Find("TRAVIS").transform.GetChild(0).gameObject.GetComponent<Outline>());
                 //REFRESH ANIMATOR 
@@ -171,15 +190,20 @@ public class LobbyControl : MonoBehaviour
                 GameObject.Find("TRAVIS").transform.GetChild(0).gameObject.AddComponent<Outline>();
                 GameObject.Find("TRAVIS").transform.GetChild(0).gameObject.GetComponent<Outline>().OutlineColor = Color.green;
                 GameObject.Find("TRAVIS").transform.GetChild(0).gameObject.GetComponent<Outline>().OutlineWidth = 10f;
+
+                rigIndex = travisRigIndex;
+                if (!otherSelects) { GetComponent<GameDriver>().selectedRig = travisRigs[travisRigIndex]; }
+
             }
-            if (selectedBro.ToString() == "WESTIN")
+            if ((selectedBro.ToString() == "WESTIN" && !otherSelects) || (otherBro.ToString() == "WESTIN") && otherSelects)
             {
                 //CYCLE THROUGH RIGS ARRAY
-                westinRigIndex = (westinRigIndex + 1) % westinRigs.Length;
+                westinRigIndex = (westinRigIndex + 1) % GetComponent<GameDriver>().wesLIMIT;
                 //DESTROY CURRENT RIG 
                 Destroy(GameObject.Find("WESTIN").transform.GetChild(0).gameObject.transform.GetChild(0).gameObject);
                 //CREATE RIG BASED ON INDEX OF RIGS ARRAY
-                GameObject newRig = Instantiate(Resources.Load<GameObject>(westinRigs[westinRigIndex]), GameObject.Find("WESTIN").transform.GetChild(0).transform);
+                if (otherSelects) {Instantiate(Resources.Load<GameObject>(GetComponent<GameDriver>().wesRigPath + westinRigs[otherIndex]), GameObject.Find("WESTIN").transform.GetChild(0).transform); }
+                else { Instantiate(Resources.Load<GameObject>(GetComponent<GameDriver>().wesRigPath + westinRigs[westinRigIndex]), GameObject.Find("WESTIN").transform.GetChild(0).transform); }
                 //DESTROY OUTLINE 
                 DestroyImmediate(GameObject.Find("WESTIN").transform.GetChild(0).gameObject.GetComponent<Outline>());
                 //REFRESH ANIMATOR 
@@ -188,12 +212,20 @@ public class LobbyControl : MonoBehaviour
                 GameObject.Find("WESTIN").transform.GetChild(0).gameObject.AddComponent<Outline>();
                 GameObject.Find("WESTIN").transform.GetChild(0).gameObject.GetComponent<Outline>().OutlineColor = Color.red;
                 GameObject.Find("WESTIN").transform.GetChild(0).gameObject.GetComponent<Outline>().OutlineWidth = 10f;
+
+                rigIndex = westinRigIndex;
+                if (!otherSelects) { GetComponent<GameDriver>().selectedRig = westinRigs[westinRigIndex]; }
             }
 
-            GetComponent<NetworkDriver>().sioCom.Instance.Emit("bro", selectedBro.ToString(), true);
-
+            //EMIT BRO CHOICE
+            if (!otherSelects)
+            {
+                string emitting = $"{{'bro':'{selectedBro.ToString()}','rig':'{GetComponent<GameDriver>().selectedRig}','index':'{rigIndex}'}}";
+                Debug.Log("EMMITING BRO " + emitting);
+                GetComponent<NetworkDriver>().sioCom.Instance.Emit("bro", JsonConvert.SerializeObject(emitting), false);
             }
-        
+        }
+        otherSelects = false;
     }
 
     void OnGUI()
