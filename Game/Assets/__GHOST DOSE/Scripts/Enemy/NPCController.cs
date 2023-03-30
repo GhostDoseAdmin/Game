@@ -65,7 +65,7 @@ public class NPCController : MonoBehaviour
         animEnemy = GetComponent<Animator>();
         navmesh = GetComponent<NavMeshAgent>();
 
-        //targetPlayer = GameObject.FindGameObjectWithTag("Player").transform;
+        targetPlayer = Client.transform;
         head = animEnemy.GetBoneTransform(HumanBodyBones.Head).transform;
 
         handKnife.GetComponent<Collider>().enabled = false;

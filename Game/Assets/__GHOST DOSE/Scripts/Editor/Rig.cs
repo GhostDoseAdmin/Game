@@ -1,14 +1,17 @@
 using UnityEngine;
 using UnityEditor;
-using static UnityEngine.ParticleSystem;
+using System;
+using GluonGui.WorkspaceWindow.Views.WorkspaceExplorer;
 
 public class Rig : EditorWindow
 {
     GameObject originSkeletonRoot;
     GameObject destSkeletonRoot;
+    GameObject myModel;
+
     [HideInInspector] GameObject currentRig;
     private bool isTravis;
-
+    private string prefabName = "";
 
     [MenuItem("Window/Rig Model with BasicRig")]
     public static void ShowWindow()
@@ -21,18 +24,19 @@ public class Rig : EditorWindow
         isTravis = EditorGUILayout.Toggle("Is Travis Rig?", isTravis);
 
 
-        //EditorGUILayout.TextField("Unpack Prefabs First! Select root Hips");
-
         EditorGUILayout.Space();
 
         originSkeletonRoot = Resources.Load<GameObject>("Prefabs/Rigs/ROOTRIG");
         destSkeletonRoot = EditorGUILayout.ObjectField("Destination Skeleton Root", destSkeletonRoot, typeof(GameObject), true) as GameObject;
+        
 
         EditorGUILayout.Space();
 
         if (GUILayout.Button("Copy Skeleton Objects"))
         {
-           if (originSkeletonRoot == null || destSkeletonRoot == null)
+            myModel = destSkeletonRoot.transform.root.gameObject;
+
+            if (originSkeletonRoot == null || destSkeletonRoot == null)
             {
                 Debug.LogError("Please select both origin and destination skeleton root objects.");
                 return;
@@ -43,7 +47,7 @@ public class Rig : EditorWindow
                 return;
             }
 
-            //--------LOOK FOR CURRENT RIG
+            //--------LOOK FOR EXISTING RIG
             if (isTravis)
             {
                 if (GameObject.Find("TRAVIS").transform.GetChild(0).childCount > 0)
@@ -79,15 +83,49 @@ public class Rig : EditorWindow
             CopyObjectsOnSkeletonPart(originSkeletonRoot.transform, destSkeletonRoot.transform);
             //CHANGE PARENT to CORRECT PLAYER
             if (isTravis) {
-                destSkeletonRoot.transform.root.gameObject.transform.position = GameObject.Find("TRAVIS").transform.GetChild(0).transform.position;
-                destSkeletonRoot.transform.root.gameObject.transform.SetParent(GameObject.Find("TRAVIS").transform.GetChild(0)); 
+                myModel.transform.position = GameObject.Find("TRAVIS").transform.GetChild(0).transform.position;
+                myModel.transform.SetParent(GameObject.Find("TRAVIS").transform.GetChild(0)); 
             }
             else {
-                destSkeletonRoot.transform.root.gameObject.transform.position = GameObject.Find("WESTIN").transform.GetChild(0).transform.position;
-                destSkeletonRoot.transform.root.gameObject.transform.SetParent(GameObject.Find("WESTIN").transform.GetChild(0));
+                myModel.transform.position = GameObject.Find("WESTIN").transform.GetChild(0).transform.position;
+                myModel.transform.SetParent(GameObject.Find("WESTIN").transform.GetChild(0));
             }
             destSkeletonRoot = null;
             Debug.Log("Copy Completed");
+        }
+
+
+        prefabName = EditorGUILayout.TextField("Name of Rig", prefabName);
+
+        if (GUILayout.Button("Save Object"))
+        {
+            if (myModel == null)
+            {
+                Debug.LogError("Object is null, cannot save.");
+                return;
+            }
+
+
+            string path;
+            if(isTravis) { path = "Assets/Resources/Prefabs/Rigs/Travis/" + prefabName +".prefab"; }
+            else { path = "Assets/Resources/Prefabs/Rigs/Westin"; }
+            //Store new object as prefab
+            GameObject myNewPrefabRig = PrefabUtility.SaveAsPrefabAssetAndConnect(myModel, path, InteractionMode.UserAction);
+            //get prfab
+            GameObject gameControllerPrefab = AssetDatabase.LoadAssetAtPath<GameObject>("Assets/__GHOST DOSE/GameController.prefab");
+            // Get the current length of the array
+            int currentLength = gameControllerPrefab.GetComponent<RigManager>().travRigList.Length;
+            //Create extra spot on array
+            Array.Resize(ref gameControllerPrefab.GetComponent<RigManager>().travRigList, gameControllerPrefab.GetComponent<RigManager>().travRigList.Length + 1);
+            // Add the new GameObject at the end of the array
+            gameControllerPrefab.GetComponent<RigManager>().travRigList[currentLength] = myNewPrefabRig;
+            // Save the changes to the prefab
+            AssetDatabase.SaveAssets();
+            Debug.Log("Rig Saved!");
+            // Unload the prefab from memory
+            //PrefabUtility.UnloadPrefabContents(gameControllerPrefab);
+
+            Debug.Log("Object saved successfully.");
         }
     }
 

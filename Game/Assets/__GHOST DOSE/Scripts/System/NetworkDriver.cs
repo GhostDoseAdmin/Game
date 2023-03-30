@@ -127,7 +127,7 @@ public class NetworkDriver : MonoBehaviour
             JObject data = JObject.Parse(payload);
             Dictionary<string, string> dict = data.ToObject<Dictionary<string, string>>();
             GetComponent<LobbyControl>().otherBro = dict["bro"];
-            GetComponent<GameDriver>().otherBroRig = dict["rig"];
+           // GetComponent<GameDriver>().otherBroRig = dict["rig"];
             GetComponent<LobbyControl>().otherSelects = true;
             GetComponent<LobbyControl>().otherIndex = int.Parse(dict["index"]);
             GetComponent<LobbyControl>().BroSelector();
