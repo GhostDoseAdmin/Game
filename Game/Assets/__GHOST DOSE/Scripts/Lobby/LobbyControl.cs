@@ -128,8 +128,8 @@ public class LobbyControl : MonoBehaviour
 
     public void NextScene()
     {
-        if (selectedBro == "TRAVIS") { GetComponent<GameDriver>().TRAVIS = true; }
-        if (selectedBro == "WESTIN") { GetComponent<GameDriver>().TRAVIS = false; }
+        if (selectedBro == "TRAVIS") { GetComponent<GameDriver>().isTRAVIS = true; }
+        if (selectedBro == "WESTIN") { GetComponent<GameDriver>().isTRAVIS = false; }
         SceneManager.LoadScene("SceneMain");
         
     }

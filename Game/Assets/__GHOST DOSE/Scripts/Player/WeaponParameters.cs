@@ -25,18 +25,8 @@ public class WeaponParameters : MonoBehaviour
 
     public static WeaponParameters instance;
     private static utilities util;
-    
-    private void Awake()
-    {
 
-        //handKnife = util.FindChildObject(this.gameObject.transform, "Knife_Hand");
-        //inventoryKnife = util.FindChildObject(this.gameObject.transform, "Knife_Inventory");
-        //weapHand = util.FindChildObject(this.gameObject.transform, "WeapHand");
-        //inventoryWeap = util.FindChildObject(this.gameObject.transform, "WeapInventory");
-    }
-
-
-    void Start()
+    public void Awake()
     {
         util = new utilities();
 
@@ -44,6 +34,12 @@ public class WeaponParameters : MonoBehaviour
         inventoryKnife = util.FindChildObject(this.gameObject.transform, "Knife_Inventory");
         weapHand = util.FindChildObject(this.gameObject.transform, "WeapHand");
         inventoryWeap = util.FindChildObject(this.gameObject.transform, "WeapInventory");
+
+    }
+
+    void Start()
+    {
+
 
         handKnife.SetActive(false);
         inventoryKnife.SetActive(false);

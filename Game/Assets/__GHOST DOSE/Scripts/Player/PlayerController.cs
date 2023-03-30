@@ -75,8 +75,12 @@ public class PlayerController : MonoBehaviour
 
 	private static utilities util;
 
+
+    #region Start
     private void Awake()
     {
+        Debug.Log("CREATING PLAYER REFS---------------------------------------------------------------------------------------------------");
+
         util = new utilities();
 
         rightHandTarget = util.FindChildObject(this.gameObject.transform, "RHTarget").transform;
@@ -84,11 +88,10 @@ public class PlayerController : MonoBehaviour
         leftHandTarget = util.FindChildObject(this.gameObject.transform, "LHTarget").transform;
         leftHand = util.FindChildObject(this.gameObject.transform, "mixamorig:LeftHand").transform;
     }
-
-    #region Start
-
     void Start()
 	{
+
+
         ND = GameObject.Find("GameController").GetComponent<GameDriver>().ND;
         GetComponent<WeaponParameters>().EnableInventoryPistol();
 
@@ -99,6 +102,7 @@ public class PlayerController : MonoBehaviour
 		Cursor.lockState = CursorLockMode.Locked;
 		Cursor.visible = false;
 
+		
         anim = GetComponent<Animator>();
     }
     #endregion

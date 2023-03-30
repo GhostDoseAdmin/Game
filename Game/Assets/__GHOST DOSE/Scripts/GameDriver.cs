@@ -1,9 +1,10 @@
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using static UnityEngine.ParticleSystem;
 
 public class GameDriver : MonoBehaviour
 {
-    public bool TRAVIS = true;//which character is the player playing
+    public bool isTRAVIS = true;//which character is the player playing
     public GameObject Player;
     public GameObject Client;
     public string ROOM;
@@ -20,6 +21,10 @@ public class GameDriver : MonoBehaviour
     public Light PlayerFlashLight;
     public Light ClientWeapLight;
     public Light ClientFlashLight;
+
+    private GameObject TRAVIS;
+    private GameObject WESTIN;
+
 
     void Awake()
     {
@@ -68,10 +73,17 @@ public class GameDriver : MonoBehaviour
 
             Debug.Log("SETTING UP SCENE");
             Client = GameObject.Find("Client");
-           
-           
+
+
+
+
+            //MISSING A RIG                
+            if (GameObject.Find("TRAVIS").transform.GetChild(0).transform.childCount == 0) { Debug.Log("NO RIG FOUND FOR TRAVIS"); Instantiate(Resources.Load<GameObject>("Prefabs/Rigs/Travis/TravisRigBasic"), GameObject.Find("TRAVIS").transform.GetChild(0).transform); }
+            if (GameObject.Find("WESTIN").transform.GetChild(0).transform.childCount == 0) { Debug.Log("NO RIG FOUND FOR WESTIN"); Instantiate(Resources.Load<GameObject>("Prefabs/Rigs/Westin/WestinRigBasic"), GameObject.Find("WESTIN").transform.GetChild(0).transform); }
+
+
             //DISABLE MODELS
-            if (!TRAVIS) { //PLAYING WESTIN
+            if (!isTRAVIS) { //PLAYING WESTIN
                 Instantiate(GameObject.Find("TRAVIS").transform.GetChild(0).transform.GetChild(0).gameObject, Client.transform); //gets TRAVIS rig and copys as client
                 GameObject.Find("TRAVIS").SetActive(false);
                 
@@ -95,7 +107,8 @@ public class GameDriver : MonoBehaviour
             //----CLEAR ANIMATOR CACHE---
             Client.SetActive(false);
             Client.SetActive(true);
-
+            Player.SetActive(false);
+            Player.SetActive(true);
 
             Vector3 clientStart = Client.transform.position;
             Vector3 playerStart = Player.transform.position;
