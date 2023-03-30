@@ -36,7 +36,7 @@ public class ClientFlashlightSystem : MonoBehaviour
     }
 
  
-    public void setupLightRefs()
+    public void RigLights()
     {
         util = new utilities();
 

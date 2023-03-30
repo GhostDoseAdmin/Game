@@ -946,7 +946,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 3081933001335964110}
-  - component: {fileID: 8945579775075998644}
   m_Layer: 0
   m_Name: WestinRigBasic
   m_TagString: Untagged
@@ -971,27 +970,6 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!95 &8945579775075998644
-Animator:
-  serializedVersion: 5
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2418126309111585652}
-  m_Enabled: 1
-  m_Avatar: {fileID: 9000000, guid: 115bda47f3b3f364288d19eca6a401c4, type: 3}
-  m_Controller: {fileID: 0}
-  m_CullingMode: 1
-  m_UpdateMode: 0
-  m_ApplyRootMotion: 1
-  m_LinearVelocityBlending: 0
-  m_StabilizeFeet: 0
-  m_WarningMessage: 
-  m_HasTransformHierarchy: 1
-  m_AllowConstantClipSamplingOptimization: 1
-  m_KeepAnimatorStateOnDisable: 0
-  m_WriteDefaultValuesOnDisable: 0
 --- !u!1 &2470928485187500079
 GameObject:
   m_ObjectHideFlags: 0

@@ -79,25 +79,31 @@ public class PlayerController : MonoBehaviour
     #region Start
     private void Awake()
     {
-        Debug.Log("CREATING PLAYER REFS---------------------------------------------------------------------------------------------------");
+       // SetupRig();
+    }
 
+
+    public void SetupRig()
+    {
         util = new utilities();
-
+		Debug.Log("Setting up Player References");
         rightHandTarget = util.FindChildObject(this.gameObject.transform, "RHTarget").transform;
         rightHand = util.FindChildObject(this.gameObject.transform, "mixamorig:RightHand").transform;
         leftHandTarget = util.FindChildObject(this.gameObject.transform, "LHTarget").transform;
         leftHand = util.FindChildObject(this.gameObject.transform, "mixamorig:LeftHand").transform;
+		GetComponent<WeaponParameters>().RigWeapons();
+		GetComponent<ShootingSystem>().RigShooter();
+        GetComponent<FlashlightSystem>().RigLights();
     }
+
+
+
     void Start()
 	{
 
 
         ND = GameObject.Find("GameController").GetComponent<GameDriver>().ND;
         GetComponent<WeaponParameters>().EnableInventoryPistol();
-
-
-        rightHandTrans = rightHand != null ? rightHand.GetComponentsInChildren<Transform>() : new Transform[0];
-		leftHandTrans = leftHand != null ? leftHand.GetComponentsInChildren<Transform>() : new Transform[0];
 
 		Cursor.lockState = CursorLockMode.Locked;
 		Cursor.visible = false;
@@ -145,27 +151,6 @@ public class PlayerController : MonoBehaviour
 				if (actions != prevEmit) { ND.sioCom.Instance.Emit("player_action", JsonConvert.SerializeObject(actions), false); prevEmit = actions; }
                 action_timer = Time.time;//cooldown
 			}
-
-		//anim = Westin;
-
-        /*AnimatorClipInfo[] clipInfo = anim.GetCurrentAnimatorClipInfo(0);
-        if (clipInfo != null && clipInfo.Length > 0)
-        {
-            // Cycle through the clipInfo array to get the name of the current animation clip
-            foreach (AnimatorClipInfo info in clipInfo)
-            {
-                string animName = info.clip.name;
-
-				// Set the boolean parameter on the Westin object's Animator Controller
-				if (Westin.parameters.Any(p => p.name == animName))
-				{
-					//Westin.SetBool(animName, true);
-					Debug.LogWarning(animName + anim.GetBool(animName));
-				}
-            }
-        }
-		*/
-
 
     }
     #endregion

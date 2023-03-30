@@ -52,7 +52,7 @@ public class ShootingSystem : MonoBehaviour
 
     private static utilities util;
 
-    private void Awake()
+    public void RigShooter()
     {
         util = new utilities();
 
@@ -66,7 +66,7 @@ public class ShootingSystem : MonoBehaviour
     {
         curRateFire = rateOfFire;
         //ammoCountUI.text = ammoCount.ToString("0");
-        ammo—lipCountUI.text = ammoClipCount.ToString("0");
+        //ammo—lipCountUI.text = ammoClipCount.ToString("0");
     }
 
     public void CollectCartridges(int ammo)

@@ -8,13 +8,13 @@ Material:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_Name: Enemy
-  m_Shader: {fileID: 4800000, guid: cfb0369e41b0e9c439d1d7d45109455c, type: 3}
-  m_ValidKeywords: []
-  m_InvalidKeywords:
+  m_Shader: {fileID: 46, guid: 0000000000000000f000000000000000, type: 0}
+  m_ValidKeywords:
   - _METALLICGLOSSMAP
   - _NORMALMAP
+  m_InvalidKeywords: []
   m_LightmapFlags: 4
-  m_EnableInstancingVariants: 1
+  m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 0
   m_CustomRenderQueue: -1
   stringTagMap: {}
@@ -22,6 +22,10 @@ Material:
   m_SavedProperties:
     serializedVersion: 3
     m_TexEnvs:
+    - MyMainTex:
+        m_Texture: {fileID: 2800000, guid: c3821ea31d1e2674285aff4eb7007e1a, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
     - _BumpMap:
         m_Texture: {fileID: 2800000, guid: e8027cf87e204c74aa1e22e4e6b5b03c, type: 3}
         m_Scale: {x: 1, y: 1}
@@ -44,8 +48,8 @@ Material:
         m_Offset: {x: 0, y: 0}
     - _MainTex:
         m_Texture: {fileID: 2800000, guid: c3821ea31d1e2674285aff4eb7007e1a, type: 3}
-        m_Scale: {x: 1.36, y: 1.03}
-        m_Offset: {x: 0.05, y: -0.06}
+        m_Scale: {x: 1.55, y: 1}
+        m_Offset: {x: 0.7, y: 0}
     - _MetallicGlossMap:
         m_Texture: {fileID: 2800000, guid: 3e8d66cd1238190498ceabe2f0902c58, type: 3}
         m_Scale: {x: 1, y: 1}
@@ -60,6 +64,10 @@ Material:
         m_Offset: {x: 0, y: 0}
     m_Ints: []
     m_Floats:
+    - MyGlossiness: 0.5
+    - MyLightAngle: 30
+    - MyMetallic: 0
+    - MyStrengthScalor: 50
     - _BumpScale: 1
     - _Cutoff: 0.5
     - _DetailNormalMapScale: 1
@@ -68,6 +76,7 @@ Material:
     - _Glossiness: 0.5
     - _GlossyReflections: 1
     - _LightAngle: 45
+    - _MaxDistance: 10
     - _Metallic: 0
     - _Mode: 0
     - _OcclusionStrength: 1
@@ -79,8 +88,11 @@ Material:
     - _UVSec: 0
     - _ZWrite: 1
     m_Colors:
+    - MyColor: {r: 1, g: 1, b: 1, a: 1}
+    - MyLightDirection: {r: 0.11109638, g: 0.6919714, b: -0.7133254, a: 0}
+    - MyLightPosition: {r: 0.658, g: 5.229, b: -2.518, a: 0}
     - _Color: {r: 1, g: 1, b: 1, a: 1}
     - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
-    - _LightDirection: {r: -0.39, g: -0.29, b: 1, a: 0}
-    - _LightPosition: {r: 0, g: 0, b: 0, a: 0}
+    - _LightDirection: {r: -0.0010407176, g: -0.21671885, b: 0.9762344, a: 0}
+    - _LightPosition: {r: -0.24418378, g: 1.4884125, b: 16.90072, a: 0}
   m_BuildTextureStacks: []

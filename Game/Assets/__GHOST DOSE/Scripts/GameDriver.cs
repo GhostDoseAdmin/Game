@@ -12,6 +12,8 @@ public class GameDriver : MonoBehaviour
     public string MSG = "";
     public bool GAMESTART = false;
     public bool twoPlayer = false;
+    private GameObject WESTIN;
+    private GameObject TRAVIS;
 
     public static GameDriver instance;
     public NetworkDriver ND;
@@ -22,9 +24,9 @@ public class GameDriver : MonoBehaviour
     public Light ClientWeapLight;
     public Light ClientFlashLight;
 
-    private GameObject TRAVIS;
-    private GameObject WESTIN;
+    public string selectedRig;
 
+    private static utilities util;
 
     void Awake()
     {
@@ -32,10 +34,11 @@ public class GameDriver : MonoBehaviour
         MSG = "Welcome to GhostDose";
         ROOM = "room";
 
+        util = new utilities();
 
         //ONLY ONE CAN EXIST
         if (instance == null) { instance = this; DontDestroyOnLoad(gameObject); }
-        else { Debug.Log("IM DYING"); DestroyImmediate(gameObject); }
+        else { DestroyImmediate(gameObject); }
 
 
         ND = this.gameObject.AddComponent<NetworkDriver>();
@@ -59,11 +62,14 @@ public class GameDriver : MonoBehaviour
         SceneManager.sceneLoaded += OnSceneLoaded;
     }
 
+    
+    //----------------GAME SCENES----------------------
     private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
     {
+        Debug.Log("OnSceneLoad");
         GetComponent<LobbyControl>().enabled = false;
         SetupScene();
-        Debug.Log("OnSceneLoad");
+        
     }
 
 
@@ -72,58 +78,74 @@ public class GameDriver : MonoBehaviour
         {
 
             Debug.Log("SETTING UP SCENE");
+            TRAVIS = GameObject.Find("TRAVIS");
+            WESTIN = GameObject.Find("WESTIN");
+
             Client = GameObject.Find("Client");
 
+            //-------------LOBBY SELECTED RIGS---------------------------------
+            if (selectedRig.Length > 1)
+            {
+                
+                //TRAVIS RIGS
+                if (isTRAVIS){  
+                    if (TRAVIS.transform.GetChild(0).childCount > 0) { Debug.Log("Destroying Travis Rig "); DestroyImmediate(TRAVIS.transform.GetChild(0).GetChild(0).gameObject);}
+                    Instantiate(Resources.Load<GameObject>(selectedRig), TRAVIS.transform.GetChild(0).transform);
+                }
+                //WESTIN RIGS
+                else{
+                    if (WESTIN.transform.GetChild(0).childCount > 0) { Debug.Log("Destroying Westin Rig "); DestroyImmediate(WESTIN.transform.GetChild(0).GetChild(0).gameObject); }
+                        Instantiate(Resources.Load<GameObject>(selectedRig), WESTIN.transform.GetChild(0).transform);
+                }
+                Debug.Log(" INSTANTIATING RIG " + selectedRig);
+
+            }
+
+            
+
+           // Debug.Log("---------------------------------------------" + TRAVIS.transform.GetChild(0).childCount);
+            //------------CHECK FOR MISSING A RIG------------    
+                if (TRAVIS.transform.GetChild(0).childCount <= 0) { Debug.Log("Creating Default Rig for Travis"); Instantiate(Resources.Load<GameObject>("Prefabs/Rigs/Travis/TravisRigBasic"), TRAVIS.transform.GetChild(0).transform); }
+                if (WESTIN.transform.GetChild(0).childCount <= 0) { Debug.Log("Creating Default Rig for Westin"); Instantiate(Resources.Load<GameObject>("Prefabs/Rigs/Westin/WestinRigBasic"), WESTIN.transform.GetChild(0).transform); }
+            
 
 
-
-            //MISSING A RIG                
-            if (GameObject.Find("TRAVIS").transform.GetChild(0).transform.childCount == 0) { Debug.Log("NO RIG FOUND FOR TRAVIS"); Instantiate(Resources.Load<GameObject>("Prefabs/Rigs/Travis/TravisRigBasic"), GameObject.Find("TRAVIS").transform.GetChild(0).transform); }
-            if (GameObject.Find("WESTIN").transform.GetChild(0).transform.childCount == 0) { Debug.Log("NO RIG FOUND FOR WESTIN"); Instantiate(Resources.Load<GameObject>("Prefabs/Rigs/Westin/WestinRigBasic"), GameObject.Find("WESTIN").transform.GetChild(0).transform); }
-
-
-            //DISABLE MODELS
+            //---------DISABLE UNUSED PLAYER------------
             if (!isTRAVIS) { //PLAYING WESTIN
-                Instantiate(GameObject.Find("TRAVIS").transform.GetChild(0).transform.GetChild(0).gameObject, Client.transform); //gets TRAVIS rig and copys as client
-                GameObject.Find("TRAVIS").SetActive(false);
+                Instantiate(TRAVIS.transform.GetChild(0).transform.GetChild(0).gameObject, Client.transform); //gets TRAVIS rig and copys as client
+                Client.transform.position = TRAVIS.transform.position;
+                TRAVIS.SetActive(false);
                 
             }
             else {  //PLAYING TRAVIS
-                Instantiate(GameObject.Find("WESTIN").transform.GetChild(0).transform.GetChild(0).gameObject, Client.transform); //gets WESTIN rig and copys as client
-                GameObject.Find("WESTIN").SetActive(false);
+                Instantiate(WESTIN.transform.GetChild(0).transform.GetChild(0).gameObject, Client.transform); //gets WESTIN rig and copys as client
+                Client.transform.position = WESTIN.transform.position;
+                WESTIN.SetActive(false);
             }
 
             Player = GameObject.Find("Player");
 
-            //Setup flashlights 
-            Player.GetComponent<FlashlightSystem>().setupLightRefs();//find lights on heiarchy and create a ref to them
-            Client.GetComponent<ClientFlashlightSystem>().setupLightRefs();
-            //store light refs for ghost fx - this must happen before start where we disable lights
-            PlayerWeapLight = Player.GetComponent<FlashlightSystem>().WeaponLight; 
+            //----CLEAR ANIMATOR CACHE---
+            StartCoroutine(util.ReactivateAnimator(Client));
+            StartCoroutine(util.ReactivateAnimator(Player));
+
+            Player.GetComponent<PlayerController>().SetupRig();
+            Client.GetComponent<ClientPlayerController>().SetupRig();
+
+            //RIG GHOST VFX
+            PlayerWeapLight = Player.GetComponent<FlashlightSystem>().WeaponLight;
             PlayerFlashLight = Player.GetComponent<FlashlightSystem>().FlashLight;
             ClientWeapLight = Client.GetComponent<ClientFlashlightSystem>().WeaponLight;
             ClientFlashLight = Client.GetComponent<ClientFlashlightSystem>().FlashLight;
 
-            //----CLEAR ANIMATOR CACHE---
-            Client.SetActive(false);
-            Client.SetActive(true);
-            Player.SetActive(false);
-            Player.SetActive(true);
-
-            Vector3 clientStart = Client.transform.position;
-            Vector3 playerStart = Player.transform.position;
-
-
-
-            //SWAP OBJECTS
-            Client.transform.position = new Vector3(0f, 50f, 0f);
-            Player.transform.position = clientStart;
-            Client.transform.position = playerStart;
 
             GAMESTART = true;
 
         }
     }
+
+
+
 
 
 

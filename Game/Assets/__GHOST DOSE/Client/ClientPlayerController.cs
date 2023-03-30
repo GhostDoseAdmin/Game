@@ -101,6 +101,12 @@ public class ClientPlayerController : MonoBehaviour
     #region Start
     void Start()
 	{
+       // SetupRig();
+
+	}
+
+	public void SetupRig()
+	{
         util = new utilities();
 
         rightHandTarget = util.FindChildObject(this.gameObject.transform, "RHTarget").transform;
@@ -110,20 +116,16 @@ public class ClientPlayerController : MonoBehaviour
         shootPoint = util.FindChildObject(this.gameObject.transform, "ShootPoint").transform;
         muzzleFlash = util.FindChildObject(this.gameObject.transform, "MuzzleFlashEffect").GetComponent<ParticleSystem>();
         Shell = util.FindChildObject(this.gameObject.transform, "Puff").GetComponent<ParticleSystem>();
+		GetComponent<ClientFlashlightSystem>().RigLights();
 
         ND = GameObject.Find("GameController").GetComponent<GameDriver>().ND;
 
         anim = GetComponent<Animator>();
+    }
 
-        rightHandTrans = rightHand != null ? rightHand.GetComponentsInChildren<Transform>() : new Transform[0];
-		leftHandTrans = leftHand != null ? leftHand.GetComponentsInChildren<Transform>() : new Transform[0];
+        #endregion
 
-		Cursor.lockState = CursorLockMode.Locked;
-		Cursor.visible = false;
-	}
-    #endregion
-
-    private void FixedUpdate()
+        private void FixedUpdate()
     {
 		if (!ND.gameObject.GetComponent<GameDriver>().twoPlayer){ return; }
 

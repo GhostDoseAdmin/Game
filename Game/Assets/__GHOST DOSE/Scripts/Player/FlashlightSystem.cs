@@ -46,7 +46,7 @@ public class FlashlightSystem : MonoBehaviour
         instance = this;
     }
 
-    public void setupLightRefs()
+    public void RigLights()
     {
         util = new utilities();
 

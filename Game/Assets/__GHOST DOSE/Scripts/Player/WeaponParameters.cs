@@ -26,7 +26,7 @@ public class WeaponParameters : MonoBehaviour
     public static WeaponParameters instance;
     private static utilities util;
 
-    public void Awake()
+    public void RigWeapons()
     {
         util = new utilities();
 

@@ -10,7 +10,7 @@ public class LobbyControl : MonoBehaviour
     private GameObject ChooseBro;
     private GameObject WESTIN;
     private GameObject TRAVIS;
-    private GameObject startButton;
+
     private string MSG;
     public bool READY = false; 
     private bool chooseBro = false;
@@ -21,16 +21,22 @@ public class LobbyControl : MonoBehaviour
     public string otherBro ="";
 
     private string[] animations = { "Walk_Flashlight", "Pistol_Shot", "Knife_Attack", "Idle", "Running" };
-
+    private string[] travisRigs = { "Prefabs/Rigs/Travis/TravisRigBasic", "Prefabs/Rigs/EnemyRig", "Prefabs/Rigs/BasicDudeRig" };
+    private int travisRigIndex = 0;
+    private string[] westinRigs = { "Prefabs/Rigs/Westin/WestinRigBasic", "Prefabs/Rigs/EnemyRig", "Prefabs/Rigs/BasicDudeRig" };
+    private int westinRigIndex = 0;
+    private static utilities util;
 
     public void Awake()
     {
         if(SceneManager.GetActiveScene().name == "Lobby")
         {
+            util = new utilities();
             ChooseRoom = GameObject.Find("ChooseRoom");
             ChooseBro = GameObject.Find("ChooseBro");
             WESTIN = GameObject.Find("WESTIN");
             TRAVIS = GameObject.Find("TRAVIS");
+
             ChooseBro.SetActive(false);
             StartCoroutine(randomAnimations());
         }
@@ -56,8 +62,8 @@ public class LobbyControl : MonoBehaviour
                     {
                         ChooseRoom.SetActive(false);
                         ChooseBro.SetActive(true);
-                        WESTIN.transform.GetChild(0).gameObject.transform.GetChild(0).gameObject.GetComponent<Outline>().enabled = false;
-                        TRAVIS.transform.GetChild(0).gameObject.transform.GetChild(0).gameObject.GetComponent<Outline>().enabled = false;
+                        WESTIN.transform.GetChild(0).gameObject.GetComponent<Outline>().enabled = false; 
+                        TRAVIS.transform.GetChild(0).gameObject.GetComponent<Outline>().enabled = false;
                         GameObject.Find("InputField (TMP)").SetActive(false);
                         chooseBro = true;
                     }
@@ -74,15 +80,15 @@ public class LobbyControl : MonoBehaviour
 
                     if (selectedBro == "TRAVIS" || otherBro == "TRAVIS")
                     {
-                        TRAVIS.transform.GetChild(0).gameObject.transform.GetChild(0).gameObject.GetComponent<Outline>().enabled = true;
+                        TRAVIS.transform.GetChild(0).gameObject.GetComponent<Outline>().enabled = true;
                     }
-                    else { TRAVIS.transform.GetChild(0).gameObject.transform.GetChild(0).gameObject.GetComponent<Outline>().enabled = false; }
+                    else { TRAVIS.transform.GetChild(0).gameObject.GetComponent<Outline>().enabled = false; }
 
                     if (selectedBro == "WESTIN" || otherBro == "WESTIN")
                     {
-                        WESTIN.transform.GetChild(0).gameObject.transform.GetChild(0).gameObject.GetComponent<Outline>().enabled = true;
+                        WESTIN.transform.GetChild(0).gameObject.GetComponent<Outline>().enabled = true;
                     }
-                    else { WESTIN.transform.GetChild(0).gameObject.transform.GetChild(0).gameObject.GetComponent<Outline>().enabled = false; }
+                    else { WESTIN.transform.GetChild(0).gameObject.GetComponent<Outline>().enabled = false; }
 
 
 
@@ -100,7 +106,7 @@ public class LobbyControl : MonoBehaviour
                     }
                     else
                     {
-                        if (TRAVIS.transform.GetChild(0).gameObject.transform.GetChild(0).gameObject.GetComponent<Outline>().enabled && WESTIN.transform.GetChild(0).gameObject.transform.GetChild(0).gameObject.GetComponent<Outline>().enabled)
+                        if (TRAVIS.transform.GetChild(0).gameObject.GetComponent<Outline>().enabled && WESTIN.transform.GetChild(0).gameObject.GetComponent<Outline>().enabled)
                         {
                             READY = true; ChooseBro.SetActive(true);
                         }
@@ -128,8 +134,8 @@ public class LobbyControl : MonoBehaviour
 
     public void NextScene()
     {
-        if (selectedBro == "TRAVIS") { GetComponent<GameDriver>().isTRAVIS = true; }
-        if (selectedBro == "WESTIN") { GetComponent<GameDriver>().isTRAVIS = false; }
+        if (selectedBro == "TRAVIS") { GetComponent<GameDriver>().isTRAVIS = true; GetComponent<GameDriver>().selectedRig = travisRigs[travisRigIndex]; }
+        if (selectedBro == "WESTIN") { GetComponent<GameDriver>().isTRAVIS = false; GetComponent<GameDriver>().selectedRig = westinRigs[westinRigIndex]; }
         SceneManager.LoadScene("SceneMain");
         
     }
@@ -148,8 +154,43 @@ public class LobbyControl : MonoBehaviour
                 GameObject clickedObject = hit.collider.gameObject;
                 selectedBro = GetTopParentName(clickedObject);
 
-                Debug.Log(selectedBro);
-                GetComponent<NetworkDriver>().sioCom.Instance.Emit("bro", selectedBro.ToString(), true);
+            //-----------------------RIG SELECTOR------------------------------------
+            if(selectedBro.ToString()=="TRAVIS")
+            {
+                //CYCLE THROUGH RIGS ARRAY
+                travisRigIndex = (travisRigIndex + 1) % travisRigs.Length;
+                //DESTROY CURRENT RIG 
+                Destroy(GameObject.Find("TRAVIS").transform.GetChild(0).gameObject.transform.GetChild(0).gameObject);
+                //CREATE RIG BASED ON INDEX OF RIGS ARRAY
+                GameObject newRig = Instantiate(Resources.Load<GameObject>(travisRigs[travisRigIndex]), GameObject.Find("TRAVIS").transform.GetChild(0).transform);
+                //DESTROY OUTLINE 
+                DestroyImmediate(GameObject.Find("TRAVIS").transform.GetChild(0).gameObject.GetComponent<Outline>());
+                //REFRESH ANIMATOR 
+                StartCoroutine(util.ReactivateAnimator(GameObject.Find("TRAVIS").transform.GetChild(0).gameObject));
+                //REBUILD OUTLINE 
+                GameObject.Find("TRAVIS").transform.GetChild(0).gameObject.AddComponent<Outline>();
+                GameObject.Find("TRAVIS").transform.GetChild(0).gameObject.GetComponent<Outline>().OutlineColor = Color.green;
+                GameObject.Find("TRAVIS").transform.GetChild(0).gameObject.GetComponent<Outline>().OutlineWidth = 10f;
+            }
+            if (selectedBro.ToString() == "WESTIN")
+            {
+                //CYCLE THROUGH RIGS ARRAY
+                westinRigIndex = (westinRigIndex + 1) % westinRigs.Length;
+                //DESTROY CURRENT RIG 
+                Destroy(GameObject.Find("WESTIN").transform.GetChild(0).gameObject.transform.GetChild(0).gameObject);
+                //CREATE RIG BASED ON INDEX OF RIGS ARRAY
+                GameObject newRig = Instantiate(Resources.Load<GameObject>(westinRigs[westinRigIndex]), GameObject.Find("WESTIN").transform.GetChild(0).transform);
+                //DESTROY OUTLINE 
+                DestroyImmediate(GameObject.Find("WESTIN").transform.GetChild(0).gameObject.GetComponent<Outline>());
+                //REFRESH ANIMATOR 
+                StartCoroutine(util.ReactivateAnimator(GameObject.Find("WESTIN").transform.GetChild(0).gameObject));
+                //REBUILD OUTLINE 
+                GameObject.Find("WESTIN").transform.GetChild(0).gameObject.AddComponent<Outline>();
+                GameObject.Find("WESTIN").transform.GetChild(0).gameObject.GetComponent<Outline>().OutlineColor = Color.red;
+                GameObject.Find("WESTIN").transform.GetChild(0).gameObject.GetComponent<Outline>().OutlineWidth = 10f;
+            }
+
+            GetComponent<NetworkDriver>().sioCom.Instance.Emit("bro", selectedBro.ToString(), true);
 
             }
         
