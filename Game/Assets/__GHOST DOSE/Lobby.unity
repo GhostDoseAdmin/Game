@@ -371,12 +371,20 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: -4921004772163088015, guid: a635d842b268cd644bd244bf9a301bc9, type: 3}
+      propertyPath: m_Enabled
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 3829448304855166279, guid: a635d842b268cd644bd244bf9a301bc9, type: 3}
       propertyPath: wesRigCap
-      value: 3
+      value: 4
       objectReference: {fileID: 0}
     - target: {fileID: 3829448304855166279, guid: a635d842b268cd644bd244bf9a301bc9, type: 3}
       propertyPath: travRigCap
+      value: 4
+      objectReference: {fileID: 0}
+    - target: {fileID: 3829448304855166279, guid: a635d842b268cd644bd244bf9a301bc9, type: 3}
+      propertyPath: travRigList.Array.size
       value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 3829448304855166297, guid: a635d842b268cd644bd244bf9a301bc9, type: 3}
