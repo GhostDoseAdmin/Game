@@ -151,7 +151,7 @@ public class GameDriver : MonoBehaviour
             ClientWeapLight = Client.GetComponent<ClientFlashlightSystem>().WeaponLight;
             ClientFlashLight = Client.GetComponent<ClientFlashlightSystem>().FlashLight;
 
-
+            if (!twoPlayer) { ND.HOST = true; }
             GAMESTART = true;
 
         }
