@@ -108,7 +108,7 @@ public class Rig : EditorWindow
 
             string path;
             if(isTravis) { path = "Assets/Resources/Prefabs/Rigs/Travis/" + prefabName +".prefab"; }
-            else { path = "Assets/Resources/Prefabs/Rigs/Westin"; }
+            else { path = "Assets/Resources/Prefabs/Rigs/Westin/" + prefabName + ".prefab"; }
             //Store new object as prefab
             GameObject myNewPrefabRig = PrefabUtility.SaveAsPrefabAssetAndConnect(myModel, path, InteractionMode.UserAction);
             //get prfab

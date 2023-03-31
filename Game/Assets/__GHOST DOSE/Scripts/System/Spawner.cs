@@ -15,7 +15,7 @@ public class Spawner : MonoBehaviour
     void Start()
     {
         // Call SpawnPrefab() method every 5 seconds
-        InvokeRepeating("SpawnPrefab", 0f, 10f);
+        InvokeRepeating("SpawnPrefab", 0f, 5f);
         ND = GameObject.Find("GameController").GetComponent<GameDriver>().ND;
     }
 
@@ -24,7 +24,7 @@ public class Spawner : MonoBehaviour
         if (ND.HOST)
         {
             //choose enemy
-            int randomEnemy = Random.Range(0, enemies.Length);
+            int randomEnemy = 0;//Random.Range(0, enemies.Length);
             //if shadower
             if (enemies[randomEnemy].name.Contains("EnemyEatingGhost"))
             {
