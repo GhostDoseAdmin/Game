@@ -19,8 +19,7 @@ public class RigManager : MonoBehaviour
     {
         //myProperty = PlayerPrefs.GetInt("MyProperty", myProperty);
 
-        if (travRigCap > travRigList.Length) { travRigCap = travRigList.Length; Debug.LogWarning("RIG CAP OUT OF INDEX"); }
-        if (wesRigCap > wesRigList.Length) { wesRigCap = wesRigList.Length; Debug.LogWarning("RIG CAP OUT OF INDEX"); }
+
         //PlayerPrefs.SetInt("travRigCap", travRigCap);
         //PlayerPrefs.Save();
     }
@@ -28,6 +27,7 @@ public class RigManager : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        
+        if (travRigCap > travRigList.Length) { travRigCap = travRigList.Length; Debug.LogWarning("RIG CAP OUT OF INDEX"); }
+        if (wesRigCap > wesRigList.Length) { wesRigCap = wesRigList.Length; Debug.LogWarning("RIG CAP OUT OF INDEX"); }
     }
 }

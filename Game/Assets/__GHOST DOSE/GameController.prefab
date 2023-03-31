@@ -101,10 +101,11 @@ MonoBehaviour:
   - {fileID: 3443783506187641252, guid: 6f3178557d61ae74cb9064f177572305, type: 3}
   - {fileID: 9023778574130042930, guid: 260c84ca15dcb4d4d85e7f847dc10abb, type: 3}
   - {fileID: 6285688038646388570, guid: 6001e2254946dca48917eab89ca67d1e, type: 3}
+  - {fileID: 3639302675469303029, guid: 8552475fcb75cec4790ebf8bf7a5006b, type: 3}
   travCurrRig: 0
   wesCurrRig: 0
-  travRigCap: 3
-  wesRigCap: 3
+  travRigCap: 999
+  wesRigCap: 999
 --- !u!114 &-4921004772163088015
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -117,4 +118,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 946188278a36d294e8bc97cab3d3c386, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  prefab: {fileID: 0}
+  enemies: []
+  spawnSpeed: 0
