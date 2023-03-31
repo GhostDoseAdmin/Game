@@ -257,8 +257,9 @@ public class NetworkDriver : MonoBehaviour
             Debug.Log("RECEIVING CREATE " + data);
             Dictionary<string, string> dict = data.ToObject<Dictionary<string, string>>();
             Vector3 newPosition = new Vector3(float.Parse(dict["x"]), float.Parse(dict["y"]), float.Parse(dict["z"]));
-            GameObject newObject = Instantiate(GameObject.Find("Spawner").GetComponent<Spawner>().prefab, newPosition, Quaternion.identity);
-            newObject.name = dict["name"];
+            Spawner spawner = GameObject.Find("Spawner").GetComponent<Spawner>();
+            GameObject newEnemy = Instantiate(spawner.enemies[int.Parse(dict["z"])], newPosition, Quaternion.identity);
+            newEnemy.name = dict["name"];
 
         });
 

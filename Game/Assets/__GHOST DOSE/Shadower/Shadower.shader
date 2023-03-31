@@ -41,9 +41,14 @@ Shader "Custom/ShadowShader" {
 
             void surf(Input IN, inout SurfaceOutputStandard o) {
                 float3 direction = normalize(_LightPosition - IN.worldPos);
+                float distance = length(IN.worldPos - _LightPosition);
+                if (distance < 9.1) {
+                    //o.Alpha = 0;
+                    //return;
+                }
                 float scale = dot(direction, _LightDirection);
-                float strength = scale - cos(_LightAngle * (3.14 / 360.0));
-                strength = abs(0.7 - min(max(strength * _StrengthScalar, 0), 1));
+                float strength = scale - cos(70 * (3.14 / 360.0));
+                strength = abs(1 - min(max(strength * _StrengthScalar, 0), 1));
                 // Albedo comes from a texture tinted by color
                 fixed4 c = tex2D(_MainTex, IN.uv_MainTex) * _Color;
                 o.Albedo = c.rgb;

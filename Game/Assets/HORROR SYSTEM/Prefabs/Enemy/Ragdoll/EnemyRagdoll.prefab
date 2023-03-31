@@ -321,11 +321,11 @@ Transform:
   - {fileID: 3699724918621808595}
   - {fileID: 6148174865503902152}
   m_Father: {fileID: 0}
-  m_RootOrder: 2
+  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!95 &5756385851922440998
 Animator:
-  serializedVersion: 4
+  serializedVersion: 5
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
@@ -342,7 +342,8 @@ Animator:
   m_WarningMessage: 
   m_HasTransformHierarchy: 1
   m_AllowConstantClipSamplingOptimization: 1
-  m_KeepAnimatorControllerStateOnDisable: 0
+  m_KeepAnimatorStateOnDisable: 0
+  m_WriteDefaultValuesOnDisable: 0
 --- !u!1 &1961144349272110743
 GameObject:
   m_ObjectHideFlags: 0
@@ -1162,7 +1163,7 @@ SkinnedMeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 1dbca2fda25461843b34574628aa5c8d, type: 2}
+  - {fileID: 2100000, guid: 40d214a2d20a4284b904f1a547075745, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -2276,7 +2277,6 @@ PrefabInstance:
   m_ObjectHideFlags: 0
   serializedVersion: 2
   m_Modification:
-    serializedVersion: 2
     m_TransformParent: {fileID: 521840367784468863}
     m_Modifications:
     - target: {fileID: -8679921383154817045, guid: ee53726bf37b6d449bef76472e162c97, type: 3}
@@ -2332,7 +2332,6 @@ PrefabInstance:
       value: Knife_Enemy
       objectReference: {fileID: 0}
     m_RemovedComponents: []
-    m_AddedGameObjects: []
   m_SourcePrefab: {fileID: 100100000, guid: ee53726bf37b6d449bef76472e162c97, type: 3}
 --- !u!4 &1802256494756620702 stripped
 Transform:

@@ -5,34 +5,46 @@ using UnityEngine;
 
 public class Spawner : MonoBehaviour
 {
-    public GameObject prefab;
+    public GameObject[] enemies;
+
     private NetworkDriver ND;
 
-
+    private float spawnX;
+    private float spawnY;
+    public float spawnSpeed;
     void Start()
     {
         // Call SpawnPrefab() method every 5 seconds
-        InvokeRepeating("SpawnPrefab", 0f, 5f);
-        ND = GameObject.Find("NetworkDriver").GetComponent<NetworkDriver>();
+        InvokeRepeating("SpawnPrefab", 0f, 10f);
+        ND = GameObject.Find("GameController").GetComponent<GameDriver>().ND;
     }
 
     void SpawnPrefab()
     {
         if (ND.HOST)
         {
-            // Calculate random x and z values within the specified range
-            float x = Random.Range(-2, 2);
-            float z = Random.Range(17, 27);
+            //choose enemy
+            int randomEnemy = Random.Range(0, enemies.Length);
+            //if shadower
+            if (enemies[randomEnemy].name.Contains("EnemyEatingGhost"))
+            {
+                spawnX = Random.Range(-4, 4);
+                spawnY = Random.Range(9, 20);
+            }
+            if (enemies[randomEnemy].name.Contains("EnemyPatrolShadower"))
+            {
+                spawnX = Random.Range(-2, 2);
+                spawnY = Random.Range(17, 27);
+            }
 
-            // Instantiate the prefab at the calculated position and rotation
-            string objPref = "prefab";
-            Vector3 spawnPos = new Vector3(x, 0f, z);
-            GameObject enemy = Instantiate(prefab, spawnPos, Quaternion.identity);
-            enemy.name = enemy.name + (Time.time).ToString();//Time assigns unique name
-            Debug.LogWarning("PAWN " + spawnPos);
+                Vector3 spawnPos = new Vector3(spawnX, 0f, spawnY);
+                GameObject enemy = Instantiate(enemies[randomEnemy], spawnPos, Quaternion.identity);
+                enemy.name = enemy.name + (Time.time).ToString();//Time assigns unique name
+                Debug.LogWarning("SPAWN " + spawnPos);
 
-            string dict = $"{{'object':'{objPref}','name':'{enemy.name}',x:{spawnPos.x.ToString("F2")},y:{spawnPos.y.ToString("F2")},z:{spawnPos.z.ToString("F2")}}}";
-            ND.sioCom.Instance.Emit("create", JsonConvert.SerializeObject(dict), false);
-        }
+                string emitCmd = $"{{'index':'{randomEnemy}','name':'{enemy.name}',x:{spawnPos.x.ToString("F2")},y:{spawnPos.y.ToString("F2")},z:{spawnPos.z.ToString("F2")}}}";
+                ND.sioCom.Instance.Emit("create", JsonConvert.SerializeObject(emitCmd), false);
+                
+            }
     }
 }

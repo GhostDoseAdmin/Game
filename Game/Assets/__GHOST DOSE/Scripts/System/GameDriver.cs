@@ -33,7 +33,7 @@ public class GameDriver : MonoBehaviour
 
     void Awake()
     {
-        Debug.unityLogger.logEnabled = false;
+       // Debug.unityLogger.logEnabled = false;
 
         MSG = "Welcome to GhostDose";
         ROOM = "room";
