@@ -4,6 +4,8 @@ using static UnityEngine.ParticleSystem;
 
 public class GameDriver : MonoBehaviour
 {
+   
+
     public bool isTRAVIS = true;//which character is the player playing
     public GameObject Player;
     public GameObject Client;
@@ -31,6 +33,7 @@ public class GameDriver : MonoBehaviour
 
     void Awake()
     {
+        Debug.unityLogger.logEnabled = false;
 
         MSG = "Welcome to GhostDose";
         ROOM = "room";
