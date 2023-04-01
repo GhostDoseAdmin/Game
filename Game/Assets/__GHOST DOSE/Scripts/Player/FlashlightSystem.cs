@@ -124,13 +124,13 @@ public class FlashlightSystem : MonoBehaviour
             {
                 if (FlashLight.intensity <= maxFlashlightIntensity && FlashLight.intensity > 0)
                 {
-                    FlashLight.intensity -= (0.007f * Time.deltaTime) * maxFlashlightIntensity;
-                    batteryLevel.fillAmount -= 0.007f * Time.deltaTime;
+                    //FlashLight.intensity -= (0.007f * Time.deltaTime) * maxFlashlightIntensity;
+                    //batteryLevel.fillAmount -= 0.007f * Time.deltaTime;
                 }
 
                 if (FlashLight.intensity >= maxFlashlightIntensity)
                 {
-                    FlashLight.intensity = maxFlashlightIntensity;
+                    //FlashLight.intensity = maxFlashlightIntensity;
                 }
 
                 if (FlashLight.intensity <= 0)

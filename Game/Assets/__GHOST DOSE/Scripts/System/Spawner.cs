@@ -26,12 +26,12 @@ public class Spawner : MonoBehaviour
             //choose enemy
             int randomEnemy = 0;//Random.Range(0, enemies.Length);
             //if shadower
-            if (enemies[randomEnemy].name.Contains("EnemyEatingGhost"))
+            if (randomEnemy==0)//shadower
             {
                 spawnX = Random.Range(-4, 4);
                 spawnY = Random.Range(9, 20);
             }
-            if (enemies[randomEnemy].name.Contains("EnemyPatrolShadower"))
+            if (randomEnemy==1)
             {
                 spawnX = Random.Range(-2, 2);
                 spawnY = Random.Range(17, 27);

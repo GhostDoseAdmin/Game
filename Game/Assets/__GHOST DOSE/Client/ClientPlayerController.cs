@@ -90,8 +90,8 @@ public class ClientPlayerController : MonoBehaviour
     public float force;
     public Transform shootPoint;
 	public bool flashlighton =false;
-
-	private static utilities util;
+    public GameObject currLight;//tracks current light source
+    private static utilities util;
 
     private void Awake()
     {
@@ -165,7 +165,10 @@ public class ClientPlayerController : MonoBehaviour
     #region Update
     void Update() 
 	{
-		
+        //SET CURRENT LIGHT SOURCE FOR CLIENT
+        if (GetComponent<ClientFlashlightSystem>().FlashLight.enabled) { currLight = GetComponent<ClientFlashlightSystem>().FlashLight.gameObject; }
+        else if (GetComponent<ClientFlashlightSystem>().WeaponLight.enabled) { currLight = GetComponent<ClientFlashlightSystem>().WeaponLight.gameObject; }
+        else { currLight = null; }
 
 
     }

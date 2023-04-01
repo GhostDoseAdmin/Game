@@ -75,13 +75,9 @@ public class PlayerController : MonoBehaviour
 
 	private static utilities util;
 
+	public GameObject currLight;
 
     #region Start
-    private void Awake()
-    {
-       // SetupRig();
-    }
-
 
     public void SetupRig()
     {
@@ -121,6 +117,11 @@ public class PlayerController : MonoBehaviour
     }
     void Update() 
 	{
+		//SET CURRENT LIGHT SOURCE FOR PLAYER
+		if (GetComponent<FlashlightSystem>().FlashLight.enabled) { currLight = GetComponent<FlashlightSystem>().FlashLight.gameObject; }
+		else if (GetComponent<FlashlightSystem>().WeaponLight.enabled) { currLight = GetComponent<FlashlightSystem>().WeaponLight.gameObject; }
+		else { currLight = null; }
+        
 
         Locomotion();
 		Running();
