@@ -24,14 +24,14 @@ public class Spawner : MonoBehaviour
         if (ND.HOST)
         {
             //choose enemy
-            int randomEnemy = 0;//Random.Range(0, enemies.Length);
+            int randomEnemy = Random.Range(0, enemies.Length); ;//Random.Range(0, enemies.Length);
             //if shadower
-            if (randomEnemy==0)//shadower
+            if (randomEnemy==0)//GHOST
             {
                 spawnX = Random.Range(-4, 4);
                 spawnY = Random.Range(9, 20);
             }
-            if (randomEnemy==1)
+            if (randomEnemy==1)//SHADOWER
             {
                 spawnX = Random.Range(-2, 2);
                 spawnY = Random.Range(17, 27);

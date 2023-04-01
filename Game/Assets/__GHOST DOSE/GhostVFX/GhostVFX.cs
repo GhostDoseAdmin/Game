@@ -6,7 +6,7 @@ using Newtonsoft.Json;
 using UnityEditor.PackageManager;
 
 //[ExecuteInEditMode]
-public class LightHider : MonoBehaviour
+public class GhostVFX : MonoBehaviour
 {
 
 
@@ -28,7 +28,7 @@ public class LightHider : MonoBehaviour
 
         if (PlayerLight != null) 
         {
-            //DISABLLING LIGHT SOURCE ALSO STOPS FUNCTION OF VISIBILITY, INSTEAD WE CHANGE ANGLE to CLOSE THE LIGHT
+            //DISABLLING LIGHT SOURCE STOPS VISIBILITY RENDERING, MUST CHANGE PROPS INSTEAD
             float spotAngle = PlayerLight.GetComponent<Light>().spotAngle;
             if (!PlayerLight.GetComponent<Light>().enabled) { spotAngle = 1; } 
             GetComponent<SkinnedMeshRenderer>().material.SetVector("_LightPositionPlayer", PlayerLight.transform.position);
