@@ -1,9 +1,4 @@
-﻿using System;
-using UnityEngine;
-using System.Collections;
-using System.Runtime.CompilerServices;
-using Newtonsoft.Json;
-using UnityEditor.PackageManager;
+﻿using UnityEngine;
 
 //[ExecuteInEditMode]
 public class GhostVFX : MonoBehaviour
@@ -14,10 +9,12 @@ public class GhostVFX : MonoBehaviour
     public GameObject ClientLight;
     private GameObject EnvLight;
     private GameDriver GD;
+    private string shader;
 
     public void Start()
     {
         GD = GameObject.Find("GameController").GetComponent<GameDriver>();
+        shader = GetComponent<SkinnedMeshRenderer>().material.shader.name;
     }
 
     public void Update()
@@ -57,21 +54,27 @@ public class GhostVFX : MonoBehaviour
 
     private GameObject ClosestEnvLight()//used to have some light control if not reading by cone
     {
-        GameObject[] shadowerLights = GameObject.FindGameObjectsWithTag("GhostLight");
-        GameObject closestLight = null;
-        float closestDistance = Mathf.Infinity;
-        foreach (GameObject shadowerLight in shadowerLights)
+        GameObject[] lights;
+        if (shader == "Custom/Ghost") {  lights = GameObject.FindGameObjectsWithTag("GhostLight");  }
+        else { lights = GameObject.FindGameObjectsWithTag("ShadowerLight"); }
+        if (lights != null)
         {
-            float distance = Vector3.Distance(transform.position, shadowerLight.transform.position);
-            if (shadowerLight.GetComponent<Light>().intensity > 5) { distance = distance * 0.5f; }//higher intesity lights keep the control
-            if (distance < closestDistance)
+            GameObject closestLight = null;
+            float closestDistance = Mathf.Infinity;
+            foreach (GameObject light in lights)
             {
-                closestDistance = distance;
-                closestLight = shadowerLight;
+                float distance = Vector3.Distance(transform.position, light.transform.position);
+                if (light.GetComponent<Light>().intensity > 5) { distance = distance * 0.5f; }//higher intesity lights keep the control
+                if (distance < closestDistance)
+                {
+                    closestDistance = distance;
+                    closestLight = light;
+                }
             }
+            //Debug.Log("HOME LIGHT " + closestLight.name);
+            return closestLight;
         }
-        //Debug.Log("HOME LIGHT " + closestLight.name);
-        return closestLight;
+        else { Debug.Log("No ghost lights found!"); return null; }
     }
 
 }
