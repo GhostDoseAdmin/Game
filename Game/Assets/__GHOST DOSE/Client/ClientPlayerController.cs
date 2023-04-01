@@ -166,9 +166,9 @@ public class ClientPlayerController : MonoBehaviour
     void Update() 
 	{
         //SET CURRENT LIGHT SOURCE FOR CLIENT
-        if (GetComponent<ClientFlashlightSystem>().FlashLight.enabled) { currLight = GetComponent<ClientFlashlightSystem>().FlashLight.gameObject; }
+        if (GetComponent<ClientFlashlightSystem>().FlashLight.GetComponent<Light>().enabled) { currLight = GetComponent<ClientFlashlightSystem>().FlashLight.gameObject; }
         else if (GetComponent<ClientFlashlightSystem>().WeaponLight.enabled) { currLight = GetComponent<ClientFlashlightSystem>().WeaponLight.gameObject; }
-        else { currLight = null; }
+
 
 
     }

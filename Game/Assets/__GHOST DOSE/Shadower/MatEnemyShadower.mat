@@ -8,7 +8,7 @@ Material:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_Name: MatEnemyShadower
-  m_Shader: {fileID: 4800000, guid: 7f0771cbff8b8924fbd64161a96bad9b, type: 3}
+  m_Shader: {fileID: 4800000, guid: 8c6ba10712e134a458666894a7d7190f, type: 3}
   m_ValidKeywords: []
   m_InvalidKeywords:
   - _METALLICGLOSSMAP
@@ -80,6 +80,9 @@ Material:
     - _LightAngle: 45
     - _LightAngle1: 45
     - _LightAngle2: 45
+    - _LightAngleClient: 45
+    - _LightAngleEnv: 45
+    - _LightAnglePlayer: 45
     - _MaxDistance: 0
     - _Metallic: 0
     - _Mode: 0
@@ -103,7 +106,13 @@ Material:
     - _LightDirection: {r: -0.116555825, g: -0.15204822, b: 0.98147774, a: 0}
     - _LightDirection1: {r: 0, g: 0, b: 1, a: 0}
     - _LightDirection2: {r: 0, g: 0, b: 1, a: 0}
+    - _LightDirectionClient: {r: 0, g: 0, b: 1, a: 0}
+    - _LightDirectionEnv: {r: 0, g: 0, b: 1, a: 0}
+    - _LightDirectionPlayer: {r: 0, g: 0, b: 1, a: 0}
     - _LightPosition: {r: 2.5767055, g: 0.82952094, b: 23.210276, a: 0}
     - _LightPosition1: {r: 0, g: 0, b: 0, a: 0}
     - _LightPosition2: {r: 0, g: 0, b: 0, a: 0}
+    - _LightPositionClient: {r: 0, g: 0, b: 0, a: 0}
+    - _LightPositionEnv: {r: 0, g: 0, b: 0, a: 0}
+    - _LightPositionPlayer: {r: 0, g: 0, b: 0, a: 0}
   m_BuildTextureStacks: []

@@ -117,11 +117,6 @@ public class PlayerController : MonoBehaviour
     }
     void Update() 
 	{
-		//SET CURRENT LIGHT SOURCE FOR PLAYER
-		if (GetComponent<FlashlightSystem>().FlashLight.enabled) { currLight = GetComponent<FlashlightSystem>().FlashLight.gameObject; }
-		else if (GetComponent<FlashlightSystem>().WeaponLight.enabled) { currLight = GetComponent<FlashlightSystem>().WeaponLight.gameObject; }
-		else { currLight = null; }
-        
 
         Locomotion();
 		Running();
@@ -147,12 +142,17 @@ public class PlayerController : MonoBehaviour
         if (Time.time > action_timer + action_delay)
             {
 			bool flashlighton = false;
-			if (gameObject.GetComponent<FlashlightSystem>().FlashLight.enabled || gameObject.GetComponent<FlashlightSystem>().WeaponLight.enabled) { flashlighton = true; }
+			if (gameObject.GetComponent<FlashlightSystem>().FlashLight.isActiveAndEnabled || gameObject.GetComponent<FlashlightSystem>().WeaponLight.enabled) { flashlighton = true; }
                 string actions = $"{{'flashlight':'{flashlighton}','flintensity':'{gameObject.GetComponent<FlashlightSystem>().FlashLight.intensity}','aim':'{Input.GetMouseButton(1)}','walk':'{walk.ToString("F0")}','strafe':'{strafe.ToString("F0")}','run':'{Input.GetKey(InputManager.instance.running)}','x':'{transform.position.x.ToString("F2")}','y':'{transform.position.y.ToString("F2")}','z':'{transform.position.z.ToString("F2")}','speed':'{speed.ToString("F2")}','rx':'{transform.eulerAngles.x.ToString("F0")}','ry':'{transform.eulerAngles.y.ToString("F0")}','rz':'{transform.eulerAngles.z.ToString("F0")}','ax':'{crosshairPos.x.ToString("F0")}','ay':'{crosshairPos.y.ToString("F0")}','az':'{crosshairPos.z.ToString("F0")}'}}";
 				if (actions != prevEmit) { ND.sioCom.Instance.Emit("player_action", JsonConvert.SerializeObject(actions), false); prevEmit = actions; }
                 action_timer = Time.time;//cooldown
 			}
+		Debug.Log(anim.GetBool("Idle_flashlight"));
+        Debug.Log(GetComponent<Animator>().GetCurrentAnimatorClipInfo(0)[0].clip.name);
 
+        //CHOOSE LIGHT SOURCE
+        if (GetComponent<FlashlightSystem>().FlashLight.GetComponent<Light>().enabled) {  currLight = GetComponent<FlashlightSystem>().FlashLight.gameObject; }
+        else if (GetComponent<FlashlightSystem>().WeaponLight.GetComponent<Light>().enabled) {  currLight = GetComponent<FlashlightSystem>().WeaponLight.gameObject; }
     }
     #endregion
 
@@ -294,7 +294,9 @@ public class PlayerController : MonoBehaviour
 				else
                 {
 					gameObject.GetComponent<FlashlightSystem>().WeaponLight.enabled = false;
-				}
+                    gameObject.GetComponent<FlashlightSystem>().handFlashlight.SetActive(false);
+                    gameObject.GetComponent<FlashlightSystem>().FlashLight.enabled = false;
+                }
 
 				is_PistolAim = true;
 				anim.SetBool("Pistol", true);
@@ -341,7 +343,7 @@ public class PlayerController : MonoBehaviour
     {
 		if (Input.GetKeyDown(InputManager.instance.flashlightSwitch) && is_FlashlightAim == false)
 		{
-			if (gameObject.GetComponent<FlashlightSystem>().hasFlashlight == true)
+			//if (gameObject.GetComponent<FlashlightSystem>().hasFlashlight == true)
             {
 				is_Flashlight = true;
 				is_FlashlightAim = true;
@@ -354,14 +356,14 @@ public class PlayerController : MonoBehaviour
 			is_Flashlight = false;
 			is_FlashlightAim = false;
 			anim.SetBool("Flashlight", false);
-		}
+        }
 
-		if (gameObject.GetComponent<FlashlightSystem>().FlashLight.intensity <= 0)
+		/*if (gameObject.GetComponent<FlashlightSystem>().FlashLight.intensity <= 0)
         {
 			is_Flashlight = false;
 			is_FlashlightAim = false;
 			anim.SetBool("Flashlight", false);
-		}
+		}*/
 	}
 
 	/*protected void IKFlashlight1()

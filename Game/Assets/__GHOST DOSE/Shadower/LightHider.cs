@@ -3,16 +3,17 @@ using UnityEngine;
 using System.Collections;
 using System.Runtime.CompilerServices;
 using Newtonsoft.Json;
+using UnityEditor.PackageManager;
 
 //[ExecuteInEditMode]
-public class ShadowRevealV2 : MonoBehaviour
+public class LightHider : MonoBehaviour
 {
 
 
     public GameObject PlayerLight;
     public GameObject ClientLight;
-    public GameObject EnvLight;
-    public GameDriver GD;
+    private GameObject EnvLight;
+    private GameDriver GD;
 
     public void Start()
     {
@@ -23,30 +24,38 @@ public class ShadowRevealV2 : MonoBehaviour
     {
         PlayerLight = GD.Player.GetComponent<PlayerController>().currLight;
         ClientLight = GD.Client.GetComponent<ClientPlayerController>().currLight;
-        EnvLight = GetClosestLight();
+        EnvLight = ClosestEnvLight();
 
-        if (PlayerLight != null && PlayerLight.GetComponent<Light>().isActiveAndEnabled)
+        if (PlayerLight != null) 
         {
+            //DISABLLING LIGHT SOURCE ALSO STOPS FUNCTION OF VISIBILITY, INSTEAD WE CHANGE ANGLE to CLOSE THE LIGHT
+            float spotAngle = PlayerLight.GetComponent<Light>().spotAngle;
+            if (!PlayerLight.GetComponent<Light>().enabled) { spotAngle = 1; } 
             GetComponent<SkinnedMeshRenderer>().material.SetVector("_LightPositionPlayer", PlayerLight.transform.position);
             GetComponent<SkinnedMeshRenderer>().material.SetVector("_LightDirectionPlayer", -PlayerLight.transform.forward);
-            GetComponent<SkinnedMeshRenderer>().material.SetFloat("_LightAnglePlayer", PlayerLight.GetComponent<Light>().spotAngle);
+            GetComponent<SkinnedMeshRenderer>().material.SetFloat("_LightAnglePlayer", spotAngle);
+            
         }
-        if (ClientLight != null && ClientLight.GetComponent<Light>().isActiveAndEnabled)
+        if (ClientLight != null)
         {
+            float spotAngle = ClientLight.GetComponent<Light>().spotAngle;
+            if (!ClientLight.GetComponent<Light>().enabled) { spotAngle = 1; }
             GetComponent<SkinnedMeshRenderer>().material.SetVector("_LightPositionClient", ClientLight.transform.position);
             GetComponent<SkinnedMeshRenderer>().material.SetVector("_LightDirectionClient", -ClientLight.transform.forward);
-            GetComponent<SkinnedMeshRenderer>().material.SetFloat("_LightAngleClient", ClientLight.GetComponent<Light>().spotAngle);
+            GetComponent<SkinnedMeshRenderer>().material.SetFloat("_LightAngleClient", spotAngle);
         }
-       if (EnvLight != null && EnvLight.GetComponent<Light>().isActiveAndEnabled)
+       if (EnvLight != null)
         {
+            float spotAngle = EnvLight.GetComponent<Light>().spotAngle;
+            if (!EnvLight.GetComponent<Light>().enabled) { spotAngle = 1; }
             GetComponent<SkinnedMeshRenderer>().material.SetVector("_LightPositionEnv", EnvLight.transform.position);
             GetComponent<SkinnedMeshRenderer>().material.SetVector("_LightDirectionEnv", -EnvLight.transform.forward);
-            GetComponent<SkinnedMeshRenderer>().material.SetFloat("_LightAngleEnv", EnvLight.GetComponent<Light>().spotAngle);
+            GetComponent<SkinnedMeshRenderer>().material.SetFloat("_LightAngleEnv", spotAngle);
         }
 
     }
 
-    private GameObject GetClosestLight()//used to have some light control if not reading by cone
+    private GameObject ClosestEnvLight()//used to have some light control if not reading by cone
     {
         GameObject[] shadowerLights = GameObject.FindGameObjectsWithTag("GhostLight");
         GameObject closestLight = null;
@@ -61,7 +70,7 @@ public class ShadowRevealV2 : MonoBehaviour
                 closestLight = shadowerLight;
             }
         }
-        Debug.Log("HOME LIGHT " + closestLight.name);
+        //Debug.Log("HOME LIGHT " + closestLight.name);
         return closestLight;
     }
 

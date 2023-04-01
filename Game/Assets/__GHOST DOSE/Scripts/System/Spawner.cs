@@ -39,6 +39,7 @@ public class Spawner : MonoBehaviour
 
                 Vector3 spawnPos = new Vector3(spawnX, 0f, spawnY);
                 GameObject enemy = Instantiate(enemies[randomEnemy], spawnPos, Quaternion.identity);
+                enemy.transform.localScale = enemies[randomEnemy].transform.localScale;
                 enemy.name = enemy.name + (Time.time).ToString();//Time assigns unique name
                 Debug.LogWarning("SPAWN " + spawnPos);
 
