@@ -398,7 +398,7 @@ PrefabInstance:
     - target: {fileID: 3829448304855166279, guid: a635d842b268cd644bd244bf9a301bc9, type: 3}
       propertyPath: travRigList.Array.data[3]
       value: 
-      objectReference: {fileID: 6667611303305905577, guid: 496c0ea6abac34d4db1928ae4ae97c9b, type: 3}
+      objectReference: {fileID: 204011664021340710, guid: 12823541284a06f498bb48db11ca7223, type: 3}
     - target: {fileID: 3829448304855166297, guid: a635d842b268cd644bd244bf9a301bc9, type: 3}
       propertyPath: m_RootOrder
       value: 0
@@ -20636,6 +20636,8 @@ MonoBehaviour:
   flashlightClick: FlashlightClick
   reloadBattery: ReloadBattery
   isFlashlightOn: 0
+  weapLightAngle: 45
+  weapLightIntensity: 2
 --- !u!1 &5055496213087247204
 GameObject:
   m_ObjectHideFlags: 0
@@ -21038,6 +21040,8 @@ MonoBehaviour:
   flashlightClick: FlashlightClick
   reloadBattery: ReloadBattery
   isFlashlightOn: 0
+  weapLightAngle: 45
+  weapLightIntensity: 2
 --- !u!114 &5055957529509440851
 MonoBehaviour:
   m_ObjectHideFlags: 0
