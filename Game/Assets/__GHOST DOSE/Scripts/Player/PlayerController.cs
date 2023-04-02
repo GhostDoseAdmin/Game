@@ -4,6 +4,7 @@ using System.Collections;
 using UnityEngine.UI;
 using Newtonsoft.Json;
 using System.Linq;
+using UnityEngine.Experimental.GlobalIllumination;
 
 public class PlayerController : MonoBehaviour
 {
@@ -76,7 +77,7 @@ public class PlayerController : MonoBehaviour
 	private static utilities util;
 
 	public GameObject currLight;
-
+	private bool flash;
     #region Start
 
     public void SetupRig()
@@ -147,8 +148,6 @@ public class PlayerController : MonoBehaviour
 				if (actions != prevEmit) { ND.sioCom.Instance.Emit("player_action", JsonConvert.SerializeObject(actions), false); prevEmit = actions; }
                 action_timer = Time.time;//cooldown
 			}
-		Debug.Log(anim.GetBool("Idle_flashlight"));
-        Debug.Log(GetComponent<Animator>().GetCurrentAnimatorClipInfo(0)[0].clip.name);
 
         //CHOOSE LIGHT SOURCE
         if (GetComponent<FlashlightSystem>().FlashLight.GetComponent<Light>().enabled) {  currLight = GetComponent<FlashlightSystem>().FlashLight.gameObject; }
@@ -281,7 +280,8 @@ public class PlayerController : MonoBehaviour
 		{
 			if (Input.GetMouseButton(1)) //AIMING
 			{
-				
+
+                Debug.Log(targetParams(100));
                 if (is_FlashlightAim)
                 {
 					anim.SetBool("Flashlight", false);
@@ -293,7 +293,7 @@ public class PlayerController : MonoBehaviour
                 }
 				else
                 {
-					gameObject.GetComponent<FlashlightSystem>().WeaponLight.enabled = false;
+					if(!flash) {gameObject.GetComponent<FlashlightSystem>().WeaponLight.enabled = false;} 
                     gameObject.GetComponent<FlashlightSystem>().handFlashlight.SetActive(false);
                     gameObject.GetComponent<FlashlightSystem>().FlashLight.enabled = false;
                 }
@@ -304,13 +304,31 @@ public class PlayerController : MonoBehaviour
 				canShoot = true;
 
 
-                //shoot
-                //if (Input.GetMouseButton(0))
+                //-------------------------------SHOOTING -----------------------------------
                 if (Input.GetMouseButtonDown(0))
                 {
-					anim.SetBool("Shoot", true);
-					if (shootPistol.Shoot()) { ND.sioCom.Instance.Emit("shoot", JsonConvert.SerializeObject($"{{'weapon':'camera'}}"), false); }
 
+                    
+                    anim.SetBool("Shoot", true);
+					if (shootPistol.Shoot()) {
+                        //--------------------------FLASH-------------------------------------
+						bool weapLightState = GetComponent<FlashlightSystem>().WeaponLight.enabled;
+                        GetComponent<FlashlightSystem>().WeaponLight.enabled = true;
+                            GetComponent<FlashlightSystem>().WeaponLight.spotAngle = 125;
+                            GetComponent<FlashlightSystem>().WeaponLight.intensity = 15;
+                            StartCoroutine(stopFlash());
+						flash = true;
+                        IEnumerator stopFlash()
+						{
+                            yield return new WaitForSeconds(0.2f);
+                            GetComponent<FlashlightSystem>().WeaponLight.spotAngle = GetComponent<FlashlightSystem>().WeaponLight.spotAngle = GetComponent<FlashlightSystem>().weapLightAngle;
+                            GetComponent<FlashlightSystem>().WeaponLight.intensity = GetComponent<FlashlightSystem>().WeaponLight.intensity = GetComponent<FlashlightSystem>().weapLightIntensity;
+							GetComponent<FlashlightSystem>().WeaponLight.enabled = weapLightState;//was weaplight on previously
+                            flash = false;
+                        }
+
+                        ND.sioCom.Instance.Emit("shoot", JsonConvert.SerializeObject($"{{'weapon':'camera'}}"), false); 
+					}
                 }
 				else if (Input.GetMouseButtonUp(0))
 				{
@@ -357,35 +375,44 @@ public class PlayerController : MonoBehaviour
 			is_FlashlightAim = false;
 			anim.SetBool("Flashlight", false);
         }
-
-		/*if (gameObject.GetComponent<FlashlightSystem>().FlashLight.intensity <= 0)
-        {
-			is_Flashlight = false;
-			is_FlashlightAim = false;
-			anim.SetBool("Flashlight", false);
-		}*/
 	}
 
-	/*protected void IKFlashlight1()
+	private int targetParams(float distance)
 	{
-		this.pivot.position = this.shoulder.position;
-
-		if (is_FlashlightAim)
+		//RETUNRS 1 for visible 2 for headshot
+        RaycastHit hit;
+		if (Physics.Raycast(GetComponent<ShootingSystem>().shootPoint.position, GetComponent<ShootingSystem>().shootPoint.forward, out hit, distance))
 		{
-			this.pivot.LookAt(this.targetPos);
-			this.SetisFlashlightWeight(1f, 0.3f, 1f);
-		}
-		else
-		{
-			this.SetisFlashlightWeight(0.3f, 0, 0);
-		}
-	}*/
+			string ghostType = hit.collider.gameObject.transform.root.tag;
 
-	/*private void SetisFlashlightWeight(float weight, float bodyWeight, float headWeight)
-	{
-		this.anim.SetLookAtWeight(weight, bodyWeight, headWeight);
-		this.anim.SetLookAtPosition(this.targetPos.position);
-	}*/
+			if (ghostType == "Ghost")
+			{
+				//Ensure mesh can be read
+				if (hit.collider.gameObject.transform.root.transform.GetChild(0) != null)
+				{
+					//check if either in visibility light or flashlight
+					if (GetComponent<FlashlightSystem>().WeaponLight.GetComponent<Light>().enabled || hit.collider.gameObject.transform.root.transform.GetChild(0).GetComponent<GhostVFX>().visible)
+					{
+						if (hit.collider.gameObject.name == "mixamorig:Head") { Debug.Log("HEAD"); return 2; }
+						else { return 1; }
+					}
+				}
+
+			}
+			if (ghostType == "Shadower" && !GetComponent<FlashlightSystem>().WeaponLight.GetComponent<Light>().enabled)
+			{
+				//---------CHECKS TO SEE IF SHADOWER IS IN ITS SPOTLIGHT
+				if (hit.collider.gameObject.transform.root.transform.GetChild(0).GetComponent<GhostVFX>().visible)
+				{
+					if (hit.collider.gameObject.name == "mixamorig:Head") { Debug.Log("HEAD"); return 2; }
+					else { return 1; }
+				}
+			}
+			// else{ Debug.Log("CAN NOT HIT"); }
+		}
+		 return 0; //NO TARGET FOUND
+    }
+
 	#endregion
 
 	void OnAnimatorIK()
