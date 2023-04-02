@@ -385,8 +385,20 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3829448304855166279, guid: a635d842b268cd644bd244bf9a301bc9, type: 3}
       propertyPath: travRigList.Array.size
-      value: 3
+      value: 4
       objectReference: {fileID: 0}
+    - target: {fileID: 3829448304855166279, guid: a635d842b268cd644bd244bf9a301bc9, type: 3}
+      propertyPath: travRigList.Array.data[1]
+      value: 
+      objectReference: {fileID: 5372451357329866774, guid: c3299049e1a33544eb34519a9a0017c2, type: 3}
+    - target: {fileID: 3829448304855166279, guid: a635d842b268cd644bd244bf9a301bc9, type: 3}
+      propertyPath: travRigList.Array.data[2]
+      value: 
+      objectReference: {fileID: 8834743667026233280, guid: 18e10aa4694e4a84d92d1bc6b542022d, type: 3}
+    - target: {fileID: 3829448304855166279, guid: a635d842b268cd644bd244bf9a301bc9, type: 3}
+      propertyPath: travRigList.Array.data[3]
+      value: 
+      objectReference: {fileID: 6667611303305905577, guid: 496c0ea6abac34d4db1928ae4ae97c9b, type: 3}
     - target: {fileID: 3829448304855166297, guid: a635d842b268cd644bd244bf9a301bc9, type: 3}
       propertyPath: m_RootOrder
       value: 0
@@ -20567,6 +20579,7 @@ MonoBehaviour:
   getFrom: GetFrom
   speed: 0
   prevSpeed: 0
+  currLight: {fileID: 0}
 --- !u!114 &5055496213087247198
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -20885,6 +20898,7 @@ MonoBehaviour:
   getFrom: GetFrom
   speed: 0
   prevSpeed: 0
+  currLight: {fileID: 0}
 --- !u!82 &5055957529509440848
 AudioSource:
   m_ObjectHideFlags: 0
