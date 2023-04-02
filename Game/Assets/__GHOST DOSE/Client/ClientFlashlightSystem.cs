@@ -55,10 +55,10 @@ public class ClientFlashlightSystem : MonoBehaviour
         FlashLight.intensity = flashLightIntensity;
         WeaponLight.spotAngle = weapLightAngle;
         WeaponLight.intensity = weapLightIntensity;
-        
 
+        GetComponent<ClientPlayerController>().currLight = FlashLight.gameObject;
 
-    Debug.Log("Client Lights Setup");
+        Debug.Log("Client Lights Setup");
     }
 
     public void Start()

@@ -67,6 +67,7 @@ public class FlashlightSystem : MonoBehaviour
         WeaponLight.spotAngle = weapLightAngle;
         WeaponLight.intensity = weapLightIntensity;
 
+        GetComponent<PlayerController>().currLight =FlashLight.gameObject; 
 
         Debug.Log("Player Lights Setup");
 

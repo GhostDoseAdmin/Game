@@ -77,7 +77,7 @@ public class GameDriver : MonoBehaviour
     }
 
 
-    public void SetupScene()
+    public void SetupScene()//ON AWAKE OR SCENE LOAD
     {
         {
 

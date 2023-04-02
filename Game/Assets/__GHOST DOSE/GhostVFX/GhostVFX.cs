@@ -9,6 +9,7 @@ public class GhostVFX : MonoBehaviour
 
     public GameObject PlayerLight;
     public GameObject ClientLight;
+    GameObject[] envLights;
     private GameObject EnvLight;
     private GameDriver GD;
     public List<Light> LightSources;
@@ -23,15 +24,18 @@ public class GhostVFX : MonoBehaviour
 
     public void Update()
     {
-        //PlayerLight = GD.Player.GetComponent<PlayerController>().currLight;
-        //ClientLight = GD.Client.GetComponent<ClientPlayerController>().currLight;
-        //EnvLight = ClosestEnvLight();
+        PlayerLight = GD.Player.GetComponent<PlayerController>().currLight;
+        ClientLight = GD.Client.GetComponent<ClientPlayerController>().currLight;
 
 
-        if (PlayerLight != null)
+        //if (PlayerLight != null && ClientLight != null)
         {
 
-            GameObject[] envLights = GameObject.FindGameObjectsWithTag("ShadowerLight");
+            if (shader == "Custom/Ghost") { envLights = GameObject.FindGameObjectsWithTag("GhostLight"); }
+            else { envLights = GameObject.FindGameObjectsWithTag("ShadowerLight"); }
+
+            //GameObject.FindGameObjectsWithTag("ShadowerLight");
+
             int lightCount = envLights.Length + 2;
 
             Vector4[] lightPositions = new Vector4[lightCount];
@@ -59,17 +63,19 @@ public class GhostVFX : MonoBehaviour
             //Debug.Log($"PlayerLight position: {PlayerLight.transform.position}, direction: {-PlayerLight.transform.forward}, spotAngle: {PlayerLight.GetComponent<Light>().spotAngle}");
             //Debug.Log($"ClientLight position: {ClientLight.transform.position}, direction: {-ClientLight.transform.forward}, spotAngle: {ClientLight.GetComponent<Light>().spotAngle}");
 
-
             //ADD IN ENVIRONMENT LIGHT SOURCES
             for (int i = 0; i < lightCount - 2; i++)
             {
                 lightSource = envLights[i].GetComponent<Light>();
+                
                 lightPositions[i + 2] = lightSource.transform.position;
                 lightDirections[i + 2] = -lightSource.transform.forward;
                 lightAngles[i + 2] = lightSource.spotAngle;
-                ScalarStrengths[i + 2] = 20; // You can adjust this value or add a custom property to the Light component to store the strength scalar.
+                ScalarStrengths[i + 2] = 30; // You can adjust this value or add a custom property to the Light component to store the strength scalar.
             }
+            IsVisible(envLights);
 
+            Debug.Log(visible);
             // Set the data to the shader
             GetComponent<SkinnedMeshRenderer>().material.SetInt("_LightCount", lightCount);
             GetComponent<SkinnedMeshRenderer>().material.SetVectorArray("_LightPositions", lightPositions);
@@ -77,58 +83,34 @@ public class GhostVFX : MonoBehaviour
             GetComponent<SkinnedMeshRenderer>().material.SetFloatArray("_LightAngles", lightAngles);
             GetComponent<SkinnedMeshRenderer>().material.SetFloatArray("_StrengthScalarLight", ScalarStrengths);
 
-
+            /* //DEBUGGING SHADER OUTPUT
             Debug.Log($"Light count: {lightCount}");
             Debug.Log($"Light positions: {string.Join(", ", lightPositions.Select(pos => pos.ToString()))}");
             Debug.Log($"Light directions: {string.Join(", ", lightDirections.Select(dir => dir.ToString()))}");
             Debug.Log($"Light angles: {string.Join(", ", lightAngles.Select(angle => angle.ToString()))}");
             Debug.Log($"Scalar strengths: {string.Join(", ", ScalarStrengths.Select(str => str.ToString()))}");
+            */
 
         }
 
+    }
 
-        /*
-        if (PlayerLight != null) 
+    private void IsVisible(GameObject[] lights)
+    {
+
+        //DEFAULT VISIBLIITY
+        if (shader == "Custom/Ghost") { visible = false; }
+        else { visible = true; }
+
+        for (int i = 0; i < lights.Length; i++)
         {
-            //DISABLLING LIGHT SOURCE STOPS VISIBILITY RENDERING, MUST CHANGE PROPS INSTEAD
-            float spotAngle = PlayerLight.GetComponent<Light>().spotAngle;
-            if (!PlayerLight.GetComponent<Light>().enabled) { spotAngle = 1; } 
-            GetComponent<SkinnedMeshRenderer>().material.SetVector("_LightPositionPlayer", PlayerLight.transform.position);
-            GetComponent<SkinnedMeshRenderer>().material.SetVector("_LightDirectionPlayer", -PlayerLight.transform.forward);
-            GetComponent<SkinnedMeshRenderer>().material.SetFloat("_LightAnglePlayer", spotAngle);
+            if (IsObjectInLightCone(lights[i].GetComponent<Light>()))
+            {
+                if (shader == "Custom/Ghost") { visible = true; return; }
+                else { visible = false; return; }//shadower
+            }
+        }
             
-        }
-        if (ClientLight != null)
-        {
-            float spotAngle = ClientLight.GetComponent<Light>().spotAngle;
-            if (!ClientLight.GetComponent<Light>().enabled) { spotAngle = 1; }
-            GetComponent<SkinnedMeshRenderer>().material.SetVector("_LightPositionClient", ClientLight.transform.position);
-            GetComponent<SkinnedMeshRenderer>().material.SetVector("_LightDirectionClient", -ClientLight.transform.forward);
-            GetComponent<SkinnedMeshRenderer>().material.SetFloat("_LightAngleClient", spotAngle);
-        }
-       if (EnvLight != null)
-        {
-            float spotAngle = EnvLight.GetComponent<Light>().spotAngle;
-            //SPOTLIGHT OFF
-            if (!EnvLight.GetComponent<Light>().enabled) { 
-                spotAngle = 1; visible = true; //can hit shadowers
-                if (shader == "Custom/Ghost") { visible = false; } //not ghosts
-            }
-            else {//SPOTLIGHT ON & ENEMY IN THE CONE
-                if (IsObjectInLightCone(EnvLight.GetComponent<Light>())) {
-                    visible = false;
-                    if (shader == "Custom/Ghost") { visible = true; }
-                } 
-                else {
-                    visible = true;
-                    if (shader == "Custom/Ghost") { visible = false; }
-                } 
-            }
-            GetComponent<SkinnedMeshRenderer>().material.SetVector("_LightPositionEnv", EnvLight.transform.position);
-            GetComponent<SkinnedMeshRenderer>().material.SetVector("_LightDirectionEnv", -EnvLight.transform.forward);
-            GetComponent<SkinnedMeshRenderer>().material.SetFloat("_LightAngleEnv", spotAngle);
-        }
-        */
     }
 
     private GameObject ClosestEnvLight()//used to have some light control if not reading by cone
