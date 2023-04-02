@@ -38,6 +38,13 @@ public class FlashlightSystem : MonoBehaviour
     private bool showOnce = false;
     public bool isFlashlightOn;
 
+
+    public float weapLightAngle = 45;
+    private float flashLightAngle = 52;
+    public float weapLightIntensity = 2;
+    private float flashLightIntensity = 2;
+
+
     public static FlashlightSystem instance;
 
     private static utilities util;
@@ -54,6 +61,13 @@ public class FlashlightSystem : MonoBehaviour
         FlashLight = util.FindChildObject(this.gameObject.transform, "FlashLight").GetComponent<Light>();
         handFlashlight = util.FindChildObject(this.gameObject.transform, "Flashlight_Hand");
         inventoryFlashlight = util.FindChildObject(this.gameObject.transform, "Flashlight_Inventory");
+
+        FlashLight.spotAngle = flashLightAngle;
+        FlashLight.intensity = flashLightIntensity;
+        WeaponLight.spotAngle = weapLightAngle;
+        WeaponLight.intensity = weapLightIntensity;
+
+
         Debug.Log("Player Lights Setup");
 
     }

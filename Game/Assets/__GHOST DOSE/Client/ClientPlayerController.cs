@@ -93,6 +93,7 @@ public class ClientPlayerController : MonoBehaviour
     public GameObject currLight;//tracks current light source
     private static utilities util;
 
+    private bool flash;
     private void Awake()
     {
 
@@ -245,6 +246,24 @@ public class ClientPlayerController : MonoBehaviour
                             hit.transform.GetComponent<Rigidbody>().AddForceAtPosition(shootPoint.forward * force, hit.point);
                         }
                     }
+
+                        //--------------------------FLASH-------------------------------------
+                        bool weapLightState = GetComponent<ClientFlashlightSystem>().WeaponLight.enabled;
+                        GetComponent<ClientFlashlightSystem>().WeaponLight.enabled = true;
+                        GetComponent<ClientFlashlightSystem>().WeaponLight.spotAngle = 125;
+                        GetComponent<ClientFlashlightSystem>().WeaponLight.intensity = 15;
+                        StartCoroutine(stopFlash());
+                        flash = true;
+                        IEnumerator stopFlash()
+                        {
+                            yield return new WaitForSeconds(0.2f);
+                            GetComponent<ClientFlashlightSystem>().WeaponLight.spotAngle = GetComponent<ClientFlashlightSystem>().WeaponLight.spotAngle = GetComponent<ClientFlashlightSystem>().weapLightAngle;
+                            GetComponent<ClientFlashlightSystem>().WeaponLight.intensity = GetComponent<ClientFlashlightSystem>().WeaponLight.intensity = GetComponent<ClientFlashlightSystem>().weapLightIntensity;
+                            GetComponent<ClientFlashlightSystem>().WeaponLight.enabled = weapLightState;//was weaplight on previously
+                            flash = false;
+                        }
+
+                        //-----------------------PROJECTILE---------------------------------
                     GameObject myBullet = Instantiate(bullet);
                     myBullet.transform.position = shootPoint.position;
                     myBullet.transform.rotation = shootPoint.rotation;

@@ -120,7 +120,7 @@ public class ShootingSystem : MonoBehaviour
                 }
             }
             GameObject myBullet = Instantiate(bullet);
-            ammoClipCount--;
+            //ammoClipCount--;
             //ammo—lipCountUI.text = ammoClipCount.ToString("0");
             myBullet.transform.position = shootPoint.position;
             myBullet.transform.rotation = shootPoint.rotation;
