@@ -2526,7 +2526,6 @@ MonoBehaviour:
   getFrom: GetFrom
   speed: 0
   prevSpeed: 0
-  currLight: {fileID: 0}
 --- !u!82 &349000551
 AudioSource:
   m_ObjectHideFlags: 0
@@ -2669,8 +2668,12 @@ Transform:
   m_LocalPosition: {x: 0.16, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
+<<<<<<< HEAD
   m_Children:
   - {fileID: 370444247}
+=======
+  m_Children: []
+>>>>>>> parent of 78268428 (Travis Vest/BP/NoVest)
   m_Father: {fileID: 1975160497}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -3663,28 +3666,17 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 3664494654100003408, guid: 83a49f77cb151d74d90f6e823300de0b, type: 3}
   m_PrefabInstance: {fileID: 423866184}
   m_PrefabAsset: {fileID: 0}
---- !u!1 &425315410
+--- !u!1 &425315410 stripped
 GameObject:
-  m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 2528335452449891522, guid: be43e22edd156ab49bdf437f4e83cf07, type: 3}
   m_PrefabInstance: {fileID: 536415702}
   m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 425315411}
-  m_Layer: 0
-  m_Name: 
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 0
---- !u!4 &425315411
+--- !u!4 &425315412 stripped
 Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
+  m_CorrespondingSourceObject: {fileID: 2528335452449891520, guid: be43e22edd156ab49bdf437f4e83cf07, type: 3}
+  m_PrefabInstance: {fileID: 536415702}
   m_PrefabAsset: {fileID: 0}
+<<<<<<< HEAD
   m_GameObject: {fileID: 425315410}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
@@ -3694,6 +3686,8 @@ Transform:
   m_Father: {fileID: 1389430121}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+=======
+>>>>>>> parent of 78268428 (Travis Vest/BP/NoVest)
 --- !u!1001 &433803624
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -6080,28 +6074,17 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 3664494654100003408, guid: 83a49f77cb151d74d90f6e823300de0b, type: 3}
   m_PrefabInstance: {fileID: 655015912}
   m_PrefabAsset: {fileID: 0}
---- !u!1 &655529226
+--- !u!1 &655529226 stripped
 GameObject:
-  m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 2528335452449891522, guid: be43e22edd156ab49bdf437f4e83cf07, type: 3}
   m_PrefabInstance: {fileID: 2528335452048637918}
   m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 655529227}
-  m_Layer: 0
-  m_Name: 
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 0
---- !u!4 &655529227
+--- !u!4 &655529228 stripped
 Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
+  m_CorrespondingSourceObject: {fileID: 2528335452449891520, guid: be43e22edd156ab49bdf437f4e83cf07, type: 3}
+  m_PrefabInstance: {fileID: 2528335452048637918}
   m_PrefabAsset: {fileID: 0}
+<<<<<<< HEAD
   m_GameObject: {fileID: 655529226}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
@@ -6111,6 +6094,8 @@ Transform:
   m_Father: {fileID: 1389430121}
   m_RootOrder: 8
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+=======
+>>>>>>> parent of 78268428 (Travis Vest/BP/NoVest)
 --- !u!1 &658111602
 GameObject:
   m_ObjectHideFlags: 0
@@ -6381,10 +6366,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 79a38cf1a3d5d37438c8a13bfd813e40, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+<<<<<<< HEAD
   PlayerLight: {fileID: 0}
   ClientLight: {fileID: 0}
   LightSources: []
   visible: 0
+=======
+  light1: {fileID: 655529226}
+  light2: {fileID: 425315410}
+>>>>>>> parent of 78268428 (Travis Vest/BP/NoVest)
 --- !u!1001 &722099547
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -8592,10 +8582,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 79a38cf1a3d5d37438c8a13bfd813e40, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+<<<<<<< HEAD
   PlayerLight: {fileID: 0}
   ClientLight: {fileID: 0}
   LightSources: []
   visible: 0
+=======
+  light1: {fileID: 655529226}
+  light2: {fileID: 425315410}
+>>>>>>> parent of 78268428 (Travis Vest/BP/NoVest)
 --- !u!1 &999158024
 GameObject:
   m_ObjectHideFlags: 0
@@ -12084,7 +12079,12 @@ Transform:
   m_LocalScale: {x: 1.673652, y: 1.6736499, z: 1.6736524}
   m_ConstrainProportionsScale: 0
   m_Children:
+<<<<<<< HEAD
   - {fileID: 425315411}
+=======
+  - {fileID: 655529228}
+  - {fileID: 425315412}
+>>>>>>> parent of 78268428 (Travis Vest/BP/NoVest)
   - {fileID: 2073336316}
   - {fileID: 754167885}
   - {fileID: 1995400394}
@@ -12092,7 +12092,11 @@ Transform:
   - {fileID: 1488661009}
   - {fileID: 2079463840}
   - {fileID: 919132147859429897}
+<<<<<<< HEAD
   - {fileID: 655529227}
+=======
+  - {fileID: 1488661009}
+>>>>>>> parent of 78268428 (Travis Vest/BP/NoVest)
   - {fileID: 1652431740}
   m_Father: {fileID: 0}
   m_RootOrder: 2
@@ -13081,28 +13085,17 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 8583028682566258936, guid: 2557731eac2931d458d77d10f9efe890, type: 3}
   m_PrefabInstance: {fileID: 1486425389}
   m_PrefabAsset: {fileID: 0}
---- !u!1 &1488661008
+--- !u!1 &1488661008 stripped
 GameObject:
-  m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 748811111776431936, guid: 06edbd9b70eb5c94a955f2f05e01e6d8, type: 3}
   m_PrefabInstance: {fileID: 748811113264022864}
   m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 1488661009}
-  m_Layer: 0
-  m_Name: 
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 0
---- !u!4 &1488661009
+--- !u!4 &1488661009 stripped
 Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
+  m_CorrespondingSourceObject: {fileID: 748811111668904181, guid: 06edbd9b70eb5c94a955f2f05e01e6d8, type: 3}
+  m_PrefabInstance: {fileID: 748811113264022864}
   m_PrefabAsset: {fileID: 0}
+<<<<<<< HEAD
   m_GameObject: {fileID: 1488661008}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
@@ -13112,6 +13105,8 @@ Transform:
   m_Father: {fileID: 1389430121}
   m_RootOrder: 5
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+=======
+>>>>>>> parent of 78268428 (Travis Vest/BP/NoVest)
 --- !u!1 &1489597182
 GameObject:
   m_ObjectHideFlags: 0
@@ -16311,7 +16306,6 @@ MonoBehaviour:
   force: 1
   shootPoint: {fileID: 0}
   flashlighton: 0
-  currLight: {fileID: 0}
 --- !u!136 &1894484760
 CapsuleCollider:
   m_ObjectHideFlags: 0
@@ -18740,28 +18734,17 @@ PrefabInstance:
       objectReference: {fileID: 6879868290603049824}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 004e4ef2306acdb4898be309e7943489, type: 3}
---- !u!1 &919132147859429896
+--- !u!1 &919132147859429896 stripped
 GameObject:
-  m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 32506820738780707, guid: 004e4ef2306acdb4898be309e7943489, type: 3}
   m_PrefabInstance: {fileID: 914816860290290731}
   m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 919132147859429897}
-  m_Layer: 0
-  m_Name: 
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 0
---- !u!4 &919132147859429897
+--- !u!4 &919132147859429897 stripped
 Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
+  m_CorrespondingSourceObject: {fileID: 808585710358090905, guid: 004e4ef2306acdb4898be309e7943489, type: 3}
+  m_PrefabInstance: {fileID: 914816860290290731}
   m_PrefabAsset: {fileID: 0}
+<<<<<<< HEAD
   m_GameObject: {fileID: 919132147859429896}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
@@ -18771,6 +18754,8 @@ Transform:
   m_Father: {fileID: 1389430121}
   m_RootOrder: 7
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+=======
+>>>>>>> parent of 78268428 (Travis Vest/BP/NoVest)
 --- !u!1 &919132148560864002 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 5437771165056309824, guid: 84a1467c70be6184bbadc14be6baac14, type: 3}
@@ -19161,6 +19146,7 @@ PrefabInstance:
       objectReference: {fileID: 471631021}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 23fa8136620ccdf488cd8b603ad83bee, type: 3}
+<<<<<<< HEAD
 --- !u!1001 &2692734558841251185
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -19218,6 +19204,8 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: cb9ec558777f00a48ab93059eb94e219, type: 3}
+=======
+>>>>>>> parent of 78268428 (Travis Vest/BP/NoVest)
 --- !u!1001 &2916790245259431725
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -19778,6 +19766,7 @@ PrefabInstance:
       value: 5
       objectReference: {fileID: 0}
     - target: {fileID: 3829448304855166279, guid: a635d842b268cd644bd244bf9a301bc9, type: 3}
+<<<<<<< HEAD
       propertyPath: travRigList.Array.size
       value: 5
       objectReference: {fileID: 0}
@@ -19790,12 +19779,15 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 1653722845237944136, guid: 0a4391942b2823b409402d655c25a425, type: 3}
     - target: {fileID: 3829448304855166279, guid: a635d842b268cd644bd244bf9a301bc9, type: 3}
+=======
+>>>>>>> parent of 78268428 (Travis Vest/BP/NoVest)
       propertyPath: wesRigList.Array.data[3]
       value: 
       objectReference: {fileID: 2878789087815716367, guid: 03b4ba9e0c8666342bb7c1a474903030, type: 3}
     - target: {fileID: 3829448304855166279, guid: a635d842b268cd644bd244bf9a301bc9, type: 3}
       propertyPath: wesRigList.Array.data[4]
       value: 
+<<<<<<< HEAD
       objectReference: {fileID: 1186195537364521465, guid: 0ea6125f904c8e94a9f78d89a05bb8be, type: 3}
     - target: {fileID: 3829448304855166279, guid: a635d842b268cd644bd244bf9a301bc9, type: 3}
       propertyPath: travRigList.Array.data[0]
@@ -19817,6 +19809,9 @@ PrefabInstance:
       propertyPath: travRigList.Array.data[4]
       value: 
       objectReference: {fileID: 9151606918133100187, guid: cb9ec558777f00a48ab93059eb94e219, type: 3}
+=======
+      objectReference: {fileID: 6285688038646388570, guid: 2920e69782473934aaf465f20d060d9c, type: 3}
+>>>>>>> parent of 78268428 (Travis Vest/BP/NoVest)
     - target: {fileID: 3829448304855166296, guid: a635d842b268cd644bd244bf9a301bc9, type: 3}
       propertyPath: m_Name
       value: GameController
@@ -20525,7 +20520,6 @@ MonoBehaviour:
   getFrom: GetFrom
   speed: 0
   prevSpeed: 0
-  currLight: {fileID: 0}
 --- !u!114 &6408774824491627728
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -20823,8 +20817,12 @@ Transform:
   m_LocalPosition: {x: 0.16, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
+<<<<<<< HEAD
   m_Children:
   - {fileID: 778091607}
+=======
+  m_Children: []
+>>>>>>> parent of 78268428 (Travis Vest/BP/NoVest)
   m_Father: {fileID: 1324682735}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
