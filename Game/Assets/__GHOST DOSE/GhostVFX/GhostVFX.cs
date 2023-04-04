@@ -9,6 +9,7 @@ public class GhostVFX : MonoBehaviour
 
     public GameObject PlayerLight;
     public GameObject ClientLight;
+    private GameObject skin;
     GameObject[] envLights;
     private GameObject EnvLight;
     private GameDriver GD;
@@ -21,10 +22,11 @@ public class GhostVFX : MonoBehaviour
     public void Start()
     {
         GD = GameObject.Find("GameController").GetComponent<GameDriver>();
-        shader = GetComponent<SkinnedMeshRenderer>().material.shader.name;
+        skin = gameObject.transform.GetChild(0).gameObject;
+        shader = skin.GetComponent<SkinnedMeshRenderer>().material.shader.name;
     }
 
-    public void Update()
+    public void UpdateShaderValues()
     {
         //PlayerLight = GD.Player.GetComponent<PlayerController>().currLight;
         //ClientLight = GD.Client.GetComponent<ClientPlayerController>().currLight;
@@ -89,11 +91,11 @@ public class GhostVFX : MonoBehaviour
             Debug.Log(visible);
             // Set the data to the shader
            // Shader.SetGlobalTexture("_ShadowMap", DynamicShadowMap);
-            GetComponent<SkinnedMeshRenderer>().material.SetInt("_LightCount", lightCount);
-            GetComponent<SkinnedMeshRenderer>().material.SetVectorArray("_LightPositions", lightPositions);
-            GetComponent<SkinnedMeshRenderer>().material.SetVectorArray("_LightDirections", lightDirections);
-            GetComponent<SkinnedMeshRenderer>().material.SetFloatArray("_LightAngles", lightAngles);
-            GetComponent<SkinnedMeshRenderer>().material.SetFloatArray("_StrengthScalarLight", ScalarStrengths);
+            skin.GetComponent<SkinnedMeshRenderer>().material.SetInt("_LightCount", lightCount);
+            skin.GetComponent<SkinnedMeshRenderer>().material.SetVectorArray("_LightPositions", lightPositions);
+            skin.GetComponent<SkinnedMeshRenderer>().material.SetVectorArray("_LightDirections", lightDirections);
+            skin.GetComponent<SkinnedMeshRenderer>().material.SetFloatArray("_LightAngles", lightAngles);
+            skin.GetComponent<SkinnedMeshRenderer>().material.SetFloatArray("_StrengthScalarLight", ScalarStrengths);
            
 
 

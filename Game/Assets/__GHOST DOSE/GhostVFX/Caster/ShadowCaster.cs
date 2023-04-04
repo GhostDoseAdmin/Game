@@ -10,7 +10,8 @@ public class ShadowCaster : MonoBehaviour
 
     private Camera cam;
     private RenderTexture depthTarget;
-    
+    private List<GhostVFX> ghostVFXObjects;
+
     private void OnEnable() {
         UpdateResources();
     }
@@ -54,5 +55,35 @@ public class ShadowCaster : MonoBehaviour
         Shader.SetGlobalMatrix("_ShadowMatrix", mtx);
         Shader.SetGlobalTexture("_ShadowTex", depthTarget);
         Shader.SetGlobalFloat("_ShadowBias", shadowBias);
+
+        ghostVFXObjects = new List<GhostVFX>();
+
+        GameObject[] shadowers = GameObject.FindGameObjectsWithTag("Shadower");
+        GameObject[] ghosts = GameObject.FindGameObjectsWithTag("Ghost");
+
+        foreach (GameObject shadower in shadowers)
+        {
+            GhostVFX ghostVFX = shadower.GetComponent<GhostVFX>();
+            if (ghostVFX != null)
+            {
+                ghostVFXObjects.Add(ghostVFX);
+            }
+        }
+
+        foreach (GameObject ghost in ghosts)
+        {
+            GhostVFX ghostVFX = ghost.GetComponent<GhostVFX>();
+            if (ghostVFX != null)
+            {
+                ghostVFXObjects.Add(ghostVFX);
+            }
+        }
+
+        foreach (GhostVFX ghostVFX in ghostVFXObjects)
+        {
+            Debug.Log("--------------------------------UPDATING SHADER INFO-----------------------------------");
+            ghostVFX.UpdateShaderValues();
+        }
+
     }
 }

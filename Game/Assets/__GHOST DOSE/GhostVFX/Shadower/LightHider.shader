@@ -43,7 +43,7 @@ Shader "Custom/Shadower" {
 
                 float minStrength = 1;
                 float alphaStrength = 1;
-                float _strength[10];
+                float _strength[20];
 
                 for (int i = 0; i < _LightCount; i++) {
                     float3 direction = normalize(_LightPositions[i] - IN.worldPos);
