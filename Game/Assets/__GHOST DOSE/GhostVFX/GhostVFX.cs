@@ -15,6 +15,8 @@ public class GhostVFX : MonoBehaviour
     public List<Light> LightSources;
     private string shader;
     public bool visible; //USD IN CONJUNCTION WITH PLAY AIM RAYCAST
+    //public RenderTexture DynamicShadowMap;
+
 
     public void Start()
     {
@@ -24,8 +26,8 @@ public class GhostVFX : MonoBehaviour
 
     public void Update()
     {
-        PlayerLight = GD.Player.GetComponent<PlayerController>().currLight;
-        ClientLight = GD.Client.GetComponent<ClientPlayerController>().currLight;
+        //PlayerLight = GD.Player.GetComponent<PlayerController>().currLight;
+        //ClientLight = GD.Client.GetComponent<ClientPlayerController>().currLight;
 
 
         //if (PlayerLight != null && ClientLight != null)
@@ -71,17 +73,31 @@ public class GhostVFX : MonoBehaviour
                 lightPositions[i + 2] = lightSource.transform.position;
                 lightDirections[i + 2] = -lightSource.transform.forward;
                 lightAngles[i + 2] = lightSource.spotAngle;
-                ScalarStrengths[i + 2] = 30; // You can adjust this value or add a custom property to the Light component to store the strength scalar.
+                float spotAngleMin = 10;
+                float spotAngleMax = 55;
+                float strengthMin = 500;
+                float strengthMax = 30;
+                float clampedSpotAngle = Mathf.Clamp(lightSource.spotAngle, spotAngleMin, spotAngleMax);
+                float t = (clampedSpotAngle - spotAngleMin) / (spotAngleMax - spotAngleMin);
+
+                ScalarStrengths[i + 2] = 30;//30           Mathf.Lerp(strengthMin, strengthMax, t);
+                //ScalarStrengths[i + 2] = (1 - (lightSource.spotAngle / 180)) * maxStrength; ;// (1 - (lightSource.spotAngle / 180)) * maxStrength;
+
             }
             IsVisible(envLights);
 
             Debug.Log(visible);
             // Set the data to the shader
+           // Shader.SetGlobalTexture("_ShadowMap", DynamicShadowMap);
             GetComponent<SkinnedMeshRenderer>().material.SetInt("_LightCount", lightCount);
             GetComponent<SkinnedMeshRenderer>().material.SetVectorArray("_LightPositions", lightPositions);
             GetComponent<SkinnedMeshRenderer>().material.SetVectorArray("_LightDirections", lightDirections);
             GetComponent<SkinnedMeshRenderer>().material.SetFloatArray("_LightAngles", lightAngles);
             GetComponent<SkinnedMeshRenderer>().material.SetFloatArray("_StrengthScalarLight", ScalarStrengths);
+           
+
+
+            //Shader.SetGlobalTexture("_ShadowMap", yourShadowMapTexture);
 
             /* //DEBUGGING SHADER OUTPUT
             Debug.Log($"Light count: {lightCount}");
