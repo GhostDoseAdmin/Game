@@ -385,9 +385,8 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3829448304855166279, guid: a635d842b268cd644bd244bf9a301bc9, type: 3}
       propertyPath: travRigList.Array.size
-      value: 3
+      value: 4
       objectReference: {fileID: 0}
-<<<<<<< HEAD
     - target: {fileID: 3829448304855166279, guid: a635d842b268cd644bd244bf9a301bc9, type: 3}
       propertyPath: travRigList.Array.data[1]
       value: 
@@ -400,8 +399,6 @@ PrefabInstance:
       propertyPath: travRigList.Array.data[3]
       value: 
       objectReference: {fileID: 204011664021340710, guid: 12823541284a06f498bb48db11ca7223, type: 3}
-=======
->>>>>>> parent of 78268428 (Travis Vest/BP/NoVest)
     - target: {fileID: 3829448304855166297, guid: a635d842b268cd644bd244bf9a301bc9, type: 3}
       propertyPath: m_RootOrder
       value: 0
@@ -20582,6 +20579,7 @@ MonoBehaviour:
   getFrom: GetFrom
   speed: 0
   prevSpeed: 0
+  currLight: {fileID: 0}
 --- !u!114 &5055496213087247198
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -20902,6 +20900,7 @@ MonoBehaviour:
   getFrom: GetFrom
   speed: 0
   prevSpeed: 0
+  currLight: {fileID: 0}
 --- !u!82 &5055957529509440848
 AudioSource:
   m_ObjectHideFlags: 0
