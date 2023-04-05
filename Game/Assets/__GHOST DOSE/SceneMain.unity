@@ -597,7 +597,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 9214573206281771223, guid: 319a1069c22fe444cbb4e79b2292dac6, type: 3}
       propertyPath: m_RootOrder
-      value: 22
+      value: 21
       objectReference: {fileID: 0}
     - target: {fileID: 9214573206281771223, guid: 319a1069c22fe444cbb4e79b2292dac6, type: 3}
       propertyPath: m_LocalPosition.x
@@ -724,6 +724,123 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 3664494654100003408, guid: 83a49f77cb151d74d90f6e823300de0b, type: 3}
   m_PrefabInstance: {fileID: 85678733}
   m_PrefabAsset: {fileID: 0}
+--- !u!21 &87719842
+Material:
+  serializedVersion: 8
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: GhostMatButcher (Instance) (Instance) (Instance) (Instance) (Instance)
+    (Instance) (Instance) (Instance) (Instance) (Instance) (Instance) (Instance)
+    (Instance) (Instance) (Instance) (Instance) (Instance) (Instance) (Instance)
+    (Instance) (Instance) (Instance) (Instance) (Instance) (Instance) (Instance)
+    (Instance) (Instance) (Instance) (Instance) (Instance) (Instance) (Instance)
+    (Instance) (Instance) (Instance) (Instance) (Instance) (Instance) (Instance)
+    (Instance) (Instance) (Instance) (Instance) (Instance) (Instance) (Instance)
+    (Instance) (Instance) (Instance) (Instance) (Instance) (Instance) (Instance)
+    (Instance) (Instance) (Instance) (Instance) (Instance) (Instance) (Instance)
+    (Instance) (Instance) (Instance) (Instance) (Instance) (Instance) (Instance)
+    (Instance) (Instance) (Instance) (Instance) (Instance) (Instance) (Instance)
+    (Instance) (Instance) (Instance) (Instance) (Instance) (Instance) (Instance)
+    (Instance) (Instance) (Instance) (Instance) (Instance) (Instance)
+  m_Shader: {fileID: 4800000, guid: cfb0369e41b0e9c439d1d7d45109455c, type: 3}
+  m_ValidKeywords: []
+  m_InvalidKeywords:
+  - _METALLICGLOSSMAP
+  - _NORMALMAP
+  m_LightmapFlags: 4
+  m_EnableInstancingVariants: 0
+  m_DoubleSidedGI: 0
+  m_CustomRenderQueue: -1
+  stringTagMap: {}
+  disabledShaderPasses: []
+  m_SavedProperties:
+    serializedVersion: 3
+    m_TexEnvs:
+    - MyMainTex:
+        m_Texture: {fileID: 2800000, guid: c3821ea31d1e2674285aff4eb7007e1a, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _BumpMap:
+        m_Texture: {fileID: 2800000, guid: e8027cf87e204c74aa1e22e4e6b5b03c, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _DetailAlbedoMap:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _DetailMask:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _DetailNormalMap:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _EmissionMap:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _MainTex:
+        m_Texture: {fileID: 2800000, guid: c3821ea31d1e2674285aff4eb7007e1a, type: 3}
+        m_Scale: {x: 1.55, y: 1}
+        m_Offset: {x: 0.7, y: 0}
+    - _MetallicGlossMap:
+        m_Texture: {fileID: 2800000, guid: 3e8d66cd1238190498ceabe2f0902c58, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _OcclusionMap:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _ParallaxMap:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    m_Ints: []
+    m_Floats:
+    - MyGlossiness: 0.5
+    - MyLightAngle: 30
+    - MyMetallic: 0
+    - MyStrengthScalor: 50
+    - _BumpScale: 1
+    - _Cutoff: 0.5
+    - _DetailNormalMapScale: 1
+    - _DstBlend: 0
+    - _GlossMapScale: 0.6
+    - _Glossiness: 0.5
+    - _GlossyReflections: 1
+    - _LightAngle: 45
+    - _LightAngleClient: 55.3
+    - _LightAngleEnv: 64.6
+    - _LightAnglePlayer: 32.7
+    - _MaxDistance: 0
+    - _Metallic: 0
+    - _Mode: 0
+    - _OcclusionStrength: 1
+    - _Parallax: 0.02
+    - _SmoothnessTextureChannel: 0
+    - _SpecularHighlights: 1
+    - _SrcBlend: 1
+    - _StrengthScalar: 50
+    - _UVSec: 0
+    - _ZWrite: 1
+    m_Colors:
+    - MyColor: {r: 1, g: 1, b: 1, a: 1}
+    - MyLightDirection: {r: 0.11109638, g: 0.6919714, b: -0.7133254, a: 0}
+    - MyLightPosition: {r: 0.658, g: 5.229, b: -2.518, a: 0}
+    - _Color: {r: 1, g: 1, b: 1, a: 1}
+    - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
+    - _LightDirection: {r: 0.010504577, g: -0.1302027, b: 0.9914323, a: 0}
+    - _LightDirectionClient: {r: 0.13131513, g: 0.81922287, b: -0.55823845, a: 0}
+    - _LightDirectionEnv: {r: -0, g: 1.0000001, b: 0.00000011920929, a: 0}
+    - _LightDirectionPlayer: {r: -0.92718554, g: 0.36745852, b: -0.07281019, a: 0}
+    - _LightPosition: {r: 1.5454389, g: 0.825336, b: -0.24657947, a: 0}
+    - _LightPositionClient: {r: 0.075, g: 2.182, b: 17.767, a: 0}
+    - _LightPositionEnv: {r: 0, g: 7.53, b: 23.92, a: 0}
+    - _LightPositionPlayer: {r: -2.316, g: 2.973, b: 19.384, a: 0}
+  m_BuildTextureStacks: []
 --- !u!1 &98642270
 GameObject:
   m_ObjectHideFlags: 0
@@ -12901,123 +13018,6 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 3664494654100003408, guid: 83a49f77cb151d74d90f6e823300de0b, type: 3}
   m_PrefabInstance: {fileID: 357818156}
   m_PrefabAsset: {fileID: 0}
---- !u!21 &366779908
-Material:
-  serializedVersion: 8
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_Name: GhostMatButcher (Instance) (Instance) (Instance) (Instance) (Instance)
-    (Instance) (Instance) (Instance) (Instance) (Instance) (Instance) (Instance)
-    (Instance) (Instance) (Instance) (Instance) (Instance) (Instance) (Instance)
-    (Instance) (Instance) (Instance) (Instance) (Instance) (Instance) (Instance)
-    (Instance) (Instance) (Instance) (Instance) (Instance) (Instance) (Instance)
-    (Instance) (Instance) (Instance) (Instance) (Instance) (Instance) (Instance)
-    (Instance) (Instance) (Instance) (Instance) (Instance) (Instance) (Instance)
-    (Instance) (Instance) (Instance) (Instance) (Instance) (Instance) (Instance)
-    (Instance) (Instance) (Instance) (Instance) (Instance) (Instance) (Instance)
-    (Instance) (Instance) (Instance) (Instance) (Instance) (Instance) (Instance)
-    (Instance) (Instance) (Instance) (Instance) (Instance) (Instance) (Instance)
-    (Instance) (Instance) (Instance) (Instance) (Instance) (Instance) (Instance)
-    (Instance) (Instance) (Instance) (Instance)
-  m_Shader: {fileID: 4800000, guid: cfb0369e41b0e9c439d1d7d45109455c, type: 3}
-  m_ValidKeywords: []
-  m_InvalidKeywords:
-  - _METALLICGLOSSMAP
-  - _NORMALMAP
-  m_LightmapFlags: 4
-  m_EnableInstancingVariants: 0
-  m_DoubleSidedGI: 0
-  m_CustomRenderQueue: -1
-  stringTagMap: {}
-  disabledShaderPasses: []
-  m_SavedProperties:
-    serializedVersion: 3
-    m_TexEnvs:
-    - MyMainTex:
-        m_Texture: {fileID: 2800000, guid: c3821ea31d1e2674285aff4eb7007e1a, type: 3}
-        m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
-    - _BumpMap:
-        m_Texture: {fileID: 2800000, guid: e8027cf87e204c74aa1e22e4e6b5b03c, type: 3}
-        m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
-    - _DetailAlbedoMap:
-        m_Texture: {fileID: 0}
-        m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
-    - _DetailMask:
-        m_Texture: {fileID: 0}
-        m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
-    - _DetailNormalMap:
-        m_Texture: {fileID: 0}
-        m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
-    - _EmissionMap:
-        m_Texture: {fileID: 0}
-        m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
-    - _MainTex:
-        m_Texture: {fileID: 2800000, guid: c3821ea31d1e2674285aff4eb7007e1a, type: 3}
-        m_Scale: {x: 1.55, y: 1}
-        m_Offset: {x: 0.7, y: 0}
-    - _MetallicGlossMap:
-        m_Texture: {fileID: 2800000, guid: 3e8d66cd1238190498ceabe2f0902c58, type: 3}
-        m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
-    - _OcclusionMap:
-        m_Texture: {fileID: 0}
-        m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
-    - _ParallaxMap:
-        m_Texture: {fileID: 0}
-        m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
-    m_Ints: []
-    m_Floats:
-    - MyGlossiness: 0.5
-    - MyLightAngle: 30
-    - MyMetallic: 0
-    - MyStrengthScalor: 50
-    - _BumpScale: 1
-    - _Cutoff: 0.5
-    - _DetailNormalMapScale: 1
-    - _DstBlend: 0
-    - _GlossMapScale: 0.6
-    - _Glossiness: 0.5
-    - _GlossyReflections: 1
-    - _LightAngle: 45
-    - _LightAngleClient: 55.3
-    - _LightAngleEnv: 64.6
-    - _LightAnglePlayer: 32.7
-    - _MaxDistance: 0
-    - _Metallic: 0
-    - _Mode: 0
-    - _OcclusionStrength: 1
-    - _Parallax: 0.02
-    - _SmoothnessTextureChannel: 0
-    - _SpecularHighlights: 1
-    - _SrcBlend: 1
-    - _StrengthScalar: 50
-    - _UVSec: 0
-    - _ZWrite: 1
-    m_Colors:
-    - MyColor: {r: 1, g: 1, b: 1, a: 1}
-    - MyLightDirection: {r: 0.11109638, g: 0.6919714, b: -0.7133254, a: 0}
-    - MyLightPosition: {r: 0.658, g: 5.229, b: -2.518, a: 0}
-    - _Color: {r: 1, g: 1, b: 1, a: 1}
-    - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
-    - _LightDirection: {r: 0.010504577, g: -0.1302027, b: 0.9914323, a: 0}
-    - _LightDirectionClient: {r: 0.13131513, g: 0.81922287, b: -0.55823845, a: 0}
-    - _LightDirectionEnv: {r: -0, g: 1.0000001, b: 0.00000011920929, a: 0}
-    - _LightDirectionPlayer: {r: -0.92718554, g: 0.36745852, b: -0.07281019, a: 0}
-    - _LightPosition: {r: 1.5454389, g: 0.825336, b: -0.24657947, a: 0}
-    - _LightPositionClient: {r: 0.075, g: 2.182, b: 17.767, a: 0}
-    - _LightPositionEnv: {r: 0, g: 7.53, b: 23.92, a: 0}
-    - _LightPositionPlayer: {r: -2.316, g: 2.973, b: 19.384, a: 0}
-  m_BuildTextureStacks: []
 --- !u!1001 &367632539
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -13296,7 +13296,7 @@ Transform:
   - {fileID: 1889349874}
   - {fileID: 1335031542}
   m_Father: {fileID: 0}
-  m_RootOrder: 20
+  m_RootOrder: 19
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &396338953
 PrefabInstance:
@@ -14419,134 +14419,6 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
---- !u!21 &466204498
-Material:
-  serializedVersion: 8
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_Name: MatEnemyShadower (Instance) (Instance) (Instance) (Instance) (Instance)
-    (Instance) (Instance) (Instance) (Instance) (Instance) (Instance) (Instance)
-    (Instance) (Instance) (Instance) (Instance) (Instance) (Instance) (Instance)
-    (Instance) (Instance) (Instance) (Instance) (Instance) (Instance) (Instance)
-    (Instance) (Instance) (Instance) (Instance) (Instance) (Instance) (Instance)
-    (Instance) (Instance) (Instance) (Instance) (Instance) (Instance) (Instance)
-    (Instance) (Instance) (Instance) (Instance) (Instance) (Instance) (Instance)
-    (Instance) (Instance) (Instance) (Instance) (Instance) (Instance) (Instance)
-    (Instance) (Instance) (Instance) (Instance) (Instance) (Instance) (Instance)
-    (Instance) (Instance) (Instance) (Instance) (Instance) (Instance) (Instance)
-    (Instance) (Instance) (Instance) (Instance) (Instance) (Instance) (Instance)
-    (Instance) (Instance) (Instance) (Instance) (Instance) (Instance) (Instance)
-    (Instance)
-  m_Shader: {fileID: 4800000, guid: 8c6ba10712e134a458666894a7d7190f, type: 3}
-  m_ValidKeywords: []
-  m_InvalidKeywords:
-  - _METALLICGLOSSMAP
-  - _NORMALMAP
-  m_LightmapFlags: 4
-  m_EnableInstancingVariants: 0
-  m_DoubleSidedGI: 0
-  m_CustomRenderQueue: -1
-  stringTagMap: {}
-  disabledShaderPasses: []
-  m_SavedProperties:
-    serializedVersion: 3
-    m_TexEnvs:
-    - MyMainTex:
-        m_Texture: {fileID: 2800000, guid: c3821ea31d1e2674285aff4eb7007e1a, type: 3}
-        m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
-    - _BumpMap:
-        m_Texture: {fileID: 2800000, guid: e8027cf87e204c74aa1e22e4e6b5b03c, type: 3}
-        m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
-    - _DetailAlbedoMap:
-        m_Texture: {fileID: 0}
-        m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
-    - _DetailMask:
-        m_Texture: {fileID: 0}
-        m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
-    - _DetailNormalMap:
-        m_Texture: {fileID: 0}
-        m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
-    - _EmissionMap:
-        m_Texture: {fileID: 0}
-        m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
-    - _MainTex:
-        m_Texture: {fileID: 2800000, guid: c3821ea31d1e2674285aff4eb7007e1a, type: 3}
-        m_Scale: {x: 1.55, y: 1}
-        m_Offset: {x: 0.7, y: 0}
-    - _MetallicGlossMap:
-        m_Texture: {fileID: 2800000, guid: 3e8d66cd1238190498ceabe2f0902c58, type: 3}
-        m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
-    - _OcclusionMap:
-        m_Texture: {fileID: 0}
-        m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
-    - _ParallaxMap:
-        m_Texture: {fileID: 0}
-        m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
-    m_Ints: []
-    m_Floats:
-    - MyGlossiness: 0.5
-    - MyLightAngle: 30
-    - MyMetallic: 0
-    - MyStrengthScalor: 50
-    - _BrightnessThreshold: 0.5
-    - _BumpScale: 1
-    - _Cutoff: 0.5
-    - _DetailNormalMapScale: 1
-    - _DstBlend: 0
-    - _GlossMapScale: 0.6
-    - _Glossiness: 0.5
-    - _GlossyReflections: 1
-    - _IntensityThreshold: 0
-    - _LightAngle: 45
-    - _LightAngle1: 45
-    - _LightAngle2: 45
-    - _LightAngleClient: 64.6
-    - _LightAngleEnv: 64.6
-    - _LightAnglePlayer: 64.6
-    - _MaxDistance: 0
-    - _Metallic: 0
-    - _Mode: 0
-    - _OcclusionStrength: 1
-    - _Parallax: 0.02
-    - _Smoothness: 0.5
-    - _SmoothnessTextureChannel: 0
-    - _SpecularHighlights: 1
-    - _SrcBlend: 1
-    - _StrengthScalar: 10
-    - _Threshold: 0.5
-    - _UVSec: 0
-    - _Visibility: 1
-    - _ZWrite: 1
-    m_Colors:
-    - MyColor: {r: 1, g: 1, b: 1, a: 1}
-    - MyLightDirection: {r: 0.11109638, g: 0.6919714, b: -0.7133254, a: 0}
-    - MyLightPosition: {r: 0.658, g: 5.229, b: -2.518, a: 0}
-    - _Color: {r: 1, g: 1, b: 1, a: 1}
-    - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
-    - _LightDirection: {r: -0.116555825, g: -0.15204822, b: 0.98147774, a: 0}
-    - _LightDirection1: {r: 0, g: 0, b: 1, a: 0}
-    - _LightDirection2: {r: 0, g: 0, b: 1, a: 0}
-    - _LightDirectionClient: {r: -0, g: 0.9984008, b: 0.05653274, a: 0}
-    - _LightDirectionEnv: {r: -0, g: 0.9984008, b: 0.05653274, a: 0}
-    - _LightDirectionPlayer: {r: -0, g: 0.9984008, b: 0.05653274, a: 0}
-    - _LightPosition: {r: 2.5767055, g: 0.82952094, b: 23.210276, a: 0}
-    - _LightPosition1: {r: 0, g: 0, b: 0, a: 0}
-    - _LightPosition2: {r: 0, g: 0, b: 0, a: 0}
-    - _LightPositionClient: {r: 5.41, g: 6.27, b: 5.18, a: 0}
-    - _LightPositionEnv: {r: -0.57, g: 6.24, b: 5.62, a: 0}
-    - _LightPositionPlayer: {r: -7.48, g: 6.27, b: 5.18, a: 0}
-  m_BuildTextureStacks: []
 --- !u!1001 &469137436
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -15241,7 +15113,7 @@ Transform:
   m_Children:
   - {fileID: 1885998351089591919}
   m_Father: {fileID: 0}
-  m_RootOrder: 8
+  m_RootOrder: 7
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &546030850
 GameObject:
@@ -16873,123 +16745,6 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 3664494654100003408, guid: 83a49f77cb151d74d90f6e823300de0b, type: 3}
   m_PrefabInstance: {fileID: 722099547}
   m_PrefabAsset: {fileID: 0}
---- !u!21 &735460139
-Material:
-  serializedVersion: 8
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_Name: GhostMatButcher (Instance) (Instance) (Instance) (Instance) (Instance)
-    (Instance) (Instance) (Instance) (Instance) (Instance) (Instance) (Instance)
-    (Instance) (Instance) (Instance) (Instance) (Instance) (Instance) (Instance)
-    (Instance) (Instance) (Instance) (Instance) (Instance) (Instance) (Instance)
-    (Instance) (Instance) (Instance) (Instance) (Instance) (Instance) (Instance)
-    (Instance) (Instance) (Instance) (Instance) (Instance) (Instance) (Instance)
-    (Instance) (Instance) (Instance) (Instance) (Instance) (Instance) (Instance)
-    (Instance) (Instance) (Instance) (Instance) (Instance) (Instance) (Instance)
-    (Instance) (Instance) (Instance) (Instance) (Instance) (Instance) (Instance)
-    (Instance) (Instance) (Instance) (Instance) (Instance) (Instance) (Instance)
-    (Instance) (Instance) (Instance) (Instance) (Instance) (Instance) (Instance)
-    (Instance) (Instance) (Instance) (Instance) (Instance) (Instance) (Instance)
-    (Instance) (Instance) (Instance)
-  m_Shader: {fileID: 4800000, guid: cfb0369e41b0e9c439d1d7d45109455c, type: 3}
-  m_ValidKeywords: []
-  m_InvalidKeywords:
-  - _METALLICGLOSSMAP
-  - _NORMALMAP
-  m_LightmapFlags: 4
-  m_EnableInstancingVariants: 0
-  m_DoubleSidedGI: 0
-  m_CustomRenderQueue: -1
-  stringTagMap: {}
-  disabledShaderPasses: []
-  m_SavedProperties:
-    serializedVersion: 3
-    m_TexEnvs:
-    - MyMainTex:
-        m_Texture: {fileID: 2800000, guid: c3821ea31d1e2674285aff4eb7007e1a, type: 3}
-        m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
-    - _BumpMap:
-        m_Texture: {fileID: 2800000, guid: e8027cf87e204c74aa1e22e4e6b5b03c, type: 3}
-        m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
-    - _DetailAlbedoMap:
-        m_Texture: {fileID: 0}
-        m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
-    - _DetailMask:
-        m_Texture: {fileID: 0}
-        m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
-    - _DetailNormalMap:
-        m_Texture: {fileID: 0}
-        m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
-    - _EmissionMap:
-        m_Texture: {fileID: 0}
-        m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
-    - _MainTex:
-        m_Texture: {fileID: 2800000, guid: c3821ea31d1e2674285aff4eb7007e1a, type: 3}
-        m_Scale: {x: 1.55, y: 1}
-        m_Offset: {x: 0.7, y: 0}
-    - _MetallicGlossMap:
-        m_Texture: {fileID: 2800000, guid: 3e8d66cd1238190498ceabe2f0902c58, type: 3}
-        m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
-    - _OcclusionMap:
-        m_Texture: {fileID: 0}
-        m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
-    - _ParallaxMap:
-        m_Texture: {fileID: 0}
-        m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
-    m_Ints: []
-    m_Floats:
-    - MyGlossiness: 0.5
-    - MyLightAngle: 30
-    - MyMetallic: 0
-    - MyStrengthScalor: 50
-    - _BumpScale: 1
-    - _Cutoff: 0.5
-    - _DetailNormalMapScale: 1
-    - _DstBlend: 0
-    - _GlossMapScale: 0.6
-    - _Glossiness: 0.5
-    - _GlossyReflections: 1
-    - _LightAngle: 45
-    - _LightAngleClient: 55.3
-    - _LightAngleEnv: 64.6
-    - _LightAnglePlayer: 32.7
-    - _MaxDistance: 0
-    - _Metallic: 0
-    - _Mode: 0
-    - _OcclusionStrength: 1
-    - _Parallax: 0.02
-    - _SmoothnessTextureChannel: 0
-    - _SpecularHighlights: 1
-    - _SrcBlend: 1
-    - _StrengthScalar: 50
-    - _UVSec: 0
-    - _ZWrite: 1
-    m_Colors:
-    - MyColor: {r: 1, g: 1, b: 1, a: 1}
-    - MyLightDirection: {r: 0.11109638, g: 0.6919714, b: -0.7133254, a: 0}
-    - MyLightPosition: {r: 0.658, g: 5.229, b: -2.518, a: 0}
-    - _Color: {r: 1, g: 1, b: 1, a: 1}
-    - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
-    - _LightDirection: {r: 0.010504577, g: -0.1302027, b: 0.9914323, a: 0}
-    - _LightDirectionClient: {r: 0.13131513, g: 0.81922287, b: -0.55823845, a: 0}
-    - _LightDirectionEnv: {r: -0, g: 1.0000001, b: 0.00000011920929, a: 0}
-    - _LightDirectionPlayer: {r: -0.92718554, g: 0.36745852, b: -0.07281019, a: 0}
-    - _LightPosition: {r: 1.5454389, g: 0.825336, b: -0.24657947, a: 0}
-    - _LightPositionClient: {r: 0.075, g: 2.182, b: 17.767, a: 0}
-    - _LightPositionEnv: {r: 0, g: 7.53, b: 23.92, a: 0}
-    - _LightPositionPlayer: {r: -2.316, g: 2.973, b: 19.384, a: 0}
-  m_BuildTextureStacks: []
 --- !u!1001 &743876654
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -17407,7 +17162,7 @@ Transform:
   - {fileID: 1735968819}
   - {fileID: 1343804896}
   m_Father: {fileID: 0}
-  m_RootOrder: 14
+  m_RootOrder: 13
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &782320483
 PrefabInstance:
@@ -17626,7 +17381,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 9214573206281771223, guid: 319a1069c22fe444cbb4e79b2292dac6, type: 3}
       propertyPath: m_RootOrder
-      value: 21
+      value: 20
       objectReference: {fileID: 0}
     - target: {fileID: 9214573206281771223, guid: 319a1069c22fe444cbb4e79b2292dac6, type: 3}
       propertyPath: m_LocalScale.x
@@ -18886,7 +18641,7 @@ Transform:
   - {fileID: 1197890187}
   - {fileID: 6000669086977561090}
   m_Father: {fileID: 0}
-  m_RootOrder: 13
+  m_RootOrder: 12
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &983774445
 PrefabInstance:
@@ -19885,7 +19640,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4274479082701026, guid: d50d252fe6638b0459eb81c0588db276, type: 3}
       propertyPath: m_RootOrder
-      value: 24
+      value: 23
       objectReference: {fileID: 0}
     - target: {fileID: 4274479082701026, guid: d50d252fe6638b0459eb81c0588db276, type: 3}
       propertyPath: m_LocalScale.x
@@ -20692,7 +20447,7 @@ Transform:
   m_Children:
   - {fileID: 1894484757}
   m_Father: {fileID: 0}
-  m_RootOrder: 11
+  m_RootOrder: 10
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1095226338
 GameObject:
@@ -21639,6 +21394,134 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: fdf3532cefae5e74487885dd3f83f650, type: 3}
+--- !u!21 &1188389568
+Material:
+  serializedVersion: 8
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: MatEnemyShadower (Instance) (Instance) (Instance) (Instance) (Instance)
+    (Instance) (Instance) (Instance) (Instance) (Instance) (Instance) (Instance)
+    (Instance) (Instance) (Instance) (Instance) (Instance) (Instance) (Instance)
+    (Instance) (Instance) (Instance) (Instance) (Instance) (Instance) (Instance)
+    (Instance) (Instance) (Instance) (Instance) (Instance) (Instance) (Instance)
+    (Instance) (Instance) (Instance) (Instance) (Instance) (Instance) (Instance)
+    (Instance) (Instance) (Instance) (Instance) (Instance) (Instance) (Instance)
+    (Instance) (Instance) (Instance) (Instance) (Instance) (Instance) (Instance)
+    (Instance) (Instance) (Instance) (Instance) (Instance) (Instance) (Instance)
+    (Instance) (Instance) (Instance) (Instance) (Instance) (Instance) (Instance)
+    (Instance) (Instance) (Instance) (Instance) (Instance) (Instance) (Instance)
+    (Instance) (Instance) (Instance) (Instance) (Instance) (Instance) (Instance)
+    (Instance) (Instance) (Instance)
+  m_Shader: {fileID: 4800000, guid: 8c6ba10712e134a458666894a7d7190f, type: 3}
+  m_ValidKeywords: []
+  m_InvalidKeywords:
+  - _METALLICGLOSSMAP
+  - _NORMALMAP
+  m_LightmapFlags: 4
+  m_EnableInstancingVariants: 0
+  m_DoubleSidedGI: 0
+  m_CustomRenderQueue: -1
+  stringTagMap: {}
+  disabledShaderPasses: []
+  m_SavedProperties:
+    serializedVersion: 3
+    m_TexEnvs:
+    - MyMainTex:
+        m_Texture: {fileID: 2800000, guid: c3821ea31d1e2674285aff4eb7007e1a, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _BumpMap:
+        m_Texture: {fileID: 2800000, guid: e8027cf87e204c74aa1e22e4e6b5b03c, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _DetailAlbedoMap:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _DetailMask:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _DetailNormalMap:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _EmissionMap:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _MainTex:
+        m_Texture: {fileID: 2800000, guid: c3821ea31d1e2674285aff4eb7007e1a, type: 3}
+        m_Scale: {x: 1.55, y: 1}
+        m_Offset: {x: 0.7, y: 0}
+    - _MetallicGlossMap:
+        m_Texture: {fileID: 2800000, guid: 3e8d66cd1238190498ceabe2f0902c58, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _OcclusionMap:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _ParallaxMap:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    m_Ints: []
+    m_Floats:
+    - MyGlossiness: 0.5
+    - MyLightAngle: 30
+    - MyMetallic: 0
+    - MyStrengthScalor: 50
+    - _BrightnessThreshold: 0.5
+    - _BumpScale: 1
+    - _Cutoff: 0.5
+    - _DetailNormalMapScale: 1
+    - _DstBlend: 0
+    - _GlossMapScale: 0.6
+    - _Glossiness: 0.5
+    - _GlossyReflections: 1
+    - _IntensityThreshold: 0
+    - _LightAngle: 45
+    - _LightAngle1: 45
+    - _LightAngle2: 45
+    - _LightAngleClient: 64.6
+    - _LightAngleEnv: 64.6
+    - _LightAnglePlayer: 64.6
+    - _MaxDistance: 0
+    - _Metallic: 0
+    - _Mode: 0
+    - _OcclusionStrength: 1
+    - _Parallax: 0.02
+    - _Smoothness: 0.5
+    - _SmoothnessTextureChannel: 0
+    - _SpecularHighlights: 1
+    - _SrcBlend: 1
+    - _StrengthScalar: 10
+    - _Threshold: 0.5
+    - _UVSec: 0
+    - _Visibility: 1
+    - _ZWrite: 1
+    m_Colors:
+    - MyColor: {r: 1, g: 1, b: 1, a: 1}
+    - MyLightDirection: {r: 0.11109638, g: 0.6919714, b: -0.7133254, a: 0}
+    - MyLightPosition: {r: 0.658, g: 5.229, b: -2.518, a: 0}
+    - _Color: {r: 1, g: 1, b: 1, a: 1}
+    - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
+    - _LightDirection: {r: -0.116555825, g: -0.15204822, b: 0.98147774, a: 0}
+    - _LightDirection1: {r: 0, g: 0, b: 1, a: 0}
+    - _LightDirection2: {r: 0, g: 0, b: 1, a: 0}
+    - _LightDirectionClient: {r: -0, g: 0.9984008, b: 0.05653274, a: 0}
+    - _LightDirectionEnv: {r: -0, g: 0.9984008, b: 0.05653274, a: 0}
+    - _LightDirectionPlayer: {r: -0, g: 0.9984008, b: 0.05653274, a: 0}
+    - _LightPosition: {r: 2.5767055, g: 0.82952094, b: 23.210276, a: 0}
+    - _LightPosition1: {r: 0, g: 0, b: 0, a: 0}
+    - _LightPosition2: {r: 0, g: 0, b: 0, a: 0}
+    - _LightPositionClient: {r: 5.41, g: 6.27, b: 5.18, a: 0}
+    - _LightPositionEnv: {r: -0.57, g: 6.24, b: 5.62, a: 0}
+    - _LightPositionPlayer: {r: -7.48, g: 6.27, b: 5.18, a: 0}
+  m_BuildTextureStacks: []
 --- !u!1 &1189471901
 GameObject:
   m_ObjectHideFlags: 0
@@ -22852,7 +22735,7 @@ Transform:
   - {fileID: 1885998352277113574}
   - {fileID: 1155529462}
   m_Father: {fileID: 0}
-  m_RootOrder: 10
+  m_RootOrder: 9
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1335031541
 GameObject:
@@ -23418,7 +23301,7 @@ Transform:
   - {fileID: 1489336474}
   - {fileID: 450694315}
   m_Father: {fileID: 0}
-  m_RootOrder: 3
+  m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &1399138934
 PrefabInstance:
@@ -23998,7 +23881,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 9214573206281771223, guid: 674dee32bbb62434c95571d3924b8c5b, type: 3}
       propertyPath: m_RootOrder
-      value: 2
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 9214573206281771223, guid: 674dee32bbb62434c95571d3924b8c5b, type: 3}
       propertyPath: m_LocalPosition.x
@@ -24247,6 +24130,123 @@ Transform:
   m_Father: {fileID: 387816961}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!21 &1469869268
+Material:
+  serializedVersion: 8
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: GhostMatButcher (Instance) (Instance) (Instance) (Instance) (Instance)
+    (Instance) (Instance) (Instance) (Instance) (Instance) (Instance) (Instance)
+    (Instance) (Instance) (Instance) (Instance) (Instance) (Instance) (Instance)
+    (Instance) (Instance) (Instance) (Instance) (Instance) (Instance) (Instance)
+    (Instance) (Instance) (Instance) (Instance) (Instance) (Instance) (Instance)
+    (Instance) (Instance) (Instance) (Instance) (Instance) (Instance) (Instance)
+    (Instance) (Instance) (Instance) (Instance) (Instance) (Instance) (Instance)
+    (Instance) (Instance) (Instance) (Instance) (Instance) (Instance) (Instance)
+    (Instance) (Instance) (Instance) (Instance) (Instance) (Instance) (Instance)
+    (Instance) (Instance) (Instance) (Instance) (Instance) (Instance) (Instance)
+    (Instance) (Instance) (Instance) (Instance) (Instance) (Instance) (Instance)
+    (Instance) (Instance) (Instance) (Instance) (Instance) (Instance) (Instance)
+    (Instance) (Instance) (Instance) (Instance) (Instance)
+  m_Shader: {fileID: 4800000, guid: cfb0369e41b0e9c439d1d7d45109455c, type: 3}
+  m_ValidKeywords: []
+  m_InvalidKeywords:
+  - _METALLICGLOSSMAP
+  - _NORMALMAP
+  m_LightmapFlags: 4
+  m_EnableInstancingVariants: 0
+  m_DoubleSidedGI: 0
+  m_CustomRenderQueue: -1
+  stringTagMap: {}
+  disabledShaderPasses: []
+  m_SavedProperties:
+    serializedVersion: 3
+    m_TexEnvs:
+    - MyMainTex:
+        m_Texture: {fileID: 2800000, guid: c3821ea31d1e2674285aff4eb7007e1a, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _BumpMap:
+        m_Texture: {fileID: 2800000, guid: e8027cf87e204c74aa1e22e4e6b5b03c, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _DetailAlbedoMap:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _DetailMask:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _DetailNormalMap:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _EmissionMap:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _MainTex:
+        m_Texture: {fileID: 2800000, guid: c3821ea31d1e2674285aff4eb7007e1a, type: 3}
+        m_Scale: {x: 1.55, y: 1}
+        m_Offset: {x: 0.7, y: 0}
+    - _MetallicGlossMap:
+        m_Texture: {fileID: 2800000, guid: 3e8d66cd1238190498ceabe2f0902c58, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _OcclusionMap:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _ParallaxMap:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    m_Ints: []
+    m_Floats:
+    - MyGlossiness: 0.5
+    - MyLightAngle: 30
+    - MyMetallic: 0
+    - MyStrengthScalor: 50
+    - _BumpScale: 1
+    - _Cutoff: 0.5
+    - _DetailNormalMapScale: 1
+    - _DstBlend: 0
+    - _GlossMapScale: 0.6
+    - _Glossiness: 0.5
+    - _GlossyReflections: 1
+    - _LightAngle: 45
+    - _LightAngleClient: 55.3
+    - _LightAngleEnv: 64.6
+    - _LightAnglePlayer: 32.7
+    - _MaxDistance: 0
+    - _Metallic: 0
+    - _Mode: 0
+    - _OcclusionStrength: 1
+    - _Parallax: 0.02
+    - _SmoothnessTextureChannel: 0
+    - _SpecularHighlights: 1
+    - _SrcBlend: 1
+    - _StrengthScalar: 50
+    - _UVSec: 0
+    - _ZWrite: 1
+    m_Colors:
+    - MyColor: {r: 1, g: 1, b: 1, a: 1}
+    - MyLightDirection: {r: 0.11109638, g: 0.6919714, b: -0.7133254, a: 0}
+    - MyLightPosition: {r: 0.658, g: 5.229, b: -2.518, a: 0}
+    - _Color: {r: 1, g: 1, b: 1, a: 1}
+    - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
+    - _LightDirection: {r: 0.010504577, g: -0.1302027, b: 0.9914323, a: 0}
+    - _LightDirectionClient: {r: 0.13131513, g: 0.81922287, b: -0.55823845, a: 0}
+    - _LightDirectionEnv: {r: -0, g: 1.0000001, b: 0.00000011920929, a: 0}
+    - _LightDirectionPlayer: {r: -0.92718554, g: 0.36745852, b: -0.07281019, a: 0}
+    - _LightPosition: {r: 1.5454389, g: 0.825336, b: -0.24657947, a: 0}
+    - _LightPositionClient: {r: 0.075, g: 2.182, b: 17.767, a: 0}
+    - _LightPositionEnv: {r: 0, g: 7.53, b: 23.92, a: 0}
+    - _LightPositionPlayer: {r: -2.316, g: 2.973, b: 19.384, a: 0}
+  m_BuildTextureStacks: []
 --- !u!1001 &1472818608
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -24564,65 +24564,136 @@ Transform:
   - {fileID: 370712916}
   - {fileID: 917475492}
   m_Father: {fileID: 0}
-  m_RootOrder: 16
+  m_RootOrder: 15
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!1001 &1493256074
-PrefabInstance:
+--- !u!21 &1506380638
+Material:
+  serializedVersion: 8
   m_ObjectHideFlags: 0
-  serializedVersion: 2
-  m_Modification:
-    m_TransformParent: {fileID: 0}
-    m_Modifications:
-    - target: {fileID: -8679921383154817045, guid: 700e26bb161c14a4f84d5a4b851126e1, type: 3}
-      propertyPath: m_RootOrder
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: -8679921383154817045, guid: 700e26bb161c14a4f84d5a4b851126e1, type: 3}
-      propertyPath: m_LocalPosition.x
-      value: 0.5689839
-      objectReference: {fileID: 0}
-    - target: {fileID: -8679921383154817045, guid: 700e26bb161c14a4f84d5a4b851126e1, type: 3}
-      propertyPath: m_LocalPosition.y
-      value: 0.46
-      objectReference: {fileID: 0}
-    - target: {fileID: -8679921383154817045, guid: 700e26bb161c14a4f84d5a4b851126e1, type: 3}
-      propertyPath: m_LocalPosition.z
-      value: 3.1550071
-      objectReference: {fileID: 0}
-    - target: {fileID: -8679921383154817045, guid: 700e26bb161c14a4f84d5a4b851126e1, type: 3}
-      propertyPath: m_LocalRotation.w
-      value: -0.5
-      objectReference: {fileID: 0}
-    - target: {fileID: -8679921383154817045, guid: 700e26bb161c14a4f84d5a4b851126e1, type: 3}
-      propertyPath: m_LocalRotation.x
-      value: 0.50000006
-      objectReference: {fileID: 0}
-    - target: {fileID: -8679921383154817045, guid: 700e26bb161c14a4f84d5a4b851126e1, type: 3}
-      propertyPath: m_LocalRotation.y
-      value: -0.49999997
-      objectReference: {fileID: 0}
-    - target: {fileID: -8679921383154817045, guid: 700e26bb161c14a4f84d5a4b851126e1, type: 3}
-      propertyPath: m_LocalRotation.z
-      value: -0.5
-      objectReference: {fileID: 0}
-    - target: {fileID: -8679921383154817045, guid: 700e26bb161c14a4f84d5a4b851126e1, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: -8679921383154817045, guid: 700e26bb161c14a4f84d5a4b851126e1, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: -8679921383154817045, guid: 700e26bb161c14a4f84d5a4b851126e1, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 919132149155446097, guid: 700e26bb161c14a4f84d5a4b851126e1, type: 3}
-      propertyPath: m_Name
-      value: BackPack2
-      objectReference: {fileID: 0}
-    m_RemovedComponents: []
-  m_SourcePrefab: {fileID: 100100000, guid: 700e26bb161c14a4f84d5a4b851126e1, type: 3}
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_Name: MatEnemyShadower (Instance) (Instance) (Instance) (Instance) (Instance)
+    (Instance) (Instance) (Instance) (Instance) (Instance) (Instance) (Instance)
+    (Instance) (Instance) (Instance) (Instance) (Instance) (Instance) (Instance)
+    (Instance) (Instance) (Instance) (Instance) (Instance) (Instance) (Instance)
+    (Instance) (Instance) (Instance) (Instance) (Instance) (Instance) (Instance)
+    (Instance) (Instance) (Instance) (Instance) (Instance) (Instance) (Instance)
+    (Instance) (Instance) (Instance) (Instance) (Instance) (Instance) (Instance)
+    (Instance) (Instance) (Instance) (Instance) (Instance) (Instance) (Instance)
+    (Instance) (Instance) (Instance) (Instance) (Instance) (Instance) (Instance)
+    (Instance) (Instance) (Instance) (Instance) (Instance) (Instance) (Instance)
+    (Instance) (Instance) (Instance) (Instance) (Instance) (Instance) (Instance)
+    (Instance) (Instance) (Instance) (Instance) (Instance) (Instance) (Instance)
+    (Instance) (Instance) (Instance)
+  m_Shader: {fileID: 4800000, guid: 8c6ba10712e134a458666894a7d7190f, type: 3}
+  m_ValidKeywords: []
+  m_InvalidKeywords:
+  - _METALLICGLOSSMAP
+  - _NORMALMAP
+  m_LightmapFlags: 4
+  m_EnableInstancingVariants: 0
+  m_DoubleSidedGI: 0
+  m_CustomRenderQueue: -1
+  stringTagMap: {}
+  disabledShaderPasses: []
+  m_SavedProperties:
+    serializedVersion: 3
+    m_TexEnvs:
+    - MyMainTex:
+        m_Texture: {fileID: 2800000, guid: c3821ea31d1e2674285aff4eb7007e1a, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _BumpMap:
+        m_Texture: {fileID: 2800000, guid: e8027cf87e204c74aa1e22e4e6b5b03c, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _DetailAlbedoMap:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _DetailMask:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _DetailNormalMap:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _EmissionMap:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _MainTex:
+        m_Texture: {fileID: 2800000, guid: c3821ea31d1e2674285aff4eb7007e1a, type: 3}
+        m_Scale: {x: 1.55, y: 1}
+        m_Offset: {x: 0.7, y: 0}
+    - _MetallicGlossMap:
+        m_Texture: {fileID: 2800000, guid: 3e8d66cd1238190498ceabe2f0902c58, type: 3}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _OcclusionMap:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    - _ParallaxMap:
+        m_Texture: {fileID: 0}
+        m_Scale: {x: 1, y: 1}
+        m_Offset: {x: 0, y: 0}
+    m_Ints: []
+    m_Floats:
+    - MyGlossiness: 0.5
+    - MyLightAngle: 30
+    - MyMetallic: 0
+    - MyStrengthScalor: 50
+    - _BrightnessThreshold: 0.5
+    - _BumpScale: 1
+    - _Cutoff: 0.5
+    - _DetailNormalMapScale: 1
+    - _DstBlend: 0
+    - _GlossMapScale: 0.6
+    - _Glossiness: 0.5
+    - _GlossyReflections: 1
+    - _IntensityThreshold: 0
+    - _LightAngle: 45
+    - _LightAngle1: 45
+    - _LightAngle2: 45
+    - _LightAngleClient: 55.3
+    - _LightAngleEnv: 64.6
+    - _LightAnglePlayer: 32.7
+    - _MaxDistance: 0
+    - _Metallic: 0
+    - _Mode: 0
+    - _OcclusionStrength: 1
+    - _Parallax: 0.02
+    - _Smoothness: 0.5
+    - _SmoothnessTextureChannel: 0
+    - _SpecularHighlights: 1
+    - _SrcBlend: 1
+    - _StrengthScalar: 10
+    - _Threshold: 0.5
+    - _UVSec: 0
+    - _Visibility: 1
+    - _ZWrite: 1
+    m_Colors:
+    - MyColor: {r: 1, g: 1, b: 1, a: 1}
+    - MyLightDirection: {r: 0.11109638, g: 0.6919714, b: -0.7133254, a: 0}
+    - MyLightPosition: {r: 0.658, g: 5.229, b: -2.518, a: 0}
+    - _Color: {r: 1, g: 1, b: 1, a: 1}
+    - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
+    - _LightDirection: {r: -0.116555825, g: -0.15204822, b: 0.98147774, a: 0}
+    - _LightDirection1: {r: 0, g: 0, b: 1, a: 0}
+    - _LightDirection2: {r: 0, g: 0, b: 1, a: 0}
+    - _LightDirectionClient: {r: 0.13131513, g: 0.81922287, b: -0.55823845, a: 0}
+    - _LightDirectionEnv: {r: -0, g: 0.9984008, b: 0.05653274, a: 0}
+    - _LightDirectionPlayer: {r: -0.92718554, g: 0.36745852, b: -0.07281019, a: 0}
+    - _LightPosition: {r: 2.5767055, g: 0.82952094, b: 23.210276, a: 0}
+    - _LightPosition1: {r: 0, g: 0, b: 0, a: 0}
+    - _LightPosition2: {r: 0, g: 0, b: 0, a: 0}
+    - _LightPositionClient: {r: 0.075, g: 2.182, b: 17.767, a: 0}
+    - _LightPositionEnv: {r: 5.41, g: 6.27, b: 5.18, a: 0}
+    - _LightPositionPlayer: {r: -2.316, g: 2.973, b: 19.384, a: 0}
+  m_BuildTextureStacks: []
 --- !u!1001 &1523444507
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -24910,7 +24981,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 9214573206281771223, guid: 319a1069c22fe444cbb4e79b2292dac6, type: 3}
       propertyPath: m_RootOrder
-      value: 19
+      value: 18
       objectReference: {fileID: 0}
     - target: {fileID: 9214573206281771223, guid: 319a1069c22fe444cbb4e79b2292dac6, type: 3}
       propertyPath: m_LocalScale.x
@@ -30889,7 +30960,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 9214573206281771223, guid: 319a1069c22fe444cbb4e79b2292dac6, type: 3}
       propertyPath: m_RootOrder
-      value: 17
+      value: 16
       objectReference: {fileID: 0}
     - target: {fileID: 9214573206281771223, guid: 319a1069c22fe444cbb4e79b2292dac6, type: 3}
       propertyPath: m_LocalScale.x
@@ -32021,7 +32092,7 @@ Transform:
   - {fileID: 8931274}
   - {fileID: 543450652295900283}
   m_Father: {fileID: 0}
-  m_RootOrder: 12
+  m_RootOrder: 11
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &1833609907
 PrefabInstance:
@@ -33249,7 +33320,7 @@ Transform:
   - {fileID: 2135715753}
   - {fileID: 633222403}
   m_Father: {fileID: 0}
-  m_RootOrder: 9
+  m_RootOrder: 8
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1976695917
 GameObject:
@@ -33804,134 +33875,6 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 8583028682566258936, guid: 2557731eac2931d458d77d10f9efe890, type: 3}
   m_PrefabInstance: {fileID: 2017720567}
   m_PrefabAsset: {fileID: 0}
---- !u!21 &2025329868
-Material:
-  serializedVersion: 8
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_Name: MatEnemyShadower (Instance) (Instance) (Instance) (Instance) (Instance)
-    (Instance) (Instance) (Instance) (Instance) (Instance) (Instance) (Instance)
-    (Instance) (Instance) (Instance) (Instance) (Instance) (Instance) (Instance)
-    (Instance) (Instance) (Instance) (Instance) (Instance) (Instance) (Instance)
-    (Instance) (Instance) (Instance) (Instance) (Instance) (Instance) (Instance)
-    (Instance) (Instance) (Instance) (Instance) (Instance) (Instance) (Instance)
-    (Instance) (Instance) (Instance) (Instance) (Instance) (Instance) (Instance)
-    (Instance) (Instance) (Instance) (Instance) (Instance) (Instance) (Instance)
-    (Instance) (Instance) (Instance) (Instance) (Instance) (Instance) (Instance)
-    (Instance) (Instance) (Instance) (Instance) (Instance) (Instance) (Instance)
-    (Instance) (Instance) (Instance) (Instance) (Instance) (Instance) (Instance)
-    (Instance) (Instance) (Instance) (Instance) (Instance) (Instance) (Instance)
-    (Instance)
-  m_Shader: {fileID: 4800000, guid: 8c6ba10712e134a458666894a7d7190f, type: 3}
-  m_ValidKeywords: []
-  m_InvalidKeywords:
-  - _METALLICGLOSSMAP
-  - _NORMALMAP
-  m_LightmapFlags: 4
-  m_EnableInstancingVariants: 0
-  m_DoubleSidedGI: 0
-  m_CustomRenderQueue: -1
-  stringTagMap: {}
-  disabledShaderPasses: []
-  m_SavedProperties:
-    serializedVersion: 3
-    m_TexEnvs:
-    - MyMainTex:
-        m_Texture: {fileID: 2800000, guid: c3821ea31d1e2674285aff4eb7007e1a, type: 3}
-        m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
-    - _BumpMap:
-        m_Texture: {fileID: 2800000, guid: e8027cf87e204c74aa1e22e4e6b5b03c, type: 3}
-        m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
-    - _DetailAlbedoMap:
-        m_Texture: {fileID: 0}
-        m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
-    - _DetailMask:
-        m_Texture: {fileID: 0}
-        m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
-    - _DetailNormalMap:
-        m_Texture: {fileID: 0}
-        m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
-    - _EmissionMap:
-        m_Texture: {fileID: 0}
-        m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
-    - _MainTex:
-        m_Texture: {fileID: 2800000, guid: c3821ea31d1e2674285aff4eb7007e1a, type: 3}
-        m_Scale: {x: 1.55, y: 1}
-        m_Offset: {x: 0.7, y: 0}
-    - _MetallicGlossMap:
-        m_Texture: {fileID: 2800000, guid: 3e8d66cd1238190498ceabe2f0902c58, type: 3}
-        m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
-    - _OcclusionMap:
-        m_Texture: {fileID: 0}
-        m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
-    - _ParallaxMap:
-        m_Texture: {fileID: 0}
-        m_Scale: {x: 1, y: 1}
-        m_Offset: {x: 0, y: 0}
-    m_Ints: []
-    m_Floats:
-    - MyGlossiness: 0.5
-    - MyLightAngle: 30
-    - MyMetallic: 0
-    - MyStrengthScalor: 50
-    - _BrightnessThreshold: 0.5
-    - _BumpScale: 1
-    - _Cutoff: 0.5
-    - _DetailNormalMapScale: 1
-    - _DstBlend: 0
-    - _GlossMapScale: 0.6
-    - _Glossiness: 0.5
-    - _GlossyReflections: 1
-    - _IntensityThreshold: 0
-    - _LightAngle: 45
-    - _LightAngle1: 45
-    - _LightAngle2: 45
-    - _LightAngleClient: 55.3
-    - _LightAngleEnv: 64.6
-    - _LightAnglePlayer: 32.7
-    - _MaxDistance: 0
-    - _Metallic: 0
-    - _Mode: 0
-    - _OcclusionStrength: 1
-    - _Parallax: 0.02
-    - _Smoothness: 0.5
-    - _SmoothnessTextureChannel: 0
-    - _SpecularHighlights: 1
-    - _SrcBlend: 1
-    - _StrengthScalar: 10
-    - _Threshold: 0.5
-    - _UVSec: 0
-    - _Visibility: 1
-    - _ZWrite: 1
-    m_Colors:
-    - MyColor: {r: 1, g: 1, b: 1, a: 1}
-    - MyLightDirection: {r: 0.11109638, g: 0.6919714, b: -0.7133254, a: 0}
-    - MyLightPosition: {r: 0.658, g: 5.229, b: -2.518, a: 0}
-    - _Color: {r: 1, g: 1, b: 1, a: 1}
-    - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
-    - _LightDirection: {r: -0.116555825, g: -0.15204822, b: 0.98147774, a: 0}
-    - _LightDirection1: {r: 0, g: 0, b: 1, a: 0}
-    - _LightDirection2: {r: 0, g: 0, b: 1, a: 0}
-    - _LightDirectionClient: {r: 0.13131513, g: 0.81922287, b: -0.55823845, a: 0}
-    - _LightDirectionEnv: {r: -0, g: 0.9984008, b: 0.05653274, a: 0}
-    - _LightDirectionPlayer: {r: -0.92718554, g: 0.36745852, b: -0.07281019, a: 0}
-    - _LightPosition: {r: 2.5767055, g: 0.82952094, b: 23.210276, a: 0}
-    - _LightPosition1: {r: 0, g: 0, b: 0, a: 0}
-    - _LightPosition2: {r: 0, g: 0, b: 0, a: 0}
-    - _LightPositionClient: {r: 0.075, g: 2.182, b: 17.767, a: 0}
-    - _LightPositionEnv: {r: 5.41, g: 6.27, b: 5.18, a: 0}
-    - _LightPositionPlayer: {r: -2.316, g: 2.973, b: 19.384, a: 0}
-  m_BuildTextureStacks: []
 --- !u!1001 &2037998345
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -34041,7 +33984,7 @@ Transform:
   - {fileID: 229305610}
   - {fileID: 824886999}
   m_Father: {fileID: 0}
-  m_RootOrder: 18
+  m_RootOrder: 17
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1001 &2066987682
 PrefabInstance:
@@ -34891,7 +34834,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 9214573206281771223, guid: 319a1069c22fe444cbb4e79b2292dac6, type: 3}
       propertyPath: m_RootOrder
-      value: 15
+      value: 14
       objectReference: {fileID: 0}
     - target: {fileID: 9214573206281771223, guid: 319a1069c22fe444cbb4e79b2292dac6, type: 3}
       propertyPath: m_LocalScale.x
@@ -37751,7 +37694,7 @@ SkinnedMeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 366779908}
+  - {fileID: 87719842}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -39422,7 +39365,7 @@ Transform:
   - {fileID: 3543560923079666733}
   - {fileID: 3543560923463983356}
   m_Father: {fileID: 0}
-  m_RootOrder: 23
+  m_RootOrder: 22
   m_LocalEulerAnglesHint: {x: 0, y: -174.757, z: 0}
 --- !u!95 &3543560924327157576
 Animator:
@@ -39695,7 +39638,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3543560923932296572, guid: 457514021bacafe4993539628dbd5983, type: 3}
       propertyPath: m_RootOrder
-      value: 5
+      value: 4
       objectReference: {fileID: 0}
     - target: {fileID: 3543560923932296572, guid: 457514021bacafe4993539628dbd5983, type: 3}
       propertyPath: m_LocalPosition.x
@@ -39740,7 +39683,7 @@ PrefabInstance:
     - target: {fileID: 3543560924563994120, guid: 457514021bacafe4993539628dbd5983, type: 3}
       propertyPath: m_Materials.Array.data[0]
       value: 
-      objectReference: {fileID: 735460139}
+      objectReference: {fileID: 1469869268}
     - target: {fileID: 3543560924563994123, guid: 457514021bacafe4993539628dbd5983, type: 3}
       propertyPath: ClientLight
       value: 
@@ -40218,7 +40161,7 @@ Transform:
   - {fileID: 1947088552603467831}
   - {fileID: 9011657748259913260}
   m_Father: {fileID: 0}
-  m_RootOrder: 25
+  m_RootOrder: 24
   m_LocalEulerAnglesHint: {x: 0, y: 180, z: 0}
 --- !u!4 &3557707595511631482
 Transform:
@@ -40305,7 +40248,7 @@ SkinnedMeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 466204498}
+  - {fileID: 1188389568}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -40825,7 +40768,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 3557707595925927875, guid: ffd815c435fd2234891b592d26990499, type: 3}
       propertyPath: m_RootOrder
-      value: 4
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 3557707595925927875, guid: ffd815c435fd2234891b592d26990499, type: 3}
       propertyPath: m_LocalPosition.x
@@ -40870,7 +40813,7 @@ PrefabInstance:
     - target: {fileID: 3810771085910868231, guid: ffd815c435fd2234891b592d26990499, type: 3}
       propertyPath: m_Materials.Array.data[0]
       value: 
-      objectReference: {fileID: 2025329868}
+      objectReference: {fileID: 1506380638}
     - target: {fileID: 4185062973723635065, guid: ffd815c435fd2234891b592d26990499, type: 3}
       propertyPath: m_Name
       value: ButcherShadower
@@ -43597,7 +43540,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 7
+  m_RootOrder: 6
   m_LocalEulerAnglesHint: {x: 55.007, y: -13.237, z: -22.428}
 --- !u!4 &9214573207403913568
 Transform:
@@ -43612,7 +43555,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_RootOrder: 6
+  m_RootOrder: 5
   m_LocalEulerAnglesHint: {x: 21.559, y: 85.51, z: 24.557}
 --- !u!1 &9214573207403913570
 GameObject:
