@@ -9,8 +9,9 @@ public class ShadowCaster : MonoBehaviour
     public float shadowBias = 0.005f;
 
     private Camera cam;
-    private RenderTexture depthTarget;
+    public RenderTexture depthTarget;
     private List<GhostVFX> ghostVFXObjects;
+    public Matrix4x4 MTX;
 
     private void OnEnable() {
         UpdateResources();
@@ -51,10 +52,11 @@ public class ShadowCaster : MonoBehaviour
         Matrix4x4 view = cam.worldToCameraMatrix;
         Matrix4x4 proj = cam.projectionMatrix;
         Matrix4x4 mtx = bias * proj * view;
-        
+        MTX = mtx;
+
         Shader.SetGlobalMatrix("_ShadowMatrix", mtx);
         Shader.SetGlobalTexture("_ShadowTex", depthTarget);
-        Shader.SetGlobalFloat("_ShadowBias", shadowBias);
+        //Shader.SetGlobalFloat("_ShadowBias", shadowBias);
 
         ghostVFXObjects = new List<GhostVFX>();
 

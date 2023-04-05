@@ -40,74 +40,54 @@ public class GhostVFX : MonoBehaviour
 
             //GameObject.FindGameObjectsWithTag("ShadowerLight");
 
-            int lightCount = envLights.Length + 2;
-
-            Vector4[] lightPositions = new Vector4[lightCount];
-            Vector4[] lightDirections = new Vector4[lightCount];
-            float[] lightAngles = new float[lightCount];
-            float[] ScalarStrengths = new float[lightCount];
-
             Light lightSource;
             //ADD IN PLAYER LIGHT
 
             lightSource = PlayerLight.GetComponent<Light>();
-            lightPositions[0] = lightSource.transform.position;
-            lightDirections[0] = -lightSource.transform.forward;
-            lightAngles[0] = lightSource.spotAngle;
-            ScalarStrengths[0] = 20;
+            skin.GetComponent<SkinnedMeshRenderer>().material.SetVector("_PlayerLightPosition", lightSource.transform.position);
+            skin.GetComponent<SkinnedMeshRenderer>().material.SetVector("_PlayerLightDirection", -lightSource.transform.forward);
+            skin.GetComponent<SkinnedMeshRenderer>().material.SetFloat("_PlayerLightAngle", lightSource.spotAngle);
+            skin.GetComponent<SkinnedMeshRenderer>().material.SetFloat("_PlayerStrengthScalarLight", 20);
 
             //ADD IN CLIENT LIGHT
             lightSource = ClientLight.GetComponent<Light>();
-            lightPositions[1] = lightSource.transform.position;
-            lightDirections[1] = -lightSource.transform.forward;
-            lightAngles[1] = lightSource.spotAngle;
-            ScalarStrengths[1] = 20;
+            skin.GetComponent<SkinnedMeshRenderer>().material.SetVector("_ClientLightPosition", lightSource.transform.position);
+            skin.GetComponent<SkinnedMeshRenderer>().material.SetVector("_ClientLightDirection", -lightSource.transform.forward);
+            skin.GetComponent<SkinnedMeshRenderer>().material.SetFloat("_ClientLightAngle", lightSource.spotAngle);
+            skin.GetComponent<SkinnedMeshRenderer>().material.SetFloat("_ClientStrengthScalarLight", 20);
 
 
             //Debug.Log($"PlayerLight position: {PlayerLight.transform.position}, direction: {-PlayerLight.transform.forward}, spotAngle: {PlayerLight.GetComponent<Light>().spotAngle}");
             //Debug.Log($"ClientLight position: {ClientLight.transform.position}, direction: {-ClientLight.transform.forward}, spotAngle: {ClientLight.GetComponent<Light>().spotAngle}");
 
             //ADD IN ENVIRONMENT LIGHT SOURCES
-            for (int i = 0; i < lightCount - 2; i++)
+            if (envLights.Length > 0)
             {
-                lightSource = envLights[i].GetComponent<Light>();
-                
-                lightPositions[i + 2] = lightSource.transform.position;
-                lightDirections[i + 2] = -lightSource.transform.forward;
-                lightAngles[i + 2] = lightSource.spotAngle;
-                float spotAngleMin = 10;
-                float spotAngleMax = 55;
-                float strengthMin = 500;
-                float strengthMax = 30;
-                float clampedSpotAngle = Mathf.Clamp(lightSource.spotAngle, spotAngleMin, spotAngleMax);
-                float t = (clampedSpotAngle - spotAngleMin) / (spotAngleMax - spotAngleMin);
+                int envLightCount = envLights.Length;
+                Vector4[] lightPositions = new Vector4[envLightCount];
+                Vector4[] lightDirections = new Vector4[envLightCount];
+                float[] lightAngles = new float[envLightCount];
+                float[] ScalarStrengths = new float[envLightCount];
+                for (int i = 0; i < envLightCount; i++)
+                {
+                    lightSource = envLights[i].GetComponent<Light>();
 
-                ScalarStrengths[i + 2] = 30;//30           Mathf.Lerp(strengthMin, strengthMax, t);
-                //ScalarStrengths[i + 2] = (1 - (lightSource.spotAngle / 180)) * maxStrength; ;// (1 - (lightSource.spotAngle / 180)) * maxStrength;
+                    lightPositions[i] = lightSource.transform.position;
+                    lightDirections[i] = -lightSource.transform.forward;
+                    lightAngles[i] = lightSource.spotAngle;
+                    ScalarStrengths[i] = 30;
 
+
+                }
+                IsVisible(envLights);
+                Debug.Log(visible);
+
+                skin.GetComponent<SkinnedMeshRenderer>().material.SetInt("_EnvLightCount", envLightCount);
+                skin.GetComponent<SkinnedMeshRenderer>().material.SetVectorArray("_LightPositions", lightPositions);
+                skin.GetComponent<SkinnedMeshRenderer>().material.SetVectorArray("_LightDirections", lightDirections);
+                skin.GetComponent<SkinnedMeshRenderer>().material.SetFloatArray("_LightAngles", lightAngles);
+                skin.GetComponent<SkinnedMeshRenderer>().material.SetFloatArray("_StrengthScalarLight", ScalarStrengths);
             }
-            IsVisible(envLights);
-
-            Debug.Log(visible);
-            // Set the data to the shader
-           // Shader.SetGlobalTexture("_ShadowMap", DynamicShadowMap);
-            skin.GetComponent<SkinnedMeshRenderer>().material.SetInt("_LightCount", lightCount);
-            skin.GetComponent<SkinnedMeshRenderer>().material.SetVectorArray("_LightPositions", lightPositions);
-            skin.GetComponent<SkinnedMeshRenderer>().material.SetVectorArray("_LightDirections", lightDirections);
-            skin.GetComponent<SkinnedMeshRenderer>().material.SetFloatArray("_LightAngles", lightAngles);
-            skin.GetComponent<SkinnedMeshRenderer>().material.SetFloatArray("_StrengthScalarLight", ScalarStrengths);
-           
-
-
-            //Shader.SetGlobalTexture("_ShadowMap", yourShadowMapTexture);
-
-            /* //DEBUGGING SHADER OUTPUT
-            Debug.Log($"Light count: {lightCount}");
-            Debug.Log($"Light positions: {string.Join(", ", lightPositions.Select(pos => pos.ToString()))}");
-            Debug.Log($"Light directions: {string.Join(", ", lightDirections.Select(dir => dir.ToString()))}");
-            Debug.Log($"Light angles: {string.Join(", ", lightAngles.Select(angle => angle.ToString()))}");
-            Debug.Log($"Scalar strengths: {string.Join(", ", ScalarStrengths.Select(str => str.ToString()))}");
-            */
 
         }
 
