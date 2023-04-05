@@ -377,19 +377,19 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3829448304855166279, guid: a635d842b268cd644bd244bf9a301bc9, type: 3}
       propertyPath: wesRigCap
-      value: 4
+      value: 99
       objectReference: {fileID: 0}
     - target: {fileID: 3829448304855166279, guid: a635d842b268cd644bd244bf9a301bc9, type: 3}
       propertyPath: travRigCap
-      value: 4
+      value: 99
       objectReference: {fileID: 0}
     - target: {fileID: 3829448304855166279, guid: a635d842b268cd644bd244bf9a301bc9, type: 3}
       propertyPath: wesRigList.Array.size
-      value: 4
+      value: 5
       objectReference: {fileID: 0}
     - target: {fileID: 3829448304855166279, guid: a635d842b268cd644bd244bf9a301bc9, type: 3}
       propertyPath: travRigList.Array.size
-      value: 4
+      value: 5
       objectReference: {fileID: 0}
     - target: {fileID: 3829448304855166279, guid: a635d842b268cd644bd244bf9a301bc9, type: 3}
       propertyPath: wesRigList.Array.data[1]
@@ -404,6 +404,10 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 2878789087815716367, guid: 03b4ba9e0c8666342bb7c1a474903030, type: 3}
     - target: {fileID: 3829448304855166279, guid: a635d842b268cd644bd244bf9a301bc9, type: 3}
+      propertyPath: wesRigList.Array.data[4]
+      value: 
+      objectReference: {fileID: 1186195537364521465, guid: 0ea6125f904c8e94a9f78d89a05bb8be, type: 3}
+    - target: {fileID: 3829448304855166279, guid: a635d842b268cd644bd244bf9a301bc9, type: 3}
       propertyPath: travRigList.Array.data[1]
       value: 
       objectReference: {fileID: 5372451357329866774, guid: c3299049e1a33544eb34519a9a0017c2, type: 3}
@@ -415,6 +419,10 @@ PrefabInstance:
       propertyPath: travRigList.Array.data[3]
       value: 
       objectReference: {fileID: 204011664021340710, guid: 12823541284a06f498bb48db11ca7223, type: 3}
+    - target: {fileID: 3829448304855166279, guid: a635d842b268cd644bd244bf9a301bc9, type: 3}
+      propertyPath: travRigList.Array.data[4]
+      value: 
+      objectReference: {fileID: 9151606918133100187, guid: cb9ec558777f00a48ab93059eb94e219, type: 3}
     - target: {fileID: 3829448304855166297, guid: a635d842b268cd644bd244bf9a301bc9, type: 3}
       propertyPath: m_RootOrder
       value: 0
