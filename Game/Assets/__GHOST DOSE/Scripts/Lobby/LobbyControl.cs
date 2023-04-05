@@ -149,7 +149,7 @@ public class LobbyControl : MonoBehaviour
         StopCoroutine(randomAnimations());
         if (selectedBro == "TRAVIS") { GetComponent<GameDriver>().isTRAVIS = true;  }
         if (selectedBro == "WESTIN") { GetComponent<GameDriver>().isTRAVIS = false;  }
-        SceneManager.LoadScene("SceneMain");
+        SceneManager.LoadScene("GoldCamp");
         
     }
 
