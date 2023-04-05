@@ -76,6 +76,7 @@ Shader "Custom/Ghost" {
                     alphaStrength *= _strength[i]; 
                 }
 
+                    
                     float minStrengthPlayers = 1;
                     float alphaStrengthPlayers = 1;
                     //PLAYER LIGHTS
@@ -84,6 +85,14 @@ Shader "Custom/Ghost" {
                     float scale1 = dot(direction1, _PlayerLightDirection);
                     float strength1 = scale1 - cos(_PlayerLightAngle * (3.14 / 360.0));
                     strength1 = abs(1 - min(max(strength1 * _PlayerStrengthScalarLight, 0), 1));
+                    //light is on
+                    if (distance1 > 10) {
+                        //float cutoffDistance = 10.0; // The desired cutoff distance
+                        //float smoothCutoff = smoothstep(cutoffDistance - 1.0, cutoffDistance + 1.0, distance1);
+                        //strength1 *= smoothCutoff;
+                        strength1 = 1;
+                    }
+                    
 
                     //CLIENT LIGHTS
                     float3 direction2 = normalize(_ClientLightPosition - IN.worldPos);
@@ -92,8 +101,15 @@ Shader "Custom/Ghost" {
                     float strength2 = scale2 - cos(_ClientLightAngle * (3.14 / 360.0));
                     strength2 = abs(1 - min(max(strength2 * _ClientStrengthScalarLight, 0), 1));
 
+                    if (distance2 > 10) {
+                        //float cutoffDistance = 10.0; // The desired cutoff distance
+                        //float smoothCutoff = smoothstep(cutoffDistance - 1.0, cutoffDistance + 1.0, distance1);
+                        //strength1 *= smoothCutoff;
+                        strength2 = 1;
+                    }
+
                     alphaStrengthPlayers *= (strength1) * (strength2);
-                    alphaStrengthPlayers = 1 - alphaStrengthPlayers;
+                    alphaStrengthPlayers = 1 - alphaStrengthPlayers;//invert effect
 
                     minStrengthPlayers = min(strength1,strength2);
 

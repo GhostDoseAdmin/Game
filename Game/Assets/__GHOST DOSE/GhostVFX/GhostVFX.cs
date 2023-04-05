@@ -1,8 +1,11 @@
 ﻿using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
+using System.Net;
+using Unity.VisualScripting;
 using UnityEngine;
 
-[ExecuteInEditMode]
+//[ExecuteInEditMode]
 public class GhostVFX : MonoBehaviour
 {
 
@@ -44,16 +47,21 @@ public class GhostVFX : MonoBehaviour
             //ADD IN PLAYER LIGHT
 
             lightSource = PlayerLight.GetComponent<Light>();
+            float spotAngle = lightSource.spotAngle;
+            if (!lightSource.enabled) { spotAngle = 0; }
+            ---------------------------------------If something blocking its line of site via ray cast spot angle 0
             skin.GetComponent<SkinnedMeshRenderer>().material.SetVector("_PlayerLightPosition", lightSource.transform.position);
             skin.GetComponent<SkinnedMeshRenderer>().material.SetVector("_PlayerLightDirection", -lightSource.transform.forward);
-            skin.GetComponent<SkinnedMeshRenderer>().material.SetFloat("_PlayerLightAngle", lightSource.spotAngle);
+            skin.GetComponent<SkinnedMeshRenderer>().material.SetFloat("_PlayerLightAngle", spotAngle);
             skin.GetComponent<SkinnedMeshRenderer>().material.SetFloat("_PlayerStrengthScalarLight", 20);
 
             //ADD IN CLIENT LIGHT
             lightSource = ClientLight.GetComponent<Light>();
+            spotAngle = lightSource.spotAngle;
+            if (!lightSource.enabled) { spotAngle = 0; }
             skin.GetComponent<SkinnedMeshRenderer>().material.SetVector("_ClientLightPosition", lightSource.transform.position);
             skin.GetComponent<SkinnedMeshRenderer>().material.SetVector("_ClientLightDirection", -lightSource.transform.forward);
-            skin.GetComponent<SkinnedMeshRenderer>().material.SetFloat("_ClientLightAngle", lightSource.spotAngle);
+            skin.GetComponent<SkinnedMeshRenderer>().material.SetFloat("_ClientLightAngle", spotAngle);
             skin.GetComponent<SkinnedMeshRenderer>().material.SetFloat("_ClientStrengthScalarLight", 20);
 
 
@@ -104,11 +112,22 @@ public class GhostVFX : MonoBehaviour
         {
             if (IsObjectInLightCone(lights[i].GetComponent<Light>()))
             {
-                if (shader == "Custom/Ghost") { visible = true; return; }
-                else { visible = false; return; }//shadower
+                //IF there is no object blocking with raycast
+                float hitHeight = 1f; // adjust the hit height as per your requirement
+                Debug.DrawLine(lights[i].transform.position, new Vector3(this.gameObject.transform.position.x, this.gameObject.transform.position.y + hitHeight, this.gameObject.transform.position.z));
+                Ray ray = new Ray(lights[i].transform.position, (new Vector3(this.gameObject.transform.position.x, this.gameObject.transform.position.y + hitHeight, this.gameObject.transform.position.z) - lights[i].transform.position).normalized);
+                RaycastHit hit;
+                if (Physics.Raycast(ray, out hit))
+                {
+                    //Debug.Log("OBJECT HIT " + hit.collider.gameObject.name);
+                    if (hit.collider.gameObject == this.gameObject)
+                    {
+                        if (shader == "Custom/Ghost") { visible = true; return; }
+                        else { visible = false; return; }//shadower
+                    }
+                }
             }
         }
-            
     }
 
     private GameObject ClosestEnvLight()//used to have some light control if not reading by cone

@@ -402,7 +402,7 @@ public class PlayerController : MonoBehaviour
 			if (ghostType == "Shadower" && !GetComponent<FlashlightSystem>().WeaponLight.GetComponent<Light>().enabled)
 			{
 				//---------CHECKS TO SEE IF SHADOWER IS IN ITS SPOTLIGHT
-				if (hit.collider.gameObject.transform.root.transform.GetChild(0).GetComponent<GhostVFX>().visible)
+				if (hit.collider.gameObject.transform.root.GetComponent<GhostVFX>().visible)
 				{
 					if (hit.collider.gameObject.name == "mixamorig:Head") { Debug.Log("HEAD"); return 2; }
 					else { return 1; }
