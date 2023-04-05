@@ -377,16 +377,52 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3829448304855166279, guid: a635d842b268cd644bd244bf9a301bc9, type: 3}
       propertyPath: wesRigCap
-      value: 4
+      value: 99
       objectReference: {fileID: 0}
     - target: {fileID: 3829448304855166279, guid: a635d842b268cd644bd244bf9a301bc9, type: 3}
       propertyPath: travRigCap
-      value: 4
+      value: 99
+      objectReference: {fileID: 0}
+    - target: {fileID: 3829448304855166279, guid: a635d842b268cd644bd244bf9a301bc9, type: 3}
+      propertyPath: wesRigList.Array.size
+      value: 5
       objectReference: {fileID: 0}
     - target: {fileID: 3829448304855166279, guid: a635d842b268cd644bd244bf9a301bc9, type: 3}
       propertyPath: travRigList.Array.size
-      value: 3
+      value: 5
       objectReference: {fileID: 0}
+    - target: {fileID: 3829448304855166279, guid: a635d842b268cd644bd244bf9a301bc9, type: 3}
+      propertyPath: wesRigList.Array.data[1]
+      value: 
+      objectReference: {fileID: 4370358545594258886, guid: 6a2bc5f830fe3984b977a760b7819952, type: 3}
+    - target: {fileID: 3829448304855166279, guid: a635d842b268cd644bd244bf9a301bc9, type: 3}
+      propertyPath: wesRigList.Array.data[2]
+      value: 
+      objectReference: {fileID: 1653722845237944136, guid: 0a4391942b2823b409402d655c25a425, type: 3}
+    - target: {fileID: 3829448304855166279, guid: a635d842b268cd644bd244bf9a301bc9, type: 3}
+      propertyPath: wesRigList.Array.data[3]
+      value: 
+      objectReference: {fileID: 2878789087815716367, guid: 03b4ba9e0c8666342bb7c1a474903030, type: 3}
+    - target: {fileID: 3829448304855166279, guid: a635d842b268cd644bd244bf9a301bc9, type: 3}
+      propertyPath: wesRigList.Array.data[4]
+      value: 
+      objectReference: {fileID: 1186195537364521465, guid: 0ea6125f904c8e94a9f78d89a05bb8be, type: 3}
+    - target: {fileID: 3829448304855166279, guid: a635d842b268cd644bd244bf9a301bc9, type: 3}
+      propertyPath: travRigList.Array.data[1]
+      value: 
+      objectReference: {fileID: 5372451357329866774, guid: c3299049e1a33544eb34519a9a0017c2, type: 3}
+    - target: {fileID: 3829448304855166279, guid: a635d842b268cd644bd244bf9a301bc9, type: 3}
+      propertyPath: travRigList.Array.data[2]
+      value: 
+      objectReference: {fileID: 8834743667026233280, guid: 18e10aa4694e4a84d92d1bc6b542022d, type: 3}
+    - target: {fileID: 3829448304855166279, guid: a635d842b268cd644bd244bf9a301bc9, type: 3}
+      propertyPath: travRigList.Array.data[3]
+      value: 
+      objectReference: {fileID: 204011664021340710, guid: 12823541284a06f498bb48db11ca7223, type: 3}
+    - target: {fileID: 3829448304855166279, guid: a635d842b268cd644bd244bf9a301bc9, type: 3}
+      propertyPath: travRigList.Array.data[4]
+      value: 
+      objectReference: {fileID: 9151606918133100187, guid: cb9ec558777f00a48ab93059eb94e219, type: 3}
     - target: {fileID: 3829448304855166297, guid: a635d842b268cd644bd244bf9a301bc9, type: 3}
       propertyPath: m_RootOrder
       value: 0
@@ -20567,6 +20603,7 @@ MonoBehaviour:
   getFrom: GetFrom
   speed: 0
   prevSpeed: 0
+  currLight: {fileID: 0}
 --- !u!114 &5055496213087247198
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -20623,6 +20660,8 @@ MonoBehaviour:
   flashlightClick: FlashlightClick
   reloadBattery: ReloadBattery
   isFlashlightOn: 0
+  weapLightAngle: 45
+  weapLightIntensity: 2
 --- !u!1 &5055496213087247204
 GameObject:
   m_ObjectHideFlags: 0
@@ -20885,6 +20924,7 @@ MonoBehaviour:
   getFrom: GetFrom
   speed: 0
   prevSpeed: 0
+  currLight: {fileID: 0}
 --- !u!82 &5055957529509440848
 AudioSource:
   m_ObjectHideFlags: 0
@@ -21024,6 +21064,8 @@ MonoBehaviour:
   flashlightClick: FlashlightClick
   reloadBattery: ReloadBattery
   isFlashlightOn: 0
+  weapLightAngle: 45
+  weapLightIntensity: 2
 --- !u!114 &5055957529509440851
 MonoBehaviour:
   m_ObjectHideFlags: 0
