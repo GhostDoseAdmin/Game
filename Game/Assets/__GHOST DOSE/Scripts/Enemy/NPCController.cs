@@ -44,14 +44,13 @@ public class NPCController : MonoBehaviour
     public Transform targetPlayer;
     private GameObject Player;
     private GameObject Client;
-    private string prevAni;
-    private string currentAni;
     private string actions;
     private string send;
     private string prevActions;
     public Vector3 destination;
     public Vector3 truePosition;
     public bool attacking = false;
+    public float hitRange = 1.5f;
 
     private float attack_emit_timer = 0.0f;
     private float attack_emit_delay = 0.25f;//0.25
@@ -78,7 +77,7 @@ public class NPCController : MonoBehaviour
 
         if (ND.HOST)
         {
-            FindTargetRayCast();//dtermines & finds target
+            //FindTargetRayCast();//dtermines & finds target
 
 
             //actions = this.name + target + destination + attacking; //  + animEnemy.GetCurrentAnimatorClipInfo(0)[0].clip.name; //+ attacking
@@ -183,7 +182,7 @@ public class NPCController : MonoBehaviour
         if (ND.HOST)
         {
             //RUN TO TARGET
-            if (distance > 1.5f)
+            if (distance > hitRange)
             {
                 if (attacking)
                 {
@@ -198,7 +197,7 @@ public class NPCController : MonoBehaviour
                 transform.LookAt(targetPlayer);
             }
             //ATTACK TARGET
-            if (distance <= 1.5f)
+            if (distance <= hitRange)
             {
                 attacking = true;
 

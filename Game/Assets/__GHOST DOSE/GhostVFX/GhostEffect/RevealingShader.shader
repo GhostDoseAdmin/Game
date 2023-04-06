@@ -70,59 +70,45 @@ Shader "Custom/Ghost" {
                     float lightDepth = 1.0 - tex2Dproj(_ShadowTex, shadowCoords).r;
                     float shadow = (shadowCoords.z - 0.005) < lightDepth ? 1.0 : 0.0;
 
-                    _strength[i] = (1-_strength[i]) * shadow;
+                    _strength[i] = 1 - (shadow * (1 - _strength[i]));
+
 
                     minStrength = min(minStrength, _strength[i]);
-                    alphaStrength *= _strength[i]; 
+                    alphaStrength *= _strength[i];
                 }
 
-                    
-                    float minStrengthPlayers = 1;
-                    float alphaStrengthPlayers = 1;
-                    //PLAYER LIGHTS
-                    float3 direction1 = normalize(_PlayerLightPosition - IN.worldPos);
-                    float distance1 = length(IN.worldPos - _PlayerLightPosition);
-                    float scale1 = dot(direction1, _PlayerLightDirection);
-                    float strength1 = scale1 - cos(_PlayerLightAngle * (3.14 / 360.0));
-                    strength1 = abs(1 - min(max(strength1 * _PlayerStrengthScalarLight, 0), 1));
-                    //light is on
-                    if (distance1 > 10) {
-                        //float cutoffDistance = 10.0; // The desired cutoff distance
-                        //float smoothCutoff = smoothstep(cutoffDistance - 1.0, cutoffDistance + 1.0, distance1);
-                        //strength1 *= smoothCutoff;
-                        strength1 = 1;
-                    }
-                    
+                float minStrengthPlayers = 1;
+                float alphaStrengthPlayers = 1;
+                //PLAYER LIGHTS
+                float3 direction1 = normalize(_PlayerLightPosition - IN.worldPos);
+                float distance1 = length(IN.worldPos - _PlayerLightPosition);
+                float scale1 = dot(direction1, _PlayerLightDirection);
+                float strength1 = scale1 - cos(_PlayerLightAngle * (3.14 / 360.0));
+                strength1 = abs(1 - min(max(strength1 * _PlayerStrengthScalarLight, 0), 1));
+                strength1 = 1 - (1 - strength1);
+                alphaStrengthPlayers *= strength1;
 
-                    //CLIENT LIGHTS
-                    float3 direction2 = normalize(_ClientLightPosition - IN.worldPos);
-                    float distance2 = length(IN.worldPos - _ClientLightPosition);
-                    float scale2 = dot(direction2, _ClientLightDirection);
-                    float strength2 = scale2 - cos(_ClientLightAngle * (3.14 / 360.0));
-                    strength2 = abs(1 - min(max(strength2 * _ClientStrengthScalarLight, 0), 1));
+                //CLIENT LIGHTS
+                float3 direction2 = normalize(_ClientLightPosition - IN.worldPos);
+                float distance2 = length(IN.worldPos - _ClientLightPosition);
+                float scale2 = dot(direction2, _ClientLightDirection);
+                float strength2 = scale2 - cos(_ClientLightAngle * (3.14 / 360.0));
+                strength2 = abs(1 - min(max(strength2 * _ClientStrengthScalarLight, 0), 1));
+                strength2 = 1 - (1 - strength2);
+                alphaStrengthPlayers *= strength2;
 
-                    if (distance2 > 10) {
-                        //float cutoffDistance = 10.0; // The desired cutoff distance
-                        //float smoothCutoff = smoothstep(cutoffDistance - 1.0, cutoffDistance + 1.0, distance1);
-                        //strength1 *= smoothCutoff;
-                        strength2 = 1;
-                    }
-
-                    alphaStrengthPlayers *= (strength1) * (strength2);
-                    alphaStrengthPlayers = 1 - alphaStrengthPlayers;//invert effect
-
-                    minStrengthPlayers = min(strength1,strength2);
+                minStrengthPlayers = min(strength1, strength2);
 
 
 
-                    float strength =  minStrength * minStrengthPlayers;
+                float strength = minStrength * minStrengthPlayers;
 
                 o.Albedo = c.rgb;
                 o.Emission = c.rgb * c.a * strength;
                 o.Metallic = _Metallic;
                 o.Smoothness = _Glossiness;
-               float totalAlpha =  max(alphaStrengthPlayers, alphaStrength);
-                o.Alpha = totalAlpha * c.a;
+                o.Alpha = (1 - (alphaStrength * alphaStrengthPlayers)) * c.a;
+
 
             }
             ENDCG
