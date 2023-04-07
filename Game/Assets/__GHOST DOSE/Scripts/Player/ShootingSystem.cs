@@ -1,4 +1,5 @@
 using InteractionSystem;
+using Newtonsoft.Json;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -47,6 +48,8 @@ public class ShootingSystem : MonoBehaviour
 
     Vector3 startPos;
     Vector3 startRot;
+
+    private bool flash;
 
     public static ShootingSystem instance;
 
@@ -106,25 +109,48 @@ public class ShootingSystem : MonoBehaviour
         //if (AmmoShoot)
         {
             //if (!this.canShoot)
-               // return;
+            // return;
 
-            AudioManager.instance.Play(shootSound);
-            muzzleFlash.Play();
-            Shell.Play();
-            RaycastHit hit;
-            if (Physics.Raycast(shootPoint.position, shootPoint.forward, out hit, distance))
-            {
-                if (hit.transform.GetComponent<Rigidbody>())
+            //DETERMINE TARG PARAMS
+            bool[] targParams = targetParams(100);
+            bool isEnemy = targParams[0];
+            bool isVisible = targParams[1];
+            bool isHeadshot = targParams[2];
+
+            //Debug.Log(isEnemy.ToString() + isVisible.ToString() + isHeadshot.ToString());
+
+                AudioManager.instance.Play(shootSound);
+                muzzleFlash.Play();
+                Shell.Play();
+                RaycastHit hit;
+                if (Physics.Raycast(shootPoint.position, shootPoint.forward, out hit, distance))
                 {
-                    hit.transform.GetComponent<Rigidbody>().AddForceAtPosition(shootPoint.forward * force, hit.point);
+                    if (hit.transform.GetComponent<Rigidbody>())
+                    {
+                        hit.transform.GetComponent<Rigidbody>().AddForceAtPosition(shootPoint.forward * force, hit.point);
+                    }
                 }
+            if (isVisible)
+            {
+                GameObject myBullet = Instantiate(bullet);
+                //ammoClipCount--;
+                //ammo—lipCountUI.text = ammoClipCount.ToString("0");
+                myBullet.transform.position = shootPoint.position;
+                myBullet.transform.rotation = shootPoint.rotation;
+                Destroy(myBullet, shootFireLifeTime);
             }
-            GameObject myBullet = Instantiate(bullet);
-            //ammoClipCount--;
-            //ammo—lipCountUI.text = ammoClipCount.ToString("0");
-            myBullet.transform.position = shootPoint.position;
-            myBullet.transform.rotation = shootPoint.rotation;
-            Destroy(myBullet, shootFireLifeTime);
+
+                Flash();
+
+            
+
+           //EMIT SHOOT
+           GameObject.Find("GameController").GetComponent<GameDriver>().ND.sioCom.Instance.Emit("shoot", JsonConvert.SerializeObject($"{{'weapon':'camera'}}"), false);
+           
+           
+
+
+
         }
 
         /*if (ammoClipCount <= 0)
@@ -142,7 +168,60 @@ public class ShootingSystem : MonoBehaviour
 
         return true;
     }
+    private bool[] targetParams(float distance)
+    {
+        bool[] targParams = new bool[3];//[visible][head]
+        targParams[0] = false;//enemy?
+        targParams[1] = false;//visible?
+        targParams[2] = false;//head?
 
+        //RETUNRS 1 for visible 2 for headshot
+        LayerMask mask = ~(1 << LayerMask.NameToLayer("ShadowReceiver")) & ~(1 << LayerMask.NameToLayer("ShadowBox"));
+        RaycastHit hit;
+        if (Physics.Raycast(shootPoint.position, shootPoint.forward, out hit, distance, mask.value))
+        {
+            string ghostType = hit.collider.gameObject.transform.root.tag;
+
+            if (ghostType == "Ghost" || ghostType == "Shadower")
+            {
+                targParams[0] = true;
+                //Ensure mesh can be read
+                //if (hit.collider.gameObject.transform.root.GetComponent<GhostVFX>() != null)
+                {
+                    targParams[1] = hit.collider.gameObject.transform.root.GetComponent<GhostVFX>().visible;
+                    if (!targParams[1]) { Debug.Log("INVISISHOT"); }
+                    if (hit.collider.gameObject.name == "mixamorig:Head") { targParams[2] = true; Debug.Log("HEADSHOT"); }
+                }
+            }
+        }
+        return targParams;//no target
+    }
+    
+    private void Flash()
+    {
+
+        //--------------------------FLASH-------------------------------------
+        bool weapLightState = GetComponent<FlashlightSystem>().WeaponLight.enabled;
+        GetComponent<FlashlightSystem>().WeaponLight.enabled = true;
+        GetComponent<FlashlightSystem>().WeaponLight.spotAngle = 125;
+        GetComponent<FlashlightSystem>().WeaponLight.intensity = 15;
+        StartCoroutine(stopFlash());
+        flash = true;
+        IEnumerator stopFlash()
+        {
+            yield return new WaitForSeconds(0.2f);
+            GetComponent<FlashlightSystem>().WeaponLight.spotAngle = GetComponent<FlashlightSystem>().WeaponLight.spotAngle = GetComponent<FlashlightSystem>().weapLightAngle;
+            GetComponent<FlashlightSystem>().WeaponLight.intensity = GetComponent<FlashlightSystem>().WeaponLight.intensity = GetComponent<FlashlightSystem>().weapLightIntensity;
+            GetComponent<FlashlightSystem>().WeaponLight.enabled = weapLightState;//was weaplight on previously
+            flash = false;
+        }
+    }
+    
+    
+    
+    
+    
+    
     void ReloadAmmo()
     {
         if (Input.GetKeyDown(InputManager.instance.reloadPistol) && ammoCount > 0 && ammoClipCount <= 0)

@@ -5,8 +5,10 @@ using UnityEngine;
 [ExecuteInEditMode]
 public class ShadowCasterV2 : MonoBehaviour
 {
-    public int targetSize = 512;
+    public int targetSize = 512;//512
     public float shadowBias = 0.005f;
+    public int num;
+
 
     public Camera cam;
     public RenderTexture depthTarget;
@@ -15,20 +17,24 @@ public class ShadowCasterV2 : MonoBehaviour
 
     private void OnEnable()
     {
-        UpdateResources();
+        //UpdateResources();
     }
 
     private void OnValidate()
     {
-        UpdateResources();
+        //UpdateResources();
     }
 
-    private void UpdateResources()
+    public void Update()
+    {
+        GetComponent<Camera>().depth = -1000;
+    }
+    public void UpdateResources()
     {
         if (cam == null)
         {
             cam = GetComponent<Camera>();
-            cam.depth = -1000;
+            cam.depth = -100;
         }
 
         if (depthTarget == null || depthTarget.width != targetSize)
@@ -43,23 +49,35 @@ public class ShadowCasterV2 : MonoBehaviour
         }
     }
 
-    private void OnPostRender()
+    public void CastPostRender()
     {
-        var bias = new Matrix4x4() {
-            m00 = 0.5f, m01 = 0,    m02 = 0,    m03 = 0.5f,
-            m10 = 0,    m11 = 0.5f, m12 = 0,    m13 = 0.5f,
-            m20 = 0,    m21 = 0,    m22 = 0.5f, m23 = 0.5f,
-            m30 = 0,    m31 = 0,    m32 = 0,    m33 = 1,
+        var bias = new Matrix4x4()
+        {
+            m00 = 0.5f,
+            m01 = 0,
+            m02 = 0,
+            m03 = 0.5f,
+            m10 = 0,
+            m11 = 0.5f,
+            m12 = 0,
+            m13 = 0.5f,
+            m20 = 0,
+            m21 = 0,
+            m22 = 0.5f,
+            m23 = 0.5f,
+            m30 = 0,
+            m31 = 0,
+            m32 = 0,
+            m33 = 1,
         };
-        
+
+        // Adjust the aspect ratio to elongate the shadows.
+        float aspect = depthTarget.width / (float)depthTarget.height;
+        Matrix4x4 proj = Matrix4x4.Perspective(cam.fieldOfView, aspect * 2, cam.nearClipPlane, cam.farClipPlane);
+
         Matrix4x4 view = cam.worldToCameraMatrix;
-        Matrix4x4 proj = cam.projectionMatrix;
         Matrix4x4 mtx = bias * proj * view;
         MTX = mtx;
-
-        //Shader.SetGlobalMatrix("_ShadowMatrix", mtx);
-        //Shader.SetGlobalTexture("_ShadowTex", depthTarget);
-        
 
         ghostVFXObjects = new List<GhostVFX>();
 

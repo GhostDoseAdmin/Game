@@ -281,7 +281,6 @@ public class PlayerController : MonoBehaviour
 			if (Input.GetMouseButton(1)) //AIMING
 			{
 
-                Debug.Log(targetParams(100));
                 if (is_FlashlightAim)
                 {
 					anim.SetBool("Flashlight", false);
@@ -310,25 +309,9 @@ public class PlayerController : MonoBehaviour
 
                     
                     anim.SetBool("Shoot", true);
-					if (shootPistol.Shoot()) {
-                        //--------------------------FLASH-------------------------------------
-						bool weapLightState = GetComponent<FlashlightSystem>().WeaponLight.enabled;
-                        GetComponent<FlashlightSystem>().WeaponLight.enabled = true;
-                            GetComponent<FlashlightSystem>().WeaponLight.spotAngle = 125;
-                            GetComponent<FlashlightSystem>().WeaponLight.intensity = 15;
-                            StartCoroutine(stopFlash());
-						flash = true;
-                        IEnumerator stopFlash()
-						{
-                            yield return new WaitForSeconds(0.2f);
-                            GetComponent<FlashlightSystem>().WeaponLight.spotAngle = GetComponent<FlashlightSystem>().WeaponLight.spotAngle = GetComponent<FlashlightSystem>().weapLightAngle;
-                            GetComponent<FlashlightSystem>().WeaponLight.intensity = GetComponent<FlashlightSystem>().WeaponLight.intensity = GetComponent<FlashlightSystem>().weapLightIntensity;
-							GetComponent<FlashlightSystem>().WeaponLight.enabled = weapLightState;//was weaplight on previously
-                            flash = false;
-                        }
+					shootPistol.Shoot();
 
-                        ND.sioCom.Instance.Emit("shoot", JsonConvert.SerializeObject($"{{'weapon':'camera'}}"), false); 
-					}
+					
                 }
 				else if (Input.GetMouseButtonUp(0))
 				{
@@ -377,41 +360,7 @@ public class PlayerController : MonoBehaviour
         }
 	}
 
-	private int targetParams(float distance)
-	{
-		//RETUNRS 1 for visible 2 for headshot
-        RaycastHit hit;
-		if (Physics.Raycast(GetComponent<ShootingSystem>().shootPoint.position, GetComponent<ShootingSystem>().shootPoint.forward, out hit, distance))
-		{
-			string ghostType = hit.collider.gameObject.transform.root.tag;
 
-			if (ghostType == "Ghost")
-			{
-				//Ensure mesh can be read
-				if (hit.collider.gameObject.transform.root.transform.GetChild(0) != null)
-				{
-					//check if either in visibility light or flashlight
-					if (GetComponent<FlashlightSystem>().WeaponLight.GetComponent<Light>().enabled || hit.collider.gameObject.transform.root.transform.GetChild(0).GetComponent<GhostVFX>().visible)
-					{
-						if (hit.collider.gameObject.name == "mixamorig:Head") { Debug.Log("HEAD"); return 2; }
-						else { return 1; }
-					}
-				}
-
-			}
-			if (ghostType == "Shadower" && !GetComponent<FlashlightSystem>().WeaponLight.GetComponent<Light>().enabled)
-			{
-				//---------CHECKS TO SEE IF SHADOWER IS IN ITS SPOTLIGHT
-				if (hit.collider.gameObject.transform.root.transform.GetChild(0).GetComponent<GhostVFX>().visible)
-				{
-					if (hit.collider.gameObject.name == "mixamorig:Head") { Debug.Log("HEAD"); return 2; }
-					else { return 1; }
-				}
-			}
-			// else{ Debug.Log("CAN NOT HIT"); }
-		}
-		 return 0; //NO TARGET FOUND
-    }
 
 	#endregion
 

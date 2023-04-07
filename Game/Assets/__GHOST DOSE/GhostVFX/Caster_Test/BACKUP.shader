@@ -1,4 +1,4 @@
-﻿Shader "Custom/ShadowCollector" {
+﻿Shader "Custom/ShadowBACKUP" {
 	Properties{
 		_MainTex("Albedo (RGB)", 2D) = "white" {}
 	}
