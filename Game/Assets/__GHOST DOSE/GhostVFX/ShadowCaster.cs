@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine; 
 
-[ExecuteInEditMode]
+//[ExecuteInEditMode]
 public class ShadowCaster : MonoBehaviour
 {
     public int targetSize = 512; 
