@@ -32,9 +32,9 @@ public class Bullet : MonoBehaviour
 		Debug.DrawLine(lastPos, transform.position);
 		if (Physics.Linecast(lastPos, transform.position, out hit))
 		{
-			if ((hit.collider.tag == "Enemy"))
+			if ((hit.collider.tag == "Ghost" || hit.collider.tag == "Shadower"))
 			{
-				hit.transform.GetComponent<NPCController>().TakeDamage(damageAmount);
+				hit.transform.root.GetComponent<NPCController>().TakeDamage(0); //damageAmount
 
 				GameObject h = Instantiate(hitBloodEffect);
 				h.transform.position = hit.point + hit.normal * 0.001f;

@@ -40,7 +40,7 @@ public class NPCController : MonoBehaviour
     public NavMeshAgent navmesh;
 
     //NETWORK
-    private NetworkDriver ND;
+    private GameDriver GD;
     public Transform targetPlayer;
     private GameObject Player;
     private GameObject Client;
@@ -57,7 +57,7 @@ public class NPCController : MonoBehaviour
 
     void Start()
     {
-        ND = GameObject.Find("GameController").GetComponent<GameDriver>().ND;
+        GD = GameObject.Find("GameController").GetComponent<GameDriver>();
         Player = GameObject.Find("GameController").GetComponent<GameDriver>().Player;
         Client = GameObject.Find("GameController").GetComponent<GameDriver>().Client;
 
@@ -75,13 +75,13 @@ public class NPCController : MonoBehaviour
     {
         if (this.gameObject.activeSelf) { AI(); }
 
-        if (ND.HOST)
+        if (GD.twoPlayer && GD.ND.HOST)
         {
             //FindTargetRayCast();//dtermines & finds target
 
 
             //actions = this.name + target + destination + attacking; //  + animEnemy.GetCurrentAnimatorClipInfo(0)[0].clip.name; //+ attacking
-            actions = $"{{{target} {destination} {attacking}'}}";
+            actions = $"{{{target} {destination} {attacking}'}}";//determines what events to emit on change
             if (actions != prevActions) //actions change
             {
                 //Debug.LogWarning(attacking);
@@ -92,7 +92,7 @@ public class NPCController : MonoBehaviour
                     //if (attacking) {  Debug.Log("AAAAAAAAAAAAAAAAAAAAAATAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAk"); }
                     // send = $"{{'object':'{this.name}','target':'{target}','Attack':'{animEnemy.GetBool("Attack")}', 'Run':'{animEnemy.GetBool("Run")}', 'Walk':'{animEnemy.GetBool("Walk")}','x':'{transform.position.x}','y':'{transform.position.y}','z':'{transform.position.z}','dx':'{destination.x}','dy':'{destination.y}','dz':'{destination.z}'}}";
                     send = $"{{'object':'{this.name}','dead':'false','Attack':'{attacking}','target':'{target}','curWayPoint':'{curWayPoint}','x':'{transform.position.x}','y':'{transform.position.y}','z':'{transform.position.z}','dx':'{destination.x}','dy':'{destination.y}','dz':'{destination.z}'}}";
-                    ND.sioCom.Instance.Emit("enemy", JsonConvert.SerializeObject(send), false);
+                    GD.ND.sioCom.Instance.Emit("enemy", JsonConvert.SerializeObject(send), false);
 
                     //attack_emit_timer = Time.time;//cooldown
                 }
@@ -122,7 +122,7 @@ public class NPCController : MonoBehaviour
                 if (wayPoint.Count > curWayPoint)
                 {
 
-                    if (ND.HOST){destination = wayPoint[curWayPoint].position;    navmesh.SetDestination(wayPoint[curWayPoint].position);}
+                    if (GD.ND.HOST){destination = wayPoint[curWayPoint].position;    navmesh.SetDestination(wayPoint[curWayPoint].position);}
                     else {navmesh.SetDestination(destination);}
 
                     float distance = Vector3.Distance(transform.position, wayPoint[curWayPoint].position);
@@ -144,7 +144,7 @@ public class NPCController : MonoBehaviour
             else if (wayPoint.Count == 1)
             {
                 
-                if (ND.HOST) {                    navmesh.SetDestination(wayPoint[0].position);                    destination = wayPoint[0].position;                }
+                if (GD.ND.HOST) {                    navmesh.SetDestination(wayPoint[0].position);                    destination = wayPoint[0].position;                }
                 else                {                    navmesh.SetDestination(destination);                }
 
                 float distance = Vector3.Distance(transform.position, wayPoint[curWayPoint].position);
@@ -179,7 +179,7 @@ public class NPCController : MonoBehaviour
         float distance = Vector3.Distance(transform.position, target.position);
         //if(!ND.HOST) { distance -= 0.35f; }// IS THE DELAY FOR PLAYER ACTION EMITS 
 
-        if (ND.HOST)
+        if (GD.ND.HOST)
         {
             //RUN TO TARGET
             if (distance > hitRange)
@@ -251,7 +251,7 @@ public class NPCController : MonoBehaviour
 
 
 
-        if (target != null && ND.HOST)
+        if (target != null && GD.ND.HOST)
         {
             if (target == Player)
             {
@@ -348,8 +348,12 @@ public class NPCController : MonoBehaviour
 
         if (healthEnemy <= 0)
         {
-            send = $"{{'object':'{this.name}','dead':'true','Attack':'{attacking}','target':'{target}','curWayPoint':'{curWayPoint}','x':'{transform.position.x}','y':'{transform.position.y}','z':'{transform.position.z}','dx':'{destination.x}','dy':'{destination.y}','dz':'{destination.z}'}}";
-            ND.sioCom.Instance.Emit("enemy", JsonConvert.SerializeObject(send), false);
+            if (GD.twoPlayer && GD.ND.HOST)
+            {
+                send = $"{{'object':'{this.name}','dead':'true','Attack':'{attacking}','target':'{target}','curWayPoint':'{curWayPoint}','x':'{transform.position.x}','y':'{transform.position.y}','z':'{transform.position.z}','dx':'{destination.x}','dy':'{destination.y}','dz':'{destination.z}'}}";
+                GD.ND.sioCom.Instance.Emit("enemy", JsonConvert.SerializeObject(send), false);
+            }
+            
             gameObject.SetActive(false);
             Instantiate(ragdollEnemy, transform.position, transform.rotation);
         }

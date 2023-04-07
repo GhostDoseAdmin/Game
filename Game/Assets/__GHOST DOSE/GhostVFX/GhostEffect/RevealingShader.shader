@@ -32,11 +32,14 @@ Shader "Custom/Ghost" {
             float4 _PlayerLightDirection;
             float _PlayerLightAngle;
             float _PlayerStrengthScalarLight;
+            float _PlayerLightRange;
+
             //CLIENT LIGHT
             float4 _ClientLightPosition;
             float4 _ClientLightDirection;
             float _ClientLightAngle;
             float _ClientStrengthScalarLight;
+            float _ClientLightRange;
 
             //ENVIRONMENT LIGHTS
             int _EnvLightCount;
@@ -44,6 +47,7 @@ Shader "Custom/Ghost" {
             float4 _LightDirections[20];
             float _LightAngles[20];
             float _StrengthScalarLight[20];
+            float _LightRanges[20];
 
             //SHADOW MAP DETAILS
             float4x4 _ShadowMatrix;
@@ -61,6 +65,9 @@ Shader "Custom/Ghost" {
                 for (int i = 0; i < _EnvLightCount; i++) {
                     float3 direction = normalize(_LightPositions[i] - IN.worldPos);
                     float distance = length(IN.worldPos - _LightPositions[i]);
+                    if (distance > _LightRanges[i]) {
+                        continue; // move on to the next light
+                    }
                     float scale = dot(direction, _LightDirections[i]);
                     float strength = scale - cos(_LightAngles[i] * (3.14 / 360.0));
                     _strength[i] = abs(1 - min(max(strength * _StrengthScalarLight[i], 0), 1));
@@ -86,6 +93,9 @@ Shader "Custom/Ghost" {
                 float strength1 = scale1 - cos(_PlayerLightAngle * (3.14 / 360.0));
                 strength1 = abs(1 - min(max(strength1 * _PlayerStrengthScalarLight, 0), 1));
                 strength1 = 1 - (1 - strength1);
+                if (distance1 > _PlayerLightRange) {
+                    strength1 = 1;
+                }
                 alphaStrengthPlayers *= strength1;
 
                 //CLIENT LIGHTS
@@ -95,6 +105,9 @@ Shader "Custom/Ghost" {
                 float strength2 = scale2 - cos(_ClientLightAngle * (3.14 / 360.0));
                 strength2 = abs(1 - min(max(strength2 * _ClientStrengthScalarLight, 0), 1));
                 strength2 = 1 - (1 - strength2);
+                if (distance2 > _ClientLightRange) {
+                    strength2 = 1;
+                }
                 alphaStrengthPlayers *= strength2;
 
                 minStrengthPlayers = min(strength1, strength2);
@@ -104,7 +117,7 @@ Shader "Custom/Ghost" {
                 float strength = minStrength * minStrengthPlayers;
 
                 o.Albedo = c.rgb;
-                o.Emission = c.rgb * c.a * strength;
+                o.Emission = c.rgb * c.a * 1.5;
                 o.Metallic = _Metallic;
                 o.Smoothness = _Glossiness;
                 o.Alpha = (1 - (alphaStrength * alphaStrengthPlayers)) * c.a;

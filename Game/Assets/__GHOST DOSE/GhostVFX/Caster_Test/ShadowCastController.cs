@@ -1,32 +1,65 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Reflection;
 using UnityEngine;
+
 [ExecuteInEditMode]
 public class ShadowCastController : MonoBehaviour
 {
-    // Start is called before the first frame update
-    void Start()
-    {
+    GameObject[] casts;
 
+    // Start is called before the first frame update
+    void Awake()
+    {
+        casts = GameObject.FindGameObjectsWithTag("Caster");
     }
 
-    // Update is called once per frame
+    private void OnEnable()
+    {
+        for (int i = 0; i < casts.Length; i++)
+        {
+            casts[i].GetComponent<ShadowCasterV2>().UpdateResources();
+        }
+    }
+
+    private void OnValidate()
+    {
+        if (casts!=null && casts.Length > 0)
+        {
+            for (int i = 0; i < casts.Length; i++)
+            {
+                casts[i].GetComponent<ShadowCasterV2>().UpdateResources();
+            }
+        }
+    }
+
+    private void Update()
+    {
+        casts = GameObject.FindGameObjectsWithTag("Caster");
+    }
     private void OnPostRender()
     {
-        GameObject[] casts = GameObject.FindGameObjectsWithTag("Caster");
-        Matrix4x4[] shadowMatrices = new Matrix4x4[casts.Length];
-
-        Shader.SetGlobalInt("_NumShadowMaps", casts.Length);
+        Debug.Log("RENDERING ");
+        casts = GameObject.FindGameObjectsWithTag("Caster");
+        //Shader.SetGlobalInt("_NumShadowMaps", casts.Length);
         for (int i = 0; i < casts.Length; i++)
         {
-            string propertyName = "_ShadowMatrix" + i.ToString();
-            Shader.SetGlobalMatrix(propertyName, shadowMatrices[i]);
+            casts[i].GetComponent<ShadowCasterV2>().CastPostRender();
         }
         for (int i = 0; i < casts.Length; i++)
         {
-            string textureName = string.Format("_ShadowTextures[{0}]", i);
-            Shader.SetGlobalTexture(textureName, casts[i].GetComponent<ShadowCasterV2>().depthTarget);
-        }
 
+            //Debug.Log("SETTING CAST" + casts[i].name);
+            Shader.SetGlobalMatrix($"_ShadowMatrix{i+1}", casts[i].GetComponent<ShadowCasterV2>().MTX);
+            Shader.SetGlobalTexture($"_ShadowTex{i+1}", casts[i].GetComponent<ShadowCasterV2>().depthTarget);
+
+            //Shader.SetGlobalMatrix($"_ShadowMatrix1", casts[i].GetComponent<ShadowCasterV2>().MTX);
+            //Shader.SetGlobalTexture($"_ShadowTex1", casts[i].GetComponent<ShadowCasterV2>().depthTarget);
+        }
+       // Shader.SetGlobalMatrix($"_ShadowMatrix1", casts[0].GetComponent<ShadowCasterV2>().MTX);
+        //Shader.SetGlobalTexture($"_ShadowTex1", casts[0].GetComponent<ShadowCasterV2>().depthTarget);
+        //Shader.SetGlobalMatrix($"_ShadowMatrix2", casts[1].GetComponent<ShadowCasterV2>().MTX);
+        //Shader.SetGlobalTexture($"_ShadowTex2", casts[1].GetComponent<ShadowCasterV2>().depthTarget);
     }
 }

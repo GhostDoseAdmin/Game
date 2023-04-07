@@ -1,17 +1,16 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-[ExecuteInEditMode]
+//[ExecuteInEditMode]
 public class ShadowDetector : MonoBehaviour
 {
-    // Start is called before the first frame update
 
     void OnTriggerStay(Collider other)
     {
         if(other.tag == "Shadower" || other.tag=="Ghost")
         {
-           // Debug.Log("IN SHADOW");
-            other.GetComponent<GhostVFX>().inShadow = true;
+            // Debug.Log("IN SHADOW");
+            if (other.gameObject.GetComponent<GhostVFX>() != null) { other.gameObject.GetComponent<GhostVFX>().inShadow = true; }
         }
             
     }
@@ -20,7 +19,10 @@ public class ShadowDetector : MonoBehaviour
         if (other.tag == "Shadower" || other.tag == "Ghost")
         {
             // Debug.Log("IN SHADOW");
-            other.GetComponent<GhostVFX>().inShadow = false;
+            if (other.gameObject.GetComponent<GhostVFX>() != null)
+            {
+                other.gameObject.GetComponent<GhostVFX>().inShadow = false;
+            }
         }
 
     }

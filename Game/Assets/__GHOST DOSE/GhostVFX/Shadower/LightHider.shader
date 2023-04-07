@@ -44,6 +44,8 @@ Shader "Custom/Shadower" {
             float4 _LightDirections[20];
             float _LightAngles[20];
             float _StrengthScalarLight[20];
+            float _LightRanges[20];
+
 
             //SHADOW MAP DETAILS
             float4x4 _ShadowMatrix;
@@ -61,6 +63,9 @@ Shader "Custom/Shadower" {
                 for (int i = 0; i < _EnvLightCount; i++) {
                     float3 direction = normalize(_LightPositions[i] - IN.worldPos);
                     float distance = length(IN.worldPos - _LightPositions[i]);
+                    if (distance > _LightRanges[i]) {
+                        continue; // move on to the next light
+                    }
                     float scale = dot(direction, _LightDirections[i]);
                     float strength = scale - cos(_LightAngles[i] * (3.14 / 360.0));
                     _strength[i] = abs(1 - min(max(strength * _StrengthScalarLight[i], 0), 1));
@@ -104,7 +109,7 @@ Shader "Custom/Shadower" {
                 float strength = minStrength * minStrengthPlayers;
 
                 o.Albedo = c.rgb;
-                o.Emission = c.rgb * c.a * strength;
+                o.Emission = c.rgb * c.a * strength; //* strength
                 o.Metallic = _Metallic;
                 o.Smoothness = _Glossiness;
                 o.Alpha = alphaStrength * alphaStrengthPlayers * c.a;
