@@ -28,13 +28,19 @@ public class Rig : EditorWindow
 
         originSkeletonRoot = Resources.Load<GameObject>("Prefabs/Rigs/ROOTRIG");
         destSkeletonRoot = EditorGUILayout.ObjectField("Destination Skeleton Root", destSkeletonRoot, typeof(GameObject), true) as GameObject;
-        
+
+
+
+
 
         EditorGUILayout.Space();
 
         if (GUILayout.Button("Copy Skeleton Objects"))
         {
             myModel = destSkeletonRoot.transform.root.gameObject;
+
+            originSkeletonRoot = FindChildObject(originSkeletonRoot.transform.root, "mixamorig:Hips");
+            destSkeletonRoot = FindChildObject(destSkeletonRoot.transform.root, "mixamorig:Hips");
 
             if (originSkeletonRoot == null || destSkeletonRoot == null)
             {
@@ -198,6 +204,22 @@ public class Rig : EditorWindow
         }
     }
 
+            public GameObject FindChildObject(Transform parentTransform, string name)
+        {
+            if (parentTransform.gameObject.name == name)
+            {
+                return parentTransform.gameObject;
+            }
 
+            foreach (Transform childTransform in parentTransform)
+            {
+                GameObject foundObject = FindChildObject(childTransform, name);
+                if (foundObject != null)
+                {
+                    return foundObject;
+                }
+            }
+            return null;
+        }
 
 }
