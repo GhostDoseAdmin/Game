@@ -109,7 +109,7 @@ Shader "Custom/Shadower" {
                 float strength = minStrength * minStrengthPlayers;
 
                 o.Albedo = c.rgb;
-                o.Emission = c.rgb * c.a * strength; //* strength
+                o.Emission = c.rgb * c.a * strength *0.3; //* strength
                 o.Metallic = _Metallic;
                 o.Smoothness = _Glossiness;
                 o.Alpha = alphaStrength * alphaStrengthPlayers * c.a;

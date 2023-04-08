@@ -6,7 +6,7 @@ using System.Net;
 using Unity.VisualScripting;
 using UnityEngine;
 
-//[ExecuteInEditMode]
+[ExecuteInEditMode]
 public class GhostVFX : MonoBehaviour
 {
 
@@ -28,26 +28,27 @@ public class GhostVFX : MonoBehaviour
     {
         GD = GameObject.Find("GameController").GetComponent<GameDriver>();
         skin = gameObject.transform.GetChild(0).gameObject;
-        shader = skin.GetComponent<SkinnedMeshRenderer>().material.shader.name;
+        //shader = skin.GetComponent<SkinnedMeshRenderer>().material.shader.name;
     }
 
     public void UpdateShaderValues()
     {
-       PlayerLight = GD.Player.GetComponent<PlayerController>().currLight;
-       ClientLight = GD.Client.GetComponent<ClientPlayerController>().currLight;
+       //PlayerLight = GD.Player.GetComponent<PlayerController>().currLight;
+       //ClientLight = GD.Client.GetComponent<ClientPlayerController>().currLight;
 
 
         //if (PlayerLight != null && ClientLight != null)
         {
 
-            if (shader == "Custom/Ghost") { envLights = GameObject.FindGameObjectsWithTag("GhostLight"); }
+            // if (shader == "Custom/Ghost") { envLights = GameObject.FindGameObjectsWithTag("GhostLight"); }
+            //else { envLights = GameObject.FindGameObjectsWithTag("ShadowerLight"); }
+
+            if (this.gameObject.tag == "Ghost") { envLights = GameObject.FindGameObjectsWithTag("GhostLight"); }
             else { envLights = GameObject.FindGameObjectsWithTag("ShadowerLight"); }
 
             //DEFAULT VISIBLIITY
-            if (shader == "Custom/Ghost") { visible = false; }
+            if (this.gameObject.tag == "Ghost") { visible = false;  }
             else { visible = true; }
-
-
 
             Light lightSource;
 
@@ -74,20 +75,20 @@ public class GhostVFX : MonoBehaviour
 
                 }
                 IsVisible(envLights);
-                skin.GetComponent<SkinnedMeshRenderer>().material.SetInt("_EnvLightCount", envLightCount);
-                skin.GetComponent<SkinnedMeshRenderer>().material.SetVectorArray("_LightPositions", lightPositions);
-                skin.GetComponent<SkinnedMeshRenderer>().material.SetVectorArray("_LightDirections", lightDirections);
-                skin.GetComponent<SkinnedMeshRenderer>().material.SetFloatArray("_LightAngles", lightAngles);
-                skin.GetComponent<SkinnedMeshRenderer>().material.SetFloatArray("_StrengthScalarLight", ScalarStrengths);
-                skin.GetComponent<SkinnedMeshRenderer>().material.SetFloatArray("_LightRanges", lightRanges);
-
-
-
+                foreach (Material material in skin.GetComponent<SkinnedMeshRenderer>().materials)
+                {
+                    material.SetInt("_EnvLightCount", envLightCount);
+                    material.SetVectorArray("_LightPositions", lightPositions);
+                    material.SetVectorArray("_LightDirections", lightDirections);
+                    material.SetFloatArray("_LightAngles", lightAngles);
+                    material.SetFloatArray("_StrengthScalarLight", ScalarStrengths);
+                    material.SetFloatArray("_LightRanges", lightRanges);
+                }
             }
 
-            //SAHDOW OVERRIDES ENVIRONMENT LIGHTS
+            //SHADOW OVERRIDES ENVIRONMENT LIGHTS
             if (inShadow) {
-                if (shader == "Custom/Ghost") { visible = false; }else { visible = true; }
+                if (this.gameObject.tag == "Ghost") { visible = false; }else { visible = true; }
             }
 
 
@@ -100,15 +101,17 @@ public class GhostVFX : MonoBehaviour
                 //FLASHLIGHT OVERRIDES SHADOW AND ENVIORNMENT
                 else if (IsObjectInLightCone(lightSource, true))//directly under light source
                 {
-                    if (shader == "Custom/Ghost") { visible = true; } else { visible = false; } 
+                    if (this.gameObject.tag == "Ghost") { visible = true; } else { visible = false; } 
                 } 
-            } 
-            skin.GetComponent<SkinnedMeshRenderer>().material.SetVector("_PlayerLightPosition", lightSource.transform.position);
-            skin.GetComponent<SkinnedMeshRenderer>().material.SetVector("_PlayerLightDirection", -lightSource.transform.forward);
-            skin.GetComponent<SkinnedMeshRenderer>().material.SetFloat("_PlayerLightAngle", spotAngle);
-            skin.GetComponent<SkinnedMeshRenderer>().material.SetFloat("_PlayerStrengthScalarLight", 20);
-            skin.GetComponent<SkinnedMeshRenderer>().material.SetFloat("_PlayerLightRange", lightSource.range);
-
+            }
+            foreach (Material material in skin.GetComponent<SkinnedMeshRenderer>().materials)
+            {
+                material.SetVector("_PlayerLightPosition", lightSource.transform.position);
+                material.SetVector("_PlayerLightDirection", -lightSource.transform.forward);
+                material.SetFloat("_PlayerLightAngle", spotAngle);
+                material.SetFloat("_PlayerStrengthScalarLight", 20);
+                material.SetFloat("_PlayerLightRange", lightSource.range);
+            }
             //ADD IN CLIENT LIGHT
             lightSource = ClientLight.GetComponent<Light>();
             spotAngle = lightSource.spotAngle;
@@ -119,14 +122,17 @@ public class GhostVFX : MonoBehaviour
                 //FLASHLIGHT OVERRIDES SHADOW AND ENVIORNMENT
                 else if(IsObjectInLightCone(lightSource, true))//directly under light source
                 {
-                    if (shader == "Custom/Ghost") { visible = true; } else { visible = false; }
+                    if (this.gameObject.tag == "Ghost") { visible = true; } else { visible = false; }
                 }
             }
-            skin.GetComponent<SkinnedMeshRenderer>().material.SetVector("_ClientLightPosition", lightSource.transform.position);
-            skin.GetComponent<SkinnedMeshRenderer>().material.SetVector("_ClientLightDirection", -lightSource.transform.forward);
-            skin.GetComponent<SkinnedMeshRenderer>().material.SetFloat("_ClientLightAngle", spotAngle);
-            skin.GetComponent<SkinnedMeshRenderer>().material.SetFloat("_ClientStrengthScalarLight", 20);
-            skin.GetComponent<SkinnedMeshRenderer>().material.SetFloat("_ClientLightRange", lightSource.range);
+            foreach (Material material in skin.GetComponent<SkinnedMeshRenderer>().materials)
+            {
+                material.SetVector("_ClientLightPosition", lightSource.transform.position);
+                material.SetVector("_ClientLightDirection", -lightSource.transform.forward);
+                material.SetFloat("_ClientLightAngle", spotAngle);
+                material.SetFloat("_ClientStrengthScalarLight", 20);
+                material.SetFloat("_ClientLightRange", lightSource.range);
+            }
 
             //testShadow();
             //Debug.Log(visible);
@@ -146,7 +152,7 @@ public class GhostVFX : MonoBehaviour
         for (int i = 0; i < lights.Length; i++)
         {
             if (IsObjectInLightCone(lights[i].GetComponent<Light>(), false))
-            {
+            { 
                 float distance = Vector3.Distance(transform.position, lights[i].transform.position);
                 if (distance < closestDistance && InLineOfSightArea(lights[i].GetComponent<Light>(), true))
                 {
@@ -157,9 +163,9 @@ public class GhostVFX : MonoBehaviour
         }
         if (closestLight != null)
         {
-           // Debug.Log("SETTING VISIBLITY " + closestLight.name);
-            if (shader == "Custom/Ghost") { visible = true; }
-            else { visible = false; } // shadower
+           
+            if (this.gameObject.tag == "Ghost") { visible = true;}
+            else { visible = false;  } // shadower
         }
     }
 
@@ -174,13 +180,12 @@ public class GhostVFX : MonoBehaviour
             mask = ~(1 << ShadowReceiver) & ~(1 << ShadowBox) & ~(1 << LayerMask.NameToLayer("EnemyHead"));
         }
 
-
-        float hitHeight = 1.5f; // adjust the hit height as per your requirement
+        float hitHeight = 1.3f; // adjust the hit height 
         Vector3 targPos = new Vector3(this.gameObject.transform.position.x, this.gameObject.transform.position.y + hitHeight, this.gameObject.transform.position.z);
         Ray ray = new Ray(light.transform.position, (targPos - light.transform.position).normalized);
         float distance = Vector3.Distance(light.transform.position, targPos);
         Vector3 endPoint = ray.GetPoint(distance);
-        Debug.DrawLine(light.transform.position, endPoint, UnityEngine.Color.blue);
+        Debug.DrawLine(light.transform.position, endPoint, UnityEngine.Color.green);
 
         // Perform the raycast, excluding the specified layers
         RaycastHit hit;
@@ -188,7 +193,7 @@ public class GhostVFX : MonoBehaviour
         if(Physics.Linecast(light.transform.position, endPoint, out hit, mask.value))
         {
            
-            //Debug.Log("OBJECT AREA HIT " + light.name + hit.collider.gameObject.name);
+            
             if (hit.collider.gameObject == this.gameObject)
             {
                 return true;
@@ -235,7 +240,7 @@ public class GhostVFX : MonoBehaviour
     public bool IsObjectInLightCone(Light spotlight, bool isPlayer)
     {
         float adjustedSpotAngle = spotlight.spotAngle;
-        float hitHeight = 0; 
+        float hitHeight = 1f; 
 
         if (!isPlayer) { adjustedSpotAngle = spotlight.spotAngle * 1.1f;
             hitHeight = 1.5f;
@@ -243,8 +248,10 @@ public class GhostVFX : MonoBehaviour
         float distanceToObject = Vector3.Distance(this.gameObject.transform.position + Vector3.up * hitHeight, spotlight.transform.position);
         bool inRange = distanceToObject <= spotlight.range;
         Vector3 directionToObject = (this.gameObject.transform.position + Vector3.up * hitHeight - spotlight.transform.position).normalized;
+        Debug.DrawLine(spotlight.transform.position, this.gameObject.transform.position + Vector3.up * hitHeight, UnityEngine.Color.red);
         float angleToObject = Vector3.Angle(spotlight.transform.forward, directionToObject);
         bool inCone = angleToObject <= adjustedSpotAngle * 0.5f;
+        if (isPlayer && spotlight.gameObject.name == "player_light") { Debug.Log("IN CONE? " + inCone); }
         if (isPlayer && this.gameObject.tag == "Shadower") { return inCone; }//fl effect on shadowers have no range
         return inRange && inCone;
     }

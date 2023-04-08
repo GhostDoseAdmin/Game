@@ -17,7 +17,7 @@ public class NPCController : MonoBehaviour
     [Header("ENEMY PARAMETRS")]
     [Space(10)]
     public int healthEnemy = 100;
-    public GameObject handKnife;
+    //public GameObject handKnife;
 
     [Header("ENEMY TARGET")]
     [Space(10)]
@@ -67,7 +67,7 @@ public class NPCController : MonoBehaviour
         targetPlayer = Client.transform;
         head = animEnemy.GetBoneTransform(HumanBodyBones.Head).transform;
 
-        handKnife.GetComponent<Collider>().enabled = false;
+        //handKnife.GetComponent<Collider>().enabled = false;
 
     }
 
@@ -370,11 +370,11 @@ public class NPCController : MonoBehaviour
 
     public void TriggerEnable()
     {
-        handKnife.GetComponent<Collider>().enabled = true;
+        //handKnife.GetComponent<Collider>().enabled = true;
     }
 
     public void TriggerDisable()
     {
-        handKnife.GetComponent<Collider>().enabled = false;
+        //handKnife.GetComponent<Collider>().enabled = false;
     }
 }

@@ -117,7 +117,7 @@ Shader "Custom/Ghost" {
                 float strength = minStrength * minStrengthPlayers;
 
                 o.Albedo = c.rgb;
-                o.Emission = c.rgb * c.a * 1.5;
+                o.Emission = c.rgb * c.a * 0.5;
                 o.Metallic = _Metallic;
                 o.Smoothness = _Glossiness;
                 o.Alpha = (1 - (alphaStrength * alphaStrengthPlayers)) * c.a;
