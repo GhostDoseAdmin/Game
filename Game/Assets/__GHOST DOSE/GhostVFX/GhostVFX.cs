@@ -6,7 +6,7 @@ using System.Net;
 using Unity.VisualScripting;
 using UnityEngine;
 
-[ExecuteInEditMode]
+//[ExecuteInEditMode]
 public class GhostVFX : MonoBehaviour
 {
 
@@ -29,12 +29,14 @@ public class GhostVFX : MonoBehaviour
         GD = GameObject.Find("GameController").GetComponent<GameDriver>();
         skin = gameObject.transform.GetChild(0).gameObject;
         //shader = skin.GetComponent<SkinnedMeshRenderer>().material.shader.name;
+
+
     }
 
     public void UpdateShaderValues()
     {
-       //PlayerLight = GD.Player.GetComponent<PlayerController>().currLight;
-       //ClientLight = GD.Client.GetComponent<ClientPlayerController>().currLight;
+       PlayerLight = GD.Player.GetComponent<PlayerController>().currLight;
+       ClientLight = GD.Client.GetComponent<ClientPlayerController>().currLight;
 
 
         //if (PlayerLight != null && ClientLight != null)
@@ -172,7 +174,6 @@ public class GhostVFX : MonoBehaviour
     private bool InLineOfSightArea(Light light, bool ignoreShadow)
     {
         LayerMask mask = ~(1 << LayerMask.NameToLayer("EnemyHead"));
-
         if (ignoreShadow)
         {   //LAYERS TO IGNORE
             int ShadowReceiver = LayerMask.NameToLayer("ShadowReceiver");
@@ -186,15 +187,13 @@ public class GhostVFX : MonoBehaviour
         float distance = Vector3.Distance(light.transform.position, targPos);
         Vector3 endPoint = ray.GetPoint(distance);
         Debug.DrawLine(light.transform.position, endPoint, UnityEngine.Color.green);
-
         // Perform the raycast, excluding the specified layers
         RaycastHit hit;
         //if (Physics.Raycast(ray, out hit, Mathf.Infinity, mask.value))
         if(Physics.Linecast(light.transform.position, endPoint, out hit, mask.value))
         {
-           
-            
-            if (hit.collider.gameObject == this.gameObject)
+            //if (light.gameObject == PlayerLight) { Debug.Log("COLLIDNG WITH " + hit.collider.gameObject.name); }
+            if (hit.collider.transform.root.gameObject == this.gameObject)
             {
                 return true;
             }

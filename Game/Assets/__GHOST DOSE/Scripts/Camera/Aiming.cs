@@ -13,7 +13,7 @@ public class Aiming : MonoBehaviour {
 	public int width = 40;
 	public GameObject crosshair;
 
-	private int smoothZoom = 10;
+	private int smoothZoom = 5;//10
 	private int normal = 60;
 	private float isZoomed = 0;
 

@@ -359,7 +359,7 @@ public class NPCController : MonoBehaviour
         }
         else
         {
-            animEnemy.SetTrigger("Damage");
+            animEnemy.SetTrigger("Damage"); 
         }
     }
 
