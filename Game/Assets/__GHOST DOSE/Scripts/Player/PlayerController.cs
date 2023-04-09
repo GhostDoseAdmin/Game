@@ -17,7 +17,6 @@ public class PlayerController : MonoBehaviour
 	bool isPlayerRot;
 	public float luft;
 	public Camera_Controller cameraController;
-	public ShootingSystem shootPistol;
 
 	[Header("HAND PARAMETRS")]
 	[Space(10)]
@@ -67,7 +66,7 @@ public class PlayerController : MonoBehaviour
 	Vector3 targetPosVec;
 	float walk = 0f;
 	float strafe = 0f;
-    private NetworkDriver ND;
+    public GameDriver GD;
     private float action_timer = 0.0f;
     private float action_delay = 0.33f;//0.25
 	public float speed;
@@ -99,7 +98,7 @@ public class PlayerController : MonoBehaviour
 	{
 
 
-        ND = GameObject.Find("GameController").GetComponent<GameDriver>().ND;
+        GD = GameObject.Find("GameController").GetComponent<GameDriver>();
         GetComponent<WeaponParameters>().EnableInventoryPistol();
 
 		Cursor.lockState = CursorLockMode.Locked;
@@ -145,7 +144,7 @@ public class PlayerController : MonoBehaviour
 			bool flashlighton = false;
 			if (gameObject.GetComponent<FlashlightSystem>().FlashLight.isActiveAndEnabled || gameObject.GetComponent<FlashlightSystem>().WeaponLight.enabled) { flashlighton = true; }
                 string actions = $"{{'flashlight':'{flashlighton}','flintensity':'{gameObject.GetComponent<FlashlightSystem>().FlashLight.intensity}','aim':'{Input.GetMouseButton(1)}','walk':'{walk.ToString("F0")}','strafe':'{strafe.ToString("F0")}','run':'{Input.GetKey(InputManager.instance.running)}','x':'{transform.position.x.ToString("F2")}','y':'{transform.position.y.ToString("F2")}','z':'{transform.position.z.ToString("F2")}','speed':'{speed.ToString("F2")}','rx':'{transform.eulerAngles.x.ToString("F0")}','ry':'{transform.eulerAngles.y.ToString("F0")}','rz':'{transform.eulerAngles.z.ToString("F0")}','ax':'{crosshairPos.x.ToString("F0")}','ay':'{crosshairPos.y.ToString("F0")}','az':'{crosshairPos.z.ToString("F0")}'}}";
-				if (actions != prevEmit) { ND.sioCom.Instance.Emit("player_action", JsonConvert.SerializeObject(actions), false); prevEmit = actions; }
+				if (actions != prevEmit) { GD.ND.sioCom.Instance.Emit("player_action", JsonConvert.SerializeObject(actions), false); prevEmit = actions; }
                 action_timer = Time.time;//cooldown
 			}
 
@@ -302,14 +301,14 @@ public class PlayerController : MonoBehaviour
 				newHandWeight = 1f;
 				canShoot = true;
 
-
+				GetComponent<ShootingSystem>().Aiming();
                 //-------------------------------SHOOTING -----------------------------------
                 if (Input.GetMouseButtonDown(0))
                 {
 
                     
                     anim.SetBool("Shoot", true);
-					shootPistol.Shoot();
+                    GetComponent<ShootingSystem>().Shoot();
 
 					
                 }
