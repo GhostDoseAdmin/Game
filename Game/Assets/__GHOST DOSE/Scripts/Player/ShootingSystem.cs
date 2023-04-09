@@ -144,7 +144,10 @@ public class ShootingSystem : MonoBehaviour
         }
         if (gameObject.GetComponent<FlashlightSystem>().FlashLight.isActiveAndEnabled || gameObject.GetComponent<FlashlightSystem>().WeaponLight.enabled) { flashLightIndicatorUI.color = UnityEngine.Color.yellow; }
 
-        if (Mathf.Approximately(Mathf.Round(camera.fieldOfView * 10) / 10f, aiming.zoom)) { focusIndicatorUI.color = UnityEngine.Color.yellow; }
+        if (Mathf.Approximately(Mathf.Round(camera.fieldOfView * 10) / 10f, aiming.zoom)) { 
+            focusIndicatorUI.color = UnityEngine.Color.yellow;
+            focusIndicatorUI.transform.localRotation = UnityEngine.Quaternion.Euler(0f, 0f, 90f);
+        }
         
         crosshairs.GetComponent<Animator>().speed = (camera.fieldOfView - aiming.zoom) * 3;//ANIMATE FOCUS INDICATOR
         //Debug.Log(isEnemy.ToString() + isVisible.ToString() + isHeadshot.ToString());
