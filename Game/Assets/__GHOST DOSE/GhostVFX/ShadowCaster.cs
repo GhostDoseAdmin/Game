@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine; 
 
-[ExecuteInEditMode]
+//[ExecuteInEditMode]
 public class ShadowCaster : MonoBehaviour
 {
     public int targetSize = 512; 
@@ -56,7 +56,7 @@ public class ShadowCaster : MonoBehaviour
 
         Shader.SetGlobalMatrix("_ShadowMatrix", mtx);
         Shader.SetGlobalTexture("_ShadowTex", depthTarget);
-        //Shader.SetGlobalFloat("_ShadowBias", shadowBias);
+
 
         ghostVFXObjects = new List<GhostVFX>();
 
