@@ -1,4 +1,4 @@
-Shader "Custom/Ghost" {
+Shader "Custom/FakeAlpha" {
     Properties{
         _Color("Color", Color) = (1,1,1,1)
         _MainTex("Albedo (RGB)", 2D) = "white" {}
@@ -7,36 +7,34 @@ Shader "Custom/Ghost" {
         _MaxDistance("Max Distance", Float) = 10
         _Emission("Emission", Range(0,1)) = 1
         _Alpha("Alpha", Range(0,1)) = 1
+
     }
         SubShader{
-            Tags { "RenderType" = "Transparent" "Queue" = "Transparent"}
-            Blend SrcAlpha OneMinusSrcAlpha
+            Tags { "RenderType" = "Opaque"}
+            //ZWrite Off
+            //Cull Front
             LOD 200
-            //Cull Off
 
             CGPROGRAM
             #include "UnityCG.cginc"
-            #pragma surface surf Standard fullforwardshadows alpha:fade
+            #pragma surface surf Standard fullforwardshadows
             #pragma target 3.0
 
             sampler2D _MainTex;
- 
+
             struct Input {
                 float2 uv_MainTex;
                 float3 worldPos;
                 float3 worldNormal;
- 
             };
 
             half _Glossiness;
             half _Metallic;
             half _Emission;
+            half _YOffset;
             half _Alpha;
             fixed4 _Color;
             float _MaxDistance;
-            float _yPos;
-
-
             //PLAYER LIGHT
             float4 _PlayerLightPosition;
             float4 _PlayerLightDirection;
@@ -59,21 +57,15 @@ Shader "Custom/Ghost" {
             float _StrengthScalarLight[20];
             float _LightRanges[20];
 
+
+
             //SHADOW MAP DETAILS
             float4x4 _ShadowMatrix;
             sampler2D _ShadowTex;
             float _ShadowBias;
-
+            
 
             void surf(Input IN, inout SurfaceOutputStandard o) {
-
-
-                float facingCamera = dot(IN.worldNormal, _WorldSpaceCameraPos.xyz - IN.worldPos);
-                if (facingCamera < 0) {
-                    // Backface, discard the fragment
-                    //discard;
-                   // return;
-                }
 
                 fixed4 c = tex2D(_MainTex, IN.uv_MainTex) * _Color;
 
@@ -97,7 +89,6 @@ Shader "Custom/Ghost" {
                     float lightDepth = 1.0 - tex2Dproj(_ShadowTex, shadowCoords).r;
                     float shadow = (shadowCoords.z - 0.005) < lightDepth ? 1.0 : 0.0;
 
-                   // _strength[i] = 1 - (1 - _strength[i]);
                     _strength[i] = 1 - (shadow * (1 - _strength[i]));
 
 
@@ -136,10 +127,13 @@ Shader "Custom/Ghost" {
 
 
                 float strength = minStrength * minStrengthPlayers;
-                //alphaStrength = 0.1;
+
                 //ALPHA CUTOFF -- only render pixels that are more visible
                 float total_alpha = (1 - (alphaStrength * alphaStrengthPlayers)) * c.a;
-
+                if (total_alpha < _Alpha) {
+                    discard;
+                    return;
+                }
 
 
                 o.Albedo = c.rgb;
@@ -147,13 +141,9 @@ Shader "Custom/Ghost" {
                 o.Metallic = _Metallic;
                 o.Smoothness = _Glossiness;
                 o.Alpha = total_alpha;
-                if (total_alpha > 0.01) {
-                  //  o.Alpha = 1;
-                }
 
 
             }
-
             ENDCG
         }
             FallBack "Diffuse"

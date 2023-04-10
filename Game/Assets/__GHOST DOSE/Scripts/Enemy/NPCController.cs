@@ -76,7 +76,7 @@ public class NPCController : MonoBehaviour
     {
         if (this.gameObject.activeSelf) { AI(); }
 
-        if (GD.ND.HOST) { FindTargetRayCast(); } //dtermines & finds target
+       // if (GD.ND.HOST) { FindTargetRayCast(); } //dtermines & finds target
         if (GD.twoPlayer && GD.ND.HOST)
         {
            

@@ -72,7 +72,7 @@ public class GhostVFX : MonoBehaviour
                     lightPositions[i] = lightSource.transform.position;
                     lightDirections[i] = -lightSource.transform.forward;
                     lightAngles[i] = lightSource.spotAngle+5;
-                    ScalarStrengths[i] = 50;//30
+                    ScalarStrengths[i] = 50;//50
                     lightRanges[i] = lightSource.range;//30
 
 
@@ -136,6 +136,13 @@ public class GhostVFX : MonoBehaviour
                 material.SetFloat("_ClientStrengthScalarLight", 20);
                 material.SetFloat("_ClientLightRange", lightSource.range);
             }
+
+
+            foreach (Material material in skin.GetComponent<SkinnedMeshRenderer>().materials)
+            {
+                material.SetFloat("_yPos", transform.position.y);
+            }
+                
 
             //testShadow();
             //Debug.Log(visible);

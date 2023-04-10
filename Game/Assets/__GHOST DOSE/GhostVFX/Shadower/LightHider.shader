@@ -9,6 +9,8 @@ Shader "Custom/Shadower" {
         SubShader{
             Tags { "RenderType" = "Transparent" "Queue" = "Transparent" }
             Blend SrcAlpha OneMinusSrcAlpha
+            ZWrite Off
+            Cull Back
             LOD 200
 
             CGPROGRAM
