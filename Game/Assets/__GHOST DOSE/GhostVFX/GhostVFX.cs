@@ -6,7 +6,7 @@ using System.Net;
 using Unity.VisualScripting;
 using UnityEngine;
 
-//[ExecuteInEditMode]
+[ExecuteInEditMode]
 public class GhostVFX : MonoBehaviour
 {
 
@@ -28,15 +28,16 @@ public class GhostVFX : MonoBehaviour
     {
         GD = GameObject.Find("GameController").GetComponent<GameDriver>();
         skin = gameObject.transform.GetChild(0).gameObject;
-        //shader = skin.GetComponent<SkinnedMeshRenderer>().material.shader.name;
-
-
     }
 
     public void UpdateShaderValues()
     {
-       PlayerLight = GD.Player.GetComponent<PlayerController>().currLight;
-       ClientLight = GD.Client.GetComponent<ClientPlayerController>().currLight;
+        if (Application.isPlaying)
+        {
+            PlayerLight = GD.Player.GetComponent<PlayerController>().currLight;
+            ClientLight = GD.Client.GetComponent<ClientPlayerController>().currLight;
+        }
+
 
 
         //if (PlayerLight != null && ClientLight != null)
@@ -99,7 +100,7 @@ public class GhostVFX : MonoBehaviour
             float spotAngle = lightSource.spotAngle;
             if (!lightSource.enabled) { spotAngle = 0; }
             else { //flashlight enabled
-                if (!InLineOfSightArea(lightSource, true)) { spotAngle = 0; }
+                if (!InLineOfSight(lightSource, true)) { spotAngle = 0; }
                 //FLASHLIGHT OVERRIDES SHADOW AND ENVIORNMENT
                 else if (IsObjectInLightCone(lightSource, true))//directly under light source
                 {
@@ -120,7 +121,7 @@ public class GhostVFX : MonoBehaviour
             if (!lightSource.enabled) { spotAngle = 0; }
             else
             {
-                if (!InLineOfSightArea(lightSource, true)) { spotAngle = 0; }
+                if (!InLineOfSight(lightSource,true)) { spotAngle = 0; }
                 //FLASHLIGHT OVERRIDES SHADOW AND ENVIORNMENT
                 else if(IsObjectInLightCone(lightSource, true))//directly under light source
                 {
@@ -156,7 +157,7 @@ public class GhostVFX : MonoBehaviour
             if (IsObjectInLightCone(lights[i].GetComponent<Light>(), false))
             { 
                 float distance = Vector3.Distance(transform.position, lights[i].transform.position);
-                if (distance < closestDistance && InLineOfSightArea(lights[i].GetComponent<Light>(), true))
+                if (distance < closestDistance && InLineOfSight(lights[i].GetComponent<Light>(),false))
                 {
                     closestLight = lights[i].GetComponent<Light>();
                     closestDistance = distance;
@@ -171,27 +172,23 @@ public class GhostVFX : MonoBehaviour
         }
     }
 
-    private bool InLineOfSightArea(Light light, bool ignoreShadow)
+    private bool InLineOfSight(Light light, bool ignoreShadow)
     {
-        LayerMask mask = ~(1 << LayerMask.NameToLayer("EnemyHead"));
-        if (ignoreShadow)
-        {   //LAYERS TO IGNORE
-            int ShadowReceiver = LayerMask.NameToLayer("ShadowReceiver");
-            int ShadowBox = LayerMask.NameToLayer("ShadowBox");
-            mask = ~(1 << ShadowReceiver) & ~(1 << ShadowBox) & ~(1 << LayerMask.NameToLayer("EnemyHead"));
-        }
+        LayerMask mask = 1 << LayerMask.NameToLayer("Default");
+        if (!ignoreShadow){mask = mask | (1 << LayerMask.NameToLayer("ShadowBox"));}//INCLUDE SHADOW LAYER
 
         float hitHeight = 1.3f; // adjust the hit height 
         Vector3 targPos = new Vector3(this.gameObject.transform.position.x, this.gameObject.transform.position.y + hitHeight, this.gameObject.transform.position.z);
         Ray ray = new Ray(light.transform.position, (targPos - light.transform.position).normalized);
         float distance = Vector3.Distance(light.transform.position, targPos);
         Vector3 endPoint = ray.GetPoint(distance);
-        Debug.DrawLine(light.transform.position, endPoint, UnityEngine.Color.green);
+        Debug.DrawLine(light.transform.position, endPoint, UnityEngine.Color.blue);
         // Perform the raycast, excluding the specified layers
         RaycastHit hit;
         //if (Physics.Raycast(ray, out hit, Mathf.Infinity, mask.value))
         if(Physics.Linecast(light.transform.position, endPoint, out hit, mask.value))
         {
+            //Debug.Log("COLLIDNG WITH " + light.gameObject.name + "         " + hit.collider.gameObject.name);
             //if (light.gameObject == PlayerLight) { Debug.Log("COLLIDNG WITH " + hit.collider.gameObject.name); }
             if (hit.collider.transform.root.gameObject == this.gameObject)
             {
@@ -200,37 +197,6 @@ public class GhostVFX : MonoBehaviour
             //Debug.DrawLine(light.transform.position, targPos, UnityEngine.Color.red);
         }
         
-        return false;
-    }
-
-
-    private bool InLineOfSightPoint(Light light, bool ignoreShadow)
-    {
-        LayerMask mask = ~(1 << LayerMask.NameToLayer("EnemyHead"));
-
-        if (ignoreShadow)
-        {   //LAYERS TO IGNORE
-            int ShadowReceiver = LayerMask.NameToLayer("ShadowReceiver");
-            int ShadowBox = LayerMask.NameToLayer("ShadowBox");
-            mask = ~(1 << ShadowReceiver) & ~(1 << ShadowBox) & ~(1 << LayerMask.NameToLayer("EnemyHead"));
-        }
-
-        Vector3 direction = light.gameObject.transform.forward;
-
-        Debug.DrawLine(light.transform.position, light.transform.position + light.transform.forward * 10f, UnityEngine.Color.green, 0.5f);
-        Ray ray = new Ray(light.transform.position, direction);
-
-        // Perform the raycast, excluding the specified layers
-        RaycastHit hit;
-        if (Physics.Raycast(ray, out hit, Mathf.Infinity, mask.value))
-        {
-            //Debug.Log("OBJECT POINT HIT " + hit.collider.gameObject.name);
-            if (hit.collider.gameObject == this.gameObject)
-            {
-                return true;
-            }
-        }
-
         return false;
     }
 
@@ -247,7 +213,7 @@ public class GhostVFX : MonoBehaviour
         float distanceToObject = Vector3.Distance(this.gameObject.transform.position + Vector3.up * hitHeight, spotlight.transform.position);
         bool inRange = distanceToObject <= spotlight.range;
         Vector3 directionToObject = (this.gameObject.transform.position + Vector3.up * hitHeight - spotlight.transform.position).normalized;
-        Debug.DrawLine(spotlight.transform.position, this.gameObject.transform.position + Vector3.up * hitHeight, UnityEngine.Color.red);
+       // Debug.DrawLine(spotlight.transform.position, this.gameObject.transform.position + Vector3.up * hitHeight, UnityEngine.Color.red);
         float angleToObject = Vector3.Angle(spotlight.transform.forward, directionToObject);
         bool inCone = angleToObject <= adjustedSpotAngle * 0.5f;
         if (isPlayer && spotlight.gameObject.name == "player_light") { Debug.Log("IN CONE? " + inCone); }

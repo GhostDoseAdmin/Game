@@ -1,10 +1,7 @@
 using InteractionSystem;
 using Newtonsoft.Json;
 using System.Collections;
-using System.Collections.Generic;
-using System.Drawing;
-using System.Numerics;
-using Unity.VisualScripting;
+//using System.Numerics;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -12,7 +9,7 @@ public class ShootingSystem : MonoBehaviour
 {
     [Header("CAMERA PARAMETERS")]
     [Space(10)]
-    public GameObject bullet;
+    public GameObject camFlash;
     public Transform shootPoint;
     public Transform targetLook;
     public float distance;
@@ -57,12 +54,12 @@ public class ShootingSystem : MonoBehaviour
     private bool flash;
 
     //TARGET
-    private bool[] targParams;
-    private bool isEnemy;
+    //private bool[] targParams;
     private bool isVisible;
     private bool isHeadshot;
     private Camera camera;
     private Aiming aiming;
+    private GameObject target;
 
     public static ShootingSystem instance;
     private static utilities util;
@@ -127,26 +124,27 @@ public class ShootingSystem : MonoBehaviour
     public void Aiming()
     {
         //RESET UI
-        enemyIndicatorUI.color = UnityEngine.Color.white;
-        headShotIndicatorUI.color = UnityEngine.Color.white;
-        flashLightIndicatorUI.color = UnityEngine.Color.white;
-        focusIndicatorUI.color = UnityEngine.Color.white;
+        enemyIndicatorUI.color = Color.white;
+        headShotIndicatorUI.color = Color.white;
+        flashLightIndicatorUI.color = Color.white;
+        focusIndicatorUI.color = Color.white;
+
         //TARGET PARAMS
-        targParams = targetParams(20);
-             isEnemy = targParams[0];
-             isVisible = targParams[1];
-             isHeadshot = targParams[2];
-        
+        targetParams(20);
+
+
         if (isVisible)
         {
-            if (isEnemy) { enemyIndicatorUI.color = UnityEngine.Color.red; }
-            if (isHeadshot) { headShotIndicatorUI.color = UnityEngine.Color.red; }
+            if (target!=null) { enemyIndicatorUI.color = Color.red; }
+            if (isHeadshot) { headShotIndicatorUI.color = Color.red; }
         }
         if (gameObject.GetComponent<FlashlightSystem>().FlashLight.isActiveAndEnabled || gameObject.GetComponent<FlashlightSystem>().WeaponLight.enabled) { flashLightIndicatorUI.color = UnityEngine.Color.yellow; }
 
         if (Mathf.Approximately(Mathf.Round(camera.fieldOfView * 10) / 10f, aiming.zoom)) { 
             focusIndicatorUI.color = UnityEngine.Color.yellow;
-            focusIndicatorUI.transform.localRotation = UnityEngine.Quaternion.Euler(0f, 0f, 90f);
+            //Animator animator = crosshairs.GetComponent<Animator>();
+            //animator.Play(animator.GetCurrentAnimatorStateInfo(0).fullPathHash, -1, 0f);
+            //animator.Update(0f);
         }
         
         crosshairs.GetComponent<Animator>().speed = (camera.fieldOfView - aiming.zoom) * 3;//ANIMATE FOCUS INDICATOR
@@ -166,7 +164,7 @@ public class ShootingSystem : MonoBehaviour
             //Debug.Log(camera.fieldOfView);
 
 
-
+            //CAN SHOOT
             if (Mathf.Approximately(Mathf.Round(camera.fieldOfView * 10) / 10f, aiming.zoom))
             {
 
@@ -174,25 +172,20 @@ public class ShootingSystem : MonoBehaviour
                 AudioManager.instance.Play(shootSound);
                 muzzleFlash.Play();
                 Shell.Play();
-                RaycastHit hit;
-                if (Physics.Raycast(shootPoint.position, shootPoint.forward, out hit, distance))
+                //DO DAMAGE
+                if (isVisible && target!=null)
                 {
-                    if (hit.transform.GetComponent<Rigidbody>())
-                    {
-                        hit.transform.GetComponent<Rigidbody>().AddForceAtPosition(shootPoint.forward * force, hit.point);
-                    }
-                }
-                if (isVisible)
-                {
-                    GameObject myBullet = Instantiate(bullet);
-                    //ammoClipCount--;
-                    //ammo—lipCountUI.text = ammoClipCount.ToString("0");
-                    myBullet.transform.position = shootPoint.position;
-                    myBullet.transform.rotation = shootPoint.rotation;
-                    Destroy(myBullet, shootFireLifeTime);
+                    target.GetComponent<NPCController>().TakeDamage(40);
+                    if (isHeadshot) { target.GetComponent<NPCController>().TakeDamage(100); }
+                    target.GetComponent<NPCController>().visible=15;
                 }
 
-                Flash();
+                //--------------FLASH-----------------
+               GameObject newFlash = Instantiate(camFlash);
+                newFlash.transform.position = shootPoint.position;
+                //---POINT FLASH IN DIRECTION OF THE SHOT
+                Quaternion newYRotation = Quaternion.Euler(0f, shootPoint.rotation.eulerAngles.y, 0f);
+                newFlash.transform.rotation = newYRotation;
 
 
 
@@ -223,62 +216,36 @@ public class ShootingSystem : MonoBehaviour
 
         return true;
     }
-    public bool[] targetParams(float distance)
+    public void targetParams(float distance)
     {
-        //shootPoint.LookAt(targetLook);
-        //Debug.Log("TARGET PARAMS");
-        bool[] targParams = new bool[3];//[visible][head]
-        targParams[0] = false;//enemy?
-        targParams[1] = false;//visible?
-        targParams[2] = false;//head?
-
+        isHeadshot = false;
+        isVisible = false;
         //RETUNRS 1 for visible 2 for headshot
-        LayerMask mask = ~(1 << LayerMask.NameToLayer("ShadowReceiver")) & ~(1 << LayerMask.NameToLayer("ShadowBox"));
+        LayerMask mask = 1 << LayerMask.NameToLayer("Default");
         RaycastHit hit;
-        UnityEngine.Vector3 startPoint = GameObject.Find("PlayerCamera").transform.position;
-        UnityEngine.Vector3 direction = (targetLook.position -startPoint).normalized;
+        Vector3 startPoint = GameObject.Find("PlayerCamera").transform.position;
+        Vector3 direction = (targetLook.position -startPoint).normalized;
 
         Debug.DrawLine(startPoint, startPoint + direction * distance, UnityEngine.Color.red);
         if (Physics.Raycast(startPoint, direction, out hit, distance, mask.value))
         {
             string ghostType = hit.collider.gameObject.transform.root.tag;
-            Debug.Log(hit.collider.gameObject.name);
+            //Debug.Log(hit.collider.gameObject.name);
             if (ghostType == "Ghost" || ghostType == "Shadower")
             {
-                targParams[0] = true;
                 //Ensure mesh can be read
                 //if (hit.collider.gameObject.transform.root.GetComponent<GhostVFX>() != null)
                 {
-                    targParams[1] = hit.collider.gameObject.transform.root.GetComponent<GhostVFX>().visible;
-                    if (!targParams[1]) { Debug.Log("INVISISHOT"); }
-                    if (hit.collider.gameObject.name == "mixamorig:Head") { targParams[2] = true;  }
+                    isVisible = hit.collider.gameObject.transform.root.GetComponent<GhostVFX>().visible;
+                    if (!isVisible) { Debug.Log("INVISISHOT"); }
+                    if (hit.collider.gameObject.name == "mixamorig:Head") { isHeadshot = true;  }
                 }
+                target = hit.collider.gameObject.transform.root.gameObject;
             }
         }
-        return targParams;//no target
     }
     
-    private void Flash()
-    {
 
-        //--------------------------FLASH-------------------------------------
-        bool weapLightState = GetComponent<FlashlightSystem>().WeaponLight.enabled;
-        GetComponent<FlashlightSystem>().WeaponLight.enabled = true;
-        GetComponent<FlashlightSystem>().WeaponLight.spotAngle = 125;
-        GetComponent<FlashlightSystem>().WeaponLight.intensity = 15;
-        StartCoroutine(stopFlash());
-        flash = true;
-        IEnumerator stopFlash()
-        {
-            yield return new WaitForSeconds(0.2f);
-            GetComponent<FlashlightSystem>().WeaponLight.spotAngle = GetComponent<FlashlightSystem>().WeaponLight.spotAngle = GetComponent<FlashlightSystem>().weapLightAngle;
-            GetComponent<FlashlightSystem>().WeaponLight.intensity = GetComponent<FlashlightSystem>().WeaponLight.intensity = GetComponent<FlashlightSystem>().weapLightIntensity;
-            GetComponent<FlashlightSystem>().WeaponLight.enabled = weapLightState;//was weaplight on previously
-            flash = false;
-        }
-    }
-    
-    
     
     
     

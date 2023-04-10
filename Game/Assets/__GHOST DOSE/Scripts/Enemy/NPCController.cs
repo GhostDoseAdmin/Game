@@ -54,6 +54,7 @@ public class NPCController : MonoBehaviour
 
     private float attack_emit_timer = 0.0f;
     private float attack_emit_delay = 0.25f;//0.25
+    private bool agro;
 
     void Start()
     {
@@ -75,9 +76,10 @@ public class NPCController : MonoBehaviour
     {
         if (this.gameObject.activeSelf) { AI(); }
 
+        if (GD.ND.HOST) { FindTargetRayCast(); } //dtermines & finds target
         if (GD.twoPlayer && GD.ND.HOST)
         {
-            //FindTargetRayCast();//dtermines & finds target
+           
 
 
             //actions = this.name + target + destination + attacking; //  + animEnemy.GetCurrentAnimatorClipInfo(0)[0].clip.name; //+ attacking
@@ -173,12 +175,11 @@ public class NPCController : MonoBehaviour
 
         //MOVE TOWARDS TARGET
         navmesh.SetDestination(target.position);
-        //if (ND.HOST)        {            navmesh.SetDestination(target.position); if (destination != target.position) { destination = target.position; } } // destination = target.position;  
-        //else        {            navmesh.SetDestination(destination);        }
 
         float distance = Vector3.Distance(transform.position, target.position);
         //if(!ND.HOST) { distance -= 0.35f; }// IS THE DELAY FOR PLAYER ACTION EMITS 
 
+        //----------FOR HOST
         if (GD.ND.HOST)
         {
             //RUN TO TARGET
@@ -219,7 +220,7 @@ public class NPCController : MonoBehaviour
                 transform.LookAt(targetPlayer);
             }
         }
-        else
+        else//---------FOR CLIENT
         {
 
             //RUN TO TARGET
@@ -246,10 +247,6 @@ public class NPCController : MonoBehaviour
             }
 
         }
-
-
-
-
 
         if (target != null && GD.ND.HOST)
         {
@@ -299,10 +296,10 @@ public class NPCController : MonoBehaviour
                 {
                     RaycastHit hit;
                     Debug.DrawLine(head.position, targetPlayer.position + Vector3.up * 1.4f); //1.6
-
-                    if (Physics.Linecast(head.position, targetPlayer.position + Vector3.up * 1.4f, out hit) && hit.transform != head && hit.transform != transform)
+                    LayerMask mask = 1 << LayerMask.NameToLayer("Player");
+                    if (Physics.Linecast(head.position, targetPlayer.position + Vector3.up * 1.4f, out hit, mask.value) && hit.transform != head && hit.transform != transform)
                     {
-                        //Debug.Log("LOOKING AT TARGET");
+                        Debug.Log("----------TARGET -------------------" + hit.collider.gameObject.name);
                         if (hit.transform == targetPlayer)
                         {
                             target = targetPlayer;
@@ -327,8 +324,8 @@ public class NPCController : MonoBehaviour
         {
             RaycastHit hit;
             Debug.DrawLine(head.position, targetPlayer.position + Vector3.up * 1.4f); //
-
-            if (Physics.Linecast(head.position, targetPlayer.position + Vector3.up * 1.4f, out hit) && hit.transform != head && hit.transform != transform)
+            LayerMask mask = 1 << LayerMask.NameToLayer("Player");
+            if (Physics.Linecast(head.position, targetPlayer.position + Vector3.up * 1.4f, out hit, mask.value) && hit.transform != head && hit.transform != transform)
             {
                 if (hit.transform == targetPlayer)
                 {
@@ -346,6 +343,7 @@ public class NPCController : MonoBehaviour
     {
         healthEnemy -= damageAmount;
 
+        //-----------ENEMY DEATH---------------
         if (healthEnemy <= 0)
         {
             if (GD.twoPlayer && GD.ND.HOST)
