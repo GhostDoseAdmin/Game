@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using static UnityEngine.GraphicsBuffer;
 
-[ExecuteInEditMode]
+//[ExecuteInEditMode]
 public class CamFlash : MonoBehaviour
 {
     // Start is called before the first frame update
@@ -11,7 +11,7 @@ public class CamFlash : MonoBehaviour
 
     IEnumerator DestroyAfterDelay(GameObject obj)
     {
-        yield return new WaitForSeconds(1f);
+        yield return new WaitForSeconds(0.5f);
         this.gameObject.GetComponent<Light>().spotAngle = 0; //cleanup for ghostVFX - resets material to previous state
         yield return new WaitForSeconds(0.1f);
         Destroy(obj);

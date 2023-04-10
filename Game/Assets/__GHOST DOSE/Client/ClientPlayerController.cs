@@ -91,7 +91,9 @@ public class ClientPlayerController : MonoBehaviour
     public Transform shootPoint;
 	public bool flashlighton =false;
     public GameObject currLight;//tracks current light source
-    private static utilities util;
+	public GameObject camFlash;
+
+	private static utilities util;
 
     private bool flash;
     private void Awake()
@@ -238,37 +240,15 @@ public class ClientPlayerController : MonoBehaviour
                     AudioManager.instance.Play(shootSound);
                     muzzleFlash.Play();
                     Shell.Play();
-                    RaycastHit hit;
-                    if (Physics.Raycast(shootPoint.position, shootPoint.forward, out hit, distance))
-                    {
-                        if (hit.transform.GetComponent<Rigidbody>())
-                        {
-                            hit.transform.GetComponent<Rigidbody>().AddForceAtPosition(shootPoint.forward * force, hit.point);
-                        }
-                    }
 
-                        //--------------------------FLASH-------------------------------------
-                        bool weapLightState = GetComponent<ClientFlashlightSystem>().WeaponLight.enabled;
-                        GetComponent<ClientFlashlightSystem>().WeaponLight.enabled = true;
-                        GetComponent<ClientFlashlightSystem>().WeaponLight.spotAngle = 125;
-                        GetComponent<ClientFlashlightSystem>().WeaponLight.intensity = 15;
-                        StartCoroutine(stopFlash());
-                        flash = true;
-                        IEnumerator stopFlash()
-                        {
-                            yield return new WaitForSeconds(0.2f);
-                            GetComponent<ClientFlashlightSystem>().WeaponLight.spotAngle = GetComponent<ClientFlashlightSystem>().WeaponLight.spotAngle = GetComponent<ClientFlashlightSystem>().weapLightAngle;
-                            GetComponent<ClientFlashlightSystem>().WeaponLight.intensity = GetComponent<ClientFlashlightSystem>().WeaponLight.intensity = GetComponent<ClientFlashlightSystem>().weapLightIntensity;
-                            GetComponent<ClientFlashlightSystem>().WeaponLight.enabled = weapLightState;//was weaplight on previously
-                            flash = false;
-                        }
+					//--------------------------FLASH-------------------------------------
+					 GameObject newFlash = Instantiate(camFlash);
+					newFlash.transform.position = shootPoint.position;
+					//---POINT FLASH IN DIRECTION OF THE SHOT
+					Quaternion newYRotation = Quaternion.Euler(0f, shootPoint.rotation.eulerAngles.y, 0f);
+					newFlash.transform.rotation = newYRotation;
 
-                        //-----------------------PROJECTILE---------------------------------
-                    GameObject myBullet = Instantiate(bullet);
-                    myBullet.transform.position = shootPoint.position;
-                    myBullet.transform.rotation = shootPoint.rotation;
-                    Destroy(myBullet, shootFireLifeTime);
-					
+				Debug.Log("--------------------------CLIENT TRIGGER SHOOT-----------------------------------");
 					triggerShoot = false;
 
                 }

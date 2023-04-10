@@ -124,10 +124,10 @@ public class ShootingSystem : MonoBehaviour
     public void Aiming()
     {
         //RESET UI
-        enemyIndicatorUI.color = UnityEngine.Color.white;
-        headShotIndicatorUI.color = UnityEngine.Color.white;
-        flashLightIndicatorUI.color = UnityEngine.Color.white;
-        focusIndicatorUI.color = UnityEngine.Color.white;
+        enemyIndicatorUI.color = Color.white;
+        headShotIndicatorUI.color = Color.white;
+        flashLightIndicatorUI.color = Color.white;
+        focusIndicatorUI.color = Color.white;
 
         //TARGET PARAMS
         targetParams(20);
@@ -172,15 +172,7 @@ public class ShootingSystem : MonoBehaviour
                 AudioManager.instance.Play(shootSound);
                 muzzleFlash.Play();
                 Shell.Play();
-                RaycastHit hit;
-                if (Physics.Raycast(shootPoint.position, shootPoint.forward, out hit, distance))
-                {
-                    if (hit.transform.GetComponent<Rigidbody>())
-                    {
-                        hit.transform.GetComponent<Rigidbody>().AddForceAtPosition(shootPoint.forward * force, hit.point);
-                    }
-                }
-
+                //DO DAMAGE
                 if (isVisible && target!=null)
                 {
                     target.GetComponent<NPCController>().TakeDamage(40);

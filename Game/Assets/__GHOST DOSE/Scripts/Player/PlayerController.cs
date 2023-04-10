@@ -1,10 +1,8 @@
 ﻿using InteractionSystem;
 using UnityEngine;
-using System.Collections;
 using UnityEngine.UI;
 using Newtonsoft.Json;
-using System.Linq;
-using UnityEngine.Experimental.GlobalIllumination;
+
 
 public class PlayerController : MonoBehaviour
 {
@@ -22,11 +20,10 @@ public class PlayerController : MonoBehaviour
 	[Space(10)]
 	[HideInInspector] public Transform rightHandTarget;
    public Transform rightHand;
-	Transform[] rightHandTrans;
 
     [HideInInspector] public Transform leftHandTarget;
    public Transform leftHand;
-	Transform[] leftHandTrans;
+
 
 	float handWeight;
 	public float handSpeed;

@@ -343,6 +343,7 @@ public class NPCController : MonoBehaviour
     {
         healthEnemy -= damageAmount;
 
+        //-----------ENEMY DEATH---------------
         if (healthEnemy <= 0)
         {
             if (GD.twoPlayer && GD.ND.HOST)

@@ -152,7 +152,7 @@ public class NetworkDriver : MonoBehaviour
             if (GD.GAMESTART)
             {
                 JObject data = JObject.Parse(payload);
-                Debug.Log("PLAYER ACTION" + data);
+                //Debug.Log("PLAYER ACTION" + data);
                 Dictionary<string, string> dict = data.ToObject<Dictionary<string, string>>();
                 //Client.GetComponent<ClientPlayerController>().animation = dict["animation"];
                 GD.Client.GetComponent<ClientPlayerController>().targWalk = float.Parse(dict["walk"]);
@@ -171,7 +171,7 @@ public class NetworkDriver : MonoBehaviour
         //-----------------SHOOT  ----------------->
         sioCom.Instance.On("shoot", (payload) =>
         {
-            Debug.Log("RECEIVING SHOOT ");
+            //Debug.Log("RECEIVING SHOOT ");
             GD.Client.GetComponent<ClientPlayerController>().triggerShoot =true;
         });
 
