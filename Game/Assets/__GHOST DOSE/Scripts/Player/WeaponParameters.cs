@@ -16,7 +16,7 @@ public class WeaponParameters : MonoBehaviour
     [Space(10)]
     [SerializeField] public bool hasPistol = false;
     [SerializeField] public GameObject weapHand;
-    [SerializeField] public GameObject inventoryWeap;
+    [SerializeField] public GameObject inventoryCam;
 
     [Header("KNIFE SOUNDS")]
     [Space(10)]
@@ -33,7 +33,7 @@ public class WeaponParameters : MonoBehaviour
         handKnife = util.FindChildObject(this.gameObject.transform, "Knife_Hand");
         inventoryKnife = util.FindChildObject(this.gameObject.transform, "Knife_Inventory");
         weapHand = util.FindChildObject(this.gameObject.transform, "WeapHand");
-        inventoryWeap = util.FindChildObject(this.gameObject.transform, "WeapInventory");
+        inventoryCam= util.FindChildObject(this.gameObject.transform, "CamInventory");
 
     }
 
@@ -46,7 +46,7 @@ public class WeaponParameters : MonoBehaviour
         handKnife.GetComponent<Collider>().enabled = false;
 
         weapHand.SetActive(true);
-        inventoryWeap.SetActive(false);
+        inventoryCam.SetActive(false);
     }
 
     public void EnableInventoryKnife()
@@ -59,7 +59,7 @@ public class WeaponParameters : MonoBehaviour
     public void EnableInventoryPistol()
     {
         hasPistol = true;
-        inventoryWeap.SetActive(true);
+        inventoryCam.SetActive(true);
         AudioManager.instance.Play(pickUp);
     }
 
@@ -94,12 +94,12 @@ public class WeaponParameters : MonoBehaviour
     void EnablePistol()
     {
         weapHand.SetActive(true);
-        inventoryWeap.SetActive(false);
+        inventoryCam.SetActive(false);
     }
     void DisablePistol()
     {
         weapHand.SetActive(false);
-        inventoryWeap.SetActive(true);
+        inventoryCam.SetActive(true);
     }
     #endregion
 }

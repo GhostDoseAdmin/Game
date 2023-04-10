@@ -19,13 +19,13 @@ namespace InteractionSystem
         public KeyCode flashlightSwitch;
         public KeyCode reloadBattery;
 
-        [Header("KNIFE BUTTON")]
+        [Header("GEAR BUTTON")]
         [Space(10)]
-        public KeyCode knife;
+        public KeyCode gear;
 
-        [Header("PISTOL BUTTON")]
+        [Header("CAMERA BUTTON")]
         [Space(10)]
-        public KeyCode pistol;
+        public KeyCode camera;
         public KeyCode reloadPistol;
 
         [Header("TREATMENT BUTTON")]

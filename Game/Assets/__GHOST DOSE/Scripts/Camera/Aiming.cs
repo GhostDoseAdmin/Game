@@ -26,7 +26,7 @@ public class Aiming : MonoBehaviour {
 
 	void Update()
 	{
-		if (player.GetComponent<PlayerController>().is_KnifeAim == true || player.GetComponent<PlayerController>().is_PistolAim == true)
+		if (player.GetComponent<PlayerController>().gearAim == true)
         {
 			if (Input.GetMouseButton(1))
 			{
@@ -38,7 +38,7 @@ public class Aiming : MonoBehaviour {
 				GetComponent<Camera>().fieldOfView = Mathf.Lerp(GetComponent<Camera>().fieldOfView, zoom, Time.deltaTime * smoothZoom);
 			}
 		}
-		if (Input.GetMouseButtonUp(1))
+		if (Input.GetMouseButtonUp(1) || player.GetComponent<PlayerController>().gearAim == false)
 		{
 			isZoomed = 0;
             crosshair.SetActive(false);

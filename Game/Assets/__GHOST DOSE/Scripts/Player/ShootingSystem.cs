@@ -28,7 +28,7 @@ public class ShootingSystem : MonoBehaviour
     [Space(10)]
     [SerializeField] private Text ammoCountUI = null;
     [SerializeField] private Text ammo—lipCountUI = null;
-    private GameObject crosshairs;
+    public GameObject crosshairs;
     private Image enemyIndicatorUI;
     private Image headShotIndicatorUI;
     private Image flashLightIndicatorUI;
@@ -97,12 +97,12 @@ public class ShootingSystem : MonoBehaviour
 
     public void Update()
     {
-        CheckShoot();
+        //CheckShoot();
         ReloadAmmo();
        
     }
 
-    public void CheckShoot()
+    /*public void CheckShoot()
     {
         if (!playerController.canShoot)
             return;
@@ -119,7 +119,7 @@ public class ShootingSystem : MonoBehaviour
             curRateFire = rateOfFire;
             this.canShoot = true;
         }
-    }
+    }*/
 
     public void Aiming()
     {
@@ -164,8 +164,8 @@ public class ShootingSystem : MonoBehaviour
             //Debug.Log(camera.fieldOfView);
 
 
-            //CAN SHOOT
-            if (Mathf.Approximately(Mathf.Round(camera.fieldOfView * 10) / 10f, aiming.zoom))
+            //---------------------CAN SHOOT------------------------------------
+            if (Mathf.Approximately(Mathf.Round(camera.fieldOfView * 10) / 10f, aiming.zoom))//if current zoom is close to target zoom
             {
 
 

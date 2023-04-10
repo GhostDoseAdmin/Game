@@ -181,9 +181,9 @@ public class ClientPlayerController : MonoBehaviour
 
 
 	#region Melee Сombat
-	private void CheckKnife()
+	/*private void CheckKnife()
 	{
-		if (Input.GetKeyDown(InputManager.instance.knife) && is_Pistol == false && is_Knife == false)
+		if (Input.GetKeyDown(InputManager.instance.k2) && is_Pistol == false && is_Knife == false)
 		{
 			if (gameObject.GetComponent<WeaponParameters>().hasKnife == true)
 			{
@@ -191,12 +191,12 @@ public class ClientPlayerController : MonoBehaviour
 				anim.SetBool("Knife", true);
 			}
 		}
-		else if (Input.GetKeyDown(InputManager.instance.knife) && is_Knife == true)
+		else if (Input.GetKeyDown(InputManager.instance.k2) && is_Knife == true)
 		{
 			is_Knife = false;
 			anim.SetBool("Knife", false);
 		}
-	}
+	}*/
 
 	void KnifeAttack()
 	{

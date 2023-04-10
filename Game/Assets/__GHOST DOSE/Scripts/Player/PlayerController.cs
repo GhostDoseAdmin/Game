@@ -2,7 +2,7 @@
 using UnityEngine;
 using UnityEngine.UI;
 using Newtonsoft.Json;
-
+using UnityEngine.InputSystem.LowLevel;
 
 public class PlayerController : MonoBehaviour
 {
@@ -16,35 +16,41 @@ public class PlayerController : MonoBehaviour
 	public float luft;
 	public Camera_Controller cameraController;
 
-	[Header("HAND PARAMETRS")]
-	[Space(10)]
-	[HideInInspector] public Transform rightHandTarget;
-   public Transform rightHand;
+    //STANCES
+    [HideInInspector] public Transform leftHand;
+    [HideInInspector] public Transform rightHand;
 
-    [HideInInspector] public Transform leftHandTarget;
-   public Transform leftHand;
+    [HideInInspector] public Transform rightHandTargetCam;
+    [HideInInspector] public Transform rightHandTargetK2;
+    [HideInInspector] public Transform leftHandTargetCam;
+    [HideInInspector] public Transform leftHandTargetK2;
 
 
-	float handWeight;
+
+    float handWeight;
 	public float handSpeed;
 
 	float newHandWeight = 0f;
 
-	[Header("INVENTORY BOOL")]
+	[Header("INVENTORY")]
 	[Space(10)]
 	public bool is_Flashlight = false;
 	public bool is_FlashlightAim = false;
 
-	[Space(10)]
-	public bool is_Knife = false;
-	public bool is_KnifeAim = false;
+	//-------GEAR
+     private float gear_delay = 1f;//0.25
+    private float gear_timer = 0.0f;//USED FOR EMITS
+    public int gear = 1; //0 = cam 1=ks 2=rem
+    public bool gearAim;
+	private GameObject k2;
+	private GameObject camera;
+    private GameObject camInventory;
+    private GameObject k2Inventory;
+    public bool changingGear;
 
-	[Space(10)]
-	public bool is_Pistol = true;
-	public bool is_PistolAim = false;
-	public bool canShoot { get; private set; }
 
-	[Space(10)]
+
+    [Space(10)]
 
 	[Header("STAMINA UI")]
 	[Space(10)]
@@ -64,8 +70,8 @@ public class PlayerController : MonoBehaviour
 	float walk = 0f;
 	float strafe = 0f;
     public GameDriver GD;
-    private float action_timer = 0.0f;
-    private float action_delay = 0.33f;//0.25
+    private float emit_timer = 0.0f;//USED FOR EMITS
+    private float emit_delay = 0.33f;//0.25
 	public float speed;
 	public float prevSpeed;
 	private string prevEmit;
@@ -80,11 +86,19 @@ public class PlayerController : MonoBehaviour
     {
         util = new utilities();
 		Debug.Log("Setting up Player References");
-        rightHandTarget = util.FindChildObject(this.gameObject.transform, "RHTarget").transform;
+        rightHandTargetCam = util.FindChildObject(this.gameObject.transform, "RHTargetCam").transform;
+        rightHandTargetK2 = util.FindChildObject(this.gameObject.transform, "RHTargetK2").transform;
         rightHand = util.FindChildObject(this.gameObject.transform, "mixamorig:RightHand").transform;
-        leftHandTarget = util.FindChildObject(this.gameObject.transform, "LHTarget").transform;
+        leftHandTargetCam = util.FindChildObject(this.gameObject.transform, "LHTargetCam").transform;
+        leftHandTargetK2 = util.FindChildObject(this.gameObject.transform, "LHTargetK2").transform;
         leftHand = util.FindChildObject(this.gameObject.transform, "mixamorig:LeftHand").transform;
-		GetComponent<WeaponParameters>().RigWeapons();
+		k2 = util.FindChildObject(this.gameObject.transform, "K2").gameObject;
+        camera = util.FindChildObject(this.gameObject.transform, "camera").gameObject;
+        camInventory = util.FindChildObject(this.gameObject.transform, "CamInventory").gameObject;
+        k2Inventory = util.FindChildObject(this.gameObject.transform, "K2Inventory").gameObject;
+        camInventory.SetActive(false);
+
+        //GetComponent<WeaponParameters>().RigWeapons();
 		GetComponent<ShootingSystem>().RigShooter();
         GetComponent<FlashlightSystem>().RigLights();
     }
@@ -93,15 +107,12 @@ public class PlayerController : MonoBehaviour
 
     void Start()
 	{
-
-
         GD = GameObject.Find("GameController").GetComponent<GameDriver>();
-        GetComponent<WeaponParameters>().EnableInventoryPistol();
+        //GetComponent<WeaponParameters>().EnableInventoryPistol();
 
 		Cursor.lockState = CursorLockMode.Locked;
 		Cursor.visible = false;
 
-		
         anim = GetComponent<Animator>();
     }
     #endregion
@@ -118,11 +129,11 @@ public class PlayerController : MonoBehaviour
         Locomotion();
 		Running();
 
-		CheckKnife();
-		KnifeAttack();
+        ChangeGear();
+		//RemPodAttack();
 
-		CheckPistol();
-		PistolAttack();
+        //CheckCamera();
+		GearAim();
 
 		CheckFlashlight();
 
@@ -136,13 +147,13 @@ public class PlayerController : MonoBehaviour
         Ray ray = GameObject.Find("PlayerCamera").GetComponent<Camera>().ViewportPointToRay(new Vector3(0.5f, 0.5f, 0f));
         Vector3 crosshairPos = ray.origin + ray.direction * 10f;///USE TO EMIT targPos
 
-        if (Time.time > action_timer + action_delay)
+        if (Time.time > emit_timer + emit_delay)
             {
 			bool flashlighton = false;
 			if (gameObject.GetComponent<FlashlightSystem>().FlashLight.isActiveAndEnabled || gameObject.GetComponent<FlashlightSystem>().WeaponLight.enabled) { flashlighton = true; }
                 string actions = $"{{'flashlight':'{flashlighton}','flintensity':'{gameObject.GetComponent<FlashlightSystem>().FlashLight.intensity}','aim':'{Input.GetMouseButton(1)}','walk':'{walk.ToString("F0")}','strafe':'{strafe.ToString("F0")}','run':'{Input.GetKey(InputManager.instance.running)}','x':'{transform.position.x.ToString("F2")}','y':'{transform.position.y.ToString("F2")}','z':'{transform.position.z.ToString("F2")}','speed':'{speed.ToString("F2")}','rx':'{transform.eulerAngles.x.ToString("F0")}','ry':'{transform.eulerAngles.y.ToString("F0")}','rz':'{transform.eulerAngles.z.ToString("F0")}','ax':'{crosshairPos.x.ToString("F0")}','ay':'{crosshairPos.y.ToString("F0")}','az':'{crosshairPos.z.ToString("F0")}'}}";
 				if (actions != prevEmit) { GD.ND.sioCom.Instance.Emit("player_action", JsonConvert.SerializeObject(actions), false); prevEmit = actions; }
-                action_timer = Time.time;//cooldown
+            emit_timer = Time.time;//cooldown
 			}
 
         //CHOOSE LIGHT SOURCE
@@ -170,7 +181,7 @@ public class PlayerController : MonoBehaviour
         string animName = clipInfo[0].clip.name;
         //Debug.Log(" ANIMATION " + GetComponent<Animator>().GetCurrentAnimatorClipInfo(0)[0].clip.name);
 
-        if (walk != 0 || strafe != 0 || is_FlashlightAim == true || is_KnifeAim == true || is_PistolAim == true || CameraType.FPS == cameraController.cameraType)
+        if (walk != 0 || strafe != 0 || is_FlashlightAim == true || gearAim == true || CameraType.FPS == cameraController.cameraType)
         {
 			Vector3 rot = transform.eulerAngles;
 			transform.LookAt(targetPosVec);
@@ -209,35 +220,32 @@ public class PlayerController : MonoBehaviour
 		if (Input.GetKey(InputManager.instance.running) && walk != 0)        {			anim.SetBool("Running", true);        }		
 		else if (Input.GetKeyUp(InputManager.instance.running))		{			anim.SetBool("Running", false);        }
 
-		if (is_KnifeAim == true || is_PistolAim == true)        {			anim.SetBool("Running", false);        }
+		if (gearAim == true)        {			anim.SetBool("Running", false);        }
 	}
 	#endregion
 
 	#region Melee Сombat
-	private void CheckKnife()
+	/*private void CheckK2()
 	{
-		if (Input.GetKeyDown(InputManager.instance.knife) && is_Pistol == false && is_Knife == false)
+		if (Input.GetKeyDown(InputManager.instance.gear) && currGear != "camera" && currGear != "k2")
 		{
-			if (gameObject.GetComponent<WeaponParameters>().hasKnife == true)
-			{
-				is_Knife = true;
+                currGear = "k2";
 				anim.SetBool("Knife", true);
-			}
 		}
-		else if (Input.GetKeyDown(InputManager.instance.knife) && is_Knife == true)
+		else if (Input.GetKeyDown(InputManager.instance.gear) && currGear === "k2")
 		{
-			is_Knife = false;
+            is_K2 = false;
 			anim.SetBool("Knife", false);
 		}
-	}
+	}*/
 
-	void KnifeAttack()
+	/*void RemPodAttack()
 	{
-		if(is_Knife)
+		if(is_K2)
 		{
 			if (Input.GetMouseButton(1))
 			{
-				is_KnifeAim = true;
+                is_K2 = true;
 
 				if (Input.GetMouseButtonDown(0))
 				{
@@ -249,88 +257,110 @@ public class PlayerController : MonoBehaviour
 				is_KnifeAim = false;
 			}
 		}
-	}
+	}*/
 	#endregion
 
 	#region Ranged Сombat
-	private void CheckPistol()
+	private void ChangeGear()
 	{
-		if (Input.GetKeyDown(InputManager.instance.pistol) && is_Knife == false && is_Pistol == false)
+        //END OF GEAR CHANGE
+        if (Mathf.Abs(Time.time - gear_timer) < 0.001f)
+        {
+
+        }
+            if (Time.time > gear_timer)
 		{
-			if (gameObject.GetComponent<WeaponParameters>().hasPistol == true)
+			changingGear = false;
+            //START OF GEARCHANGE
+            if (Input.GetKeyDown(InputManager.instance.gear))
 			{
-				is_Pistol = true;
-				anim.SetBool("GetPistol", true);
+                anim.SetBool("GetGear",true);
+                gear += 1;
+				if (gear > 2) { gear = 1; }
+                if (gear == 1){camera.SetActive(true); k2.SetActive(false); camInventory.SetActive(false); k2Inventory.SetActive(true); }
+				if (gear == 2){camera.SetActive(false); k2.SetActive(true); camInventory.SetActive(true); k2Inventory.SetActive(false);  }
+                
+                gear_timer = Time.time + gear_delay;//cooldown
 			}
 		}
-		else if (Input.GetKeyDown(InputManager.instance.pistol) && is_Pistol == true)
-		{
-			is_Pistol = false;
-			anim.SetBool("GetPistol", false);
-		}
-	}
+		else { //DURING GEAR CHANGE
+			changingGear = true;
+            gearAim = false;
+			handWeight = 0f;
+            anim.SetBool("Pistol", false);
+            anim.SetBool("Shoot", false);
+            if (is_FlashlightAim)
+            {
+                anim.SetBool("Flashlight", true);
+                gameObject.GetComponent<FlashlightSystem>().handFlashlight.SetActive(true);
+                gameObject.GetComponent<FlashlightSystem>().FlashLight.enabled = true;
+                gameObject.GetComponent<FlashlightSystem>().WeaponLight.enabled = false;
+            }
+            anim.SetBool("GetGear", false);
 
-	void PistolAttack()
+        }
+    }
+
+
+
+	void GearAim()
 	{
-		if (is_Pistol)
+		if (!changingGear)
 		{
-			if (Input.GetMouseButton(1)) //AIMING
+			if (gear == 1 || gear == 2)
 			{
-
-                if (is_FlashlightAim)
-                {
-					anim.SetBool("Flashlight", false);
-					gameObject.GetComponent<FlashlightSystem>().handFlashlight.SetActive(false);
-					gameObject.GetComponent<FlashlightSystem>().FlashLight.enabled = false;
-					gameObject.GetComponent<FlashlightSystem>().WeaponLight.enabled = true;
-					
-
-                }
-				else
-                {
-					if(!flash) {gameObject.GetComponent<FlashlightSystem>().WeaponLight.enabled = false;} 
-                    gameObject.GetComponent<FlashlightSystem>().handFlashlight.SetActive(false);
-                    gameObject.GetComponent<FlashlightSystem>().FlashLight.enabled = false;
-                }
-
-				is_PistolAim = true;
-				anim.SetBool("Pistol", true);
-				newHandWeight = 1f;
-				canShoot = true;
-
-				GetComponent<ShootingSystem>().Aiming();
-                //-------------------------------SHOOTING -----------------------------------
-                if (Input.GetMouseButtonDown(0))
-                {
-
-                    
-                    anim.SetBool("Shoot", true);
-                    GetComponent<ShootingSystem>().Shoot();
-
-					
-                }
-				else if (Input.GetMouseButtonUp(0))
+				if (Input.GetMouseButton(1)) //AIMING
 				{
+
+					if (is_FlashlightAim)
+					{
+						anim.SetBool("Flashlight", false);
+						gameObject.GetComponent<FlashlightSystem>().handFlashlight.SetActive(false);
+						gameObject.GetComponent<FlashlightSystem>().FlashLight.enabled = false;
+						gameObject.GetComponent<FlashlightSystem>().WeaponLight.enabled = true;
+
+
+					}
+					else
+					{
+						if (!flash) { gameObject.GetComponent<FlashlightSystem>().WeaponLight.enabled = false; }
+						gameObject.GetComponent<FlashlightSystem>().handFlashlight.SetActive(false);
+						gameObject.GetComponent<FlashlightSystem>().FlashLight.enabled = false;
+					}
+
+					gearAim = true;
+					anim.SetBool("Pistol", true);
+					newHandWeight = 1f;
+
+					GetComponent<ShootingSystem>().Aiming();
+					//-------------------------------SHOOTING -----------------------------------
+					if (Input.GetMouseButtonDown(0))
+					{
+						anim.SetBool("Shoot", true);
+						GetComponent<ShootingSystem>().Shoot();
+					}
+					else if (Input.GetMouseButtonUp(0))
+					{
+						anim.SetBool("Shoot", false);
+					}
+				}
+				else if (Input.GetMouseButtonUp(1))
+				{
+					gearAim = false;
+					anim.SetBool("Pistol", false);
 					anim.SetBool("Shoot", false);
-				}
-			}
-			else if (Input.GetMouseButtonUp(1))
-			{
-				is_PistolAim = false;
-				anim.SetBool("Pistol", false);
-				anim.SetBool("Shoot", false);
-				newHandWeight = 0f;
-				canShoot = false;
+					newHandWeight = 0f;
 
-				if (is_FlashlightAim)
-				{
-					anim.SetBool("Flashlight", true);
-					gameObject.GetComponent<FlashlightSystem>().handFlashlight.SetActive(true);
-					gameObject.GetComponent<FlashlightSystem>().FlashLight.enabled = true;
-					gameObject.GetComponent<FlashlightSystem>().WeaponLight.enabled = false;
+					if (is_FlashlightAim)
+					{
+						anim.SetBool("Flashlight", true);
+						gameObject.GetComponent<FlashlightSystem>().handFlashlight.SetActive(true);
+						gameObject.GetComponent<FlashlightSystem>().FlashLight.enabled = true;
+						gameObject.GetComponent<FlashlightSystem>().WeaponLight.enabled = false;
+					}
 				}
+				handWeight = Mathf.Lerp(handWeight, newHandWeight, Time.deltaTime * handSpeed);
 			}
-			handWeight = Mathf.Lerp(handWeight, newHandWeight, Time.deltaTime * handSpeed);
 		}
 	}
 	#endregion
@@ -362,31 +392,49 @@ public class PlayerController : MonoBehaviour
 
 	void OnAnimatorIK()
 	{
-		if (is_FlashlightAim || is_KnifeAim || is_PistolAim)
+		if (is_FlashlightAim || gearAim)
 		{
 			anim.SetLookAtWeight(lookIKWeight, bodyWeight);
 			anim.SetLookAtPosition(targetPosVec);
 		}
 
-		if (rightHandTarget != null || leftHandTarget != null)
-		{
-            if (is_PistolAim) //changes stance
+        //-----------------  STANCES --------------------------------
+        Transform stanceRH = null;
+        Transform stanceLH = null;
+			if (gear == 1)
 			{
+				stanceRH = rightHandTargetCam;
+				stanceLH = leftHandTargetCam;
+			}
+			if (gear == 2)
+			{
+				stanceRH = rightHandTargetK2;
+				stanceLH = leftHandTargetK2;
+			}
+        if (stanceRH != null)
+        {
+            if (gearAim)
+			{
+				Debug.Log("-----------------------------GEART AIM -------------------------------------");
 				anim.SetIKPositionWeight(AvatarIKGoal.RightHand, handWeight);
-				anim.SetIKPosition(AvatarIKGoal.RightHand, rightHandTarget.position);
+				anim.SetIKPosition(AvatarIKGoal.RightHand, stanceRH.position);
 
 				anim.SetIKRotationWeight(AvatarIKGoal.RightHand, handWeight);
-				anim.SetIKRotation(AvatarIKGoal.RightHand, rightHandTarget.rotation);
+				anim.SetIKRotation(AvatarIKGoal.RightHand, stanceRH.rotation);
 
 
 				anim.SetIKPositionWeight(AvatarIKGoal.LeftHand, handWeight);
-				anim.SetIKPosition(AvatarIKGoal.LeftHand, leftHandTarget.position);
+				anim.SetIKPosition(AvatarIKGoal.LeftHand, stanceLH.position);
 
 				anim.SetIKRotationWeight(AvatarIKGoal.LeftHand, handWeight);
-				anim.SetIKRotation(AvatarIKGoal.LeftHand, leftHandTarget.rotation);
+				anim.SetIKRotation(AvatarIKGoal.LeftHand, stanceLH.rotation);
 			}
 		}
-	}
+
+			
+		
+        
+    }
 
 	void GetFromSoundEvent()
 	{
