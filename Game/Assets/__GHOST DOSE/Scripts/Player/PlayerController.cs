@@ -22,9 +22,10 @@ public class PlayerController : MonoBehaviour
 
     [HideInInspector] public Transform rightHandTargetCam;
     [HideInInspector] public Transform rightHandTargetK2;
+    [HideInInspector] public Transform rightHandTargetREM;
     [HideInInspector] public Transform leftHandTargetCam;
     [HideInInspector] public Transform leftHandTargetK2;
-
+    [HideInInspector] public Transform leftHandTargetREM;
 
 
     float handWeight;
@@ -47,7 +48,7 @@ public class PlayerController : MonoBehaviour
     private GameObject camInventory;
     private GameObject k2Inventory;
     public bool changingGear;
-
+	public bool throwing = false;
 
 
     [Space(10)]
@@ -79,7 +80,6 @@ public class PlayerController : MonoBehaviour
 	private static utilities util;
 
 	public GameObject currLight;
-	private bool flash;
     #region Start
 
     public void SetupRig()
@@ -88,9 +88,11 @@ public class PlayerController : MonoBehaviour
 		Debug.Log("Setting up Player References");
         rightHandTargetCam = util.FindChildObject(this.gameObject.transform, "RHTargetCam").transform;
         rightHandTargetK2 = util.FindChildObject(this.gameObject.transform, "RHTargetK2").transform;
+        rightHandTargetREM = util.FindChildObject(this.gameObject.transform, "RHTargetREM").transform;
         rightHand = util.FindChildObject(this.gameObject.transform, "mixamorig:RightHand").transform;
         leftHandTargetCam = util.FindChildObject(this.gameObject.transform, "LHTargetCam").transform;
         leftHandTargetK2 = util.FindChildObject(this.gameObject.transform, "LHTargetK2").transform;
+        leftHandTargetREM = util.FindChildObject(this.gameObject.transform, "LHTargetREM").transform;
         leftHand = util.FindChildObject(this.gameObject.transform, "mixamorig:LeftHand").transform;
 		k2 = util.FindChildObject(this.gameObject.transform, "K2").gameObject;
         camera = util.FindChildObject(this.gameObject.transform, "camera").gameObject;
@@ -125,12 +127,16 @@ public class PlayerController : MonoBehaviour
     }
     void Update() 
 	{
+        //gearAim = true;
+        //anim.SetBool("Pistol", true);
+		//handWeight = 1f;
+		//gear = 2;
 
         Locomotion();
 		Running();
 
         ChangeGear();
-		//RemPodAttack();
+		Throwing();
 
         //CheckCamera();
 		GearAim();
@@ -225,50 +231,35 @@ public class PlayerController : MonoBehaviour
 	#endregion
 
 	#region Melee Сombat
-	/*private void CheckK2()
-	{
-		if (Input.GetKeyDown(InputManager.instance.gear) && currGear != "camera" && currGear != "k2")
-		{
-                currGear = "k2";
-				anim.SetBool("Knife", true);
-		}
-		else if (Input.GetKeyDown(InputManager.instance.gear) && currGear === "k2")
-		{
-            is_K2 = false;
-			anim.SetBool("Knife", false);
-		}
-	}*/
 
-	/*void RemPodAttack()
+	void Throwing()
 	{
-		if(is_K2)
+		if(throwing)
 		{
-			if (Input.GetMouseButton(1))
-			{
-                is_K2 = true;
-
-				if (Input.GetMouseButtonDown(0))
-				{
-					anim.SetTrigger("LeftMouseClick");
-				}
-			}
-			else
-			{
-				is_KnifeAim = false;
-			}
-		}
-	}*/
-	#endregion
-
-	#region Ranged Сombat
-	private void ChangeGear()
-	{
-        //END OF GEAR CHANGE
-        if (Mathf.Abs(Time.time - gear_timer) < 0.001f)
-        {
+            anim.SetBool("Throw", false);
+            gearAim = true;
+            anim.SetBool("Pistol", true);
+            newHandWeight = 1f;
 
         }
-            if (Time.time > gear_timer)
+	}
+    #endregion
+    public void ThrowRemPod()//ANIMATION EVENT
+	{
+		Debug.Log("--------------------------------THROWING ---------------------------------");
+	}
+	public void EndThrow()//ANIMATION EVENT
+	{
+		throwing = false;
+    }
+
+    #region Ranged Сombat
+    private void ChangeGear()
+	{
+        //END OF GEAR CHANGE
+        //if (Mathf.Abs(Time.time - gear_timer) < 0.001f)
+
+        if (Time.time > gear_timer)
 		{
 			changingGear = false;
             //START OF GEARCHANGE
@@ -276,7 +267,7 @@ public class PlayerController : MonoBehaviour
 			{
                 anim.SetBool("GetGear",true);
                 gear += 1;
-				if (gear > 2) { gear = 1; }
+				if (gear > 3) { gear = 1; }
                 if (gear == 1){camera.SetActive(true); k2.SetActive(false); camInventory.SetActive(false); k2Inventory.SetActive(true); }
 				if (gear == 2){camera.SetActive(false); k2.SetActive(true); camInventory.SetActive(true); k2Inventory.SetActive(false);  }
                 
@@ -286,12 +277,13 @@ public class PlayerController : MonoBehaviour
 		else { //DURING GEAR CHANGE
 			changingGear = true;
             gearAim = false;
-			handWeight = 0f;
-            anim.SetBool("Pistol", false);
+			throwing = false;
+            //handWeight = 0f;
+			anim.SetBool("Pistol", false); 
             anim.SetBool("Shoot", false);
             if (is_FlashlightAim)
             {
-                anim.SetBool("Flashlight", true);
+				anim.SetBool("Flashlight", true); 
                 gameObject.GetComponent<FlashlightSystem>().handFlashlight.SetActive(true);
                 gameObject.GetComponent<FlashlightSystem>().FlashLight.enabled = true;
                 gameObject.GetComponent<FlashlightSystem>().WeaponLight.enabled = false;
@@ -305,25 +297,35 @@ public class PlayerController : MonoBehaviour
 
 	void GearAim()
 	{
+
 		if (!changingGear)
 		{
-			if (gear == 1 || gear == 2)
-			{
+            if (gear == 3)
+            {
+				gearAim = true;
+                anim.SetBool("Pistol", true);
+                handWeight = Mathf.Lerp(handWeight, 1f, Time.deltaTime * handSpeed);
+            }
+
+            //if (gear == 1 || gear == 2)
+            {
 				if (Input.GetMouseButton(1)) //AIMING
 				{
-
 					if (is_FlashlightAim)
 					{
 						anim.SetBool("Flashlight", false);
-						gameObject.GetComponent<FlashlightSystem>().handFlashlight.SetActive(false);
-						gameObject.GetComponent<FlashlightSystem>().FlashLight.enabled = false;
-						gameObject.GetComponent<FlashlightSystem>().WeaponLight.enabled = true;
+						if (gear == 1)
+						{
+							gameObject.GetComponent<FlashlightSystem>().handFlashlight.SetActive(false);
+							gameObject.GetComponent<FlashlightSystem>().FlashLight.enabled = false;
+							gameObject.GetComponent<FlashlightSystem>().WeaponLight.enabled = true;
+						}
 
 
 					}
 					else
 					{
-						if (!flash) { gameObject.GetComponent<FlashlightSystem>().WeaponLight.enabled = false; }
+						gameObject.GetComponent<FlashlightSystem>().WeaponLight.enabled = false; 
 						gameObject.GetComponent<FlashlightSystem>().handFlashlight.SetActive(false);
 						gameObject.GetComponent<FlashlightSystem>().FlashLight.enabled = false;
 					}
@@ -333,23 +335,28 @@ public class PlayerController : MonoBehaviour
 					newHandWeight = 1f;
 
 					GetComponent<ShootingSystem>().Aiming();
+
 					//-------------------------------SHOOTING -----------------------------------
 					if (Input.GetMouseButtonDown(0))
 					{
-						anim.SetBool("Shoot", true);
-						GetComponent<ShootingSystem>().Shoot();
+                        if (gear == 1) { anim.SetBool("Shoot", true); GetComponent<ShootingSystem>().Shoot(); }
+                        if (gear == 3) { anim.SetBool("Throw", true); throwing = true; }
+
 					}
 					else if (Input.GetMouseButtonUp(0))
 					{
 						anim.SetBool("Shoot", false);
-					}
+                        //anim.SetBool("Throw", false);
+                    }
 				}
 				else if (Input.GetMouseButtonUp(1))
 				{
 					gearAim = false;
 					anim.SetBool("Pistol", false);
 					anim.SetBool("Shoot", false);
-					newHandWeight = 0f;
+					//anim.SetBool("Throw", false);
+
+					if (gear != 3) { newHandWeight = 0f; }
 
 					if (is_FlashlightAim)
 					{
@@ -411,7 +418,12 @@ public class PlayerController : MonoBehaviour
 				stanceRH = rightHandTargetK2;
 				stanceLH = leftHandTargetK2;
 			}
-        if (stanceRH != null)
+			if (gear == 3)
+			{
+				stanceRH = rightHandTargetREM;
+				stanceLH = leftHandTargetREM;
+			}
+        if (stanceRH != null && !throwing)
         {
             if (gearAim)
 			{
@@ -429,6 +441,7 @@ public class PlayerController : MonoBehaviour
 				anim.SetIKRotationWeight(AvatarIKGoal.LeftHand, handWeight);
 				anim.SetIKRotation(AvatarIKGoal.LeftHand, stanceLH.rotation);
 			}
+
 		}
 
 			
