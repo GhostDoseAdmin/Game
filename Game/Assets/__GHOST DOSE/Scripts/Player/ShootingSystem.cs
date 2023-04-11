@@ -29,6 +29,7 @@ public class ShootingSystem : MonoBehaviour
     [SerializeField] private Text ammoCountUI = null;
     [SerializeField] private Text ammo—lipCountUI = null;
     public GameObject crosshairs;
+    public GameObject K2;
     private Image enemyIndicatorUI;
     private Image headShotIndicatorUI;
     private Image flashLightIndicatorUI;
@@ -72,6 +73,7 @@ public class ShootingSystem : MonoBehaviour
         muzzleFlash = util.FindChildObject(this.gameObject.transform, "MuzzleFlashEffect").GetComponent<ParticleSystem>();
         Shell = util.FindChildObject(this.gameObject.transform, "Puff").GetComponent<ParticleSystem>();
         crosshairs = GameObject.Find("Crosshairs");
+        K2 = GameObject.Find("K2Hud");
         enemyIndicatorUI = GameObject.Find("Vector-5-Image").GetComponent<Image>();
         headShotIndicatorUI = GameObject.Find("Dot").GetComponent<Image>();
         flashLightIndicatorUI = GameObject.Find("Vector-3-Image").GetComponent<Image>();
@@ -121,33 +123,43 @@ public class ShootingSystem : MonoBehaviour
         }
     }*/
 
-    public void Aiming()
+    public void Aiming(int gear)
     {
-        //RESET UI
-        enemyIndicatorUI.color = Color.white;
-        headShotIndicatorUI.color = Color.white;
-        flashLightIndicatorUI.color = Color.white;
-        focusIndicatorUI.color = Color.white;
+        //UPDATE AIMER
+        aiming.gear = gear;
 
-        //TARGET PARAMS
-        targetParams(20);
-
-
-        if (isVisible)
+        if (gear == 1)
         {
-            if (target!=null) { enemyIndicatorUI.color = Color.red; }
-            if (isHeadshot) { headShotIndicatorUI.color = Color.red; }
-        }
-        if (gameObject.GetComponent<FlashlightSystem>().FlashLight.isActiveAndEnabled || gameObject.GetComponent<FlashlightSystem>().WeaponLight.enabled) { flashLightIndicatorUI.color = UnityEngine.Color.yellow; }
+            //RESET UI
+            enemyIndicatorUI.color = Color.white;
+            headShotIndicatorUI.color = Color.white;
+            flashLightIndicatorUI.color = Color.white;
+            focusIndicatorUI.color = Color.white;
 
-        if (Mathf.Approximately(Mathf.Round(camera.fieldOfView * 10) / 10f, aiming.zoom)) { 
-            focusIndicatorUI.color = UnityEngine.Color.yellow;
-            //Animator animator = crosshairs.GetComponent<Animator>();
-            //animator.Play(animator.GetCurrentAnimatorStateInfo(0).fullPathHash, -1, 0f);
-            //animator.Update(0f);
+            //TARGET PARAMS
+            targetParams(20);
+            if (isVisible)
+            {
+                if (target != null) { enemyIndicatorUI.color = Color.red; }
+                if (isHeadshot) { headShotIndicatorUI.color = Color.red; }
+            }
+            if (gameObject.GetComponent<FlashlightSystem>().FlashLight.isActiveAndEnabled || gameObject.GetComponent<FlashlightSystem>().WeaponLight.enabled) { flashLightIndicatorUI.color = UnityEngine.Color.yellow; }
+
+            if (Mathf.Approximately(Mathf.Round(camera.fieldOfView * 10) / 10f, aiming.zoom))
+            {
+                focusIndicatorUI.color = UnityEngine.Color.yellow;
+                //Animator animator = crosshairs.GetComponent<Animator>();
+                //animator.Play(animator.GetCurrentAnimatorStateInfo(0).fullPathHash, -1, 0f);
+                //animator.Update(0f);
+            }
+
+            crosshairs.GetComponent<Animator>().speed = (camera.fieldOfView - aiming.zoom) * 3;//ANIMATE FOCUS INDICATOR
         }
-        
-        crosshairs.GetComponent<Animator>().speed = (camera.fieldOfView - aiming.zoom) * 3;//ANIMATE FOCUS INDICATOR
+        if (gear == 2)
+        {
+
+        }
+
         //Debug.Log(isEnemy.ToString() + isVisible.ToString() + isHeadshot.ToString());
     }
 

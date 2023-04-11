@@ -138,8 +138,7 @@ public class PlayerController : MonoBehaviour
         ChangeGear();
 		Throwing();
 
-        //CheckCamera();
-		GearAim();
+    	GearAim();
 
 		CheckFlashlight();
 
@@ -232,6 +231,10 @@ public class PlayerController : MonoBehaviour
 
 	#region Melee Сombat
 
+
+
+
+	//--------------------THROWING (REM POD)-----------------------
 	void Throwing()
 	{
 		if(throwing)
@@ -244,21 +247,14 @@ public class PlayerController : MonoBehaviour
         }
 	}
     #endregion
-    public void ThrowRemPod()//ANIMATION EVENT
-	{
-		Debug.Log("--------------------------------THROWING ---------------------------------");
-	}
-	public void EndThrow()//ANIMATION EVENT
-	{
-		throwing = false;
-    }
+    public void ThrowRemPod()	{		Debug.Log("--------------------------------THROWING ---------------------------------"); }//ANIMATION EVENT
+    public void EndThrow()	{		throwing = false; }//ANIMATION EVENT
 
-    #region Ranged Сombat
-    private void ChangeGear()
+   
+	private void ChangeGear()
 	{
         //END OF GEAR CHANGE
         //if (Mathf.Abs(Time.time - gear_timer) < 0.001f)
-
         if (Time.time > gear_timer)
 		{
 			changingGear = false;
@@ -292,7 +288,6 @@ public class PlayerController : MonoBehaviour
 
         }
     }
-
 
 
 	void GearAim()
@@ -334,7 +329,7 @@ public class PlayerController : MonoBehaviour
 					anim.SetBool("Pistol", true);
 					newHandWeight = 1f;
 
-					GetComponent<ShootingSystem>().Aiming();
+					GetComponent<ShootingSystem>().Aiming(gear);
 
 					//-------------------------------SHOOTING -----------------------------------
 					if (Input.GetMouseButtonDown(0))
@@ -370,7 +365,7 @@ public class PlayerController : MonoBehaviour
 			}
 		}
 	}
-	#endregion
+
 
 	#region Flashlight
 	private void CheckFlashlight()

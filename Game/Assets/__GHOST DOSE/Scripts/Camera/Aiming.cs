@@ -12,26 +12,40 @@ public class Aiming : MonoBehaviour {
 	[Header("Sight size in width")]
 	public int width = 40;
 	public GameObject crosshair;
+    public GameObject K2;
+	public int gear;
 
-	private int smoothZoom = 5;//10
+    private int smoothZoom = 5;//10
 	private int normal = 60;
 	private float isZoomed = 0;
 
 	public GameObject player;
+	private GameObject canvas;
 
 	void Start()
     {
-		crosshair.SetActive(false); 
-	}
+		crosshair.SetActive(false);
+        K2.SetActive(false);
+
+        canvas =GameObject.Find("Canvas_UI");
+		canvas.GetComponent<Canvas>().worldCamera = GameObject.Find("PlayerCamera").GetComponent<Camera>();
+        //Renderer renderer = GetComponent<Renderer>();
+        //renderer.sortingLayerName = "HUD";
+        //renderer.sortingOrder = 10; // Set the render order
+    }
 
 	void Update()
 	{
+		if(gear==1) { zoom = 35; }
+		if(gear==2) { zoom = 50;}
+
 		if (player.GetComponent<PlayerController>().gearAim == true)
         {
 			if (Input.GetMouseButton(1))
 			{
 				isZoomed = 1;
-                crosshair.SetActive(true);
+				if (gear == 1) { crosshair.SetActive(true); }
+				if (gear == 2) { K2.SetActive(true); }
             }
 			if (isZoomed == 1)
 			{
@@ -42,6 +56,7 @@ public class Aiming : MonoBehaviour {
 		{
 			isZoomed = 0;
             crosshair.SetActive(false);
+            K2.SetActive(false);
         }
 		if (isZoomed == 0)
 		{
