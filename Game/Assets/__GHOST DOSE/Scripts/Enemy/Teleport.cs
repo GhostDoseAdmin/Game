@@ -1,11 +1,13 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.AI;
+using UnityEngine.InputSystem.Controls;
 
 public class Teleport : MonoBehaviour
 {
-    public int teleport;
+    public float teleport;
     private int notVisible; //check visiblility over serveral frames 
     public bool realNotVisible;
     private Vector3 b4Pos;//before descending
@@ -15,10 +17,12 @@ public class Teleport : MonoBehaviour
     public float minRadius = 4.0f;
     public float maxRadius = 4.0f;
 
+    private float fadeTimer = 0;
     private float timer = 0.0f;
     private float delay = 2.0f; //relocate interval
     private int relocate = 0;
     private bool canTeleport = true;
+    public bool debugAttack;//resets attack ani state for client as would get stuck after restarting animator 
     void Start()
     {
         timer = 0;
@@ -30,7 +34,7 @@ public class Teleport : MonoBehaviour
 
     private void Update()
     {
-        if(teleport > 0) { GetComponent<GhostVFX>().Fade(false, 1f); }
+        //if(teleport > 0) { GetComponent<GhostVFX>().Fade(false, 1f); }
         
         //TRIGGER
         if (teleport == 0 && GetComponent<NPCController>().GD.ND.HOST && canTeleport)
@@ -43,7 +47,6 @@ public class Teleport : MonoBehaviour
                         {
                         teleport = 1;
                             b4Pos = transform.position;
-                            target = GetComponent<NPCController>().target;
                             relocate = 0;
                             delayForEmit = true;
                             canTeleport = false;
@@ -56,21 +59,28 @@ public class Teleport : MonoBehaviour
         //STEP 1 - DESCEND ------CLIENT 
         if (teleport == 1)
         {
+            fadeTimer = Time.time;
+            target = GetComponent<NPCController>().target;
+            //FOR CLIENT
             if (!GetComponent<NPCController>().GD.ND.HOST) { GetComponent<NPCController>().enabled = false; }
+            debugAttack = true;
             GetComponent<NavMeshAgent>().enabled = false;
             GetComponent<Animator>().enabled = false;
-            //GetComponent<Animator>().SetBool("Attack", false);
-          //GetComponent<Animator>().SetBool("Walk", false);
-          //GetComponent<Animator>().SetBool("Run", false);
-            Vector3 currPos = transform.position;
-            currPos.y -= 0.1f;//descend speed
-            transform.position = currPos;
-            if (transform.position.y < b4Pos.y - 5) {
-                if (GetComponent<NPCController>().GD.ND.HOST) { teleport = 2; }
-                this.gameObject.transform.GetChild(0).GetComponent<SkinnedMeshRenderer>().enabled = false;
-               
-            }
+            teleport = 1.5f;
 
+        }
+        if(teleport == 1.5)
+        {
+            //FADE OUT
+            if (Time.time - fadeTimer < 1f){
+                Vector3 currPos = transform.position; currPos.y -= 0.07f; transform.position = currPos;
+                GetComponent<GhostVFX>().Fade(false, 8f, 0);
+            }
+            else//NEXT STEP
+            {
+                this.gameObject.transform.GetChild(0).GetComponent<SkinnedMeshRenderer>().enabled = false;
+                if (GetComponent<NPCController>().GD.ND.HOST) { teleport = 2; }
+            }
         }
         //STEP 2 - RELOCATE
         if (teleport == 2)
@@ -79,6 +89,7 @@ public class Teleport : MonoBehaviour
             if ((Time.time > timer + delay))
             {
                 relocate++;
+                GetComponent<GhostVFX>().invisibleCounter = 0;//reset counter to test new position
                 transform.position = new Vector3(transform.position.x, b4Pos.y, transform.position.z);
                 Vector2 randomDirection = Random.insideUnitCircle;
                 float randomDistance = Random.Range(minRadius, maxRadius);
@@ -110,13 +121,16 @@ public class Teleport : MonoBehaviour
             if (delayForEmit){ delayForEmit = false; }
         }
 
-        IEnumerator resetCanTeleport()//--------CONNECT HELPER--------->
+        IEnumerator resetCanTeleport()
         {
                 yield return new WaitForSeconds(3f);
                 canTeleport = true;
         }
 
-        /*IEnumerator clientAttackingAnimationDebug()//--------CONNECT HELPER--------->
+
+
+
+        /*IEnumerator clientAttackingAnimationDebug()
         {
             
             yield return new WaitForSeconds(0.5f);
@@ -127,7 +141,7 @@ public class Teleport : MonoBehaviour
 
 
 
-     }
+    }
 
 
 }

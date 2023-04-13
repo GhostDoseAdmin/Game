@@ -24,7 +24,7 @@ public class GhostVFX : MonoBehaviour
     public bool visible; //USD IN CONJUNCTION WITH PLAY AIM RAYCAST
     public bool inShadow;
     public bool invisible;
-    private int invisibleCounter;
+    public int invisibleCounter;
     public GameObject HEAD;
 
 
@@ -161,8 +161,8 @@ public class GhostVFX : MonoBehaviour
             }
 
             //-------------SET TOTAL ALPHA--------------------------------
-            if (visible) {  Fade(true, 0.5f); }//0.8
-            else {  Fade(false, 1f); }//fadeout
+            if (visible) {  Fade(true, 0.5f, 1); }//0.8
+            else {  Fade(false, 1f, 1); }//fadeout
             for (int i = 0; i < skin.GetComponent<SkinnedMeshRenderer>().materials.Length; i++)
             {
                 if (skin.GetComponent<SkinnedMeshRenderer>().materials[i].shader.name != "Custom/GhostAlphaCutoff") { 
@@ -188,22 +188,26 @@ public class GhostVFX : MonoBehaviour
 
     }
 
-    public void Fade(bool fadeIn, float speed)
+    public void Fade(bool fadeIn, float speed, int fadeOutLimit)
     {
+        bool fadeDone = false;
         for (int i = 0; i < skin.GetComponent<SkinnedMeshRenderer>().materials.Length; i++)
         {
                 if (fadeIn)
                 {
                     currentMaxAlpha[i] = Mathf.Lerp(currentMaxAlpha[i], originalMaxAlpha[i], Time.deltaTime * speed);
-                    //if (Mathf.Abs(currentMaxAlpha[i] - (originalMaxAlpha[i]*0.5f)) < 0.1f)
+               // if (Mathf.Abs(currentMaxAlpha[i] - (originalMaxAlpha[i] * 0.5f)) < 0.1f) { fadeDone = true; }
 
                 }
                 else//FADE OUT
                 { 
-                    currentMaxAlpha[i] = Mathf.Lerp(currentMaxAlpha[i], currentMaxAlpha[i]*0.5f, Time.deltaTime * speed);
-                   //if (Mathf.Abs(currentMaxAlpha[i] - 0) < 0.1f)
+                    currentMaxAlpha[i] = Mathf.Lerp(currentMaxAlpha[i], currentMaxAlpha[i]*0.5f * fadeOutLimit, Time.deltaTime * speed);
+              //  if (Mathf.Abs(currentMaxAlpha[i] - 0) < 0.1f) { fadeDone = true; }
                 }
         }
+
+       // Debug.Log("------------------------------------------ FADE --------------------------------" + fadeDone);
+      //  return fadeDone;
     }
 
 

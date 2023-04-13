@@ -197,19 +197,26 @@ public class NetworkDriver : MonoBehaviour
                 if (target.Length <= 1) { enemy.GetComponent<NPCController>().target = null; }
                 else if (target.Contains("Player")) { enemy.GetComponent<NPCController>().target = GD.Client.transform; }
                 else if (target.Contains("Client")) { enemy.GetComponent<NPCController>().target = GD.Player.transform; }
+                
+                Vector3 targPos = new Vector3(float.Parse(dict["x"]), float.Parse(dict["y"]), float.Parse(dict["z"]));
                 if (enemy.GetComponent<NPCController>().target!=null)
                 {
-                    if (Vector3.Distance(enemy.GetComponent<NPCController>().target.transform.position, enemy.transform.position) >2)
+                    if (Vector3.Distance(targPos, enemy.transform.position) >3)
                     {
-                        enemy.transform.position = new Vector3(float.Parse(dict["x"]), float.Parse(dict["y"]), float.Parse(dict["z"]));
+
+                        enemy.transform.position = targPos;
                     }
                 }
-                if (int.Parse(dict["teleport"])==1 || int.Parse(dict["teleport"]) == 3) { enemy.transform.position = new Vector3(float.Parse(dict["x"]), float.Parse(dict["y"]), float.Parse(dict["z"])); }
+                if (float.Parse(dict["teleport"])==1 || float.Parse(dict["teleport"]) == 3) { enemy.transform.position = new Vector3(float.Parse(dict["x"]), float.Parse(dict["y"]), float.Parse(dict["z"])); }
                 //if (enemy.GetComponent<NPCController>().target != null) { enemy.transform.position = ((enemy.GetComponent<NPCController>().target.position - enemy.transform.position).normalized) * 0.25f; }
-                enemy.GetComponent<NPCController>().destination = new Vector3(float.Parse(dict["dx"]), float.Parse(dict["dy"]), float.Parse(dict["dz"]));
+                enemy.GetComponent<NPCController>().clientWaypointDest = new Vector3(float.Parse(dict["dx"]), float.Parse(dict["dy"]), float.Parse(dict["dz"]));
+                
+                ///Vector3 destination = new Vector3(float.Parse(dict["dx"]), float.Parse(dict["dy"]), float.Parse(dict["dz"]));
+                //enemy.GetComponent<ClientSidePrediction>().SetTargetPosition(enemy.GetComponent<NPCController>().destination);
+
                 enemy.GetComponent<NPCController>().curWayPoint = int.Parse(dict["curWayPoint"]);
                 enemy.GetComponent<NPCController>().attacking = bool.Parse(dict["Attack"]);
-                enemy.GetComponent<Teleport>().teleport = int.Parse(dict["teleport"]);
+                enemy.GetComponent<Teleport>().teleport = float.Parse(dict["teleport"]);
                // if (int.Parse(dict["teleport"]) > 0) { enemy.GetComponent<Teleport>().target = GameObject.Find(target).transform; }
                // if (target.Length > 1) { enemy.GetComponent<Teleport>().target = GameObject.Find(target).transform; }
                 //Debug.Log("------------------------------------TELEPROT-------------------------------------" + int.Parse(dict["teleport"]));

@@ -47,16 +47,17 @@ public class NPCController : MonoBehaviour
     private string actions;
     private string send;
     private string prevActions;
-    private int prevTeleport;
+    private float prevTeleport;
     public Vector3 destination;
     public Vector3 truePosition;
     public bool attacking = false;
     public float hitRange = 1.5f;
+    public float moveSpeed = 1f;
 
     private float attack_emit_timer = 0.0f;
     private float attack_emit_delay = 0.25f;//0.25
     public bool agro = true;
-
+    public Vector3 clientWaypointDest;
     void Start()
     {
         GD = GameObject.Find("GameController").GetComponent<GameDriver>();
@@ -69,6 +70,7 @@ public class NPCController : MonoBehaviour
         targetPlayer = Client.transform;
         head = animEnemy.GetBoneTransform(HumanBodyBones.Head).transform;
 
+        
 
         //handKnife.GetComponent<Collider>().enabled = false;
 
@@ -76,7 +78,7 @@ public class NPCController : MonoBehaviour
 
     void Update()
     {
-        int teleport = GetComponent<Teleport>().teleport;
+        float teleport = GetComponent<Teleport>().teleport;
 
         if (this.gameObject.activeSelf) { if (teleport == 0) { AI(); } }
 
@@ -86,8 +88,8 @@ public class NPCController : MonoBehaviour
             //actions = this.name + target + destination + attacking; 
 
             //ONLY EMIT on STEPS 1 & 3
-            int teleChange = teleport;
-            if (teleport == 2) { teleChange = 1; }//skip step 2 of tele
+            float teleChange = teleport;
+            if (teleport == 2 || teleport ==1.5) { teleChange = 1; }//skip step 2 of tele
             if (teleport == 0 && prevTeleport == 3) { teleChange = 3; } //dont trigger emit keep client on 3, client side changes to 0
             prevTeleport = teleChange;
             if (teleport > 0) { target = GetComponent<Teleport>().target; }
@@ -102,7 +104,7 @@ public class NPCController : MonoBehaviour
                 {
                     //if (attacking) {  Debug.Log("AAAAAAAAAAAAAAAAAAAAAATAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAk"); }
                     // send = $"{{'object':'{this.name}','target':'{target}','Attack':'{animEnemy.GetBool("Attack")}', 'Run':'{animEnemy.GetBool("Run")}', 'Walk':'{animEnemy.GetBool("Walk")}','x':'{transform.position.x}','y':'{transform.position.y}','z':'{transform.position.z}','dx':'{destination.x}','dy':'{destination.y}','dz':'{destination.z}'}}";
-                    send = $"{{'object':'{this.name}','dead':'false','Attack':'{attacking}','target':'{target}','teleport':'{teleport}','curWayPoint':'{curWayPoint}','x':'{transform.position.x}','y':'{transform.position.y}','z':'{transform.position.z}','dx':'{destination.x}','dy':'{destination.y}','dz':'{destination.z}'}}";
+                    send = $"{{'object':'{this.name}','dead':'false','Attack':'{attacking}','target':'{target}','teleport':'{teleChange}','curWayPoint':'{curWayPoint}','x':'{transform.position.x}','y':'{transform.position.y}','z':'{transform.position.z}','dx':'{destination.x}','dy':'{destination.y}','dz':'{destination.z}'}}";
                     GD.ND.sioCom.Instance.Emit("enemy", JsonConvert.SerializeObject(send), false);
 
                     //attack_emit_timer = Time.time;//cooldown
@@ -126,56 +128,62 @@ public class NPCController : MonoBehaviour
         //-------------------------WAY POINTS ------------------------
         else if (target == null)
         {
-            animEnemy.SetBool("Attack", false);
-            animEnemy.SetBool("Run", false);
-
-            if (wayPoint.Count > 1)
+            //GetComponent<NavMeshAgent>().enabled = true;
+            GetComponent<NavMeshAgent>().speed = moveSpeed;
+            GetComponent<NavMeshAgent>().stoppingDistance = 0;
+            //if (GD.ND.HOST)
             {
-                if (wayPoint.Count > curWayPoint)
+                animEnemy.SetBool("Attack", false);
+                animEnemy.SetBool("Run", false);
+
+                if (wayPoint.Count > 1)
+                {
+                    if (wayPoint.Count > curWayPoint)
+                    {
+
+                        if (GD.ND.HOST) { destination = wayPoint[curWayPoint].position; navmesh.SetDestination(wayPoint[curWayPoint].position); }
+                        else { navmesh.SetDestination(clientWaypointDest); }
+
+                        float distance = Vector3.Distance(transform.position, wayPoint[curWayPoint].position);
+
+                        if (distance > 1f)
+                        {
+                            animEnemy.SetBool("Walk", true);
+                        }
+                        else
+                        {
+                            curWayPoint++;
+                        }
+                    }
+                    else if (wayPoint.Count == curWayPoint)
+                    {
+                        curWayPoint = 0;
+                    }
+                }
+                else if (wayPoint.Count == 1)
                 {
 
-                    if (GD.ND.HOST){destination = wayPoint[curWayPoint].position;    navmesh.SetDestination(wayPoint[curWayPoint].position);}
-                    else {navmesh.SetDestination(destination);}
+                    if (GD.ND.HOST) { navmesh.SetDestination(wayPoint[0].position); destination = wayPoint[0].position; }
+                    else { navmesh.SetDestination(clientWaypointDest); }
 
                     float distance = Vector3.Distance(transform.position, wayPoint[curWayPoint].position);
 
                     if (distance > 1f)
                     {
+                        navmesh.isStopped = false;
                         animEnemy.SetBool("Walk", true);
                     }
                     else
                     {
-                        curWayPoint++;
+                        navmesh.isStopped = true;
+                        animEnemy.SetBool("Walk", false);
                     }
-                }
-                else if (wayPoint.Count == curWayPoint)
-                {
-                    curWayPoint = 0;
-                }
-            }
-            else if (wayPoint.Count == 1)
-            {
-                
-                if (GD.ND.HOST) {                    navmesh.SetDestination(wayPoint[0].position);                    destination = wayPoint[0].position;                }
-                else                {                    navmesh.SetDestination(destination);                }
-
-                float distance = Vector3.Distance(transform.position, wayPoint[curWayPoint].position);
-
-                if (distance > 1f)
-                {
-                    navmesh.isStopped = false;
-                    animEnemy.SetBool("Walk", true);
                 }
                 else
                 {
                     navmesh.isStopped = true;
                     animEnemy.SetBool("Walk", false);
                 }
-            }
-            else
-            {
-                navmesh.isStopped = true;
-                animEnemy.SetBool("Walk", false);
             }
         }
     }
@@ -185,6 +193,7 @@ public class NPCController : MonoBehaviour
 
         //MOVE TOWARDS TARGET
         navmesh.SetDestination(target.position);
+        GetComponent<NavMeshAgent>().stoppingDistance = hitRange;
 
         float distance = Vector3.Distance(transform.position, target.position);
        // Debug.Log("=-================================ ENEMY DISTANCE==================================" + distance);
@@ -196,6 +205,9 @@ public class NPCController : MonoBehaviour
             //RUN TO TARGET
             if (distance > hitRange)
             {
+                animEnemy.SetBool("Fighting", false);
+                GetComponent<NavMeshAgent>().speed = moveSpeed;
+                //GetComponent<NavMeshAgent>().enabled = true;
                 if (attacking)
                 {
                     attacking = false;
@@ -212,6 +224,9 @@ public class NPCController : MonoBehaviour
             if (distance <= hitRange)
             {
                 attacking = true;
+                animEnemy.SetBool("Fighting", true);
+                //GetComponent<NavMeshAgent>().enabled = false;
+                GetComponent<NavMeshAgent>().speed = 0;
 
                 if (!attacking)
                 {
@@ -237,8 +252,12 @@ public class NPCController : MonoBehaviour
             //RUN TO TARGET
             if (!attacking)
             {
+                animEnemy.SetBool("Fighting", false);
+                //GetComponent<NavMeshAgent>().speed = walkSpeed;
+                GetComponent<NavMeshAgent>().speed = moveSpeed;
 
                 navmesh.isStopped = false;
+                if (distance <= hitRange) { navmesh.isStopped = true; }
                 animEnemy.SetBool("Run", true);
                 animEnemy.SetBool("Attack", false);
                 transform.LookAt(targetPlayer);
@@ -246,6 +265,11 @@ public class NPCController : MonoBehaviour
             //ATTACK TARGET
             else
             {
+                animEnemy.SetBool("Fighting", true);
+                //GetComponent<NavMeshAgent>().speed = 0;
+                GetComponent<NavMeshAgent>().speed = 0;
+                if (distance > hitRange) { transform.position = Vector3.Lerp(transform.position, target.position, Time.deltaTime * 1f); }
+
                 navmesh.isStopped = true;
                 animEnemy.SetBool("Run", false);
 
@@ -254,7 +278,8 @@ public class NPCController : MonoBehaviour
                 transform.rotation = Quaternion.Slerp(transform.rotation, lookRotation, Time.deltaTime * 10);
 
                 animEnemy.SetBool("Attack", true);
-                animEnemy.Play("Attack");
+                
+                if (GetComponent<Teleport>().debugAttack) { animEnemy.Play("Attack"); GetComponent<Teleport>().debugAttack = false; }
                 transform.LookAt(targetPlayer);
             }
 
@@ -378,7 +403,10 @@ public class NPCController : MonoBehaviour
         }
         else
         {
-            animEnemy.SetTrigger("Damage"); 
+            //animEnemy.SetTrigger("Damage"); 
+            animEnemy.SetBool("Attack", false);
+            animEnemy.Play("React");
+            //if (animator.GetCurrentAnimatorStateInfo(0).IsName(animationName)) ;
         }
     }
 

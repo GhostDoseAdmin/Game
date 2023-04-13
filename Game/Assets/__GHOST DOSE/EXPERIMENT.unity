@@ -20606,6 +20606,7 @@ GameObject:
   - component: {fileID: 1999038373}
   - component: {fileID: 1999038372}
   - component: {fileID: 1999038378}
+  - component: {fileID: 1999038379}
   m_Layer: 0
   m_Name: GhostFemale1
   m_TagString: Ghost
@@ -20631,6 +20632,7 @@ MonoBehaviour:
   visible: 0
   inShadow: 0
   invisible: 1
+  invisibleCounter: 0
   HEAD: {fileID: 1000626383018641031}
 --- !u!114 &1999038373
 MonoBehaviour:
@@ -20665,7 +20667,9 @@ MonoBehaviour:
   truePosition: {x: 0, y: 0, z: 0}
   attacking: 0
   hitRange: 1.5
+  moveSpeed: 1
   agro: 1
+  clientWaypointDest: {x: 0, y: 0, z: 0}
 --- !u!195 &1999038374
 NavMeshAgent:
   m_ObjectHideFlags: 0
@@ -20813,7 +20817,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1999038371}
   m_LocalRotation: {x: -0.00081869494, y: 0.9990243, z: 0.00005361803, w: 0.044157136}
-  m_LocalPosition: {x: 0.32, y: 0.01, z: 6.89}
+  m_LocalPosition: {x: 0.03, y: 0.01, z: 10.15}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -20839,6 +20843,21 @@ MonoBehaviour:
   target: {fileID: 0}
   minRadius: 2
   maxRadius: 4
+  debugAttack: 0
+--- !u!114 &1999038379
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1999038371}
+  m_Enabled: 0
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6a5043d7087fbcb42aab3e6fa46bc843, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  speed: 1
+  distanceThreshold: 2
 --- !u!1 &2011602236
 GameObject:
   m_ObjectHideFlags: 0
@@ -44539,7 +44558,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3904744571870930470, guid: a635d842b268cd644bd244bf9a301bc9, type: 3}
       propertyPath: HOSTOVERRIDE
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 5394860343070964284, guid: a635d842b268cd644bd244bf9a301bc9, type: 3}
       propertyPath: m_RootOrder
@@ -47749,7 +47768,9 @@ MonoBehaviour:
   truePosition: {x: 0, y: 0, z: 0}
   attacking: 0
   hitRange: 1.5
+  moveSpeed: 1
   agro: 0
+  clientWaypointDest: {x: 0, y: 0, z: 0}
 --- !u!1 &7263117632726019222
 GameObject:
   m_ObjectHideFlags: 0
@@ -48196,6 +48217,7 @@ MonoBehaviour:
   visible: 0
   inShadow: 0
   invisible: 0
+  invisibleCounter: 0
   HEAD: {fileID: 0}
 --- !u!1 &7519898547128315118
 GameObject:
