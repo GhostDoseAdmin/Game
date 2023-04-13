@@ -77,8 +77,9 @@ public class CamFlash : MonoBehaviour
                     if (hit.collider.transform.root.gameObject == ghost.gameObject)
                     {
                        // Debug.Log("ENYM HIT -------------------------------------------------------");
-                        ghost.TakeDamage(0);
-                        ghost.visible = 10;//AGRO
+                        ghost.TakeDamage(0, false);
+                        //ghost.agro = true;
+                        //ghost.range = ghost.range * 2;
                     }
                 }
 

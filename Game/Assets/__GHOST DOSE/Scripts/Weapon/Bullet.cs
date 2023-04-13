@@ -34,7 +34,7 @@ public class Bullet : MonoBehaviour
 		{
 			if ((hit.collider.tag == "Ghost" || hit.collider.tag == "Shadower"))
 			{
-				hit.transform.root.GetComponent<NPCController>().TakeDamage(0); //damageAmount
+				hit.transform.root.GetComponent<NPCController>().TakeDamage(0, false); //damageAmount
 
 				GameObject h = Instantiate(hitBloodEffect);
 				h.transform.position = hit.point + hit.normal * 0.001f;

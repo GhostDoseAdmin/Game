@@ -67,14 +67,6 @@ Shader "Custom/Ghost" {
 
             void surf(Input IN, inout SurfaceOutputStandard o) {
 
-
-                float facingCamera = dot(IN.worldNormal, _WorldSpaceCameraPos.xyz - IN.worldPos);
-                if (facingCamera < 0) {
-                    // Backface, discard the fragment
-                    //discard;
-                   // return;
-                }
-
                 fixed4 c = tex2D(_MainTex, IN.uv_MainTex) * _Color;
 
                 float minStrength = 1;
@@ -136,8 +128,7 @@ Shader "Custom/Ghost" {
 
 
                 float strength = minStrength * minStrengthPlayers;
-                //alphaStrength = 0.1;
-                //ALPHA CUTOFF -- only render pixels that are more visible
+
                 float total_alpha = (1 - (alphaStrength * alphaStrengthPlayers)) * c.a;
 
 
@@ -146,11 +137,7 @@ Shader "Custom/Ghost" {
                 o.Emission = c.rgb * c.a * _Emission;
                 o.Metallic = _Metallic;
                 o.Smoothness = _Glossiness;
-                o.Alpha = total_alpha;
-                if (total_alpha > 0.01) {
-                  //  o.Alpha = 1;
-                }
-
+                o.Alpha = total_alpha * _Alpha;
 
             }
 

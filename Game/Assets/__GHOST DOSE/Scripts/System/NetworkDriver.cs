@@ -117,7 +117,7 @@ public class NetworkDriver : MonoBehaviour
         {
             GD.MSG = "Two Player Mode";
             Debug.Log("HOST DETERMINED " + payload);
-           if (payload.ToString() == sioCom.Instance.SocketID) { HOST = true; }
+           if (payload.ToString() == sioCom.Instance.SocketID && !GD.TEST) { HOST = true; }
             
         });
         //-----------------CHOOSE BRO----------------->
@@ -171,8 +171,14 @@ public class NetworkDriver : MonoBehaviour
         //-----------------SHOOT  ----------------->
         sioCom.Instance.On("shoot", (payload) =>
         {
-            //Debug.Log("RECEIVING SHOOT ");
-            GD.Client.GetComponent<ClientPlayerController>().triggerShoot =true;
+            
+            JObject data = JObject.Parse(payload);
+            Dictionary<string, string> dict = data.ToObject<Dictionary<string, string>>();
+            GameObject enemy = GameObject.Find(dict["name"]);
+
+            GD.Client.GetComponent<ClientPlayerController>().triggerShoot =true;//shoot ani
+            enemy.GetComponent<NPCController>().TakeDamage(int.Parse(dict["damage"]), true);  //do flinch
+        
         });
 
         //-----------------ENEMY  ----------------->
@@ -181,7 +187,7 @@ public class NetworkDriver : MonoBehaviour
         
         JObject data = JObject.Parse(payload);
         Dictionary<string, string> dict = data.ToObject<Dictionary<string, string>>();
-       // Debug.Log("RECEIVING enemy " + data);
+       Debug.Log("RECEIVING enemy " + data);
         GameObject enemy = GameObject.Find(dict["object"]);
             if (enemy != null)
             {
@@ -196,6 +202,10 @@ public class NetworkDriver : MonoBehaviour
                 enemy.GetComponent<NPCController>().destination = new Vector3(float.Parse(dict["dx"]), float.Parse(dict["dy"]), float.Parse(dict["dz"]));
                 enemy.GetComponent<NPCController>().curWayPoint = int.Parse(dict["curWayPoint"]);
                 enemy.GetComponent<NPCController>().attacking = bool.Parse(dict["Attack"]);
+                enemy.GetComponent<Teleport>().teleport = int.Parse(dict["teleport"]);
+               // if (int.Parse(dict["teleport"]) > 0) { enemy.GetComponent<Teleport>().target = GameObject.Find(target).transform; }
+               // if (target.Length > 1) { enemy.GetComponent<Teleport>().target = GameObject.Find(target).transform; }
+                //Debug.Log("------------------------------------TELEPROT-------------------------------------" + int.Parse(dict["teleport"]));
                 if (bool.Parse(dict["dead"])) { enemy.GetComponent<NPCController>().healthEnemy = 0; Debug.Log("KILLED A ZOMBIE"); }
             }
            
@@ -272,32 +282,32 @@ public class NetworkDriver : MonoBehaviour
     //-----------------------------SYNC UP EVERYTHING----------------------------
     public void Update()
     {
-        
-             /*if ((Time.time > sync_timer + delay) && HOST)
-             {
-                 Debug.Log("SYNCING ");
-                 //Create a dictionary for this object's position in structure {"objPlayer":{"x":-2.17,"y":-0.01,"z":0.0},"objOtherPlayer":{"x":4.06,"y":-0.01,"z":0.0}}
-                Dictionary<string, Dictionary<string, string>> objStates = new Dictionary<string, Dictionary<string, string>>();
-                foreach (GameObject obj in GameObject.FindGameObjectsWithTag("sync"))
-                {
-                    //if (GetComponent<Rigidbody>().velocity.magnitude > 0.1f)//if its moving
-                    {
-                        string objName;
-                        Dictionary<string, string> positionDict = new Dictionary<string, string>();
+        //if (GD.TEST) { if (GD.HOSTOVERRIDE) { HOST = true; } else { HOST = false; } }
+        /*if ((Time.time > sync_timer + delay) && HOST)
+        {
+            Debug.Log("SYNCING ");
+            //Create a dictionary for this object's position in structure {"objPlayer":{"x":-2.17,"y":-0.01,"z":0.0},"objOtherPlayer":{"x":4.06,"y":-0.01,"z":0.0}}
+           Dictionary<string, Dictionary<string, string>> objStates = new Dictionary<string, Dictionary<string, string>>();
+           foreach (GameObject obj in GameObject.FindGameObjectsWithTag("sync"))
+           {
+               //if (GetComponent<Rigidbody>().velocity.magnitude > 0.1f)//if its moving
+               {
+                   string objName;
+                   Dictionary<string, string> positionDict = new Dictionary<string, string>();
 
-                        // Add the position values to the dictionary
-                        positionDict.Add("x", obj.transform.position.x.ToString("F2"));
-                        positionDict.Add("y", obj.transform.position.y.ToString("F2"));
-                        positionDict.Add("z", obj.transform.position.z.ToString("F2"));
+                   // Add the position values to the dictionary
+                   positionDict.Add("x", obj.transform.position.x.ToString("F2"));
+                   positionDict.Add("y", obj.transform.position.y.ToString("F2"));
+                   positionDict.Add("z", obj.transform.position.z.ToString("F2"));
 
-                        // Add the object's dictionary to the main dictionary with the object name as the key
-                        objName = obj.name;
-                        objStates.Add(objName, positionDict);
-                    }
-                }
-                sioCom.Instance.Emit("sync", JsonConvert.SerializeObject(objStates), false);
-                sync_timer = Time.time;
-            }*/
+                   // Add the object's dictionary to the main dictionary with the object name as the key
+                   objName = obj.name;
+                   objStates.Add(objName, positionDict);
+               }
+           }
+           sioCom.Instance.Emit("sync", JsonConvert.SerializeObject(objStates), false);
+           sync_timer = Time.time;
+       }*/
 
     }
 

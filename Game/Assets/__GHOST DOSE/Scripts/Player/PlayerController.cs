@@ -422,7 +422,7 @@ public class PlayerController : MonoBehaviour
         {
             if (gearAim)
 			{
-				Debug.Log("-----------------------------GEART AIM -------------------------------------");
+				//Debug.Log("-----------------------------GEART AIM -------------------------------------");
 				anim.SetIKPositionWeight(AvatarIKGoal.RightHand, handWeight);
 				anim.SetIKPosition(AvatarIKGoal.RightHand, stanceRH.position);
 

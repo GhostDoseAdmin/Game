@@ -140,8 +140,16 @@ public class ShootingSystem : MonoBehaviour
             targetParams(20);
             if (isVisible)
             {
-                if (target != null) { enemyIndicatorUI.color = Color.red; }
-                if (isHeadshot) { headShotIndicatorUI.color = Color.red; }
+                if (target != null) { 
+                    if(target.GetComponent<Teleport>().teleport == 0)
+                    {
+                        enemyIndicatorUI.color = Color.red;
+                        if (isHeadshot) { headShotIndicatorUI.color = Color.red; }
+                    }
+
+
+                }
+                
             }
             if (gameObject.GetComponent<FlashlightSystem>().FlashLight.isActiveAndEnabled || gameObject.GetComponent<FlashlightSystem>().WeaponLight.enabled) { flashLightIndicatorUI.color = UnityEngine.Color.yellow; }
 
@@ -184,12 +192,14 @@ public class ShootingSystem : MonoBehaviour
                 AudioManager.instance.Play(shootSound);
                 muzzleFlash.Play();
                 Shell.Play();
+                int damage = 0;
                 //DO DAMAGE
-                if (isVisible && target!=null)
+                if (isVisible && target!=null && target.GetComponent<Teleport>().teleport==0)
                 {
-                    target.GetComponent<NPCController>().TakeDamage(40);
-                    if (isHeadshot) { target.GetComponent<NPCController>().TakeDamage(100); }
-                    target.GetComponent<NPCController>().visible=15;
+                    damage = 40;
+                    if (isHeadshot) { damage = 100; }
+                    target.GetComponent<NPCController>().TakeDamage(damage, false);
+                    //target.GetComponent<NPCController>().agro=true;//15
                 }
 
                 //--------------FLASH-----------------
@@ -202,7 +212,7 @@ public class ShootingSystem : MonoBehaviour
 
 
                 //EMIT SHOOT
-                if (GetComponent<PlayerController>().GD.twoPlayer) { GetComponent<PlayerController>().GD.ND.sioCom.Instance.Emit("shoot", JsonConvert.SerializeObject($"{{'weapon':'camera'}}"), false); }
+                if (GetComponent<PlayerController>().GD.twoPlayer) { GetComponent<PlayerController>().GD.ND.sioCom.Instance.Emit("shoot", JsonConvert.SerializeObject($"{{'name':'{target.name}','damage':'{damage}'}}"), false); }
 
 
                 camera.fieldOfView = 40;//40

@@ -24,7 +24,7 @@ public class NPCController : MonoBehaviour
     //public Transform player;
     public Transform target;
     public Transform head;
-    public int visible;
+    public int range;
     public int angleView;
 
     [Header("PLAYER RAGDOLL")]
@@ -40,13 +40,14 @@ public class NPCController : MonoBehaviour
     public NavMeshAgent navmesh;
 
     //NETWORK
-    private GameDriver GD;
+    public GameDriver GD;
     public Transform targetPlayer;
     private GameObject Player;
     private GameObject Client;
     private string actions;
     private string send;
     private string prevActions;
+    private int prevTeleport;
     public Vector3 destination;
     public Vector3 truePosition;
     public bool attacking = false;
@@ -54,7 +55,7 @@ public class NPCController : MonoBehaviour
 
     private float attack_emit_timer = 0.0f;
     private float attack_emit_delay = 0.25f;//0.25
-    private bool agro;
+    public bool agro = true;
 
     void Start()
     {
@@ -68,22 +69,30 @@ public class NPCController : MonoBehaviour
         targetPlayer = Client.transform;
         head = animEnemy.GetBoneTransform(HumanBodyBones.Head).transform;
 
+
         //handKnife.GetComponent<Collider>().enabled = false;
 
     }
 
     void Update()
     {
-        if (this.gameObject.activeSelf) { AI(); }
+        int teleport = GetComponent<Teleport>().teleport;
 
-       // if (GD.ND.HOST) { FindTargetRayCast(); } //dtermines & finds target
+        if (this.gameObject.activeSelf) { if (teleport == 0) { AI(); } }
+
+        if (GD.ND.HOST) { if (teleport == 0) { FindTargetRayCast(); } } //dtermines & finds target
         if (GD.twoPlayer && GD.ND.HOST)
         {
-           
+            //actions = this.name + target + destination + attacking; 
 
+            //ONLY EMIT on STEPS 1 & 3
+            int teleChange = teleport;
+            if (teleport == 2) { teleChange = 1; }//skip step 2 of tele
+            if (teleport == 0 && prevTeleport == 3) { teleChange = 3; } //dont trigger emit keep client on 3, client side changes to 0
+            prevTeleport = teleChange;
+            if (teleport > 0) { target = GetComponent<Teleport>().target; }
+            actions = $"{{{target} {destination} {attacking} {teleChange}'}}";//determines what events to emit on change
 
-            //actions = this.name + target + destination + attacking; //  + animEnemy.GetCurrentAnimatorClipInfo(0)[0].clip.name; //+ attacking
-            actions = $"{{{target} {destination} {attacking}'}}";//determines what events to emit on change
             if (actions != prevActions) //actions change
             {
                 //Debug.LogWarning(attacking);
@@ -93,7 +102,7 @@ public class NPCController : MonoBehaviour
                 {
                     //if (attacking) {  Debug.Log("AAAAAAAAAAAAAAAAAAAAAATAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAk"); }
                     // send = $"{{'object':'{this.name}','target':'{target}','Attack':'{animEnemy.GetBool("Attack")}', 'Run':'{animEnemy.GetBool("Run")}', 'Walk':'{animEnemy.GetBool("Walk")}','x':'{transform.position.x}','y':'{transform.position.y}','z':'{transform.position.z}','dx':'{destination.x}','dy':'{destination.y}','dz':'{destination.z}'}}";
-                    send = $"{{'object':'{this.name}','dead':'false','Attack':'{attacking}','target':'{target}','curWayPoint':'{curWayPoint}','x':'{transform.position.x}','y':'{transform.position.y}','z':'{transform.position.z}','dx':'{destination.x}','dy':'{destination.y}','dz':'{destination.z}'}}";
+                    send = $"{{'object':'{this.name}','dead':'false','Attack':'{attacking}','target':'{target}','teleport':'{teleport}','curWayPoint':'{curWayPoint}','x':'{transform.position.x}','y':'{transform.position.y}','z':'{transform.position.z}','dx':'{destination.x}','dy':'{destination.y}','dz':'{destination.z}'}}";
                     GD.ND.sioCom.Instance.Emit("enemy", JsonConvert.SerializeObject(send), false);
 
                     //attack_emit_timer = Time.time;//cooldown
@@ -109,6 +118,7 @@ public class NPCController : MonoBehaviour
 
     public void AI()
     {
+        if (GetComponent<Teleport>().teleport > 0) {return; }
         if (target != null)
         {
             Attack();
@@ -177,6 +187,7 @@ public class NPCController : MonoBehaviour
         navmesh.SetDestination(target.position);
 
         float distance = Vector3.Distance(transform.position, target.position);
+       // Debug.Log("=-================================ ENEMY DISTANCE==================================" + distance);
         //if(!ND.HOST) { distance -= 0.35f; }// IS THE DELAY FOR PLAYER ACTION EMITS 
 
         //----------FOR HOST
@@ -222,7 +233,7 @@ public class NPCController : MonoBehaviour
         }
         else//---------FOR CLIENT
         {
-
+            targetPlayer = target;
             //RUN TO TARGET
             if (!attacking)
             {
@@ -243,6 +254,7 @@ public class NPCController : MonoBehaviour
                 transform.rotation = Quaternion.Slerp(transform.rotation, lookRotation, Time.deltaTime * 10);
 
                 animEnemy.SetBool("Attack", true);
+                animEnemy.Play("Attack");
                 transform.LookAt(targetPlayer);
             }
 
@@ -279,24 +291,27 @@ public class NPCController : MonoBehaviour
             float p1_dist = Vector3.Distance(head.position, Player.transform.position);
             float p2_dist = Vector3.Distance(head.position, Client.transform.position);
 
+            //ALWAYS CHOOSE CLOSEST TARGET
             if (p1_dist < p2_dist) { distance = p1_dist; targetPlayer = Player.transform; } else { distance = p2_dist; targetPlayer =Client.transform; }
 
            // Debug.Log("DISTANCE FROM TARGET " + distance);
 
-            if (distance <= visible)
+            if (distance <= range)
             {
                 
                 // Debug.Log("TARGET IS " + targetPlayer.gameObject.name + " DISTANCE " + distance);
 
                 Quaternion look = Quaternion.LookRotation(targetPlayer.position - head.position);
                 float angle = Quaternion.Angle(head.rotation, look);
-                //Debug.Log("TARGET VISIBLE  " + angle + " VIEW ANGLE " + angleView);
+               
 
                 if (angle <= angleView) // can u see target
                 {
+                    Debug.Log("----------------------------------CAN SEE TARGET----------------------------------------");
                     RaycastHit hit;
                     Debug.DrawLine(head.position, targetPlayer.position + Vector3.up * 1.4f); //1.6
-                    LayerMask mask = 1 << LayerMask.NameToLayer("Player");
+                    LayerMask mask = (1 << LayerMask.NameToLayer("Player")) | (1 << LayerMask.NameToLayer("Default"));
+
                     if (Physics.Linecast(head.position, targetPlayer.position + Vector3.up * 1.4f, out hit, mask.value) && hit.transform != head && hit.transform != transform)
                     {
                         Debug.Log("----------TARGET -------------------" + hit.collider.gameObject.name);
@@ -339,9 +354,15 @@ public class NPCController : MonoBehaviour
         }
     }
 
-    public void TakeDamage(int damageAmount)
+    public void TakeDamage(int damageAmount, bool otherPlayer)
     {
-        healthEnemy -= damageAmount;
+
+        Debug.Log("--------------------------------DOING DAMAGE------------------------------------");
+        if (!otherPlayer) { healthEnemy -= damageAmount; }//do damage only locally
+        //--------AGRO-----------
+        agro = true;
+        if (damageAmount == 0) { range = 10; }
+        else { range = 30; }
 
         //-----------ENEMY DEATH---------------
         if (healthEnemy <= 0)

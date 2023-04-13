@@ -27,11 +27,6 @@ public class Aiming : MonoBehaviour {
 		crosshair.SetActive(false);
         K2.SetActive(false);
 
-        canvas =GameObject.Find("Canvas_UI");
-		canvas.GetComponent<Canvas>().worldCamera = GameObject.Find("PlayerCamera").GetComponent<Camera>();
-        //Renderer renderer = GetComponent<Renderer>();
-        //renderer.sortingLayerName = "HUD";
-        //renderer.sortingOrder = 10; // Set the render order
     }
 
 	void Update()

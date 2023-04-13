@@ -9,8 +9,8 @@ public class ShadowDetector : MonoBehaviour
     {
         if(other.tag == "Shadower" || other.tag=="Ghost")
         {
-            // Debug.Log("IN SHADOW");
-            if (other.gameObject.GetComponent<GhostVFX>() != null) { other.gameObject.GetComponent<GhostVFX>().inShadow = true; }
+           
+            if (other.gameObject.transform.root.GetComponent<GhostVFX>() != null) { other.gameObject.transform.root.GetComponent<GhostVFX>().inShadow = true;  }
         }
             
     }
@@ -19,9 +19,9 @@ public class ShadowDetector : MonoBehaviour
         if (other.tag == "Shadower" || other.tag == "Ghost")
         {
             // Debug.Log("IN SHADOW");
-            if (other.gameObject.GetComponent<GhostVFX>() != null)
+            if (other.gameObject.transform.root.GetComponent<GhostVFX>() != null)
             {
-                other.gameObject.GetComponent<GhostVFX>().inShadow = false;
+                other.gameObject.transform.root.GetComponent<GhostVFX>().inShadow = false;
             }
         }
 

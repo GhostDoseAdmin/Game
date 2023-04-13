@@ -1,4 +1,4 @@
-Shader "Custom/FakeAlpha" {
+Shader "Custom/GhostAlphaCutoff" {
     Properties{
         _Color("Color", Color) = (1,1,1,1)
         _MainTex("Albedo (RGB)", 2D) = "white" {}
@@ -129,8 +129,8 @@ Shader "Custom/FakeAlpha" {
                 float strength = minStrength * minStrengthPlayers;
 
                 //ALPHA CUTOFF -- only render pixels that are more visible
-                float total_alpha = (1 - (alphaStrength * alphaStrengthPlayers)) * c.a;
-                if (total_alpha < _Alpha) {
+                float total_alpha = (1 - (alphaStrength * alphaStrengthPlayers)) * c.a * _Alpha; //
+                if (total_alpha < 1) {//dont render the pixels
                     discard;
                     return;
                 }

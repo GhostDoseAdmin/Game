@@ -10,7 +10,7 @@ public class EmenyDamage : MonoBehaviour
     {
         if (other.tag == "Enemy")
         {
-            other.GetComponent<NPCController>().TakeDamage(damageAmount);
+            //other.GetComponent<NPCController>().TakeDamage(damageAmount);
         }
     }
 }

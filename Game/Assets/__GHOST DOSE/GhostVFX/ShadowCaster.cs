@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine; 
 
-[ExecuteInEditMode]
+//[ExecuteInEditMode]
 public class ShadowCaster : MonoBehaviour
 {
     public int targetSize = 512; 
@@ -83,7 +83,7 @@ public class ShadowCaster : MonoBehaviour
 
         foreach (GhostVFX ghostVFX in ghostVFXObjects)
         {
-            Debug.Log("--------------------------------UPDATING SHADER INFO-----------------------------------");
+           // Debug.Log("--------------------------------UPDATING SHADER INFO-----------------------------------");
             ghostVFX.UpdateShaderValues();
         }
 
