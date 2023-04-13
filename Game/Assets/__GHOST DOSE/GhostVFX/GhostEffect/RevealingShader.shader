@@ -7,6 +7,7 @@ Shader "Custom/Ghost" {
         _MaxDistance("Max Distance", Float) = 10
         _Emission("Emission", Range(0,1)) = 1
         _Alpha("Alpha", Range(0,1)) = 1
+        _MinDistance("Minimum Distance", Range(0,2)) = 1.2
     }
         SubShader{
             Tags { "RenderType" = "Transparent" "Queue" = "Transparent"}
@@ -32,6 +33,7 @@ Shader "Custom/Ghost" {
             half _Metallic;
             half _Emission;
             half _Alpha;
+            half _MinDistance;
             fixed4 _Color;
             float _MaxDistance;
             float _yPos;
@@ -107,7 +109,10 @@ Shader "Custom/Ghost" {
                 strength1 = abs(1 - min(max(strength1 * _PlayerStrengthScalarLight, 0), 1));
                 strength1 = 1 - (1 - strength1);
                 if (distance1 > _PlayerLightRange) {
-                    strength1 = 1;
+                    strength1 = 1;//invis
+                }
+                if (distance1 < _MinDistance) {
+                    strength1 = (distance1-1) * 0.1;
                 }
                 alphaStrengthPlayers *= strength1;
 
@@ -120,6 +125,9 @@ Shader "Custom/Ghost" {
                 strength2 = 1 - (1 - strength2);
                 if (distance2 > _ClientLightRange) {
                     strength2 = 1;
+                }
+                if (distance2 < _MinDistance) {
+                    strength2 = (distance2-1) * 0.1;
                 }
                 alphaStrengthPlayers *= strength2;
 

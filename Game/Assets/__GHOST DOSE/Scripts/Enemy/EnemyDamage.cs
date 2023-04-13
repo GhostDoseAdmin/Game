@@ -15,9 +15,20 @@ public class EnemyDamage : MonoBehaviour
     }
     private void OnTriggerEnter(Collider other)
     {
+       // Debug.Log("-----------------------HIT");
         if (other.tag == "Player")
         {
-            player.GetComponent<HealthSystem>().HealthDamage(damage);
+           // other.gameObject.GetComponent<HealthSystem>().HealthDamage(damage);
+
+            Rigidbody rb = player.GetComponent<Rigidbody>();
+
+            if (rb != null)
+            {
+                Vector3 oppositeForce = -(other.transform.position - transform.position).normalized * 1000f;
+                rb.AddForce(oppositeForce);
+            }
+
+
         }
     }
 }

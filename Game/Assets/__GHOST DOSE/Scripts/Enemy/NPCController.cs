@@ -310,8 +310,8 @@ public class NPCController : MonoBehaviour
                     Debug.Log("----------------------------------CAN SEE TARGET----------------------------------------");
                     RaycastHit hit;
                     Debug.DrawLine(head.position, targetPlayer.position + Vector3.up * 1.4f); //1.6
-                    LayerMask mask = (1 << LayerMask.NameToLayer("Player")) | (1 << LayerMask.NameToLayer("Default"));
-
+                   // LayerMask mask = (1 << LayerMask.NameToLayer("Player")) | (1 << LayerMask.NameToLayer("Default"));
+                   LayerMask mask = (1 << LayerMask.NameToLayer("Player"));
                     if (Physics.Linecast(head.position, targetPlayer.position + Vector3.up * 1.4f, out hit, mask.value) && hit.transform != head && hit.transform != transform)
                     {
                         Debug.Log("----------TARGET -------------------" + hit.collider.gameObject.name);

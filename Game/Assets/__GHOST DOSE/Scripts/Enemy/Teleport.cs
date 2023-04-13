@@ -58,9 +58,10 @@ public class Teleport : MonoBehaviour
         {
             if (!GetComponent<NPCController>().GD.ND.HOST) { GetComponent<NPCController>().enabled = false; }
             GetComponent<NavMeshAgent>().enabled = false;
+            GetComponent<Animator>().enabled = false;
             //GetComponent<Animator>().SetBool("Attack", false);
-          // GetComponent<Animator>().SetBool("Walk", false);
-          // GetComponent<Animator>().SetBool("Run", true);
+          //GetComponent<Animator>().SetBool("Walk", false);
+          //GetComponent<Animator>().SetBool("Run", false);
             Vector3 currPos = transform.position;
             currPos.y -= 0.1f;//descend speed
             transform.position = currPos;
@@ -100,16 +101,13 @@ public class Teleport : MonoBehaviour
                 teleport = 0;
                 GetComponent<NavMeshAgent>().enabled = true;
                 GetComponent<NPCController>().enabled = true;
-                //GetComponent<Animator>().SetBool("Attack", true);
-                //GetComponent<Animator>().SetBool("Walk", true);
-                //GetComponent<Animator>().SetBool("Run", true);
+                GetComponent<Animator>().enabled = true;
                 this.gameObject.transform.GetChild(0).GetComponent<SkinnedMeshRenderer>().enabled = true;
                 GetComponent<NPCController>().target = target;
                 StartCoroutine(resetCanTeleport());
-                if (!GetComponent<NPCController>().GD.ND.HOST){StartCoroutine(clientAttackingAnimationDebug());}}
+                //if (!GetComponent<NPCController>().GD.ND.HOST){StartCoroutine(clientAttackingAnimationDebug());}
+            }
             if (delayForEmit){ delayForEmit = false; }
-           
-
         }
 
         IEnumerator resetCanTeleport()//--------CONNECT HELPER--------->
@@ -118,18 +116,18 @@ public class Teleport : MonoBehaviour
                 canTeleport = true;
         }
 
-        IEnumerator clientAttackingAnimationDebug()//--------CONNECT HELPER--------->
+        /*IEnumerator clientAttackingAnimationDebug()//--------CONNECT HELPER--------->
         {
             
             yield return new WaitForSeconds(0.5f);
             GetComponent<NPCController>().attacking = false;
             yield return new WaitForSeconds(0.5f);
             GetComponent<NPCController>().attacking = true;
-        }
+        }*/
 
 
 
-        }
+     }
 
 
 }

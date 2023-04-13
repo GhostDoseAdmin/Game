@@ -153,8 +153,15 @@ public class GhostVFX : MonoBehaviour
                 material.SetFloat("_ClientStrengthScalarLight", 20);
                 material.SetFloat("_ClientLightRange", lightSource.range);
             }
+
+            //--------------VISIBLE IF CLOSE /  VALUE 2 corresponds with shader
+             if(Vector3.Distance(PlayerLight.gameObject.transform.position, this.transform.position)<1.4 || Vector3.Distance(ClientLight.gameObject.transform.position, this.transform.position) < 1.4)
+            {
+                visible = true;
+            }
+
             //-------------SET TOTAL ALPHA--------------------------------
-            if (visible) {  Fade(true, 1f); }//0.8
+            if (visible) {  Fade(true, 0.5f); }//0.8
             else {  Fade(false, 1f); }//fadeout
             for (int i = 0; i < skin.GetComponent<SkinnedMeshRenderer>().materials.Length; i++)
             {
@@ -191,9 +198,9 @@ public class GhostVFX : MonoBehaviour
                     //if (Mathf.Abs(currentMaxAlpha[i] - (originalMaxAlpha[i]*0.5f)) < 0.1f)
 
                 }
-                else
-                { //FADE OUT
-                    currentMaxAlpha[i] = Mathf.Lerp(currentMaxAlpha[i], 0f, Time.deltaTime * speed);
+                else//FADE OUT
+                { 
+                    currentMaxAlpha[i] = Mathf.Lerp(currentMaxAlpha[i], currentMaxAlpha[i]*0.5f, Time.deltaTime * speed);
                    //if (Mathf.Abs(currentMaxAlpha[i] - 0) < 0.1f)
                 }
         }

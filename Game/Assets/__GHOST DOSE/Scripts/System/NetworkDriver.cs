@@ -197,7 +197,14 @@ public class NetworkDriver : MonoBehaviour
                 if (target.Length <= 1) { enemy.GetComponent<NPCController>().target = null; }
                 else if (target.Contains("Player")) { enemy.GetComponent<NPCController>().target = GD.Client.transform; }
                 else if (target.Contains("Client")) { enemy.GetComponent<NPCController>().target = GD.Player.transform; }
-                enemy.transform.position = new Vector3(float.Parse(dict["x"]), float.Parse(dict["y"]), float.Parse(dict["z"]));
+                if (enemy.GetComponent<NPCController>().target!=null)
+                {
+                    if (Vector3.Distance(enemy.GetComponent<NPCController>().target.transform.position, enemy.transform.position) >2)
+                    {
+                        enemy.transform.position = new Vector3(float.Parse(dict["x"]), float.Parse(dict["y"]), float.Parse(dict["z"]));
+                    }
+                }
+                if (int.Parse(dict["teleport"])==1 || int.Parse(dict["teleport"]) == 3) { enemy.transform.position = new Vector3(float.Parse(dict["x"]), float.Parse(dict["y"]), float.Parse(dict["z"])); }
                 //if (enemy.GetComponent<NPCController>().target != null) { enemy.transform.position = ((enemy.GetComponent<NPCController>().target.position - enemy.transform.position).normalized) * 0.25f; }
                 enemy.GetComponent<NPCController>().destination = new Vector3(float.Parse(dict["dx"]), float.Parse(dict["dy"]), float.Parse(dict["dz"]));
                 enemy.GetComponent<NPCController>().curWayPoint = int.Parse(dict["curWayPoint"]);
