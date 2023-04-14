@@ -14,50 +14,53 @@ public class NPCController : MonoBehaviour
     public List<Transform> wayPoint;
     public int curWayPoint;
 
+    [Header("SETUP")]
+    [Space(10)]
+
+    public GameObject SKEL_ROOT;
+    public GameObject HIT_COL;
+    public GameObject ragdollEnemy;
+    [SerializeField] private string knife;
+
     [Header("ENEMY PARAMETRS")]
     [Space(10)]
     public int healthEnemy = 100;
-    //public GameObject handKnife;
-
-    [Header("ENEMY TARGET")]
-    [Space(10)]
-    //public Transform player;
-    public Transform target;
-    public Transform head;
     public int range;
     public int angleView;
+    public float hitRange = 1.5f;
+    public float walkSpeed = 1f;
+    public float disEngageRange;
 
-    [Header("PLAYER RAGDOLL")]
+
+    [Header("TESTING")]
     [Space(10)]
-    public GameObject ragdollEnemy;
+    public bool canAttack = true;
 
-    [Header("ENEMY SOUNDS")]
-    [Space(10)]
-    [SerializeField] private string knife;
-
-    public Animator animEnemy;
-
-    public NavMeshAgent navmesh;
+    //public Transform player;
+    [HideInInspector] public Transform target;
+    [HideInInspector] private Transform head;
+    [HideInInspector] public Animator animEnemy;
+    [HideInInspector] public NavMeshAgent navmesh;
 
     //NETWORK
-    public GameDriver GD;
-    public Transform targetPlayer;
+    [HideInInspector]public GameDriver GD;
+
+    [HideInInspector] public Transform targetPlayer;
     private GameObject Player;
     private GameObject Client;
     private string actions;
     private string send;
     private string prevActions;
     private float prevTeleport;
-    public Vector3 destination;
-    public Vector3 truePosition;
-    public bool attacking = false;
-    public float hitRange = 1.5f;
-    public float moveSpeed = 1f;
+    [HideInInspector] public Vector3 destination;
+    [HideInInspector] public Vector3 truePosition;
+    [HideInInspector] public bool attacking = false;
+    
+    
+    [HideInInspector] public bool agro = true;//HAUNTS THE PLAYER
+    [HideInInspector] public Vector3 clientWaypointDest;
+    private float minDist = 0.03f; //debug enemy rotation when ontop of player
 
-    private float attack_emit_timer = 0.0f;
-    private float attack_emit_delay = 0.25f;//0.25
-    public bool agro = true;
-    public Vector3 clientWaypointDest;
     void Start()
     {
         GD = GameObject.Find("GameController").GetComponent<GameDriver>();
@@ -70,7 +73,6 @@ public class NPCController : MonoBehaviour
         targetPlayer = Client.transform;
         head = animEnemy.GetBoneTransform(HumanBodyBones.Head).transform;
 
-        
 
         //handKnife.GetComponent<Collider>().enabled = false;
 
@@ -78,11 +80,16 @@ public class NPCController : MonoBehaviour
 
     void Update()
     {
+
+        if (agro) { animEnemy.SetFloat("Speed", 1f); }
+
         float teleport = GetComponent<Teleport>().teleport;
 
         if (this.gameObject.activeSelf) { if (teleport == 0) { AI(); } }
 
-        if (GD.ND.HOST) { if (teleport == 0) { FindTargetRayCast(); } } //dtermines & finds target
+        if (GD.ND.HOST) { if (teleport == 0 && canAttack) { FindTargetRayCast(); } } //dtermines & finds target
+        
+        //=================================== E M I T =============================================
         if (GD.twoPlayer && GD.ND.HOST)
         {
             //actions = this.name + target + destination + attacking; 
@@ -97,18 +104,9 @@ public class NPCController : MonoBehaviour
 
             if (actions != prevActions) //actions change
             {
-                //Debug.LogWarning(attacking);
-
-                
-                //if (Time.time > attack_emit_timer + attack_emit_delay)//prevent sending 2 msgs at once
-                {
-                    //if (attacking) {  Debug.Log("AAAAAAAAAAAAAAAAAAAAAATAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAk"); }
-                    // send = $"{{'object':'{this.name}','target':'{target}','Attack':'{animEnemy.GetBool("Attack")}', 'Run':'{animEnemy.GetBool("Run")}', 'Walk':'{animEnemy.GetBool("Walk")}','x':'{transform.position.x}','y':'{transform.position.y}','z':'{transform.position.z}','dx':'{destination.x}','dy':'{destination.y}','dz':'{destination.z}'}}";
                     send = $"{{'object':'{this.name}','dead':'false','Attack':'{attacking}','target':'{target}','teleport':'{teleChange}','curWayPoint':'{curWayPoint}','x':'{transform.position.x}','y':'{transform.position.y}','z':'{transform.position.z}','dx':'{destination.x}','dy':'{destination.y}','dz':'{destination.z}'}}";
                     GD.ND.sioCom.Instance.Emit("enemy", JsonConvert.SerializeObject(send), false);
 
-                    //attack_emit_timer = Time.time;//cooldown
-                }
                 prevActions = actions;
             }
         }
@@ -118,18 +116,30 @@ public class NPCController : MonoBehaviour
 
     }
 
+
+    public void TriggerHitEnable()
+    {
+        HIT_COL.GetComponent<EnemyDamage>().triggerHit = true;
+
+    }
+    public void TriggerHitDisable()
+    {
+        HIT_COL.GetComponent<EnemyDamage>().triggerHit = true;
+    }
+
+
     public void AI()
     {
         if (GetComponent<Teleport>().teleport > 0) {return; }
         if (target != null)
         {
-            Attack();
+           Attack(); 
         }
         //-------------------------WAY POINTS ------------------------
         else if (target == null)
         {
             //GetComponent<NavMeshAgent>().enabled = true;
-            GetComponent<NavMeshAgent>().speed = moveSpeed;
+            GetComponent<NavMeshAgent>().speed = walkSpeed;
             GetComponent<NavMeshAgent>().stoppingDistance = 0;
             //if (GD.ND.HOST)
             {
@@ -150,8 +160,9 @@ public class NPCController : MonoBehaviour
                         {
                             animEnemy.SetBool("Walk", true);
                         }
-                        else
+                        else //waypoint reached
                         {
+                            GetComponent<Teleport>().CheckTeleport(true);
                             curWayPoint++;
                         }
                     }
@@ -202,11 +213,16 @@ public class NPCController : MonoBehaviour
         //----------FOR HOST
         if (GD.ND.HOST)
         {
-            //RUN TO TARGET
-            if (distance > hitRange)
+            if (distance > disEngageRange && !agro)
+            {
+                target = null;
+
+            }
+                //RUN TO TARGET
+                if (distance > hitRange)
             {
                 animEnemy.SetBool("Fighting", false);
-                GetComponent<NavMeshAgent>().speed = moveSpeed;
+                GetComponent<NavMeshAgent>().speed = walkSpeed;//DOESNT AFFECT THIS
                 //GetComponent<NavMeshAgent>().enabled = true;
                 if (attacking)
                 {
@@ -218,7 +234,7 @@ public class NPCController : MonoBehaviour
                 navmesh.isStopped = false;
                 animEnemy.SetBool("Run", true);
                 animEnemy.SetBool("Attack", false);
-                transform.LookAt(targetPlayer);
+                if (distance > minDist) { transform.LookAt(targetPlayer); }
             }
             //ATTACK TARGET
             if (distance <= hitRange)
@@ -237,13 +253,16 @@ public class NPCController : MonoBehaviour
                 }
                 navmesh.isStopped = true;
                 animEnemy.SetBool("Run", false);
-
-                Vector3 direction = (target.position - transform.position).normalized;
-                Quaternion lookRotation = Quaternion.LookRotation(new Vector3(direction.x, 0, direction.z));
-                transform.rotation = Quaternion.Slerp(transform.rotation, lookRotation, Time.deltaTime * 10);
+                //TURN TO TARGET
+                if (distance > minDist)
+                {
+                    Vector3 direction = (target.position - transform.position).normalized;
+                    Quaternion lookRotation = Quaternion.LookRotation(new Vector3(direction.x, 0, direction.z));
+                    transform.rotation = Quaternion.Slerp(transform.rotation, lookRotation, Time.deltaTime * 10);
+                }
 
                 animEnemy.SetBool("Attack", true);
-                transform.LookAt(targetPlayer);
+                if (distance > minDist) { transform.LookAt(targetPlayer); }
             }
         }
         else//---------FOR CLIENT
@@ -254,13 +273,13 @@ public class NPCController : MonoBehaviour
             {
                 animEnemy.SetBool("Fighting", false);
                 //GetComponent<NavMeshAgent>().speed = walkSpeed;
-                GetComponent<NavMeshAgent>().speed = moveSpeed;
+                GetComponent<NavMeshAgent>().speed = walkSpeed;
 
                 navmesh.isStopped = false;
                 if (distance <= hitRange) { navmesh.isStopped = true; }
                 animEnemy.SetBool("Run", true);
                 animEnemy.SetBool("Attack", false);
-                transform.LookAt(targetPlayer);
+                if (distance > minDist) { transform.LookAt(targetPlayer); }
             }
             //ATTACK TARGET
             else
@@ -268,19 +287,27 @@ public class NPCController : MonoBehaviour
                 animEnemy.SetBool("Fighting", true);
                 //GetComponent<NavMeshAgent>().speed = 0;
                 GetComponent<NavMeshAgent>().speed = 0;
-                if (distance > hitRange) { transform.position = Vector3.Lerp(transform.position, target.position, Time.deltaTime * 1f); }
+
+                //KEEP NAVMESH IN SYNC WITH LERP
+                if (distance > hitRange*1.1f)
+                {
+                    transform.position = Vector3.Lerp(transform.position, target.position, Time.deltaTime * 1f);
+                }
 
                 navmesh.isStopped = true;
                 animEnemy.SetBool("Run", false);
-
-                Vector3 direction = (target.position - transform.position).normalized;
-                Quaternion lookRotation = Quaternion.LookRotation(new Vector3(direction.x, 0, direction.z));
-                transform.rotation = Quaternion.Slerp(transform.rotation, lookRotation, Time.deltaTime * 10);
+                //TURN TO TARGET
+                if (distance > minDist)
+                {
+                    Vector3 direction = (target.position - transform.position).normalized;
+                    Quaternion lookRotation = Quaternion.LookRotation(new Vector3(direction.x, 0, direction.z));
+                    transform.rotation = Quaternion.Slerp(transform.rotation, lookRotation, Time.deltaTime * 10);
+                }
 
                 animEnemy.SetBool("Attack", true);
                 
                 if (GetComponent<Teleport>().debugAttack) { animEnemy.Play("Attack"); GetComponent<Teleport>().debugAttack = false; }
-                transform.LookAt(targetPlayer);
+                if (distance > minDist) { transform.LookAt(targetPlayer); }
             }
 
         }
@@ -382,10 +409,9 @@ public class NPCController : MonoBehaviour
     public void TakeDamage(int damageAmount, bool otherPlayer)
     {
 
-        Debug.Log("--------------------------------DOING DAMAGE------------------------------------");
         if (!otherPlayer) { healthEnemy -= damageAmount; }//do damage only locally
         //--------AGRO-----------
-        agro = true;
+        agro = true; angleView = 360; 
         if (damageAmount == 0) { range = 10; }
         else { range = 30; }
 

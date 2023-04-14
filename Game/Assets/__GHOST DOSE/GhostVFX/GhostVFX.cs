@@ -108,7 +108,7 @@ public class GhostVFX : MonoBehaviour
 
             //SHADOW OVERRIDES ENVIRONMENT LIGHTS
             if (inShadow) {
-                if (this.gameObject.tag == "Ghost") { visible = false; Debug.Log("-------------------------------SETTING VISIBLITY TO FALSE SHADOW-----------------------------------"); } else { visible = true; }
+                if (this.gameObject.tag == "Ghost") { visible = false;  } else { visible = true; }
             }
 
 
@@ -121,7 +121,7 @@ public class GhostVFX : MonoBehaviour
                 //FLASHLIGHT OVERRIDES SHADOW AND ENVIORNMENT
                 else if (IsObjectInLightCone(lightSource, true))//directly under light source
                 {
-                    if (this.gameObject.tag == "Ghost") { visible = true; } else { visible = false; Debug.Log("-------------------------------SETTING VISIBLITY TO FALSE PLAYER-----------------------------------"); }
+                    if (this.gameObject.tag == "Ghost") { visible = true; } else { visible = false;  }
                 } 
             }
             foreach (Material material in skin.GetComponent<SkinnedMeshRenderer>().materials)
@@ -142,7 +142,7 @@ public class GhostVFX : MonoBehaviour
                 //FLASHLIGHT OVERRIDES SHADOW AND ENVIORNMENT
                 else if(IsObjectInLightCone(lightSource, true))//directly under light source
                 {
-                    if (this.gameObject.tag == "Ghost") { visible = true; } else { visible = false; Debug.Log("-------------------------------SETTING VISIBLITY TO FALSE CLIENT-----------------------------------"); }
+                    if (this.gameObject.tag == "Ghost") { visible = true; } else { visible = false;  }
                 }
             }
             foreach (Material material in skin.GetComponent<SkinnedMeshRenderer>().materials)
@@ -190,7 +190,6 @@ public class GhostVFX : MonoBehaviour
 
     public void Fade(bool fadeIn, float speed, int fadeOutLimit)
     {
-        bool fadeDone = false;
         for (int i = 0; i < skin.GetComponent<SkinnedMeshRenderer>().materials.Length; i++)
         {
                 if (fadeIn)

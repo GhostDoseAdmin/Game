@@ -49,7 +49,6 @@ public class CamFlash : MonoBehaviour
 
         foreach (NPCController ghost in ghostObjects)
         {
-           
             Light spotlight = GetComponent<Light>();
             //CHECK FOR IN CONE OF LIGHT
             float adjustedSpotAngle = spotlight.spotAngle;
@@ -82,10 +81,8 @@ public class CamFlash : MonoBehaviour
                         //ghost.range = ghost.range * 2;
                     }
                 }
-
             }
         }
-        
     }
 
 

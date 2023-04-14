@@ -23,49 +23,57 @@ public class Teleport : MonoBehaviour
     private int relocate = 0;
     private bool canTeleport = true;
     public bool debugAttack;//resets attack ani state for client as would get stuck after restarting animator 
+    private bool isWaypoint;
     void Start()
     {
         timer = 0;
         teleport = 0;
         relocate = 0;
         canTeleport = true;
+        isWaypoint = false;
     }
 
-
-    private void Update()
+    public void CheckTeleport(bool WayPoints)
     {
-        //if(teleport > 0) { GetComponent<GhostVFX>().Fade(false, 1f); }
-        
-        //TRIGGER
-        if (teleport == 0 && GetComponent<NPCController>().GD.ND.HOST && canTeleport)
+        if (teleport == 0 && canTeleport)
         {
             if (GetComponent<GhostVFX>().invisible && !GetComponent<GhostVFX>().visible)
             {
-                if (GetComponent<NPCController>().agro && GetComponent<NPCController>().target != null)
-                    {
-                        if (Vector3.Distance(transform.position, GetComponent<NPCController>().target.transform.position) > 3)
-                        {
-                        teleport = 1;
-                            b4Pos = transform.position;
-                            relocate = 0;
-                            delayForEmit = true;
-                            canTeleport = false;
-                        //EMIT DISAPPEAR
-                        }
-                    }
-                
+                teleport = 1;
+                b4Pos = transform.position;
+                relocate = 0;
+                delayForEmit = true;
+                canTeleport = false;
+                isWaypoint = WayPoints; 
             }
         }
-        //STEP 1 - DESCEND ------CLIENT 
+    }
+
+    private void Update()
+    {
+        //TRIGGER
+        if (GetComponent<NPCController>().GD.ND.HOST)
+        {
+            if (GetComponent<NPCController>().agro && GetComponent<NPCController>().target != null)
+            {
+                if (Vector3.Distance(transform.position, GetComponent<NPCController>().target.transform.position) > 3)
+                {
+                    CheckTeleport(false);
+                }
+            }
+        }
+        //STEP 1 - DESCEND 
         if (teleport == 1)
         {
             fadeTimer = Time.time;
-            target = GetComponent<NPCController>().target;
-            //FOR CLIENT
+            target = GetComponent<NPCController>().target; 
             if (!GetComponent<NPCController>().GD.ND.HOST) { GetComponent<NPCController>().enabled = false; }
             debugAttack = true;
             GetComponent<NavMeshAgent>().enabled = false;
             GetComponent<Animator>().enabled = false;
+            b4Pos = transform.position;
+            GetComponent<NPCController>().SKEL_ROOT.GetComponent<CapsuleCollider>().isTrigger = true;
+            GetComponent<NPCController>().HIT_COL.GetComponent<SphereCollider>().isTrigger = true;
             teleport = 1.5f;
 
         }
@@ -91,10 +99,21 @@ public class Teleport : MonoBehaviour
                 relocate++;
                 GetComponent<GhostVFX>().invisibleCounter = 0;//reset counter to test new position
                 transform.position = new Vector3(transform.position.x, b4Pos.y, transform.position.z);
-                Vector2 randomDirection = Random.insideUnitCircle;
-                float randomDistance = Random.Range(minRadius, maxRadius);
-                Vector3 randomOffset = new Vector3(randomDirection.x, 0.0f, randomDirection.y) * randomDistance;
-                transform.position = target.position + randomOffset;
+
+                if(!isWaypoint)
+                {
+                    Vector2 randomDirection = Random.insideUnitCircle;
+                    float randomDistance = Random.Range(minRadius, maxRadius);
+                    Vector3 randomOffset = new Vector3(randomDirection.x, 0.0f, randomDirection.y) * randomDistance;
+                    transform.position = target.position + randomOffset;
+                }
+                else//USE WAYPOINTS
+                {
+                    // Get a random index from the list
+                    int randomWP = Random.Range(0, GetComponent<NPCController>().wayPoint.Count);
+                    transform.position = GetComponent<NPCController>().wayPoint[randomWP].transform.position;
+                }
+
 
                 timer = Time.time;
             }
@@ -110,11 +129,14 @@ public class Teleport : MonoBehaviour
             if (!delayForEmit)
             { //skip a frame to allow NPCcontroller to emit state 3
                 teleport = 0;
+                //if (!GetComponent<NPCController>().GD.ND.HOST) { transform.position = new Vector3(transform.position.x, b4Pos.y, transform.position.z); }
                 GetComponent<NavMeshAgent>().enabled = true;
                 GetComponent<NPCController>().enabled = true;
                 GetComponent<Animator>().enabled = true;
                 this.gameObject.transform.GetChild(0).GetComponent<SkinnedMeshRenderer>().enabled = true;
-                GetComponent<NPCController>().target = target;
+                GetComponent<NPCController>().SKEL_ROOT.GetComponent<CapsuleCollider>().isTrigger = false;
+                GetComponent<NPCController>().HIT_COL.GetComponent<SphereCollider>().isTrigger = false;
+                //GetComponent<NPCController>().target = target;
                 StartCoroutine(resetCanTeleport());
                 //if (!GetComponent<NPCController>().GD.ND.HOST){StartCoroutine(clientAttackingAnimationDebug());}
             }

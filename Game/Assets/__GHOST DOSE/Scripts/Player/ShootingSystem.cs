@@ -49,8 +49,8 @@ public class ShootingSystem : MonoBehaviour
     
     float curRateFire;
     
-    bool canShoot;
-    bool AmmoShoot = true;
+    //bool canShoot;
+    //bool AmmoShoot = true;
 
     private bool flash;
 
@@ -212,7 +212,9 @@ public class ShootingSystem : MonoBehaviour
 
 
                 //EMIT SHOOT
-                if (GetComponent<PlayerController>().GD.twoPlayer) { GetComponent<PlayerController>().GD.ND.sioCom.Instance.Emit("shoot", JsonConvert.SerializeObject($"{{'name':'{target.name}','damage':'{damage}'}}"), false); }
+                string targName = "none";
+                if(target!=null) { targName = target.name; }
+                if (GetComponent<PlayerController>().GD.twoPlayer ) { GetComponent<PlayerController>().GD.ND.sioCom.Instance.Emit("shoot", JsonConvert.SerializeObject($"{{'name':'{targName}','damage':'{damage}'}}"), false); }
 
 
                 camera.fieldOfView = 40;//40

@@ -21,13 +21,22 @@ public class ClientPlayerController : MonoBehaviour
 	[Space(10)]
     [HideInInspector] public Transform rightHandTarget;
     [HideInInspector] public Transform rightHand;
-	Transform[] rightHandTrans;
+
 
     [HideInInspector] public Transform leftHandTarget;
     [HideInInspector] public Transform leftHand;
-	Transform[] leftHandTrans;
 
-	float handWeight;
+
+    [HideInInspector] public Transform rightHandTargetCam;
+    [HideInInspector] public Transform rightHandTargetK2;
+    [HideInInspector] public Transform rightHandTargetREM;
+    [HideInInspector] public Transform leftHandTargetCam;
+    [HideInInspector] public Transform leftHandTargetK2;
+    [HideInInspector] public Transform leftHandTargetREM;
+
+
+
+    float handWeight;
 	public float handSpeed;
 
 	float newHandWeight = 0f;
@@ -37,13 +46,6 @@ public class ClientPlayerController : MonoBehaviour
 	public bool is_Flashlight = false;
 	public bool is_FlashlightAim = false;
 
-	[Space(10)]
-	public bool is_Knife = false;
-	public bool is_KnifeAim = false;
-
-	[Space(10)]
-	public bool is_Pistol = true;
-	public bool is_PistolAim = false;
 	public bool canShoot { get; private set; }
 
 	[Space(10)]
@@ -61,6 +63,17 @@ public class ClientPlayerController : MonoBehaviour
     public float targStrafe = 0f;
     public float targWalk = 0f;
 
+    //-------GEAR
+    private float gear_delay = 1f;//0.25
+    private float gear_timer = 0.0f;//USED FOR EMITS
+    public int gear = 1; //0 = cam 1=ks 2=rem
+    public bool gearAim;
+    private GameObject k2;
+    private GameObject camera;
+    private GameObject camInventory;
+    private GameObject k2Inventory;
+    public bool changingGear;
+    public bool throwing = false;
 
 
     //NETWORKER
@@ -112,10 +125,22 @@ public class ClientPlayerController : MonoBehaviour
 	{
         util = new utilities();
 
-        rightHandTarget = util.FindChildObject(this.gameObject.transform, "RHTarget").transform;
+        Debug.Log("Setting up Player References");
+        rightHandTargetCam = util.FindChildObject(this.gameObject.transform, "RHTargetCam").transform;
+        rightHandTargetK2 = util.FindChildObject(this.gameObject.transform, "RHTargetK2").transform;
+        rightHandTargetREM = util.FindChildObject(this.gameObject.transform, "RHTargetREM").transform;
         rightHand = util.FindChildObject(this.gameObject.transform, "mixamorig:RightHand").transform;
-        leftHandTarget = util.FindChildObject(this.gameObject.transform, "LHTarget").transform;
+        leftHandTargetCam = util.FindChildObject(this.gameObject.transform, "LHTargetCam").transform;
+        leftHandTargetK2 = util.FindChildObject(this.gameObject.transform, "LHTargetK2").transform;
+        leftHandTargetREM = util.FindChildObject(this.gameObject.transform, "LHTargetREM").transform;
         leftHand = util.FindChildObject(this.gameObject.transform, "mixamorig:LeftHand").transform;
+        k2 = util.FindChildObject(this.gameObject.transform, "K2").gameObject;
+        camera = util.FindChildObject(this.gameObject.transform, "camera").gameObject;
+        camInventory = util.FindChildObject(this.gameObject.transform, "CamInventory").gameObject;
+        k2Inventory = util.FindChildObject(this.gameObject.transform, "K2Inventory").gameObject;
+        camInventory.SetActive(false);
+
+
         shootPoint = util.FindChildObject(this.gameObject.transform, "ShootPoint").transform;
         muzzleFlash = util.FindChildObject(this.gameObject.transform, "MuzzleFlashEffect").GetComponent<ParticleSystem>();
         Shell = util.FindChildObject(this.gameObject.transform, "Puff").GetComponent<ParticleSystem>();
@@ -179,55 +204,42 @@ public class ClientPlayerController : MonoBehaviour
 
 
 
-
-	#region Melee Сombat
-	/*private void CheckKnife()
+    public void ChangeGear(int nextGear)
 	{
-		if (Input.GetKeyDown(InputManager.instance.k2) && is_Pistol == false && is_Knife == false)
-		{
-			if (gameObject.GetComponent<WeaponParameters>().hasKnife == true)
-			{
-				is_Knife = true;
-				anim.SetBool("Knife", true);
-			}
-		}
-		else if (Input.GetKeyDown(InputManager.instance.k2) && is_Knife == true)
-		{
-			is_Knife = false;
-			anim.SetBool("Knife", false);
-		}
-	}*/
 
-	void KnifeAttack()
-	{
-		if(is_Knife)
-		{
-			if (Input.GetMouseButton(1))
-			{
-				is_KnifeAim = true;
+        gear = nextGear;
 
-				if (Input.GetMouseButtonDown(0))
-				{
-					anim.SetTrigger("LeftMouseClick");
-				}
-			}
-			else
-			{
-				is_KnifeAim = false;
-			}
-		}
-	}
-	#endregion
+        //START OF GEARCHANGE
+        anim.SetBool("GetGear", true);
+        if (gear == 1){camera.SetActive(true); k2.SetActive(false); camInventory.SetActive(false); k2Inventory.SetActive(true); }
+				if (gear == 2){camera.SetActive(false); k2.SetActive(true); camInventory.SetActive(true); k2Inventory.SetActive(false);  }
+                
+            gearAim = false;
+			throwing = false;
+            //handWeight = 0f;
+			anim.SetBool("Pistol", false); 
+            anim.SetBool("Shoot", false);
+            if (is_FlashlightAim)
+            {
+				anim.SetBool("Flashlight", true); 
+                gameObject.GetComponent<ClientFlashlightSystem>().handFlashlight.SetActive(true);
+                gameObject.GetComponent<ClientFlashlightSystem>().FlashLight.enabled = true;
+                gameObject.GetComponent<ClientFlashlightSystem>().WeaponLight.enabled = false;
+            }
+        //anim.Play("GetGear");
 
-	#region Ranged Сombat
+
+
+    }
 
 
 	void Attack()
 	{
-			if (aim)
+        anim.SetBool("GetGear", false);
+        if (aim)
 			{
 
-				is_PistolAim = true;
+                gearAim = true;
 				anim.SetBool("Pistol", true);
 				newHandWeight = 1f;
 				canShoot = true;
@@ -248,7 +260,6 @@ public class ClientPlayerController : MonoBehaviour
 					Quaternion newYRotation = Quaternion.Euler(0f, shootPoint.rotation.eulerAngles.y, 0f);
 					newFlash.transform.rotation = newYRotation;
 
-				Debug.Log("--------------------------CLIENT TRIGGER SHOOT-----------------------------------");
 					triggerShoot = false;
 
                 }
@@ -260,7 +271,7 @@ public class ClientPlayerController : MonoBehaviour
             }
 			else 
 			{
-				is_PistolAim = false;
+                gearAim = false;
 				anim.SetBool("Pistol", false);
 				anim.SetBool("Shoot", false);
 				newHandWeight = 0f;
@@ -270,7 +281,13 @@ public class ClientPlayerController : MonoBehaviour
 			handWeight = Mathf.Lerp(handWeight, newHandWeight, Time.deltaTime * handSpeed);
 		
 	}
-	#endregion
+
+
+    public void Flinch(Vector3 force)
+    {
+        GetComponent<Rigidbody>().AddForce(force, ForceMode.Impulse);
+        GetComponent<Animator>().Play("Flinch", -1, 0f);
+    }
 
 
 	public void Flashlight(bool on)//TRIGGRED BY EMIT
@@ -285,7 +302,7 @@ public class ClientPlayerController : MonoBehaviour
 
             if (aim == false)
 			{
-            gameObject.GetComponent<ClientFlashlightSystem>().WeaponLight.enabled = false;
+                gameObject.GetComponent<ClientFlashlightSystem>().WeaponLight.enabled = false;
 				if (on)
 				{
 					anim.SetBool("Flashlight", true);//regular flashlight hold
@@ -304,11 +321,16 @@ public class ClientPlayerController : MonoBehaviour
             if (on)
 			{ 
 				is_FlashlightAim = true;
-                anim.SetBool("Flashlight", false);
                 gameObject.GetComponent<ClientFlashlightSystem>().handFlashlight.SetActive(false);
                 gameObject.GetComponent<ClientFlashlightSystem>().FlashLight.enabled = false;
                 gameObject.GetComponent<ClientFlashlightSystem>().WeaponLight.enabled = true;
 
+            }
+            if(!on)
+            {
+                gameObject.GetComponent<ClientFlashlightSystem>().handFlashlight.SetActive(true);
+                gameObject.GetComponent<ClientFlashlightSystem>().FlashLight.enabled = true;
+                gameObject.GetComponent<ClientFlashlightSystem>().WeaponLight.enabled = false;
             }
 
         }
@@ -320,32 +342,53 @@ public class ClientPlayerController : MonoBehaviour
 
     void OnAnimatorIK()
     {
-		
-        if (is_FlashlightAim || is_KnifeAim || is_PistolAim || is_Flashlight)
+
+        if (is_FlashlightAim || gearAim)
         {
-            
             anim.SetLookAtWeight(lookIKWeight, bodyWeight);
             anim.SetLookAtPosition(targetPosVec);
         }
 
-        if (rightHandTarget != null || leftHandTarget != null)
+        //-----------------  STANCES --------------------------------
+        Transform stanceRH = null;
+        Transform stanceLH = null;
+        if (gear == 1)
         {
-            if (is_PistolAim)
+            stanceRH = rightHandTargetCam;
+            stanceLH = leftHandTargetCam;
+        }
+        if (gear == 2)
+        {
+            stanceRH = rightHandTargetK2;
+            stanceLH = leftHandTargetK2;
+        }
+        if (gear == 3)
+        {
+            stanceRH = rightHandTargetREM;
+            stanceLH = leftHandTargetREM;
+        }
+        if (stanceRH != null && !throwing)
+        {
+            if (gearAim)
             {
+                //Debug.Log("-----------------------------GEART AIM -------------------------------------");
                 anim.SetIKPositionWeight(AvatarIKGoal.RightHand, handWeight);
-                anim.SetIKPosition(AvatarIKGoal.RightHand, rightHandTarget.position);
+                anim.SetIKPosition(AvatarIKGoal.RightHand, stanceRH.position);
 
                 anim.SetIKRotationWeight(AvatarIKGoal.RightHand, handWeight);
-                anim.SetIKRotation(AvatarIKGoal.RightHand, rightHandTarget.rotation);
+                anim.SetIKRotation(AvatarIKGoal.RightHand, stanceRH.rotation);
 
 
                 anim.SetIKPositionWeight(AvatarIKGoal.LeftHand, handWeight);
-                anim.SetIKPosition(AvatarIKGoal.LeftHand, leftHandTarget.position);
+                anim.SetIKPosition(AvatarIKGoal.LeftHand, stanceLH.position);
 
                 anim.SetIKRotationWeight(AvatarIKGoal.LeftHand, handWeight);
-                anim.SetIKRotation(AvatarIKGoal.LeftHand, leftHandTarget.rotation);
+                anim.SetIKRotation(AvatarIKGoal.LeftHand, stanceLH.rotation);
             }
+
         }
+
+
     }
 
 

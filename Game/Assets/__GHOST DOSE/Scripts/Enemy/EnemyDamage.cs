@@ -8,27 +8,32 @@ public class EnemyDamage : MonoBehaviour
     [Space(10)]
     public int damage;
     public Transform player;
+    public float force;
+    public bool triggerHit;
 
     public void Start()
     {
         player = GameObject.Find("GameController").GetComponent<GameDriver>().Player.transform;
     }
-    private void OnTriggerEnter(Collider other)
+    private void OnCollisionEnter(Collision collision)
     {
-       // Debug.Log("-----------------------HIT");
-        if (other.tag == "Player")
+        if (triggerHit)
         {
-           // other.gameObject.GetComponent<HealthSystem>().HealthDamage(damage);
-
-            Rigidbody rb = player.GetComponent<Rigidbody>();
-
-            if (rb != null)
+            if (collision.gameObject.tag == "Player")
             {
-                Vector3 oppositeForce = -(other.transform.position - transform.position).normalized * 1000f;
-                rb.AddForce(oppositeForce);
+                //Debug.Log("-------------------------------------------------------------------------------" + collision.gameObject.name);
+
+                Vector3 oppositeForce = -transform.root.gameObject.GetComponent<NPCController>().transform.forward * force;
+                oppositeForce.y = 0f; // Set the y component to 0
+                collision.gameObject.GetComponent<HealthSystem>().HealthDamage(damage, oppositeForce);
+
+                //Rigidbody rb = collision.gameObject.GetComponent<Rigidbody>();
+
+
+
             }
-
-
         }
     }
+
+
 }

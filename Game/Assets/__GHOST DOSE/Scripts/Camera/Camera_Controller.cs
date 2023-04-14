@@ -100,6 +100,9 @@ public class Camera_Controller : MonoBehaviour
 
     #endregion
 
+    //FOR Z AXIS FIX
+    //public GameObject Player;
+    private float zAxisFixTimer;
 
     void Awake()
     {
@@ -120,6 +123,10 @@ public class Camera_Controller : MonoBehaviour
         InitFromTarget();
     }
 
+   /* private void Start()
+    {
+        Player = GameObject.Find("Player");
+    }*/
     void InitFromTarget()
     {
         InitFromTarget(player);
@@ -163,6 +170,29 @@ public class Camera_Controller : MonoBehaviour
             else if (cameraType == CameraType.TPS)
                 cameraType = CameraType.FPS;
         }
+
+        //----------FIX Z AXIS AFTER FLINCH-----
+        if (player.GetComponent<PlayerController>().currentAni != null)
+        {
+            if (player.GetComponent<PlayerController>().currentAni == "React")
+            {
+                zAxisFixTimer = 1f;
+            }
+        }
+        if (player.GetComponent<PlayerController>().currentAni == "Idle") 
+        {
+            if (zAxisFixTimer > 0)
+            {
+
+                Quaternion currentRotation = gameObject.transform.rotation;
+                Quaternion targetRotation = Quaternion.Euler(currentRotation.x, currentRotation.y, 0f);
+                Quaternion newRotation = Quaternion.Lerp(currentRotation, targetRotation, 5f * Time.deltaTime);
+                gameObject.transform.rotation = newRotation;
+                zAxisFixTimer -= Time.deltaTime;
+            }
+        }
+
+
     }
 
     private void LateUpdate()

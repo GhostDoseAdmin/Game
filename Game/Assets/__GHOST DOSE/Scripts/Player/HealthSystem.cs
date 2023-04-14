@@ -112,9 +112,16 @@ public class HealthSystem : MonoBehaviour
 		}
 	}
 
-	public void HealthDamage(int damage)
+	public void HealthDamage(int damage , Vector3 force)
     {
-		Health -= damage;
+		Debug.Log("-------------------------------------------------------------------------------OUCH");
+
+		GetComponent<PlayerController>().emitDamage = true;
+		GetComponent<PlayerController>().damageForce = force;
+        GetComponent<Rigidbody>().AddForce(force, ForceMode.Impulse);
+        GetComponent<Animator>().Play("Flinch", -1, 0f); //-1
+
+        Health -= damage;
 		healthLevel.fillAmount -= damage * 0.01f;
 		UpdateHealth();
 	}

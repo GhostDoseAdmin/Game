@@ -14,7 +14,7 @@ public class GameDriver : MonoBehaviour
     public string MSG = "";
     public bool GAMESTART = false;
     public bool twoPlayer = false;
-    public bool TEST;
+    public bool NETWORK_TEST;
     public bool HOSTOVERRIDE;
     private GameObject WESTIN;
     private GameObject TRAVIS;
@@ -38,7 +38,7 @@ public class GameDriver : MonoBehaviour
        // Debug.unityLogger.logEnabled = false;
 
         MSG = "Welcome to GhostDose";
-        ROOM = "room";
+        ROOM = "gg";
 
         util = new utilities();
 
@@ -157,7 +157,7 @@ public class GameDriver : MonoBehaviour
             ClientFlashLight = Client.GetComponent<ClientFlashlightSystem>().FlashLight;
 
             if (!twoPlayer) { ND.HOST = true; }
-            if (TEST) { if (HOSTOVERRIDE) { ND.HOST = true; } else { ND.HOST = false; } }
+            if (NETWORK_TEST) { if (HOSTOVERRIDE) { ND.HOST = true; } else { ND.HOST = false; } }
             GAMESTART = true;
 
         }

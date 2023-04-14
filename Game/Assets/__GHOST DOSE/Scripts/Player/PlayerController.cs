@@ -76,8 +76,12 @@ public class PlayerController : MonoBehaviour
 	public float speed;
 	public float prevSpeed;
 	private string prevEmit;
-
-	private static utilities util;
+	private bool emitFlashLightOn;
+	public bool emitDamage;
+	public Vector3 damageForce;
+	public string currentAni="";
+	//private GameObject playerCam;
+    private static utilities util;
 
 	public GameObject currLight;
     #region Start
@@ -99,9 +103,10 @@ public class PlayerController : MonoBehaviour
         camInventory = util.FindChildObject(this.gameObject.transform, "CamInventory").gameObject;
         k2Inventory = util.FindChildObject(this.gameObject.transform, "K2Inventory").gameObject;
         camInventory.SetActive(false);
+		//playerCam = GameObject.Find("PlayerCamera");
 
         //GetComponent<WeaponParameters>().RigWeapons();
-		GetComponent<ShootingSystem>().RigShooter();
+        GetComponent<ShootingSystem>().RigShooter();
         GetComponent<FlashlightSystem>().RigLights();
     }
 
@@ -129,20 +134,33 @@ public class PlayerController : MonoBehaviour
 	{
         //gearAim = true;
         //anim.SetBool("Pistol", true);
-		//handWeight = 1f;
-		//gear = 2;
+        //handWeight = 1f;
+        //gear = 2;
+        currentAni = anim.GetCurrentAnimatorClipInfo(0)[0].clip.name;
+		if (currentAni != "React")
+		{
+			Locomotion();
+			Running();
+			ChangeGear();
+			Throwing();
+			GearAim();
+			CheckFlashlight();
 
-        Locomotion();
-		Running();
+		}
+		else //FLINCH
+		{
+			//anim.SetBool("Pistol", true);
+			//anim.SetBool("Pistol", false);
+			//anim.Play("Idle", 0, 0f);
+			//anim.SetBool("Flashlight", true);
+			gearAim = false;
+            anim.SetBool("Pistol", false);
 
-        ChangeGear();
-		Throwing();
+        }
 
-    	GearAim();
 
-		CheckFlashlight();
 
-		if (Input.GetKeyUp(KeyCode.Escape))
+        if (Input.GetKeyUp(KeyCode.Escape))
         {
 			Cursor.visible = true;
 			Cursor.lockState = CursorLockMode.None;
@@ -154,16 +172,16 @@ public class PlayerController : MonoBehaviour
 
         if (Time.time > emit_timer + emit_delay)
             {
-			bool flashlighton = false;
-			if (gameObject.GetComponent<FlashlightSystem>().FlashLight.isActiveAndEnabled || gameObject.GetComponent<FlashlightSystem>().WeaponLight.enabled) { flashlighton = true; }
-                string actions = $"{{'flashlight':'{flashlighton}','flintensity':'{gameObject.GetComponent<FlashlightSystem>().FlashLight.intensity}','aim':'{Input.GetMouseButton(1)}','walk':'{walk.ToString("F0")}','strafe':'{strafe.ToString("F0")}','run':'{Input.GetKey(InputManager.instance.running)}','x':'{transform.position.x.ToString("F2")}','y':'{transform.position.y.ToString("F2")}','z':'{transform.position.z.ToString("F2")}','speed':'{speed.ToString("F2")}','rx':'{transform.eulerAngles.x.ToString("F0")}','ry':'{transform.eulerAngles.y.ToString("F0")}','rz':'{transform.eulerAngles.z.ToString("F0")}','ax':'{crosshairPos.x.ToString("F0")}','ay':'{crosshairPos.y.ToString("F0")}','az':'{crosshairPos.z.ToString("F0")}'}}";
+                string actions = $"{{'flashlight':'{emitFlashLightOn}','gear':'{gear}','damage':'{emitDamage}','flintensity':'{gameObject.GetComponent<FlashlightSystem>().FlashLight.intensity}','aim':'{Input.GetMouseButton(1)}','walk':'{walk.ToString("F0")}','strafe':'{strafe.ToString("F0")}','run':'{Input.GetKey(InputManager.instance.running)}','x':'{transform.position.x.ToString("F2")}','y':'{transform.position.y.ToString("F2")}','z':'{transform.position.z.ToString("F2")}','speed':'{speed.ToString("F2")}','rx':'{transform.eulerAngles.x.ToString("F0")}','ry':'{transform.eulerAngles.y.ToString("F0")}','rz':'{transform.eulerAngles.z.ToString("F0")}','ax':'{crosshairPos.x.ToString("F0")}','ay':'{crosshairPos.y.ToString("F0")}','az':'{crosshairPos.z.ToString("F0")}','fx':'{damageForce.x.ToString("F2")}','fy':'{damageForce.y.ToString("F2")}','fz':'{damageForce.z.ToString("F2")}'}}";
 				if (actions != prevEmit) { GD.ND.sioCom.Instance.Emit("player_action", JsonConvert.SerializeObject(actions), false); prevEmit = actions; }
-            emit_timer = Time.time;//cooldown
+			emitDamage = false; 
+			emit_timer = Time.time;//cooldown
 			}
 
-        //CHOOSE LIGHT SOURCE
-        if (GetComponent<FlashlightSystem>().FlashLight.GetComponent<Light>().enabled) {  currLight = GetComponent<FlashlightSystem>().FlashLight.gameObject; }
-        else if (GetComponent<FlashlightSystem>().WeaponLight.GetComponent<Light>().enabled) {  currLight = GetComponent<FlashlightSystem>().WeaponLight.gameObject; }
+		//CHOOSE LIGHT SOURCE
+		emitFlashLightOn = false;
+        if (GetComponent<FlashlightSystem>().FlashLight.GetComponent<Light>().enabled) {  currLight = GetComponent<FlashlightSystem>().FlashLight.gameObject; emitFlashLightOn = true; }
+        else if (GetComponent<FlashlightSystem>().WeaponLight.GetComponent<Light>().enabled) {  currLight = GetComponent<FlashlightSystem>().WeaponLight.gameObject; emitFlashLightOn = true; }
     }
     #endregion
 
@@ -181,10 +199,10 @@ public class PlayerController : MonoBehaviour
         //Westin.SetFloat("Strafe", strafe);
         //Westin.SetFloat("Walk", walk);
 
-
-        AnimatorClipInfo[] clipInfo = anim.GetCurrentAnimatorClipInfo(0);
-        string animName = clipInfo[0].clip.name;
-        //Debug.Log(" ANIMATION " + GetComponent<Animator>().GetCurrentAnimatorClipInfo(0)[0].clip.name);
+        //currentAni = anim.GetCurrentAnimatorClipInfo(0)[0].clip.name;
+        //AnimatorClipInfo[] clipInfo = anim.GetCurrentAnimatorClipInfo(0);
+        //string animName = anim.GetCurrentAnimatorClipInfo(0)[0].clip.name;
+        Debug.Log(" ANIMATION " + GetComponent<Animator>().GetCurrentAnimatorClipInfo(0)[0].clip.name);
 
         if (walk != 0 || strafe != 0 || is_FlashlightAim == true || gearAim == true || CameraType.FPS == cameraController.cameraType)
         {
@@ -210,14 +228,17 @@ public class PlayerController : MonoBehaviour
 		transform.eulerAngles = new Vector3(0f, transform.eulerAngles.y, 0f);
 
 		//------------------S P E E D -------------------------
-        if (animName == "Idle" || animName =="Idle_Flashlight" || animName == "Idle_Pistol") { speed = 0; }
-        else if (animName == "Running") { speed = 4f; }
-        else { speed = 2f; }//walk
+		//if (currentAni != "React")
+		{
+			if (currentAni == "Idle" || currentAni == "Idle_Flashlight" || currentAni == "Idle_Pistol") { speed = 0; }
+			else if (currentAni == "Running") { speed = 4f; }
+			else { speed = 2f; }//walk
 
-        Vector3 movement = new Vector3(strafe, 0.0f, walk);
-        movement = movement.normalized;
-        transform.Translate(movement * speed * Time.deltaTime);
 
+			Vector3 movement = new Vector3(strafe, 0.0f, walk);
+			movement = movement.normalized;
+			transform.Translate(movement * speed * Time.deltaTime);
+		}
     }
 
 	private void Running()
