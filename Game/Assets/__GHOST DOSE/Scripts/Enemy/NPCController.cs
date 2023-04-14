@@ -26,11 +26,13 @@ public class NPCController : MonoBehaviour
     [Space(10)]
     public int healthEnemy = 100;
     public int range;
+    [HideInInspector] public int startRange;
     public int angleView;
+    [HideInInspector] public int startAngleView;
     public float hitRange = 1.5f;
     public float walkSpeed = 1f;
     public float disEngageRange;
-
+    [HideInInspector] public int startHealth;
 
     [Header("TESTING")]
     [Space(10)]
@@ -73,7 +75,9 @@ public class NPCController : MonoBehaviour
         targetPlayer = Client.transform;
         head = animEnemy.GetBoneTransform(HumanBodyBones.Head).transform;
 
-
+        startHealth = healthEnemy;
+        startAngleView = angleView;
+        startRange = range;
         //handKnife.GetComponent<Collider>().enabled = false;
 
     }
@@ -162,7 +166,7 @@ public class NPCController : MonoBehaviour
                         }
                         else //waypoint reached
                         {
-                            GetComponent<Teleport>().CheckTeleport(true);
+                            GetComponent<Teleport>().CheckTeleport(true, false);
                             curWayPoint++;
                         }
                     }
@@ -423,8 +427,11 @@ public class NPCController : MonoBehaviour
                 send = $"{{'object':'{this.name}','dead':'true','Attack':'{attacking}','target':'{target}','curWayPoint':'{curWayPoint}','x':'{transform.position.x}','y':'{transform.position.y}','z':'{transform.position.z}','dx':'{destination.x}','dy':'{destination.y}','dz':'{destination.z}'}}";
                 GD.ND.sioCom.Instance.Emit("enemy", JsonConvert.SerializeObject(send), false);
             }
-            
-            gameObject.SetActive(false);
+
+            //gameObject.SetActive(false);
+            //GetComponent<EnemyDeath>().dead=true;
+            GetComponent<Teleport>().CheckTeleport(true, true);
+            GetComponent<Teleport>().Invoke("Respawn", 10f);
             Instantiate(ragdollEnemy, transform.position, transform.rotation);
         }
         else

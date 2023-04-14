@@ -24,6 +24,7 @@ public class Teleport : MonoBehaviour
     private bool canTeleport = true;
     public bool debugAttack;//resets attack ani state for client as would get stuck after restarting animator 
     private bool isWaypoint;
+    public bool DEATH;
     void Start()
     {
         timer = 0;
@@ -33,32 +34,33 @@ public class Teleport : MonoBehaviour
         isWaypoint = false;
     }
 
-    public void CheckTeleport(bool WayPoints)
+    public void CheckTeleport(bool WayPoints, bool death)
     {
         if (teleport == 0 && canTeleport)
         {
-            if (GetComponent<GhostVFX>().invisible && !GetComponent<GhostVFX>().visible)
+            if ((GetComponent<GhostVFX>().invisible && !GetComponent<GhostVFX>().visible) || (death))
             {
                 teleport = 1;
                 b4Pos = transform.position;
                 relocate = 0;
                 delayForEmit = true;
                 canTeleport = false;
-                isWaypoint = WayPoints; 
+                isWaypoint = WayPoints;
+                DEATH = death;
             }
         }
     }
 
     private void Update()
     {
-        //TRIGGER
+        //---------------AGRO----------------------
         if (GetComponent<NPCController>().GD.ND.HOST)
         {
             if (GetComponent<NPCController>().agro && GetComponent<NPCController>().target != null)
             {
                 if (Vector3.Distance(transform.position, GetComponent<NPCController>().target.transform.position) > 3)
                 {
-                    CheckTeleport(false);
+                    CheckTeleport(false, false);
                 }
             }
         }
@@ -118,7 +120,7 @@ public class Teleport : MonoBehaviour
                 timer = Time.time;
             }
             //--REAPPEAR--
-            if(GetComponent<GhostVFX>().invisible && !GetComponent<GhostVFX>().visible && relocate>1)
+            if(GetComponent<GhostVFX>().invisible && !GetComponent<GhostVFX>().visible && relocate>1 && !DEATH)
             {
                 teleport = 3;
             }
@@ -150,8 +152,6 @@ public class Teleport : MonoBehaviour
         }
 
 
-
-
         /*IEnumerator clientAttackingAnimationDebug()
         {
             
@@ -163,6 +163,16 @@ public class Teleport : MonoBehaviour
 
 
 
+    }
+
+    public void Respawn()
+    {
+        DEATH = false;
+        GetComponent<NPCController>().agro = false;
+        GetComponent<NPCController>().target = null;
+        GetComponent<NPCController>().healthEnemy = GetComponent<NPCController>().startHealth;
+        GetComponent<NPCController>().angleView = GetComponent<NPCController>().startAngleView;
+        GetComponent<NPCController>().range = GetComponent<NPCController>().startRange;
     }
 
 
