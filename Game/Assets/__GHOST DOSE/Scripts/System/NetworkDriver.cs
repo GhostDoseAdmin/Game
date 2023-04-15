@@ -115,7 +115,7 @@ public class NetworkDriver : MonoBehaviour
         //-----------------HOST / GAME START----------------->
         sioCom.Instance.On("host", (payload) =>
         {
-            GD.MSG = "Two Player Mode";
+            GD.MSG = "Two Player Mode - HOST " + payload + "     MY SOCKET    " + sioCom.Instance.SocketID;
             Debug.Log("HOST DETERMINED " + payload);
            if (payload.ToString() == sioCom.Instance.SocketID && !GD.NETWORK_TEST) { HOST = true; }
             
@@ -123,7 +123,7 @@ public class NetworkDriver : MonoBehaviour
         //-----------------CHOOSE BRO----------------->
         sioCom.Instance.On("bro", (payload) =>
         {
-            Debug.Log(" RECEIVED BRO " + payload);
+           // Debug.Log(" RECEIVED BRO " + payload);
             JObject data = JObject.Parse(payload);
             Dictionary<string, string> dict = data.ToObject<Dictionary<string, string>>();
             GetComponent<LobbyControl>().otherBro = dict["bro"];
@@ -206,8 +206,11 @@ public class NetworkDriver : MonoBehaviour
                         enemy.transform.position = targPos;
                     }
                 }
-                if (float.Parse(dict["teleport"])==1){ enemy.transform.position = targPos; }
-                if (float.Parse(dict["teleport"]) == 3 && enemy.GetComponent<Teleport>().teleport==1.5) { enemy.transform.position = targPos; }
+                if (targPos != null)
+                {
+                    if (float.Parse(dict["teleport"]) == 1) { enemy.transform.position = targPos; }
+                    if (float.Parse(dict["teleport"]) == 3 && enemy.GetComponent<Teleport>().teleport == 1.5) { enemy.transform.position = targPos; }
+                }
                 //if (enemy.GetComponent<NPCController>().target != null) { enemy.transform.position = ((enemy.GetComponent<NPCController>().target.position - enemy.transform.position).normalized) * 0.25f; }
                 enemy.GetComponent<NPCController>().clientWaypointDest = new Vector3(float.Parse(dict["dx"]), float.Parse(dict["dy"]), float.Parse(dict["dz"]));
                 
@@ -290,7 +293,7 @@ public class NetworkDriver : MonoBehaviour
     //-----------------------------SYNC UP EVERYTHING----------------------------
     public void Update()
     {
-        if (GD.twoPlayer && GD.GAMESTART) { GD.MSG = "Two Player Mode - is Host " + HOST; }
+       // if (GD.twoPlayer && GD.GAMESTART) { GD.MSG = "Two Player Mode - is Host " + HOST; }
         //if (GD.TEST) { if (GD.HOSTOVERRIDE) { HOST = true; } else { HOST = false; } }
         /*if ((Time.time > sync_timer + delay) && HOST)
         {
