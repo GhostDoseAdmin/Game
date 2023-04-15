@@ -206,7 +206,7 @@ public class NetworkDriver : MonoBehaviour
                         enemy.transform.position = targPos;
                     }
                 }
-                if (targPos != null)
+                //if (targPos != null)
                 {
                     if (float.Parse(dict["teleport"]) == 1) { enemy.transform.position = targPos; }
                     if (float.Parse(dict["teleport"]) == 3 && enemy.GetComponent<Teleport>().teleport == 1.5) { enemy.transform.position = targPos; }
@@ -219,9 +219,9 @@ public class NetworkDriver : MonoBehaviour
 
                 enemy.GetComponent<NPCController>().curWayPoint = int.Parse(dict["curWayPoint"]);
                 enemy.GetComponent<NPCController>().attacking = bool.Parse(dict["Attack"]);
-                enemy.GetComponent<Teleport>().teleport = float.Parse(dict["teleport"]);
+                if (!HOST) { enemy.GetComponent<Teleport>().teleport = float.Parse(dict["teleport"]); }
 
-                if (bool.Parse(dict["dead"])) { enemy.GetComponent<NPCController>().healthEnemy = 0; Debug.Log("KILLED A ZOMBIE"); }
+                if (bool.Parse(dict["dead"])) { enemy.GetComponent<NPCController>().healthEnemy = 0; }
             }
            
         });

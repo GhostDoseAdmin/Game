@@ -68,7 +68,7 @@ public class Teleport : MonoBehaviour
         if (teleport == 1)
         {
             fadeTimer = Time.time;
-            target = GetComponent<NPCController>().target; 
+            if (GetComponent<NPCController>().target != null) { target = GetComponent<NPCController>().target; }
             if (!GetComponent<NPCController>().GD.ND.HOST) { GetComponent<NPCController>().enabled = false; }
             debugAttack = true;
             GetComponent<NavMeshAgent>().enabled = false;
@@ -140,7 +140,10 @@ public class Teleport : MonoBehaviour
                 GetComponent<NPCController>().HIT_COL.GetComponent<SphereCollider>().isTrigger = false;
                 //GetComponent<NPCController>().target = target;
                 StartCoroutine(resetCanTeleport());
-                //if (!GetComponent<NPCController>().GD.ND.HOST){StartCoroutine(clientAttackingAnimationDebug());}
+                if (!GetComponent<NPCController>().GD.ND.HOST && GetComponent<NPCController>().healthEnemy<=0)
+                {
+                    Respawn();
+                }
             }
             if (delayForEmit){ delayForEmit = false; }
         }

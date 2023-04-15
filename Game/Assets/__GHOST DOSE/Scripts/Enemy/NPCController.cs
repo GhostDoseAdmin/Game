@@ -413,25 +413,27 @@ public class NPCController : MonoBehaviour
     public void TakeDamage(int damageAmount, bool otherPlayer)
     {
 
-        if (!otherPlayer) { healthEnemy -= damageAmount; }//do damage only locally
         //--------AGRO-----------
         agro = true; angleView = 360; 
         if (damageAmount == 0) { range = 10; }
         else { range = 30; }
 
         //-----------ENEMY DEATH---------------
+        if (!otherPlayer) { healthEnemy -= damageAmount; }//do damage only locally
+
         if (healthEnemy <= 0)
         {
-            if (GD.twoPlayer && GD.ND.HOST)
+            if (GD.twoPlayer) //&& GD.ND.HOST
             {
-                send = $"{{'object':'{this.name}','dead':'true','Attack':'{attacking}','target':'{target}','curWayPoint':'{curWayPoint}','x':'{transform.position.x}','y':'{transform.position.y}','z':'{transform.position.z}','dx':'{destination.x}','dy':'{destination.y}','dz':'{destination.z}'}}";
-                GD.ND.sioCom.Instance.Emit("enemy", JsonConvert.SerializeObject(send), false);
+                if(!otherPlayer)
+                {
+                    send = $"{{'object':'{this.name}','dead':'true','Attack':'{attacking}','target':'{target}','teleport':'{0}','curWayPoint':'{curWayPoint}','x':'{transform.position.x}','y':'{transform.position.y}','z':'{transform.position.z}','dx':'{destination.x}','dy':'{destination.y}','dz':'{destination.z}'}}";
+                    GD.ND.sioCom.Instance.Emit("enemy", JsonConvert.SerializeObject(send), false);
+                }
             }
-
-            //gameObject.SetActive(false);
-            //GetComponent<EnemyDeath>().dead=true;
             GetComponent<Teleport>().CheckTeleport(true, true);
-            GetComponent<Teleport>().Invoke("Respawn", 10f);
+            if (GD.ND.HOST) { GetComponent<Teleport>().Invoke("Respawn", 10f); }
+
             Instantiate(ragdollEnemy, transform.position, transform.rotation);
         }
         else

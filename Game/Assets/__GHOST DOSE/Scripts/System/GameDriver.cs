@@ -38,7 +38,7 @@ public class GameDriver : MonoBehaviour
        // Debug.unityLogger.logEnabled = false;
 
         MSG = "Welcome to GhostDose";
-        ROOM = "gg";
+        ROOM = "gtt";
 
         util = new utilities();
 
