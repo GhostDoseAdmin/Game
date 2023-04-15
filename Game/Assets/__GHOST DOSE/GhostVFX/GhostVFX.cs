@@ -154,7 +154,7 @@ public class GhostVFX : MonoBehaviour
                 material.SetFloat("_ClientLightRange", lightSource.range);
             }
 
-            //--------------VISIBLE IF CLOSE /  VALUE 2 corresponds with shader
+            //--------------VISIBLE IF CLOSE /  VALUE 1.4 corresponds with shader
              if(Vector3.Distance(PlayerLight.gameObject.transform.position, this.transform.position)<1.4 || Vector3.Distance(ClientLight.gameObject.transform.position, this.transform.position) < 1.4)
             {
                 visible = true;

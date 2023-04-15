@@ -418,7 +418,7 @@ public class NPCController : MonoBehaviour
 
     public void TakeDamage(int damageAmount, bool otherPlayer)
     {
-
+        if (damageAmount == 100) { AudioManager.instance.Play("Headshot"); Debug.Log("-------------------------------HEADSHOT--------------------------------------"); }
         //--------AGRO-----------
         agro = true; angleView = 360; 
         if (damageAmount == 0) { range = 10; }
@@ -440,6 +440,7 @@ public class NPCController : MonoBehaviour
             GetComponent<Teleport>().CheckTeleport(true, true);
             if (GD.ND.HOST) { GetComponent<Teleport>().Invoke("Respawn", spawnTimer); }
 
+            this.gameObject.transform.GetChild(0).GetComponent<SkinnedMeshRenderer>().enabled = false;
             Instantiate(ragdollEnemy, transform.position, transform.rotation);
         }
         else
