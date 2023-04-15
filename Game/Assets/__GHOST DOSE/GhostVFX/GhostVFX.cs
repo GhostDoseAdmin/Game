@@ -194,13 +194,13 @@ public class GhostVFX : MonoBehaviour
         {
                 if (fadeIn)
                 {
-                   // currentMaxAlpha[i] = Mathf.Lerp(currentMaxAlpha[i], originalMaxAlpha[i], Time.deltaTime * speed);
+                    currentMaxAlpha[i] = Mathf.Lerp(currentMaxAlpha[i], originalMaxAlpha[i], Time.deltaTime * speed);
                // if (Mathf.Abs(currentMaxAlpha[i] - (originalMaxAlpha[i] * 0.5f)) < 0.1f) { fadeDone = true; }
 
                 }
                 else//FADE OUT
                 { 
-                   // currentMaxAlpha[i] = Mathf.Lerp(currentMaxAlpha[i], currentMaxAlpha[i]*0.5f * fadeOutLimit, Time.deltaTime * speed);
+                    currentMaxAlpha[i] = Mathf.Lerp(currentMaxAlpha[i], currentMaxAlpha[i]*0.5f * fadeOutLimit, Time.deltaTime * speed);
               //  if (Mathf.Abs(currentMaxAlpha[i] - 0) < 0.1f) { fadeDone = true; }
                 }
         }

@@ -58,6 +58,7 @@ public class NPCController : MonoBehaviour
     [HideInInspector] public Vector3 destination;
     [HideInInspector] public Vector3 truePosition;
     [HideInInspector] public bool attacking = false;
+    [HideInInspector] public bool playerJoined;
     
     
     [HideInInspector] public bool agro = true;//HAUNTS THE PLAYER
@@ -79,6 +80,8 @@ public class NPCController : MonoBehaviour
         startHealth = healthEnemy;
         startAngleView = angleView;
         startRange = range;
+
+        playerJoined = false;
         //handKnife.GetComponent<Collider>().enabled = false;
 
     }
@@ -86,7 +89,7 @@ public class NPCController : MonoBehaviour
     void Update()
     {
 
-        if (agro) { animEnemy.SetFloat("Speed", 1f); }
+        //if (agro) { animEnemy.SetFloat("Speed", 1f); }
 
         float teleport = GetComponent<Teleport>().teleport;
 
@@ -98,7 +101,7 @@ public class NPCController : MonoBehaviour
         if (GD.twoPlayer && GD.ND.HOST)
         {
             //actions = this.name + target + destination + attacking; 
-
+            
             //ONLY EMIT on STEPS 1 & 3
             float teleChange = teleport;
             if (teleport == 2 || teleport ==1.5) { teleChange = 1; }//skip step 2 of tele
@@ -107,11 +110,13 @@ public class NPCController : MonoBehaviour
             if (teleport > 0) { target = GetComponent<Teleport>().target; }
             actions = $"{{{target} {destination} {attacking} {teleChange}'}}";//determines what events to emit on change
 
-            if (actions != prevActions) //actions change
+            if (actions != prevActions || playerJoined) //actions change
             {
-                    send = $"{{'object':'{this.name}','dead':'false','Attack':'{attacking}','target':'{target}','teleport':'{teleChange}','curWayPoint':'{curWayPoint}','x':'{transform.position.x}','y':'{transform.position.y}','z':'{transform.position.z}','dx':'{destination.x}','dy':'{destination.y}','dz':'{destination.z}'}}";
+                Debug.Log("--------------------------------SENDING PLAYER JOINED-----------------------------------" + playerJoined); 
+                send = $"{{'object':'{this.name}','dead':'false','Attack':'{attacking}','target':'{target}','teleport':'{teleChange}','curWayPoint':'{curWayPoint}','x':'{transform.position.x}','y':'{transform.position.y}','z':'{transform.position.z}','dx':'{destination.x}','dy':'{destination.y}','dz':'{destination.z}'}}";
                     GD.ND.sioCom.Instance.Emit("enemy", JsonConvert.SerializeObject(send), false);
-
+               
+                playerJoined = false;
                 prevActions = actions;
             }
         }
