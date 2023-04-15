@@ -117,8 +117,8 @@ public class NetworkDriver : MonoBehaviour
         {
             GD.MSG = "Two Player Mode - HOST " + payload + "     MY SOCKET    " + sioCom.Instance.SocketID;
             Debug.Log("HOST DETERMINED " + payload);
-           if (payload.ToString() == sioCom.Instance.SocketID && !GD.NETWORK_TEST) { HOST = true; }
-            
+           if (payload.ToString() == sioCom.Instance.SocketID && !GD.NETWORK_TEST) { HOST = true; UpdateEnemies(); } //
+
         });
         //-----------------CHOOSE BRO----------------->
         sioCom.Instance.On("bro", (payload) =>
@@ -189,7 +189,7 @@ public class NetworkDriver : MonoBehaviour
         
         JObject data = JObject.Parse(payload);
         Dictionary<string, string> dict = data.ToObject<Dictionary<string, string>>();
-       //Debug.Log("RECEIVING enemy " + data);
+       Debug.Log("RECEIVING enemy " + data);
         GameObject enemy = GameObject.Find(dict["object"]);
             if (enemy != null)
             {
@@ -199,7 +199,8 @@ public class NetworkDriver : MonoBehaviour
                 else if (target.Contains("Client")) { enemy.GetComponent<NPCController>().target = GD.Player.transform; }
                 
                 Vector3 targPos = new Vector3(float.Parse(dict["x"]), float.Parse(dict["y"]), float.Parse(dict["z"]));
-                if (enemy.GetComponent<NPCController>().target!=null)
+                
+                //if (enemy.GetComponent<NPCController>().target!=null)
                 {
                     if (Vector3.Distance(targPos, enemy.transform.position) >5)
                     {
@@ -288,6 +289,39 @@ public class NetworkDriver : MonoBehaviour
         sioCom.Instance.On("disconnect", (payload) => { Debug.LogWarning("Disconnected: " + payload); });
         //--------------PLAYER DISCONNECT-----------------
         sioCom.Instance.On("player_disconnect", (payload) => { Debug.LogWarning("GAME ENDING PLAYER DISCONNECTED "); PlayerPrefs.SetString("message", "PLAYER DISCONNECTED"); HOST = true; }); // sioCom.Instance.Close(); SceneManager.LoadScene("Lobby");
+    }
+
+
+    public void UpdateEnemies()
+    {
+       
+        List<NPCController> enemyObjects = new List<NPCController>();
+
+        GameObject[] shadowers = GameObject.FindGameObjectsWithTag("Shadower");
+        GameObject[] ghosts = GameObject.FindGameObjectsWithTag("Ghost");
+
+        foreach (GameObject shadower in shadowers)
+        {
+            NPCController ghostVFX = shadower.GetComponent<NPCController>();
+            if (ghostVFX != null)
+            {
+                enemyObjects.Add(ghostVFX);
+            }
+        }
+
+        foreach (GameObject ghost in ghosts)
+        {
+            NPCController ghostVFX = ghost.GetComponent<NPCController>();
+            if (ghostVFX != null)
+            {
+                enemyObjects.Add(ghostVFX);
+            }
+        }
+
+        foreach (NPCController ghostVFX in enemyObjects)
+        {
+            ghostVFX.playerJoined = true;
+        }
     }
 
     //-----------------------------SYNC UP EVERYTHING----------------------------
