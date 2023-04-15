@@ -32,6 +32,7 @@ public class NPCController : MonoBehaviour
     public float hitRange = 1.5f;
     public float walkSpeed = 1f;
     public float disEngageRange;
+    public float spawnTimer;
     [HideInInspector] public int startHealth;
 
     [Header("TESTING")]
@@ -432,7 +433,7 @@ public class NPCController : MonoBehaviour
                 }
             }
             GetComponent<Teleport>().CheckTeleport(true, true);
-            if (GD.ND.HOST) { GetComponent<Teleport>().Invoke("Respawn", 10f); }
+            if (GD.ND.HOST) { GetComponent<Teleport>().Invoke("Respawn", spawnTimer); }
 
             Instantiate(ragdollEnemy, transform.position, transform.rotation);
         }
