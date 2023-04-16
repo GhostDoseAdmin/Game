@@ -12,15 +12,14 @@ public class NPCController : MonoBehaviour
     [Header("WAY POINTS")]
     [Space(10)]
     public List<Transform> wayPoint;
-    public int curWayPoint;
+    [HideInInspector] public int curWayPoint;
 
     [Header("SETUP")]
     [Space(10)]
 
     public GameObject SKEL_ROOT;
     public GameObject HIT_COL;
-    public GameObject ragdollEnemy;
-    [SerializeField] private string knife;
+    public GameObject Death;
 
     [Header("ENEMY PARAMETRS")]
     [Space(10)]
@@ -33,6 +32,7 @@ public class NPCController : MonoBehaviour
     public float walkSpeed = 1f;
     public float disEngageRange;
     public float spawnTimer;
+    public int damage;
     [HideInInspector] public int startHealth;
 
     [Header("TESTING")]
@@ -81,8 +81,9 @@ public class NPCController : MonoBehaviour
         startAngleView = angleView;
         startRange = range;
 
-        playerJoined = false;
-        //handKnife.GetComponent<Collider>().enabled = false;
+        wayPoint[0].position = transform.position;
+        playerJoined = false; //UPDATE POSITIONS
+        HIT_COL.GetComponent<SphereCollider>().enabled = false;
 
     }
 
@@ -129,12 +130,12 @@ public class NPCController : MonoBehaviour
 
     public void TriggerHitEnable()
     {
-        HIT_COL.GetComponent<EnemyDamage>().triggerHit = true;
+        HIT_COL.GetComponent<SphereCollider>().enabled = true;
 
     }
     public void TriggerHitDisable()
     {
-        HIT_COL.GetComponent<EnemyDamage>().triggerHit = true;
+        HIT_COL.GetComponent<SphereCollider>().enabled = false;
     }
 
 
@@ -243,6 +244,7 @@ public class NPCController : MonoBehaviour
                 }
                 navmesh.isStopped = false;
                 animEnemy.SetBool("Run", true);
+               // if(GetComponent<GhostVFX>().invisible) { animEnemy.SetBool("Run", false); animEnemy.SetBool("walk", true); }
                 animEnemy.SetBool("Attack", false);
                 if (distance > minDist) { transform.LookAt(targetPlayer); }
             }
@@ -263,6 +265,7 @@ public class NPCController : MonoBehaviour
                 }
                 navmesh.isStopped = true;
                 animEnemy.SetBool("Run", false);
+               // animEnemy.SetBool("Walk", false);
                 //TURN TO TARGET
                 if (distance > minDist)
                 {
@@ -288,6 +291,7 @@ public class NPCController : MonoBehaviour
                 navmesh.isStopped = false;
                 if (distance <= hitRange) { navmesh.isStopped = true; }
                 animEnemy.SetBool("Run", true);
+               // if (GetComponent<GhostVFX>().invisible) { animEnemy.SetBool("Run", false); animEnemy.SetBool("walk", true); }
                 animEnemy.SetBool("Attack", false);
                 if (distance > minDist) { transform.LookAt(targetPlayer); }
             }
@@ -306,6 +310,7 @@ public class NPCController : MonoBehaviour
 
                 navmesh.isStopped = true;
                 animEnemy.SetBool("Run", false);
+               // animEnemy.SetBool("Walk", false);
                 //TURN TO TARGET
                 if (distance > minDist)
                 {
@@ -441,7 +446,7 @@ public class NPCController : MonoBehaviour
             if (GD.ND.HOST) { GetComponent<Teleport>().Invoke("Respawn", spawnTimer); }
 
             this.gameObject.transform.GetChild(0).GetComponent<SkinnedMeshRenderer>().enabled = false;
-            Instantiate(ragdollEnemy, transform.position, transform.rotation);
+            Instantiate(Death, transform.position, transform.rotation);
         }
         else
         {
@@ -454,7 +459,7 @@ public class NPCController : MonoBehaviour
 
     void AttackKnife()
     {
-        AudioManager.instance.Play(knife);
+        AudioManager.instance.Play("KnifeAttackEnemy");
     }
 
     public void TriggerEnable()

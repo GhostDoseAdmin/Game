@@ -14,8 +14,8 @@ public class Teleport : MonoBehaviour
     private bool delayForEmit;
 
     public Transform target;
-    public float minRadius = 4.0f;
-    public float maxRadius = 4.0f;
+    public float minRadius;
+    public float maxRadius;
 
     private float fadeTimer = 0;
     private float timer = 0.0f;
@@ -83,8 +83,11 @@ public class Teleport : MonoBehaviour
         {
             //FADE OUT
             if (Time.time - fadeTimer < 1f){
-                Vector3 currPos = transform.position; currPos.y -= 0.07f; transform.position = currPos;
+                Vector3 currPos = transform.position; 
+                currPos.y -= 0.07f; 
                 GetComponent<GhostVFX>().Fade(false, 8f, 0);
+                if (!GetComponent<NPCController>().GD.ND.HOST) { GetComponent<GhostVFX>().Fade(false, 16f, 0); }//client fade faster, prevent seeing them
+                transform.position = currPos;//descend
             }
             else//NEXT STEP
             {
@@ -99,7 +102,7 @@ public class Teleport : MonoBehaviour
             if ((Time.time > timer + delay))
             {
                 relocate++;
-                GetComponent<GhostVFX>().invisibleCounter = 0;//reset counter to test new position
+               // GetComponent<GhostVFX>().invisibleCounter = 0;//reset counter to test new position
                 transform.position = new Vector3(transform.position.x, b4Pos.y, transform.position.z);
 
                 if(!isWaypoint)

@@ -51,7 +51,7 @@ Shader "Nokdef/Screenspace Alpha"
 				#pragma target 2.0
 				#pragma multi_compile_instancing
 				#pragma multi_compile_particles
-				#pragma multi_compile_fog
+				//#pragma multi_compile_fog
 				#include "UnityShaderVariables.cginc"
 				#define ASE_NEEDS_FRAG_COLOR
 

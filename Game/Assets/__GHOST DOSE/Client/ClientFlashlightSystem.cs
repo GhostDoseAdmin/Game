@@ -71,7 +71,7 @@ public class ClientFlashlightSystem : MonoBehaviour
         inventoryFlashlight.SetActive(false);
         FlashLight.intensity = maxFlashlightIntensity;
     }
-    public void Flashlight()
+    /*public void Flashlight()
     {
                 if (FlashLight.enabled == false)
                 {
@@ -107,5 +107,5 @@ public class ClientFlashlightSystem : MonoBehaviour
             }
 
         
-    }
+    }*/
 }

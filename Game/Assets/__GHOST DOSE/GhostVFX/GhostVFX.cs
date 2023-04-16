@@ -24,8 +24,9 @@ public class GhostVFX : MonoBehaviour
     public bool visible; //USD IN CONJUNCTION WITH PLAY AIM RAYCAST
     public bool inShadow;
     public bool invisible;
-    public int invisibleCounter;
+    //public int invisibleCounter;
     public GameObject HEAD;
+    public bool death;
 
 
 
@@ -53,10 +54,12 @@ public class GhostVFX : MonoBehaviour
         {
             PlayerLight = GD.Player.GetComponent<PlayerController>().currLight;
             ClientLight = GD.Client.GetComponent<ClientPlayerController>().currLight;
+
+            if (GameObject.Find("CamFlashPlayer") != null) { PlayerLight = GameObject.Find("CamFlashPlayer"); }
+            if (GameObject.Find("CamFlashClient") != null) { PlayerLight = GameObject.Find("CamFlashClient"); }
         }
 
-
-
+        if (death) { PlayerLight = GetComponent<EnemyDeath>().light; }
         //if (PlayerLight != null && ClientLight != null)
         {
 
@@ -154,15 +157,20 @@ public class GhostVFX : MonoBehaviour
                 material.SetFloat("_ClientLightRange", lightSource.range);
             }
 
-            //--------------VISIBLE IF CLOSE /  VALUE 1.4 corresponds with shader
-             if(Vector3.Distance(PlayerLight.gameObject.transform.position, this.transform.position)<1.4 || Vector3.Distance(ClientLight.gameObject.transform.position, this.transform.position) < 1.4)
+            //--------------VISIBLE IF CLOSE ----------------
+             if(Vector3.Distance(PlayerLight.gameObject.transform.position, this.transform.position)<2 || Vector3.Distance(ClientLight.gameObject.transform.position, this.transform.position) < 2)
             {
-                visible = true;
+               visible = true;
             }
 
             //-------------SET TOTAL ALPHA--------------------------------
-            if (visible) {  Fade(true, 0.5f, 1); }//0.8
-            else {  Fade(false, 1f, 1); }//fadeout
+            invisible = false;
+            if (!death)
+            {
+                if (visible) { Fade(true, 0.5f, 1); }
+                else { Fade(false, 1f, 1); }//fadeout
+            }// DEATH FADE
+            else { Fade(false, 1f, 0); }
             for (int i = 0; i < skin.GetComponent<SkinnedMeshRenderer>().materials.Length; i++)
             {
                 if (skin.GetComponent<SkinnedMeshRenderer>().materials[i].shader.name != "Custom/GhostAlphaCutoff") { 
@@ -178,9 +186,9 @@ public class GhostVFX : MonoBehaviour
                 //MANUAL ALPHA FADE BASED ON LIGHT MEASUREMENTS
 
                 //---TEST TRUE VISIBLIITY--debugs visible flickering / TRIGGERS DISAPPEAR
-                invisible = false;
+                /*invisible = false;
             if (!visible) { if (invisibleCounter < 15) { invisibleCounter++; } if (invisibleCounter == 15) { invisible = true; } }
-            else { invisibleCounter =0; }
+            else { invisibleCounter =0; }*/
                 
 
 
@@ -201,7 +209,9 @@ public class GhostVFX : MonoBehaviour
                 else//FADE OUT
                 { 
                     currentMaxAlpha[i] = Mathf.Lerp(currentMaxAlpha[i], currentMaxAlpha[i]*0.5f * fadeOutLimit, Time.deltaTime * speed);
-              //  if (Mathf.Abs(currentMaxAlpha[i] - 0) < 0.1f) { fadeDone = true; }
+                if (Mathf.Abs(currentMaxAlpha[i] - 0.1f) < 0.1f) {
+                    invisible = true; 
+                }
                 }
         }
 
@@ -287,7 +297,7 @@ public class GhostVFX : MonoBehaviour
        // Debug.DrawLine(spotlight.transform.position, this.gameObject.transform.position + Vector3.up * hitHeight, UnityEngine.Color.red);
         float angleToObject = Vector3.Angle(spotlight.transform.forward, directionToObject);
         bool inCone = angleToObject <= adjustedSpotAngle * 0.5f;
-        if (isPlayer && spotlight.gameObject.name == "player_light") { Debug.Log("IN CONE? " + inCone); }
+        //if (isPlayer && spotlight.gameObject.name == "player_light") { Debug.Log("IN CONE? " + inCone); }
         if (isPlayer && this.gameObject.tag == "Shadower") { return inCone; }//fl effect on shadowers have no range
         return inRange && inCone;
     }

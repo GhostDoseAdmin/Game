@@ -202,14 +202,14 @@ public class NetworkDriver : MonoBehaviour
                 
                 //if (enemy.GetComponent<NPCController>().target!=null)
                 {
-                    if (Vector3.Distance(targPos, enemy.transform.position) >5)
+                    if (Vector3.Distance(targPos, enemy.transform.position) >5 && enemy.GetComponent<Teleport>().teleport==0)
                     {
                         enemy.transform.position = targPos;
                     }
                 }
                 //if (targPos != null)
                 {
-                    if (float.Parse(dict["teleport"]) == 1) { enemy.transform.position = targPos; }
+                    //if (float.Parse(dict["teleport"]) == 1) { enemy.transform.position = targPos; }
                     if (float.Parse(dict["teleport"]) == 3 && enemy.GetComponent<Teleport>().teleport == 1.5) { enemy.transform.position = targPos; }
                 }
                 //if (enemy.GetComponent<NPCController>().target != null) { enemy.transform.position = ((enemy.GetComponent<NPCController>().target.position - enemy.transform.position).normalized) * 0.25f; }

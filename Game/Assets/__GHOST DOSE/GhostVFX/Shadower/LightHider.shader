@@ -5,6 +5,7 @@ Shader "Custom/Shadower" {
         _Glossiness("Smoothness", Range(0,1)) = 0.5
         _Metallic("Metallic", Range(0,1)) = 0.0
         _MaxDistance("Max Distance", Float) = 10
+        _Alpha("AlphaLimit", Range(0,1)) = 1
     }
         SubShader{
             Tags { "RenderType" = "Transparent" "Queue" = "Transparent" }
@@ -27,6 +28,7 @@ Shader "Custom/Shadower" {
 
             half _Glossiness;
             half _Metallic;
+            half _Alpha;
             fixed4 _Color;
             float _MaxDistance;
             //PLAYER LIGHT
@@ -114,7 +116,7 @@ Shader "Custom/Shadower" {
                 o.Emission = c.rgb * c.a * strength *0.3; //* strength
                 o.Metallic = _Metallic;
                 o.Smoothness = _Glossiness;
-                o.Alpha = alphaStrength * alphaStrengthPlayers * c.a;
+                o.Alpha = alphaStrength * alphaStrengthPlayers * c.a * _Alpha;
             }
             ENDCG
         }
