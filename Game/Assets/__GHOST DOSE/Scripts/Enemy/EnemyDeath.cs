@@ -1,14 +1,18 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using static UnityEngine.ParticleSystem;
 
 
 public class EnemyDeath : MonoBehaviour
 {
 
     public GameObject effect;
+    public GameObject effect_Shadower;
     public GameObject explo;
+    public GameObject explo_Shadower;
     public GameObject light;
+    public bool Shadower;
     private bool end;
 
 
@@ -19,6 +23,9 @@ public class EnemyDeath : MonoBehaviour
     {
         Invoke("Explode", 2f);
         end = false;
+
+        if(Shadower) {              effect_Shadower.SetActive(true);   DestroyImmediate(light);      }
+        else        {            effect.SetActive(true);        }
     }
 
     public void Update()
@@ -32,7 +39,9 @@ public class EnemyDeath : MonoBehaviour
 
     private void Explode()
     {
-        explo.SetActive(true);
+        if (Shadower) { explo_Shadower.SetActive(true); }
+        else { explo.SetActive(true); }
+
         Invoke("Finish", 1f);
         Invoke("StopMesh", 0.5f);
 

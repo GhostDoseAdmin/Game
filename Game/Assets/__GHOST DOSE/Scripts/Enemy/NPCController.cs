@@ -23,6 +23,7 @@ public class NPCController : MonoBehaviour
 
     [Header("ENEMY PARAMETRS")]
     [Space(10)]
+    public bool Shadower;
     public int healthEnemy = 100;
     public int range;
     [HideInInspector] public int startRange;
@@ -66,6 +67,12 @@ public class NPCController : MonoBehaviour
     
     [HideInInspector] public Vector3 clientWaypointDest;
     private float minDist = 0.03f; //debug enemy rotation when ontop of player
+
+    private void Awake()
+    {
+        GetComponent<GhostVFX>().Shadower = Shadower;
+    }
+
 
     void Start()
     {
@@ -448,7 +455,10 @@ public class NPCController : MonoBehaviour
             if (GD.ND.HOST) { GetComponent<Teleport>().Invoke("Respawn", spawnTimer); }
 
             this.gameObject.transform.GetChild(0).GetComponent<SkinnedMeshRenderer>().enabled = false;
-            Instantiate(Death, transform.position, transform.rotation);
+            GameObject death = Instantiate(Death, transform.position, transform.rotation);
+            if (Shadower) { death.GetComponent<GhostVFX>().Shadower = true; death.GetComponent<EnemyDeath>().Shadower = true; }
+
+
         }
         else
         {

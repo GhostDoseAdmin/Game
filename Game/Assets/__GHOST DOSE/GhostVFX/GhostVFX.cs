@@ -10,7 +10,7 @@ using UnityEngine;
 public class GhostVFX : MonoBehaviour
 {
 
-    public bool Shadower;
+    [HideInInspector] public bool Shadower;
     [HideInInspector] public GameObject PlayerLight;
     [HideInInspector] public GameObject ClientLight;
     private GameObject skin;
@@ -59,7 +59,8 @@ public class GhostVFX : MonoBehaviour
             if (GameObject.Find("CamFlashClient") != null) { PlayerLight = GameObject.Find("CamFlashClient"); }
         }
         visibilitySet = false;
-        if (death) { PlayerLight = GetComponent<EnemyDeath>().light; }
+        //-------------------DEATH CHANGES-----------------------------
+        if (death) { if (gameObject.tag != "Shadower") { PlayerLight = GetComponent<EnemyDeath>().light; } else { inShadow = true; }  }
         //if (PlayerLight != null && ClientLight != null)
         {
 
@@ -174,6 +175,7 @@ public class GhostVFX : MonoBehaviour
             }
 
             //-------------SET TOTAL ALPHA--------------------------------
+            if (death) { visible = true; visibilitySet = true; Fade(true, 0.5f, 1); }
             invisible = false;
             if (!death)
             {
