@@ -7,6 +7,7 @@ Shader "Custom/Ghost" {
         _MaxDistance("Max Distance", Float) = 10
         _Emission("Emission", Range(0,1)) = 1
         _Alpha("Alpha", Range(0,1)) = 1
+        _Shadower("Shadower", Range(0,1)) = 0
 
     }
         SubShader{
@@ -33,6 +34,7 @@ Shader "Custom/Ghost" {
             half _Metallic;
             half _Emission;
             half _Alpha;
+            half _Shadower;
             half _ProximityAlpha;
             fixed4 _Color;
             float _MaxDistance;
@@ -110,6 +112,7 @@ Shader "Custom/Ghost" {
                 strength1 = 1 - (1 - strength1);//flashlight strength 
                 if (distance1 > _PlayerLightRange) {
                     strength1 = 1;//invis
+                    if (_Shadower==1) { strength1 = 0; }
                 }
                 if (distance1 < 5) {//proximity strength
                     strength1 *= smoothstep(0, 3, distance1);
@@ -125,6 +128,7 @@ Shader "Custom/Ghost" {
                 strength2 = 1 - (1 - strength2);//flashlight strength
                 if (distance2 > _ClientLightRange) {
                     strength2 = 1;
+                    if (_Shadower==1) { strength2 = 0; }
                 }
                 if (distance2 < 5) {//proximity strength
                     strength2 *= smoothstep(0, 3, distance2);
@@ -139,8 +143,12 @@ Shader "Custom/Ghost" {
 
                 float total_alpha = (1 - (alphaStrength * alphaStrengthPlayers)) * c.a;
 
+                if (_Shadower==1) { 
+                    c.rgb = 1.0 - c.rgb;//invert color
+                    total_alpha = alphaStrength * alphaStrengthPlayers * c.a; 
+                }
 
-                c.rgb = 1.0 - c.rgb;
+                if (_Shadower == 1) { }
                 o.Albedo = c.rgb;
                 o.Emission = c.rgb * c.a * _Emission;
                 o.Metallic = _Metallic;

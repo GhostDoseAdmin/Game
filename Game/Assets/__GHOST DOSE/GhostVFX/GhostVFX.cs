@@ -10,13 +10,13 @@ using UnityEngine;
 public class GhostVFX : MonoBehaviour
 {
 
-
-    public GameObject PlayerLight;
-    public GameObject ClientLight;
+    public bool Shadower;
+    [HideInInspector] public GameObject PlayerLight;
+    [HideInInspector] public GameObject ClientLight;
     private GameObject skin;
     Light[] envLights;
     private GameDriver GD;
-    public List<Light> LightSources;
+    [HideInInspector] public List<Light> LightSources;
     List<float> originalMaxAlpha = new List<float>(); //affects total alpha
     List<float> currentMaxAlpha = new List<float>();
     public bool visible; //USD IN CONJUNCTION WITH PLAY AIM RAYCAST
@@ -44,6 +44,7 @@ public class GhostVFX : MonoBehaviour
             float alphaValue = material.GetFloat("_Alpha");
             originalMaxAlpha.Add(alphaValue);
             currentMaxAlpha.Add(alphaValue);
+            if(Shadower) { gameObject.tag = "Shadower"; HEAD.tag = "Shadower"; material.SetInt("_Shadower", 1); }
         }
     }
 

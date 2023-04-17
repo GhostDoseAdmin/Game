@@ -8,6 +8,7 @@ Shader "Custom/GhostAlphaCutoff" {
         _Emission("Emission", Range(0,1)) = 1
         _Alpha("Alpha", Range(0,1)) = 1
         _MinDistance("Minimum Distance", Range(0,2)) = 1.3
+        _Shadower("Shadower", Range(0,1)) = 0
 
     }
         SubShader{
@@ -35,6 +36,7 @@ Shader "Custom/GhostAlphaCutoff" {
             half _YOffset;
             half _Alpha;
             half _MinDistance;
+            half _Shadower;
             fixed4 _Color;
             float _MaxDistance;
             //PLAYER LIGHT
@@ -109,6 +111,7 @@ Shader "Custom/GhostAlphaCutoff" {
                 strength1 = 1 - (1 - strength1);
                 if (distance1 > _PlayerLightRange) {
                     strength1 = 1;
+                    if (_Shadower==1) { strength1 = 0; }
                 }
                 if (distance1 < _MinDistance) {
                     strength1 = (distance1 - 1) * 0.1;
@@ -124,6 +127,7 @@ Shader "Custom/GhostAlphaCutoff" {
                 strength2 = 1 - (1 - strength2);
                 if (distance2 > _ClientLightRange) {
                     strength2 = 1;
+                    if (_Shadower==1) { strength2 = 0; }
                 }
                 if (distance2 < _MinDistance) {
                     strength2 = (distance2 - 1) * 0.1;
@@ -138,12 +142,14 @@ Shader "Custom/GhostAlphaCutoff" {
 
                 //ALPHA CUTOFF -- only render pixels that are more visible
                 float total_alpha = (1 - (alphaStrength * alphaStrengthPlayers)) * c.a * _Alpha; //
+                if (_Shadower == 1) { total_alpha = alphaStrength * alphaStrengthPlayers * c.a * _Alpha; }
+
                 if (total_alpha < 1) {//dont render the pixels
                     discard;
                     return;
                 }
 
-                c.rgb = 1.0 - c.rgb;
+                if (_Shadower = 1) { c.rgb = 1.0 - c.rgb; }
                 o.Albedo = c.rgb;
                 o.Emission = c.rgb * c.a * _Emission;
                 o.Metallic = _Metallic;
