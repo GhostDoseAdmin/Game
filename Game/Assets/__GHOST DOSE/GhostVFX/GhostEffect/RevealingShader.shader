@@ -110,9 +110,9 @@ Shader "Custom/Ghost" {
                 float strength1 = scale1 - cos(_PlayerLightAngle * (3.14 / 360.0));
                 strength1 = abs(1 - min(max(strength1 * _PlayerStrengthScalarLight, 0), 1));
                 strength1 = 1 - (1 - strength1);//flashlight strength 
-                if (distance1 > _PlayerLightRange) {
+                if (distance1 > _PlayerLightRange && _Shadower==0) {
                     strength1 = 1;//invis
-                    if (_Shadower==1) { strength1 = 0; }
+                  //  if (_Shadower==1) { strength1 = 0; }
                 }
                 if (distance1 < 5) {//proximity strength
                     strength1 *= smoothstep(0, 3, distance1);
@@ -126,9 +126,9 @@ Shader "Custom/Ghost" {
                 float strength2 = scale2 - cos(_ClientLightAngle * (3.14 / 360.0));
                 strength2 = abs(1 - min(max(strength2 * _ClientStrengthScalarLight, 0), 1));
                 strength2 = 1 - (1 - strength2);//flashlight strength
-                if (distance2 > _ClientLightRange) {
+                if (distance2 > _ClientLightRange && _Shadower==0) {
                     strength2 = 1;
-                    if (_Shadower==1) { strength2 = 0; }
+                   // if (_Shadower==1) { strength2 = 0; }
                 }
                 if (distance2 < 5) {//proximity strength
                     strength2 *= smoothstep(0, 3, distance2);

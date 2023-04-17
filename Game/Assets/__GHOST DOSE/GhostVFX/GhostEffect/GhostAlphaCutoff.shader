@@ -109,9 +109,9 @@ Shader "Custom/GhostAlphaCutoff" {
                 float strength1 = scale1 - cos(_PlayerLightAngle * (3.14 / 360.0));
                 strength1 = abs(1 - min(max(strength1 * _PlayerStrengthScalarLight, 0), 1));
                 strength1 = 1 - (1 - strength1);
-                if (distance1 > _PlayerLightRange) {
+                if (distance1 > _PlayerLightRange && _Shadower==0) {
                     strength1 = 1;
-                    if (_Shadower==1) { strength1 = 0; }
+                   // if (_Shadower==1) { strength1 = 0; }
                 }
                 if (distance1 < _MinDistance) {
                     strength1 = (distance1 - 1) * 0.1;
@@ -125,9 +125,9 @@ Shader "Custom/GhostAlphaCutoff" {
                 float strength2 = scale2 - cos(_ClientLightAngle * (3.14 / 360.0));
                 strength2 = abs(1 - min(max(strength2 * _ClientStrengthScalarLight, 0), 1));
                 strength2 = 1 - (1 - strength2);
-                if (distance2 > _ClientLightRange) {
+                if (distance2 > _ClientLightRange && _Shadower == 0) {
                     strength2 = 1;
-                    if (_Shadower==1) { strength2 = 0; }
+                   // if (_Shadower==1) { strength2 = 0; }
                 }
                 if (distance2 < _MinDistance) {
                     strength2 = (distance2 - 1) * 0.1;
