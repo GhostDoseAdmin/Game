@@ -148,7 +148,6 @@ Shader "Custom/Ghost" {
                     total_alpha = alphaStrength * alphaStrengthPlayers * c.a; 
                 }
 
-                if (_Shadower == 1) { }
                 o.Albedo = c.rgb;
                 o.Emission = c.rgb * c.a * _Emission;
                 o.Metallic = _Metallic;

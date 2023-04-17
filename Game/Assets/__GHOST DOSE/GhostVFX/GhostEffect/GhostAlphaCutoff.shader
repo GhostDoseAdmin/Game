@@ -149,7 +149,7 @@ Shader "Custom/GhostAlphaCutoff" {
                     return;
                 }
 
-                if (_Shadower = 1) { c.rgb = 1.0 - c.rgb; }
+                if (_Shadower == 1) { c.rgb = 1.0 - c.rgb; }
                 o.Albedo = c.rgb;
                 o.Emission = c.rgb * c.a * _Emission;
                 o.Metallic = _Metallic;

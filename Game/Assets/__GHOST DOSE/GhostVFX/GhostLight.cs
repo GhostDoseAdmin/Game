@@ -3,8 +3,11 @@ using System.Collections;
 
 public class GhostLight : MonoBehaviour
 {
-    public bool ghost;
-    public bool shadower;
+    public bool show_Ghost;
+    public bool show_Shadowers;
+
+    [HideInInspector] public bool ghost;
+    [HideInInspector] public bool shadower;
     public bool flicker;
 
     public float flickerDuration = 0.1f; // duration of each flicker in seconds
@@ -12,6 +15,7 @@ public class GhostLight : MonoBehaviour
     public float maxDelay = 0.5f; // maximum delay between flickers in seconds
     private Light lightComponent; // reference to the Light component
     private float originalSpotAngle; // original spot angle of the light
+
 
     private void Start()
     {
@@ -36,6 +40,9 @@ public class GhostLight : MonoBehaviour
 
     private void Update()
     {
+        ghost = show_Ghost;
+        shadower = !show_Shadowers;
+
         // check if it's time to flicker the light
         if (Random.Range(0f, 1f) < Time.deltaTime / Random.Range(minDelay, maxDelay))
         {
