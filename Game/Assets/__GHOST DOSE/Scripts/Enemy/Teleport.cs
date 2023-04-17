@@ -19,7 +19,7 @@ public class Teleport : MonoBehaviour
 
     private float fadeTimer = 0;
     private float timer = 0.0f;
-    private float delay = 2.0f; //relocate interval
+    private float delay = 4.0f; //relocate interval / musta llow time to fade
     private int relocate = 0;
     private bool canTeleport = true;
     public bool debugAttack;//resets attack ani state for client as would get stuck after restarting animator 
@@ -47,6 +47,7 @@ public class Teleport : MonoBehaviour
                 canTeleport = false;
                 isWaypoint = WayPoints;
                 DEATH = death;
+  
             }
         }
     }
@@ -109,7 +110,7 @@ public class Teleport : MonoBehaviour
                 {
                     Vector2 randomDirection = Random.insideUnitCircle;
                     float randomDistance = Random.Range(minRadius, maxRadius);
-                    Vector3 randomOffset = new Vector3(randomDirection.x, 0.0f, randomDirection.y) * randomDistance;
+                    Vector3 randomOffset = new Vector3(randomDirection.x, 0f, randomDirection.y) * randomDistance;//MAKE SURE SLIGHTLY ELEVATED
                     transform.position = target.position + randomOffset;
                 }
                 else//USE WAYPOINTS
@@ -123,7 +124,7 @@ public class Teleport : MonoBehaviour
                 timer = Time.time;
             }
             //--REAPPEAR--
-            if(GetComponent<GhostVFX>().invisible && !GetComponent<GhostVFX>().visible && relocate>1 && !DEATH)
+            if(GetComponent<GhostVFX>().invisible && !GetComponent<GhostVFX>().visible && relocate>2 && !DEATH)
             {
                 teleport = 3;
             }

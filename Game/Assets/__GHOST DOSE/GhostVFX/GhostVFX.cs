@@ -14,11 +14,9 @@ public class GhostVFX : MonoBehaviour
     public GameObject PlayerLight;
     public GameObject ClientLight;
     private GameObject skin;
-    GameObject[] envLights;
-    private GameObject EnvLight;
+    Light[] envLights;
     private GameDriver GD;
     public List<Light> LightSources;
-    private string shader;
     List<float> originalMaxAlpha = new List<float>(); //affects total alpha
     List<float> currentMaxAlpha = new List<float>();
     public bool visible; //USD IN CONJUNCTION WITH PLAY AIM RAYCAST
@@ -27,6 +25,7 @@ public class GhostVFX : MonoBehaviour
     //public int invisibleCounter;
     public GameObject HEAD;
     public bool death;
+    private bool visibilitySet;
 
 
 
@@ -58,20 +57,29 @@ public class GhostVFX : MonoBehaviour
             if (GameObject.Find("CamFlashPlayer") != null) { PlayerLight = GameObject.Find("CamFlashPlayer"); }
             if (GameObject.Find("CamFlashClient") != null) { PlayerLight = GameObject.Find("CamFlashClient"); }
         }
-
+        visibilitySet = false;
         if (death) { PlayerLight = GetComponent<EnemyDeath>().light; }
         //if (PlayerLight != null && ClientLight != null)
         {
 
             // if (shader == "Custom/Ghost") { envLights = GameObject.FindGameObjectsWithTag("GhostLight"); }
             //else { envLights = GameObject.FindGameObjectsWithTag("ShadowerLight"); }
+            envLights = new Light[0];
+            GhostLight[] ghostLights = FindObjectsOfType<GhostLight>();
+            List<Light> lights = new List<Light>();
+            foreach (GhostLight ghostLight in ghostLights)
+            {
+                if ((ghostLight.ghost && this.gameObject.tag == "Ghost") || (ghostLight.shadower && this.gameObject.tag == "Shadower"))
+                {
+                    Light light = ghostLight.GetComponent<Light>();
+                    if (light != null)
+                    {
+                        lights.Add(light);
+                    }
+                }
+            }
+            envLights = lights.ToArray();
 
-            if (this.gameObject.tag == "Ghost") { envLights = GameObject.FindGameObjectsWithTag("GhostLight"); }
-            else { envLights = GameObject.FindGameObjectsWithTag("ShadowerLight"); }
-
-            //DEFAULT VISIBLIITY
-           if (this.gameObject.tag == "Ghost") { visible = false;  }
-           else { visible = true; }
 
             Light lightSource;
 
@@ -111,6 +119,7 @@ public class GhostVFX : MonoBehaviour
 
             //SHADOW OVERRIDES ENVIRONMENT LIGHTS
             if (inShadow) {
+                visibilitySet = true;
                 if (this.gameObject.tag == "Ghost") { visible = false;  } else { visible = true; }
             }
 
@@ -124,7 +133,7 @@ public class GhostVFX : MonoBehaviour
                 //FLASHLIGHT OVERRIDES SHADOW AND ENVIORNMENT
                 else if (IsObjectInLightCone(lightSource, true))//directly under light source
                 {
-                    if (this.gameObject.tag == "Ghost") { visible = true; } else { visible = false;  }
+                    if (this.gameObject.tag == "Ghost") { visible = true; visibilitySet = true; } else { visible = false; visibilitySet = true; }
                 } 
             }
             foreach (Material material in skin.GetComponent<SkinnedMeshRenderer>().materials)
@@ -145,7 +154,7 @@ public class GhostVFX : MonoBehaviour
                 //FLASHLIGHT OVERRIDES SHADOW AND ENVIORNMENT
                 else if(IsObjectInLightCone(lightSource, true))//directly under light source
                 {
-                    if (this.gameObject.tag == "Ghost") { visible = true; } else { visible = false;  }
+                    if (this.gameObject.tag == "Ghost") { visible = true; visibilitySet = true; } else { visible = false; visibilitySet = true; }
                 }
             }
             foreach (Material material in skin.GetComponent<SkinnedMeshRenderer>().materials)
@@ -160,7 +169,7 @@ public class GhostVFX : MonoBehaviour
             //--------------VISIBLE IF CLOSE ----------------
              if(Vector3.Distance(PlayerLight.gameObject.transform.position, this.transform.position)<2 || Vector3.Distance(ClientLight.gameObject.transform.position, this.transform.position) < 2)
             {
-               visible = true;
+               visible = true; visibilitySet = true; //if (GetComponent<Teleport>().teleport == 0) { }
             }
 
             //-------------SET TOTAL ALPHA--------------------------------
@@ -182,14 +191,20 @@ public class GhostVFX : MonoBehaviour
                 }
             }
 
+            //DEFAULT VISIBLIITY
+            if (!visibilitySet)
+            {
+                Debug.Log("---------------------DEFAULT----------------------------");
+                if (this.gameObject.tag == "Ghost") { visible = false; }
+                else { visible = true; }
+            }
+            //MANUAL ALPHA FADE BASED ON LIGHT MEASUREMENTS
 
-                //MANUAL ALPHA FADE BASED ON LIGHT MEASUREMENTS
+            //---TEST TRUE VISIBLIITY--debugs visible flickering / TRIGGERS DISAPPEAR
+            /*invisible = false;
+        if (!visible) { if (invisibleCounter < 15) { invisibleCounter++; } if (invisibleCounter == 15) { invisible = true; } }
+        else { invisibleCounter =0; }*/
 
-                //---TEST TRUE VISIBLIITY--debugs visible flickering / TRIGGERS DISAPPEAR
-                /*invisible = false;
-            if (!visible) { if (invisibleCounter < 15) { invisibleCounter++; } if (invisibleCounter == 15) { invisible = true; } }
-            else { invisibleCounter =0; }*/
-                
 
 
         }
@@ -202,13 +217,13 @@ public class GhostVFX : MonoBehaviour
         {
                 if (fadeIn)
                 {
-                    currentMaxAlpha[i] = Mathf.Lerp(currentMaxAlpha[i], originalMaxAlpha[i], Time.deltaTime * speed);
+                if (currentMaxAlpha[i] < originalMaxAlpha[i]) { currentMaxAlpha[i] = Mathf.Lerp(currentMaxAlpha[i], originalMaxAlpha[i], Time.deltaTime * speed); }
                // if (Mathf.Abs(currentMaxAlpha[i] - (originalMaxAlpha[i] * 0.5f)) < 0.1f) { fadeDone = true; }
 
                 }
                 else//FADE OUT
-                { 
-                    currentMaxAlpha[i] = Mathf.Lerp(currentMaxAlpha[i], currentMaxAlpha[i]*0.5f * fadeOutLimit, Time.deltaTime * speed);
+                {
+                if (currentMaxAlpha[i] > 0.01) { currentMaxAlpha[i] = Mathf.Lerp(currentMaxAlpha[i], currentMaxAlpha[i] * 0.5f * fadeOutLimit, Time.deltaTime * speed); }
                 if (Mathf.Abs(currentMaxAlpha[i] - 0.1f) < 0.1f) {
                     invisible = true; 
                 }
@@ -220,7 +235,7 @@ public class GhostVFX : MonoBehaviour
     }
 
 
-    private void IsVisible(GameObject[] lights)
+    private void IsVisible(Light[] lights)
     {
         Light closestLight = null;
         float closestDistance = Mathf.Infinity;
@@ -238,16 +253,17 @@ public class GhostVFX : MonoBehaviour
         }
         if (closestLight != null)
         {
-            if(InLineOfSight(closestLight.GetComponent<Light>(), false))
+            
+            if (InLineOfSight(closestLight.GetComponent<Light>(), false))
             {
-                
+                visibilitySet = true;
                 if (this.gameObject.tag == "Ghost") { visible = true; }
-                else { visible = false;} // shadower
+                else { visible = false; } // shadower 
             }
             else
             {
-                if (this.gameObject.tag == "Ghost") { visible = false; }
-                else { visible = true; } // shadower
+               // if (this.gameObject.tag == "Ghost") { visible = false; }
+               // else { visible = true; Debug.Log(closestLight + " NOT IN LINE OF SIGHT "); } // shadower
             }
 
         }
@@ -269,7 +285,7 @@ public class GhostVFX : MonoBehaviour
         //if (Physics.Raycast(ray, out hit, Mathf.Infinity, mask.value))
         if(Physics.Linecast(light.transform.position, endPoint, out hit, mask.value))
         {
-            //Debug.Log("COLLIDNG WITH " + light.gameObject.name + "         " + hit.collider.gameObject.name);
+            Debug.Log("COLLIDNG WITH " + light.gameObject.name + "         " + hit.collider.gameObject.name);
             //if (light.gameObject == PlayerLight) { Debug.Log("COLLIDNG WITH " + hit.collider.gameObject.name); }
             if (hit.collider.transform.root.gameObject == this.gameObject)
             {

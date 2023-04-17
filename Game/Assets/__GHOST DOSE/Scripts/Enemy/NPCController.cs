@@ -38,9 +38,11 @@ public class NPCController : MonoBehaviour
     [Header("TESTING")]
     [Space(10)]
     public bool canAttack = true;
+    public bool agro = true;//HAUNTS THE PLAYER
+    public Transform target;
 
     //public Transform player;
-    [HideInInspector] public Transform target;
+
     [HideInInspector] private Transform head;
     [HideInInspector] public Animator animEnemy;
     [HideInInspector] public NavMeshAgent navmesh;
@@ -61,7 +63,7 @@ public class NPCController : MonoBehaviour
     [HideInInspector] public bool playerJoined;
     
     
-    [HideInInspector] public bool agro = true;//HAUNTS THE PLAYER
+    
     [HideInInspector] public Vector3 clientWaypointDest;
     private float minDist = 0.03f; //debug enemy rotation when ontop of player
 
@@ -243,8 +245,8 @@ public class NPCController : MonoBehaviour
 
                 }
                 navmesh.isStopped = false;
-                animEnemy.SetBool("Run", true);
-               // if(GetComponent<GhostVFX>().invisible) { animEnemy.SetBool("Run", false); animEnemy.SetBool("walk", true); }
+                if (!GetComponent<GhostVFX>().invisible) { animEnemy.SetBool("Run", true); }
+                //if(GetComponent<GhostVFX>().invisible) { animEnemy.SetBool("Run", false); animEnemy.SetBool("walk", true); }
                 animEnemy.SetBool("Attack", false);
                 if (distance > minDist) { transform.LookAt(targetPlayer); }
             }
@@ -264,8 +266,8 @@ public class NPCController : MonoBehaviour
 
                 }
                 navmesh.isStopped = true;
-                animEnemy.SetBool("Run", false);
-               // animEnemy.SetBool("Walk", false);
+                if (!GetComponent<GhostVFX>().invisible) { animEnemy.SetBool("Run", true); }
+                // animEnemy.SetBool("Walk", false);
                 //TURN TO TARGET
                 if (distance > minDist)
                 {

@@ -3,8 +3,9 @@ using System.Collections;
 
 public class GhostLight : MonoBehaviour
 {
-    public bool Ghost;
-    public bool Shadower;
+    public bool ghost;
+    public bool shadower;
+    public bool flicker;
 
     public float flickerDuration = 0.1f; // duration of each flicker in seconds
     public float minDelay = 0.1f; // minimum delay between flickers in seconds
@@ -39,7 +40,7 @@ public class GhostLight : MonoBehaviour
         if (Random.Range(0f, 1f) < Time.deltaTime / Random.Range(minDelay, maxDelay))
         {
             // start the flicker coroutine
-            StartCoroutine(Flicker());
+            if (flicker) { StartCoroutine(Flicker()); }
         }
     }
 }

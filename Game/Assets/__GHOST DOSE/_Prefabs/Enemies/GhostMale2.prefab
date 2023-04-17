@@ -729,7 +729,7 @@ GameObject:
   - component: {fileID: 2910643322322174257}
   - component: {fileID: 2910643322322174256}
   - component: {fileID: 2910643322322174259}
-  m_Layer: 0
+  m_Layer: 9
   m_Name: EnHitCollider
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -974,7 +974,6 @@ MonoBehaviour:
   SKEL_ROOT: {fileID: 7248935093206049398}
   HIT_COL: {fileID: 2910643322322174258}
   Death: {fileID: 793403660494855008, guid: 53820545ee83f6143b2d2e90e0e3425a, type: 3}
-  knife: KnifeAttackEnemy
   healthEnemy: 100
   range: 3
   startRange: 0
@@ -987,6 +986,7 @@ MonoBehaviour:
   damage: 50
   startHealth: 0
   canAttack: 1
+  agro: 0
   target: {fileID: 0}
   animEnemy: {fileID: 0}
   navmesh: {fileID: 0}
@@ -996,7 +996,6 @@ MonoBehaviour:
   truePosition: {x: 0, y: 0, z: 0}
   attacking: 0
   playerJoined: 0
-  agro: 0
   clientWaypointDest: {x: 0, y: 0, z: 0}
 --- !u!114 &2910643322487040404
 MonoBehaviour:
@@ -1016,7 +1015,6 @@ MonoBehaviour:
   visible: 0
   inShadow: 0
   invisible: 1
-  invisibleCounter: 0
   HEAD: {fileID: 926401283261955864}
   death: 0
 --- !u!114 &2910643322487040407

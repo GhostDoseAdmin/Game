@@ -202,7 +202,7 @@ public class PlayerController : MonoBehaviour
         //currentAni = anim.GetCurrentAnimatorClipInfo(0)[0].clip.name;
         //AnimatorClipInfo[] clipInfo = anim.GetCurrentAnimatorClipInfo(0);
         //string animName = anim.GetCurrentAnimatorClipInfo(0)[0].clip.name;
-        Debug.Log(" ANIMATION " + GetComponent<Animator>().GetCurrentAnimatorClipInfo(0)[0].clip.name);
+        //Debug.Log(" ANIMATION " + GetComponent<Animator>().GetCurrentAnimatorClipInfo(0)[0].clip.name);
 
         if (walk != 0 || strafe != 0 || is_FlashlightAim == true || gearAim == true || CameraType.FPS == cameraController.cameraType)
         {
