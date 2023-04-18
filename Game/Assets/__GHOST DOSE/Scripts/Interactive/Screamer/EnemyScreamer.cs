@@ -18,7 +18,7 @@ public class EnemyScreamer : Item
         this.gameObject.SetActive(false);
     }
 
-    public override void ActivateObject()
+    public override void ActivateObject(bool otherPlayer)
     {
         this.ScreamerGhost();
     }

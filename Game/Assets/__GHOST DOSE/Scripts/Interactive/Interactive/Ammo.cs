@@ -9,7 +9,7 @@ public class Ammo : Item
     [Space(10)]
     [SerializeField] private int countCartridges;
 
-    public override void ActivateObject()
+    public override void ActivateObject(bool otherPlayer)
     {
         ShootingSystem.instance.CollectCartridges(this.countCartridges);
         this.DestroyObject(0);

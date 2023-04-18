@@ -2,12 +2,13 @@ using Newtonsoft.Json;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using NetworkSystem;
 
 public class Spawner : MonoBehaviour
 {
     public GameObject[] enemies;
 
-    private NetworkDriver ND;
+    //private NetworkDriver ND;
 
     private float spawnX;
     private float spawnY;
@@ -16,12 +17,12 @@ public class Spawner : MonoBehaviour
     {
         // Call SpawnPrefab() method every 5 seconds
         InvokeRepeating("SpawnPrefab", 0f, 5f);
-        ND = GameObject.Find("GameController").GetComponent<GameDriver>().ND;
+        //ND = GameObject.Find("GameController").GetComponent<GameDriver>().ND;
     }
 
     void SpawnPrefab()
     {
-        if (ND.HOST)
+        if (NetworkDriver.instance.HOST)
         {
             //choose enemy
             int randomEnemy = Random.Range(0, enemies.Length); ;//Random.Range(0, enemies.Length);
@@ -44,7 +45,7 @@ public class Spawner : MonoBehaviour
                 Debug.LogWarning("SPAWN " + spawnPos);
 
                 string emitCmd = $"{{'index':'{randomEnemy}','name':'{enemy.name}',x:{spawnPos.x.ToString("F2")},y:{spawnPos.y.ToString("F2")},z:{spawnPos.z.ToString("F2")}}}";
-                ND.sioCom.Instance.Emit("create", JsonConvert.SerializeObject(emitCmd), false);
+                NetworkDriver.instance.sioCom.Instance.Emit("create", JsonConvert.SerializeObject(emitCmd), false);
                 
             }
     }

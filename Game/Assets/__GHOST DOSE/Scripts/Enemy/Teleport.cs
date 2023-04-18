@@ -1,6 +1,6 @@
 using System.Collections;
-using System.Collections.Generic;
-using Unity.VisualScripting;
+using GameManager;
+using NetworkSystem;
 using UnityEngine;
 using UnityEngine.AI;
 using UnityEngine.InputSystem.Controls;
@@ -55,7 +55,7 @@ public class Teleport : MonoBehaviour
     private void Update()
     {
         //---------------AGRO----------------------
-        if (GetComponent<NPCController>().GD.ND.HOST)
+        if (NetworkDriver.instance.HOST)
         {
             if (GetComponent<NPCController>().agro && GetComponent<NPCController>().target != null)
             {
@@ -70,7 +70,7 @@ public class Teleport : MonoBehaviour
         {
             fadeTimer = Time.time;
             if (GetComponent<NPCController>().target != null) { target = GetComponent<NPCController>().target; }
-            if (!GetComponent<NPCController>().GD.ND.HOST) { GetComponent<NPCController>().enabled = false; }
+            if (!NetworkDriver.instance.HOST) { GetComponent<NPCController>().enabled = false; }
             debugAttack = true;
             GetComponent<NavMeshAgent>().enabled = false;
             GetComponent<Animator>().enabled = false;
@@ -87,13 +87,13 @@ public class Teleport : MonoBehaviour
                 Vector3 currPos = transform.position; 
                 currPos.y -= 0.07f; 
                 GetComponent<GhostVFX>().Fade(false, 8f, 0);
-                if (!GetComponent<NPCController>().GD.ND.HOST) { GetComponent<GhostVFX>().Fade(false, 16f, 0); }//client fade faster, prevent seeing them
+                if (!NetworkDriver.instance.HOST) { GetComponent<GhostVFX>().Fade(false, 16f, 0); }//client fade faster, prevent seeing them
                 transform.position = currPos;//descend
             }
             else//NEXT STEP
             {
                 this.gameObject.transform.GetChild(0).GetComponent<SkinnedMeshRenderer>().enabled = false;
-                if (GetComponent<NPCController>().GD.ND.HOST) { teleport = 2; }
+                if (NetworkDriver.instance.HOST) { teleport = 2; }
             }
         }
         //STEP 2 - RELOCATE
@@ -144,7 +144,7 @@ public class Teleport : MonoBehaviour
                 GetComponent<NPCController>().HIT_COL.GetComponent<SphereCollider>().isTrigger = false;
                 //GetComponent<NPCController>().target = target;
                 StartCoroutine(resetCanTeleport());
-                if (!GetComponent<NPCController>().GD.ND.HOST && GetComponent<NPCController>().healthEnemy<=0)
+                if (!NetworkDriver.instance.HOST && GetComponent<NPCController>().healthEnemy<=0)
                 {
                     Respawn();
                 }

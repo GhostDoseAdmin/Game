@@ -1,7 +1,6 @@
 ﻿using InteractionSystem;
 using UnityEngine;
-using System.Collections;
-using UnityEngine.UI;
+using GameManager;
 using Unity.VisualScripting;
 using UnityEditor;
 
@@ -87,7 +86,7 @@ public class ClientPlayerController : MonoBehaviour
 	public bool toggleFlashlight = false;//command sent from other player to turn on/off flashlight
 	public bool aim = false;
 	public bool triggerShoot;
-    private NetworkDriver ND;
+    //private NetworkDriver ND;
 	
 
     [Header("SHOOTING")]
@@ -105,10 +104,11 @@ public class ClientPlayerController : MonoBehaviour
 	public bool flashlighton =false;
     public GameObject currLight;//tracks current light source
 	public GameObject camFlash;
+    public GameObject death;
 
 	private static utilities util;
 
-    private bool flash;
+
     private void Awake()
     {
 
@@ -146,7 +146,7 @@ public class ClientPlayerController : MonoBehaviour
         Shell = util.FindChildObject(this.gameObject.transform, "Puff").GetComponent<ParticleSystem>();
 		GetComponent<ClientFlashlightSystem>().RigLights();
 
-        ND = GameObject.Find("GameController").GetComponent<GameDriver>().ND;
+        //ND = GameObject.Find("GameController").GetComponent<GameDriver>().ND;
 
         anim = GetComponent<Animator>();
     }
@@ -155,7 +155,7 @@ public class ClientPlayerController : MonoBehaviour
 
         private void FixedUpdate()
     {
-		if (!ND.gameObject.GetComponent<GameDriver>().twoPlayer){ return; }
+		if (!GameDriver.instance.twoPlayer){ return; }
 
 		//------------------------------------- M A I N ---------------------------------------------------
         targetPosVec = Vector3.Lerp(targetPosVec, targetPos.position, 0.1f);//0.1

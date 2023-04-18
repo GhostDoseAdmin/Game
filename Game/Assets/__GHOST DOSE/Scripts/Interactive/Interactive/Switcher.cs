@@ -25,7 +25,7 @@ public class Switcher : Item
         this.animator = GetComponent<Animator>();
     }
 
-    public override void ActivateObject()
+    public override void ActivateObject(bool otherPlayer)
     {
         this.ClickSwitch();
     }

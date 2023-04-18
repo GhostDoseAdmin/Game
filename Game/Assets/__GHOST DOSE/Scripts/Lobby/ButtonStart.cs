@@ -1,6 +1,8 @@
 using TMPro;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using GameManager;
+using NetworkSystem;
 
 public class ButtonStart : MonoBehaviour
 {
@@ -9,29 +11,29 @@ public class ButtonStart : MonoBehaviour
     {
         Debug.Log("CLICKING");
         //CHOOSING ROOM - go button
-        if (!GameObject.Find("GameController").GetComponent<GameDriver>().ROOM_VALID)
+        if (!GameDriver.instance.ROOM_VALID)
         {
             string room_text = GameObject.Find("InputField (TMP)").GetComponent<TMP_InputField>().text;
 
             if (room_text.Length > 1)
             {
-                GameObject.Find("GameController").GetComponent<GameDriver>().ROOM = room_text;
-                GameObject.Find("GameController").GetComponent<NetworkDriver>().connected = false;
-                GameObject.Find("GameController").GetComponent<NetworkDriver>().NetworkSetup();
+                GameDriver.instance.ROOM = room_text;
+                NetworkDriver.instance.connected = false;
+                NetworkDriver.instance.NetworkSetup();
 
             }
         }
         //CHOOSING BRO
         else
         {
-            if (GameObject.Find("GameController").GetComponent<GameDriver>().twoPlayer)
+            if (GameDriver.instance.twoPlayer)
             {
-                GameObject.Find("GameController").GetComponent<NetworkDriver>().sioCom.Instance.Emit("start", "true", true);
-                GameObject.Find("GameController").GetComponent<LobbyControl>().start = true;
+                NetworkDriver.instance.sioCom.Instance.Emit("start", "true", true);
+                GameDriver.instance.GetComponent<LobbyControl>().start = true;
                 gameObject.SetActive(false);
             }
             else {
-                GameObject.Find("GameController").GetComponent<LobbyControl>().NextScene();
+                GameDriver.instance.GetComponent<LobbyControl>().NextScene();
             }
 
             

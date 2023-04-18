@@ -3,7 +3,8 @@ using UnityEngine;
 using System.Collections;
 using System;
 using Newtonsoft.Json;
-using static UnityEngine.ParticleSystem;
+using GameManager;
+using NetworkSystem;
 
 public class LobbyControl : MonoBehaviour
 {

@@ -3,6 +3,9 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using GameManager;
+using NetworkSystem;
+using Newtonsoft.Json;
 
 public class HealthSystem : MonoBehaviour
 {
@@ -26,11 +29,11 @@ public class HealthSystem : MonoBehaviour
 	[SerializeField] private Text kitCountUI = null;
 	[SerializeField] private Image kitIndicator = null;
 	[SerializeField] private Image bloodEffect = null;
-	[SerializeField] private float healthPrecent;
+	public float healthPrecent;
 
 	[Header("PLAYER RAGDOLL")]
 	[Space(10)]
-	public GameObject ragdoll;
+	public GameObject death;
 	public GameObject cameraPlayer;
 	public static bool dead = false;
 	public bool deadPlayer = false;
@@ -88,8 +91,9 @@ public class HealthSystem : MonoBehaviour
 
 	void UpdateHealth()
     {
-		healthPrecent = (maxHealth - Health) / 100;
-		bloodEffect.color = new Color (255, 0, 0, healthPrecent);
+		healthPrecent = (1-(maxHealth - Health) / maxHealth);
+		healthLevel.fillAmount = healthPrecent;
+        bloodEffect.color = new Color (255, 0, 0, (1-healthPrecent));
 	}
 
 	void HealthPlayer()
@@ -102,7 +106,7 @@ public class HealthSystem : MonoBehaviour
 		if (Health < maxHealth)
 		{
 			Health += (restoringHealth / 10) * Time.deltaTime;
-			healthLevel.fillAmount += (restoringHealth / 1000) * Time.deltaTime;
+			//healthLevel.fillAmount += (restoringHealth / 1000) * Time.deltaTime;
 			UpdateHealth();
 		}
 
@@ -122,7 +126,7 @@ public class HealthSystem : MonoBehaviour
         GetComponent<Animator>().Play("Flinch", -1, 0f); //-1
 
         Health -= damage;
-		healthLevel.fillAmount -= damage * 0.01f;
+		//healthLevel.fillAmount -= damage * 0.01f;
 		UpdateHealth();
 	}
 
@@ -131,7 +135,7 @@ public class HealthSystem : MonoBehaviour
 		if (other.tag == "DamageBox")
 		{
 			Health -= (reducedHealth) * Time.deltaTime;
-			healthLevel.fillAmount -= ((reducedHealth / 100) * Time.deltaTime);
+			//healthLevel.fillAmount -= ((reducedHealth / 100) * Time.deltaTime);
 			UpdateHealth();
 		}
 	}
@@ -141,19 +145,21 @@ public class HealthSystem : MonoBehaviour
 		if (other.tag == "Damage")
 		{
 			Health -= reducedHealth;
-			healthLevel.fillAmount -= (reducedHealth / 100);
+			//healthLevel.fillAmount -= (reducedHealth / 100);
 			UpdateHealth();
 		}
 	}
 
 	public void Death()
 	{
-		gameObject.SetActive(false);
-		//cameraPlayer.SetActive(false);
-		Instantiate(ragdoll, transform.position, transform.rotation);
-		dead = true;
+
+		Instantiate(death, transform.position, transform.rotation);
+		if (GameDriver.instance.twoPlayer) { NetworkDriver.instance.sioCom.Instance.Emit("death", "death", true); }
+        //NetworkDriver.instance.sioCom.Instance.Emit("death", "death", true);
+        dead = true;
 		deadPlayer = true;
-	}
+        gameObject.SetActive(false);
+    }
 
 	void Treatment()
     {
@@ -169,7 +175,7 @@ public class HealthSystem : MonoBehaviour
 				kitCountUI.text = kitCount.ToString("0");
 				Health += maxHealth;
 				AudioManager.instance.Play(treatmentKit);
-				healthLevel.fillAmount = maxHealth;
+				//healthLevel.fillAmount = maxHealth;
 				replaceKitTimer = maxReplaceKitTimer;
 				kitIndicator.fillAmount = maxReplaceKitTimer;
 				UpdateHealth();

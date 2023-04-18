@@ -5,6 +5,7 @@ using System.Linq;
 using System.Net;
 using Unity.VisualScripting;
 using UnityEngine;
+using GameManager;
 
 //[ExecuteInEditMode]
 public class GhostVFX : MonoBehaviour
@@ -15,7 +16,7 @@ public class GhostVFX : MonoBehaviour
     [HideInInspector] public GameObject ClientLight;
     private GameObject skin;
     Light[] envLights;
-    private GameDriver GD;
+    //private GameDriver GD;
     [HideInInspector] public List<Light> LightSources;
     List<float> originalMaxAlpha = new List<float>(); //affects total alpha
     List<float> currentMaxAlpha = new List<float>();
@@ -34,7 +35,7 @@ public class GhostVFX : MonoBehaviour
 
     public void Start()
     {
-        GD = GameObject.Find("GameController").GetComponent<GameDriver>();
+       // GD = GameObject.Find("GameController").GetComponent<GameDriver>();
         skin = gameObject.transform.GetChild(0).gameObject;
 
         //-----STORE ORIGINAL ALPHA SETTINGS
@@ -52,8 +53,8 @@ public class GhostVFX : MonoBehaviour
     {
         if (Application.isPlaying)
         {
-            PlayerLight = GD.Player.GetComponent<PlayerController>().currLight;
-            ClientLight = GD.Client.GetComponent<ClientPlayerController>().currLight;
+            PlayerLight = GameDriver.instance.Player.GetComponent<PlayerController>().currLight;
+            ClientLight = GameDriver.instance.Client.GetComponent<ClientPlayerController>().currLight;
 
             if (GameObject.Find("CamFlashPlayer") != null) { PlayerLight = GameObject.Find("CamFlashPlayer"); }
             if (GameObject.Find("CamFlashClient") != null) { PlayerLight = GameObject.Find("CamFlashClient"); }
@@ -197,7 +198,7 @@ public class GhostVFX : MonoBehaviour
             //DEFAULT VISIBLIITY
             if (!visibilitySet)
             {
-                Debug.Log("---------------------DEFAULT----------------------------");
+                //Debug.Log("---------------------DEFAULT----------------------------");
                 if (this.gameObject.tag == "Ghost") { visible = false; }
                 else { visible = true; }
             }
@@ -288,7 +289,7 @@ public class GhostVFX : MonoBehaviour
         //if (Physics.Raycast(ray, out hit, Mathf.Infinity, mask.value))
         if(Physics.Linecast(light.transform.position, endPoint, out hit, mask.value))
         {
-            Debug.Log("COLLIDNG WITH " + light.gameObject.name + "         " + hit.collider.gameObject.name);
+            //Debug.Log("COLLIDNG WITH " + light.gameObject.name + "         " + hit.collider.gameObject.name);
             //if (light.gameObject == PlayerLight) { Debug.Log("COLLIDNG WITH " + hit.collider.gameObject.name); }
             if (hit.collider.transform.root.gameObject == this.gameObject)
             {

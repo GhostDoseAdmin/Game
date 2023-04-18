@@ -21,7 +21,7 @@ public class LampScreamer : Item
         audioLamp.Stop();
     }
 
-    public override void ActivateObject()
+    public override void ActivateObject(bool otherPlayer)
     {
         this.ScreamerLamp();
     }

@@ -1,11 +1,10 @@
+using GameManager;
 using InteractionSystem;
+using NetworkSystem;
 using Newtonsoft.Json;
-using System.Collections;
 using System.Collections.Generic;
-using System.Xml.Schema;
 using UnityEngine;
 using UnityEngine.AI;
-using UnityEngine.UIElements;
 
 public class NPCController : MonoBehaviour
 {
@@ -34,6 +33,7 @@ public class NPCController : MonoBehaviour
     public float disEngageRange;
     public float spawnTimer;
     public int damage;
+    public float force;
     [HideInInspector] public int startHealth;
 
     [Header("TESTING")]
@@ -49,7 +49,7 @@ public class NPCController : MonoBehaviour
     [HideInInspector] public NavMeshAgent navmesh;
 
     //NETWORK
-    [HideInInspector]public GameDriver GD;
+    //[HideInInspector]public GameDriver GD;
 
     [HideInInspector] public Transform targetPlayer;
     private GameObject Player;
@@ -76,9 +76,9 @@ public class NPCController : MonoBehaviour
 
     void Start()
     {
-        GD = GameObject.Find("GameController").GetComponent<GameDriver>();
-        Player = GameObject.Find("GameController").GetComponent<GameDriver>().Player;
-        Client = GameObject.Find("GameController").GetComponent<GameDriver>().Client;
+        //GD = GameObject.Find("GameController").GetComponent<GameDriver>();
+        Player = GameDriver.instance.Player;
+        Client = GameDriver.instance.Client;
 
         animEnemy = GetComponent<Animator>();
         navmesh = GetComponent<NavMeshAgent>();
@@ -105,10 +105,10 @@ public class NPCController : MonoBehaviour
 
         if (this.gameObject.activeSelf) { if (teleport == 0) { AI(); } }
 
-        if (GD.ND.HOST) { if (teleport == 0 && canAttack) { FindTargetRayCast(); } } //dtermines & finds target
+        if (NetworkDriver.instance.HOST) { if (teleport == 0 && canAttack) { FindTargetRayCast(); } } //dtermines & finds target
         
         //=================================== E M I T =============================================
-        if (GD.twoPlayer && GD.ND.HOST)
+        if (GameDriver.instance.twoPlayer && NetworkDriver.instance.HOST)
         {
             //actions = this.name + target + destination + attacking; 
             
@@ -124,7 +124,7 @@ public class NPCController : MonoBehaviour
             {
                 Debug.Log("--------------------------------SENDING PLAYER JOINED-----------------------------------" + playerJoined); 
                 send = $"{{'object':'{this.name}','dead':'false','Attack':'{attacking}','target':'{target}','teleport':'{teleChange}','curWayPoint':'{curWayPoint}','x':'{transform.position.x}','y':'{transform.position.y}','z':'{transform.position.z}','dx':'{destination.x}','dy':'{destination.y}','dz':'{destination.z}'}}";
-                    GD.ND.sioCom.Instance.Emit("enemy", JsonConvert.SerializeObject(send), false);
+                    NetworkDriver.instance.sioCom.Instance.Emit("enemy", JsonConvert.SerializeObject(send), false);
                
                 playerJoined = false;
                 prevActions = actions;
@@ -171,7 +171,7 @@ public class NPCController : MonoBehaviour
                     if (wayPoint.Count > curWayPoint)
                     {
 
-                        if (GD.ND.HOST) { destination = wayPoint[curWayPoint].position; navmesh.SetDestination(wayPoint[curWayPoint].position); }
+                        if (NetworkDriver.instance.HOST) { destination = wayPoint[curWayPoint].position; navmesh.SetDestination(wayPoint[curWayPoint].position); }
                         else { navmesh.SetDestination(clientWaypointDest); }
 
                         float distance = Vector3.Distance(transform.position, wayPoint[curWayPoint].position);
@@ -194,7 +194,7 @@ public class NPCController : MonoBehaviour
                 else if (wayPoint.Count == 1)
                 {
 
-                    if (GD.ND.HOST) { navmesh.SetDestination(wayPoint[0].position); destination = wayPoint[0].position; }
+                    if (NetworkDriver.instance.HOST) { navmesh.SetDestination(wayPoint[0].position); destination = wayPoint[0].position; }
                     else { navmesh.SetDestination(clientWaypointDest); }
 
                     float distance = Vector3.Distance(transform.position, wayPoint[curWayPoint].position);
@@ -225,13 +225,11 @@ public class NPCController : MonoBehaviour
         //MOVE TOWARDS TARGET
         navmesh.SetDestination(target.position);
         GetComponent<NavMeshAgent>().stoppingDistance = hitRange;
-
         float distance = Vector3.Distance(transform.position, target.position);
-       // Debug.Log("=-================================ ENEMY DISTANCE==================================" + distance);
-        //if(!ND.HOST) { distance -= 0.35f; }// IS THE DELAY FOR PLAYER ACTION EMITS 
 
-        //----------FOR HOST
-        if (GD.ND.HOST)
+
+        //------------------------------ H O S T ----------------------------------------
+        if (NetworkDriver.instance.HOST)
         {
             if (distance > disEngageRange && !agro)
             {
@@ -287,7 +285,7 @@ public class NPCController : MonoBehaviour
                 if (distance > minDist) { transform.LookAt(targetPlayer); }
             }
         }
-        else//---------FOR CLIENT
+        else//------------------------- C L I E N T  --------------------------------------------
         {
             targetPlayer = target;
             //RUN TO TARGET
@@ -335,23 +333,25 @@ public class NPCController : MonoBehaviour
             }
 
         }
-
-        if (target != null && GD.ND.HOST)
+        //---------------PLAYER DIES
+        if (target != null && NetworkDriver.instance.HOST)
         {
-            if (target == Player)
+            if (target.gameObject == Player)
             {
-                if (target.GetComponent<HealthSystem>().Health <= 0)
+                if (target.gameObject.GetComponent<HealthSystem>().Health <= 0 || !Player.activeSelf)
                 {
                     target = null;
                     navmesh.isStopped = false;
+                    agro = false;
                 }
             }
-            if (target == Client)
+            if (target.gameObject == Client)
             {
-                if (target.GetComponent<ClientPlayerController>().hp <= 0)
+                if (target.gameObject.GetComponent<ClientPlayerController>().hp <= 0 || !Client.activeSelf)
                 {
                     target = null;
                     navmesh.isStopped = false;
+                    agro = false;
                 }
             }
         }
@@ -443,16 +443,16 @@ public class NPCController : MonoBehaviour
 
         if (healthEnemy <= 0)
         {
-            if (GD.twoPlayer) //&& GD.ND.HOST
+            if (GameDriver.instance.twoPlayer) //&& GD.ND.HOST
             {
                 if(!otherPlayer)
                 {
                     send = $"{{'object':'{this.name}','dead':'true','Attack':'{attacking}','target':'{target}','teleport':'{0}','curWayPoint':'{curWayPoint}','x':'{transform.position.x}','y':'{transform.position.y}','z':'{transform.position.z}','dx':'{destination.x}','dy':'{destination.y}','dz':'{destination.z}'}}";
-                    GD.ND.sioCom.Instance.Emit("enemy", JsonConvert.SerializeObject(send), false);
+                    NetworkDriver.instance.sioCom.Instance.Emit("enemy", JsonConvert.SerializeObject(send), false);
                 }
             }
             GetComponent<Teleport>().CheckTeleport(true, true);
-            if (GD.ND.HOST) { GetComponent<Teleport>().Invoke("Respawn", spawnTimer); }
+            if (NetworkDriver.instance.HOST) { GetComponent<Teleport>().Invoke("Respawn", spawnTimer); }
 
             this.gameObject.transform.GetChild(0).GetComponent<SkinnedMeshRenderer>().enabled = false;
             GameObject death = Instantiate(Death, transform.position, transform.rotation);

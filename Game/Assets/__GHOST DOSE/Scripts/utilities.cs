@@ -8,9 +8,10 @@ public class utilities : MonoBehaviour
     // takes the object running the animator and disables-re enables it 
     public IEnumerator ReactivateAnimator(GameObject animatingObject)
     {
-        Debug.Log("Refreshing Animator");
+        Debug.Log("Deactivating Animator");
         animatingObject.SetActive(false);
         yield return new WaitForSeconds(0.001f);
+        Debug.Log("Reactivating Animator");
         animatingObject.SetActive(true);
 
     }

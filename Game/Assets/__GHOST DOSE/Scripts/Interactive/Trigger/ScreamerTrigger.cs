@@ -14,7 +14,7 @@ public class ScreamerTrigger : MonoBehaviour
     {
         if (other.CompareTag("Player"))
         {
-            screamerObject.GetComponent<Item>().ActivateObject();
+            screamerObject.GetComponent<Item>().ActivateObject(false);
         }
     }
 

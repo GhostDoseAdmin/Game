@@ -21,9 +21,9 @@ public class InteractiveTrigger : MonoBehaviour
 
     private void Update()
     {
-        if (Input.GetKeyDown(InputManager.instance.mainButton) && allowInteraction)
+        if (Input.GetKeyDown(InputManager.instance.interactButton) && allowInteraction)
         {
-            interactiveObject.GetComponent<Item>().ActivateObject();
+            interactiveObject.GetComponent<Item>().ActivateObject(false);
         }
 
         if (interactiveObject == null)

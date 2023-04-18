@@ -10,7 +10,7 @@ public class FirstAidKit : Item
     [SerializeField] private int kit;
 
 
-    public override void ActivateObject()
+    public override void ActivateObject(bool otherPlayer)
     {
         HealthSystem.kitinstance.CollectKit(this.kit);
         this.DestroyObject(0);

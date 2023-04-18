@@ -26,7 +26,7 @@ public class ScreenScreamer : Item
         audioScreen.Stop();
     }
 
-    public override void ActivateObject()
+    public override void ActivateObject(bool otherPlayer)
     {
         this.ScreamerTV();
     }

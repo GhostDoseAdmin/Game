@@ -7,7 +7,7 @@ public class EnemyDamage : MonoBehaviour
     [Header("NPC DAMAGE")]
     [Space(10)]
     public int damage;
-    public float force;
+    //public float force;
     private GameObject main;
     public bool triggerHit;
     public void Start()
@@ -21,9 +21,9 @@ public class EnemyDamage : MonoBehaviour
             {
                 Debug.Log("---------------------------------------COLLSION----------------------------------------" );
 
-                Vector3 oppositeForce = -main.GetComponent<NPCController>().transform.forward * force;
+                Vector3 oppositeForce = -main.GetComponent<NPCController>().transform.forward * main.GetComponent<NPCController>().force;
                 oppositeForce.y = 0f; // Set the y component to 0
-              //  collision.gameObject.GetComponent<HealthSystem>().HealthDamage(main.GetComponent<NPCController>().damage, oppositeForce);
+                collision.gameObject.GetComponent<HealthSystem>().HealthDamage(main.GetComponent<NPCController>().damage, oppositeForce);
 
 
 

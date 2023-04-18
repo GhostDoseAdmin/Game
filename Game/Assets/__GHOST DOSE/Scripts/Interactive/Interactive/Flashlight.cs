@@ -14,7 +14,7 @@ public class Flashlight : Item
         flashlightUI.SetActive(false);
     }
 
-    public override void ActivateObject()
+    public override void ActivateObject(bool otherPlayer)
     {
         this.AddFlashlight();
     }

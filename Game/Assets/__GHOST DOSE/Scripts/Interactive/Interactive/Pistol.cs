@@ -14,7 +14,7 @@ public class Pistol : Item
         pistolUI.SetActive(false);
     }
 
-    public override void ActivateObject()
+    public override void ActivateObject(bool otherPlayer)
     {
         this.AddWeapon();
     }

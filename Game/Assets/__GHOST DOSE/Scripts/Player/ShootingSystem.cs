@@ -1,7 +1,8 @@
 using InteractionSystem;
 using Newtonsoft.Json;
 using System.Collections;
-//using System.Numerics;
+using GameManager;
+using NetworkSystem;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -215,7 +216,7 @@ public class ShootingSystem : MonoBehaviour
                 //EMIT SHOOT
                 string targName = "none";
                 if(target!=null) { targName = target.name; }
-                if (GetComponent<PlayerController>().GD.twoPlayer ) { GetComponent<PlayerController>().GD.ND.sioCom.Instance.Emit("shoot", JsonConvert.SerializeObject($"{{'name':'{targName}','damage':'{damage}'}}"), false); }
+                if (GameDriver.instance.twoPlayer ) { NetworkDriver.instance.sioCom.Instance.Emit("shoot", JsonConvert.SerializeObject($"{{'name':'{targName}','damage':'{damage}'}}"), false); }
 
 
                 camera.fieldOfView = 40;//40

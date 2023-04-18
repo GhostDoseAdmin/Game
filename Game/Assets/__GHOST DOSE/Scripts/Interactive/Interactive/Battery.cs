@@ -10,7 +10,7 @@ public class Battery : Item
     [SerializeField] private int count;
 
 
-    public override void ActivateObject()
+    public override void ActivateObject(bool otherPlayer)
     {
         FlashlightSystem.instance.CollectBattery(this.count);
         this.DestroyObject(0);

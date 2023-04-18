@@ -1,7 +1,10 @@
 using InteractionSystem;
+using Newtonsoft.Json;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using NetworkSystem;
+using GameManager;
 
 public class Door : Item
 {
@@ -32,7 +35,7 @@ public class Door : Item
         this.animator = GetComponent<Animator>();
     }
 
-    public override void ActivateObject()
+    public override void ActivateObject(bool otherPlayer)
     {
         if (this.isNeedKey)
             this.CheckKeyPass();
@@ -43,15 +46,22 @@ public class Door : Item
     private void CheckKeyPass()
     {
         var key = KeyInventory.instance.GetKeyWithPath(this.doorPass);
+        string emitEvent;
         if (key == this.doorPass)
         {
             this.OpenClose();
+            emitEvent = "openclose";
         }
         else
+        {
             this.Locked();
+            emitEvent = "locked";
+        }
+
+        if (GameDriver.instance.twoPlayer) { NetworkDriver.instance.sioCom.Instance.Emit("event", JsonConvert.SerializeObject($"{{'obj':'{gameObject.name}','type':'door','event':'{emitEvent}'}}"), false); }
     }
 
-    private void OpenClose()
+    public void OpenClose()
     {
         if (this.isOpen)
         {
@@ -66,9 +76,11 @@ public class Door : Item
             this.animator.SetBool("Close", false);
         }
 
+       
+
     }
 
-    private void Locked()
+    public void Locked()
     {
         this.animator.SetTrigger("CantOpen");
         AudioManager.instance.Play(this.doorLockSound);

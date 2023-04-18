@@ -764,7 +764,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   damage: 20
-  force: 500
   triggerHit: 0
 --- !u!135 &2910643322322174259
 SphereCollider:
@@ -974,6 +973,7 @@ MonoBehaviour:
   SKEL_ROOT: {fileID: 7248935093206049398}
   HIT_COL: {fileID: 2910643322322174258}
   Death: {fileID: 793403660494855008, guid: 53820545ee83f6143b2d2e90e0e3425a, type: 3}
+  Shadower: 0
   healthEnemy: 100
   range: 3
   startRange: 0
@@ -984,13 +984,13 @@ MonoBehaviour:
   disEngageRange: 5
   spawnTimer: 0
   damage: 50
+  force: 500
   startHealth: 0
   canAttack: 1
   agro: 0
   target: {fileID: 0}
   animEnemy: {fileID: 0}
   navmesh: {fileID: 0}
-  GD: {fileID: 0}
   targetPlayer: {fileID: 0}
   destination: {x: 0, y: 0, z: 0}
   truePosition: {x: 0, y: 0, z: 0}
@@ -1009,6 +1009,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 79a38cf1a3d5d37438c8a13bfd813e40, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  Shadower: 0
   PlayerLight: {fileID: 0}
   ClientLight: {fileID: 0}
   LightSources: []
