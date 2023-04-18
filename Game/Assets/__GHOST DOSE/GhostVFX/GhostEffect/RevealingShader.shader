@@ -8,6 +8,7 @@ Shader "Custom/Ghost" {
         _Emission("Emission", Range(0,1)) = 1
         _Alpha("Alpha", Range(0,1)) = 1
         _Shadower("Shadower", Range(0,1)) = 0
+        _EMFAlpha("EmfAlpha", Range(0,0.3)) = 0
 
     }
         SubShader{
@@ -34,11 +35,13 @@ Shader "Custom/Ghost" {
             half _Metallic;
             half _Emission;
             half _Alpha;
+            half _EMFAlpha;
             half _Shadower;
             half _ProximityAlpha;
             fixed4 _Color;
             float _MaxDistance;
             float _yPos;
+
 
 
             //PLAYER LIGHT
@@ -152,7 +155,7 @@ Shader "Custom/Ghost" {
                 o.Emission = c.rgb * c.a * _Emission;
                 o.Metallic = _Metallic;
                 o.Smoothness = _Glossiness;
-                o.Alpha = total_alpha * _Alpha;
+                o.Alpha = (total_alpha * _Alpha) + _EMFAlpha;
 
             }
 

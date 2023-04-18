@@ -107,9 +107,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c1455729a3006134faabce5afd1443a7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  show_Ghost: 0
+  show_Shadowers: 0
   ghost: 1
   shadower: 0
   flicker: 0
+  strength: 50
   flickerDuration: 0.05
   minDelay: 0.1
   maxDelay: 0.5

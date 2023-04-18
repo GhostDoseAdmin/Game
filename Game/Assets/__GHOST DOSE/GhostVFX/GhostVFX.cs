@@ -103,7 +103,7 @@ public class GhostVFX : MonoBehaviour
                     lightPositions[i] = lightSource.transform.position;
                     lightDirections[i] = -lightSource.transform.forward;
                     lightAngles[i] = lightSource.spotAngle+5;
-                    ScalarStrengths[i] = 50;//50
+                    ScalarStrengths[i] = lightSource.GetComponent<GhostLight>().strength;//50
                     lightRanges[i] = lightSource.range;//30
 
 
