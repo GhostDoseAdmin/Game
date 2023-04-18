@@ -7,7 +7,9 @@ Shader "Custom/Ghost" {
         _MaxDistance("Max Distance", Float) = 10
         _Emission("Emission", Range(0,1)) = 1
         _Alpha("Alpha", Range(0,1)) = 1
-        _MinDistance("Minimum Distance", Range(0,2)) = 1.2
+        _Shadower("Shadower", Range(0,1)) = 0
+        _EMFAlpha("EmfAlpha", Range(0,0.3)) = 0
+
     }
         SubShader{
             Tags { "RenderType" = "Transparent" "Queue" = "Transparent"}
@@ -33,10 +35,13 @@ Shader "Custom/Ghost" {
             half _Metallic;
             half _Emission;
             half _Alpha;
-            half _MinDistance;
+            half _EMFAlpha;
+            half _Shadower;
+            half _ProximityAlpha;
             fixed4 _Color;
             float _MaxDistance;
             float _yPos;
+
 
 
             //PLAYER LIGHT
@@ -107,12 +112,13 @@ Shader "Custom/Ghost" {
                 float scale1 = dot(direction1, _PlayerLightDirection);
                 float strength1 = scale1 - cos(_PlayerLightAngle * (3.14 / 360.0));
                 strength1 = abs(1 - min(max(strength1 * _PlayerStrengthScalarLight, 0), 1));
-                strength1 = 1 - (1 - strength1);
-                if (distance1 > _PlayerLightRange) {
+                strength1 = 1 - (1 - strength1);//flashlight strength 
+                if (distance1 > _PlayerLightRange && _Shadower==0) {
                     strength1 = 1;//invis
+                  //  if (_Shadower==1) { strength1 = 0; }
                 }
-                if (distance1 < _MinDistance) {
-                    strength1 = (distance1-1) * 0.1;
+                if (distance1 < 5) {//proximity strength
+                    strength1 *= smoothstep(0, 3, distance1);
                 }
                 alphaStrengthPlayers *= strength1;
 
@@ -122,12 +128,13 @@ Shader "Custom/Ghost" {
                 float scale2 = dot(direction2, _ClientLightDirection);
                 float strength2 = scale2 - cos(_ClientLightAngle * (3.14 / 360.0));
                 strength2 = abs(1 - min(max(strength2 * _ClientStrengthScalarLight, 0), 1));
-                strength2 = 1 - (1 - strength2);
-                if (distance2 > _ClientLightRange) {
+                strength2 = 1 - (1 - strength2);//flashlight strength
+                if (distance2 > _ClientLightRange && _Shadower==0) {
                     strength2 = 1;
+                   // if (_Shadower==1) { strength2 = 0; }
                 }
-                if (distance2 < _MinDistance) {
-                    strength2 = (distance2-1) * 0.1;
+                if (distance2 < 5) {//proximity strength
+                    strength2 *= smoothstep(0, 3, distance2);
                 }
                 alphaStrengthPlayers *= strength2;
 
@@ -139,13 +146,16 @@ Shader "Custom/Ghost" {
 
                 float total_alpha = (1 - (alphaStrength * alphaStrengthPlayers)) * c.a;
 
-
+                if (_Shadower==1) { 
+                    c.rgb = 1.0 - c.rgb;//invert color
+                    total_alpha = alphaStrength * alphaStrengthPlayers * c.a; 
+                }
 
                 o.Albedo = c.rgb;
                 o.Emission = c.rgb * c.a * _Emission;
                 o.Metallic = _Metallic;
                 o.Smoothness = _Glossiness;
-                o.Alpha = total_alpha * _Alpha;
+                o.Alpha = (total_alpha * _Alpha) + _EMFAlpha;
 
             }
 

@@ -5,7 +5,7 @@ using UnityEngine;
 
 public class Knife : Item
 {
-    public override void ActivateObject()
+    public override void ActivateObject(bool otherPlayer)
     {
         this.AddWeapon();
     }

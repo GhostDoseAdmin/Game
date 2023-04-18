@@ -1,6 +1,6 @@
 using System.Collections;
-using System.Collections.Generic;
-using Unity.VisualScripting;
+using GameManager;
+using NetworkSystem;
 using UnityEngine;
 using UnityEngine.AI;
 using UnityEngine.InputSystem.Controls;
@@ -14,12 +14,12 @@ public class Teleport : MonoBehaviour
     private bool delayForEmit;
 
     public Transform target;
-    public float minRadius = 4.0f;
-    public float maxRadius = 4.0f;
+    public float minRadius;
+    public float maxRadius;
 
     private float fadeTimer = 0;
     private float timer = 0.0f;
-    private float delay = 2.0f; //relocate interval
+    private float delay = 4.0f; //relocate interval / musta llow time to fade
     private int relocate = 0;
     private bool canTeleport = true;
     public bool debugAttack;//resets attack ani state for client as would get stuck after restarting animator 
@@ -47,6 +47,7 @@ public class Teleport : MonoBehaviour
                 canTeleport = false;
                 isWaypoint = WayPoints;
                 DEATH = death;
+  
             }
         }
     }
@@ -54,7 +55,7 @@ public class Teleport : MonoBehaviour
     private void Update()
     {
         //---------------AGRO----------------------
-        if (GetComponent<NPCController>().GD.ND.HOST)
+        if (NetworkDriver.instance.HOST)
         {
             if (GetComponent<NPCController>().agro && GetComponent<NPCController>().target != null)
             {
@@ -69,7 +70,7 @@ public class Teleport : MonoBehaviour
         {
             fadeTimer = Time.time;
             if (GetComponent<NPCController>().target != null) { target = GetComponent<NPCController>().target; }
-            if (!GetComponent<NPCController>().GD.ND.HOST) { GetComponent<NPCController>().enabled = false; }
+            if (!NetworkDriver.instance.HOST) { GetComponent<NPCController>().enabled = false; }
             debugAttack = true;
             GetComponent<NavMeshAgent>().enabled = false;
             GetComponent<Animator>().enabled = false;
@@ -83,13 +84,16 @@ public class Teleport : MonoBehaviour
         {
             //FADE OUT
             if (Time.time - fadeTimer < 1f){
-                Vector3 currPos = transform.position; currPos.y -= 0.07f; transform.position = currPos;
+                Vector3 currPos = transform.position; 
+                currPos.y -= 0.07f; 
                 GetComponent<GhostVFX>().Fade(false, 8f, 0);
+                if (!NetworkDriver.instance.HOST) { GetComponent<GhostVFX>().Fade(false, 16f, 0); }//client fade faster, prevent seeing them
+                transform.position = currPos;//descend
             }
             else//NEXT STEP
             {
                 this.gameObject.transform.GetChild(0).GetComponent<SkinnedMeshRenderer>().enabled = false;
-                if (GetComponent<NPCController>().GD.ND.HOST) { teleport = 2; }
+                if (NetworkDriver.instance.HOST) { teleport = 2; }
             }
         }
         //STEP 2 - RELOCATE
@@ -99,14 +103,14 @@ public class Teleport : MonoBehaviour
             if ((Time.time > timer + delay))
             {
                 relocate++;
-                GetComponent<GhostVFX>().invisibleCounter = 0;//reset counter to test new position
+               // GetComponent<GhostVFX>().invisibleCounter = 0;//reset counter to test new position
                 transform.position = new Vector3(transform.position.x, b4Pos.y, transform.position.z);
 
                 if(!isWaypoint)
                 {
                     Vector2 randomDirection = Random.insideUnitCircle;
                     float randomDistance = Random.Range(minRadius, maxRadius);
-                    Vector3 randomOffset = new Vector3(randomDirection.x, 0.0f, randomDirection.y) * randomDistance;
+                    Vector3 randomOffset = new Vector3(randomDirection.x, 0f, randomDirection.y) * randomDistance;//MAKE SURE SLIGHTLY ELEVATED
                     transform.position = target.position + randomOffset;
                 }
                 else//USE WAYPOINTS
@@ -120,7 +124,7 @@ public class Teleport : MonoBehaviour
                 timer = Time.time;
             }
             //--REAPPEAR--
-            if(GetComponent<GhostVFX>().invisible && !GetComponent<GhostVFX>().visible && relocate>1 && !DEATH)
+            if(GetComponent<GhostVFX>().invisible && !GetComponent<GhostVFX>().visible && relocate>2 && !DEATH)
             {
                 teleport = 3;
             }
@@ -140,7 +144,7 @@ public class Teleport : MonoBehaviour
                 GetComponent<NPCController>().HIT_COL.GetComponent<SphereCollider>().isTrigger = false;
                 //GetComponent<NPCController>().target = target;
                 StartCoroutine(resetCanTeleport());
-                if (!GetComponent<NPCController>().GD.ND.HOST && GetComponent<NPCController>().healthEnemy<=0)
+                if (!NetworkDriver.instance.HOST && GetComponent<NPCController>().healthEnemy<=0)
                 {
                     Respawn();
                 }

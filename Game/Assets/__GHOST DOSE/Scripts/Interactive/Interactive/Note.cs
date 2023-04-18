@@ -23,7 +23,7 @@ public class Note : Item
         noteImage.enabled = false;
     }
 
-    public override void ActivateObject()
+    public override void ActivateObject(bool otherPlayer)
     {
         this.ShowCloseNote();
     }

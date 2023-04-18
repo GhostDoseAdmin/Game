@@ -6,9 +6,9 @@ namespace InteractionSystem
 {
     public class InputManager : MonoBehaviour
     {
-        [Header("MAIN BUTTON")]
+        [Header("INTERACT BUTTON")]
         [Space(10)]
-        public KeyCode mainButton;
+        public KeyCode interactButton;
 
         [Header("CAMERA")]
         [Space(10)]

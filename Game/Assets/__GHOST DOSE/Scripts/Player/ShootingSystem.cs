@@ -1,7 +1,8 @@
 using InteractionSystem;
 using Newtonsoft.Json;
 using System.Collections;
-//using System.Numerics;
+using GameManager;
+using NetworkSystem;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -141,7 +142,7 @@ public class ShootingSystem : MonoBehaviour
             if (isVisible)
             {
                 if (target != null) { 
-                    if(target.GetComponent<Teleport>().teleport == 0)
+                    if(target.GetComponent<Teleport>()!=null && target.GetComponent<Teleport>().teleport == 0)
                     {
                         enemyIndicatorUI.color = Color.red;
                         if (isHeadshot) { headShotIndicatorUI.color = Color.red; }
@@ -151,11 +152,11 @@ public class ShootingSystem : MonoBehaviour
                 }
                 
             }
-            if (gameObject.GetComponent<FlashlightSystem>().FlashLight.isActiveAndEnabled || gameObject.GetComponent<FlashlightSystem>().WeaponLight.enabled) { flashLightIndicatorUI.color = UnityEngine.Color.yellow; }
+            if (gameObject.GetComponent<FlashlightSystem>().FlashLight.isActiveAndEnabled || gameObject.GetComponent<FlashlightSystem>().WeaponLight.enabled) { flashLightIndicatorUI.color = Color.yellow; }
 
             if (Mathf.Approximately(Mathf.Round(camera.fieldOfView * 10) / 10f, aiming.zoom))
             {
-                focusIndicatorUI.color = UnityEngine.Color.yellow;
+                focusIndicatorUI.color = Color.yellow;
                 //Animator animator = crosshairs.GetComponent<Animator>();
                 //animator.Play(animator.GetCurrentAnimatorStateInfo(0).fullPathHash, -1, 0f);
                 //animator.Update(0f);
@@ -205,6 +206,7 @@ public class ShootingSystem : MonoBehaviour
                 //--------------FLASH-----------------
                GameObject newFlash = Instantiate(camFlash);
                 newFlash.transform.position = shootPoint.position;
+                newFlash.name = "CamFlashPlayer";
                 //---POINT FLASH IN DIRECTION OF THE SHOT
                 Quaternion newYRotation = Quaternion.Euler(0f, shootPoint.rotation.eulerAngles.y, 0f);
                 newFlash.transform.rotation = newYRotation;
@@ -214,7 +216,7 @@ public class ShootingSystem : MonoBehaviour
                 //EMIT SHOOT
                 string targName = "none";
                 if(target!=null) { targName = target.name; }
-                if (GetComponent<PlayerController>().GD.twoPlayer ) { GetComponent<PlayerController>().GD.ND.sioCom.Instance.Emit("shoot", JsonConvert.SerializeObject($"{{'name':'{targName}','damage':'{damage}'}}"), false); }
+                if (GameDriver.instance.twoPlayer ) { NetworkDriver.instance.sioCom.Instance.Emit("shoot", JsonConvert.SerializeObject($"{{'name':'{targName}','damage':'{damage}'}}"), false); }
 
 
                 camera.fieldOfView = 40;//40
@@ -254,17 +256,20 @@ public class ShootingSystem : MonoBehaviour
         if (Physics.Raycast(startPoint, direction, out hit, distance, mask.value))
         {
             string ghostType = hit.collider.gameObject.transform.root.tag;
-            //Debug.Log(hit.collider.gameObject.name);
-            if (ghostType == "Ghost" || ghostType == "Shadower")
+            if (hit.collider.gameObject.transform.root.GetComponent<NPCController>() != null)
             {
-                //Ensure mesh can be read
-                //if (hit.collider.gameObject.transform.root.GetComponent<GhostVFX>() != null)
+                //Debug.Log(hit.collider.gameObject.name);
+                if (ghostType == "Ghost" || ghostType == "Shadower")
                 {
-                    isVisible = hit.collider.gameObject.transform.root.GetComponent<GhostVFX>().visible;
-                    if (!isVisible) { Debug.Log("INVISISHOT"); }
-                    if (hit.collider.gameObject.name == "mixamorig:Head") { isHeadshot = true;  }
+                    //Ensure mesh can be read
+                    //if (hit.collider.gameObject.transform.root.GetComponent<GhostVFX>() != null)
+                    {
+                        isVisible = hit.collider.gameObject.transform.root.GetComponent<GhostVFX>().visible;
+                        if (!isVisible) { Debug.Log("INVISISHOT"); }
+                        if (hit.collider.gameObject.name == "mixamorig:Head") { isHeadshot = true; }
+                    }
+                    target = hit.collider.gameObject.transform.root.gameObject;
                 }
-                target = hit.collider.gameObject.transform.root.gameObject;
             }
         }
     }
