@@ -109,6 +109,8 @@ public class PlayerController : MonoBehaviour
         //GetComponent<WeaponParameters>().RigWeapons();
         GetComponent<ShootingSystem>().RigShooter();
         GetComponent<FlashlightSystem>().RigLights();
+
+		k2.SetActive(false); 
     }
 
 
@@ -285,7 +287,7 @@ public class PlayerController : MonoBehaviour
 			{
                 anim.SetBool("GetGear",true);
                 gear += 1;
-				if (gear > 3) { gear = 1; }
+				if (gear > 2) { gear = 1; }
                 if (gear == 1){camera.SetActive(true); k2.SetActive(false); camInventory.SetActive(false); k2Inventory.SetActive(true); }
 				if (gear == 2){camera.SetActive(false); k2.SetActive(true); camInventory.SetActive(true); k2Inventory.SetActive(false);  }
                 

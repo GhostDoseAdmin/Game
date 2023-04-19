@@ -21,10 +21,12 @@ public class Teleport : MonoBehaviour
     private float timer = 0.0f;
     private float delay = 4.0f; //relocate interval / musta llow time to fade
     private int relocate = 0;
+    private float prevOutline;
     private bool canTeleport = true;
     public bool debugAttack;//resets attack ani state for client as would get stuck after restarting animator 
     private bool isWaypoint;
     public bool DEATH;
+    private Outline outline;
     void Start()
     {
         timer = 0;
@@ -32,6 +34,7 @@ public class Teleport : MonoBehaviour
         relocate = 0;
         canTeleport = true;
         isWaypoint = false;
+        outline = transform.GetChild(0).GetComponent<Outline>();
     }
 
     public void CheckTeleport(bool WayPoints, bool death)
@@ -47,7 +50,9 @@ public class Teleport : MonoBehaviour
                 canTeleport = false;
                 isWaypoint = WayPoints;
                 DEATH = death;
-  
+                prevOutline = outline.OutlineWidth;
+                outline.OutlineWidth = 0;
+
             }
         }
     }
@@ -65,7 +70,7 @@ public class Teleport : MonoBehaviour
                 }
             }
         }
-        //STEP 1 - DESCEND 
+        //STEP 1 - SETUP
         if (teleport == 1)
         {
             fadeTimer = Time.time;
@@ -142,6 +147,7 @@ public class Teleport : MonoBehaviour
                 this.gameObject.transform.GetChild(0).GetComponent<SkinnedMeshRenderer>().enabled = true;
                 GetComponent<NPCController>().SKEL_ROOT.GetComponent<CapsuleCollider>().isTrigger = false;
                 GetComponent<NPCController>().HIT_COL.GetComponent<SphereCollider>().isTrigger = false;
+                StartCoroutine(resetOutline());
                 //GetComponent<NPCController>().target = target;
                 StartCoroutine(resetCanTeleport());
                 if (!NetworkDriver.instance.HOST && GetComponent<NPCController>().healthEnemy<=0)
@@ -157,8 +163,20 @@ public class Teleport : MonoBehaviour
                 yield return new WaitForSeconds(3f);
                 canTeleport = true;
         }
-
-
+        //--------FADE OUTLINE BACK IN 
+        IEnumerator resetOutline()
+        {
+            while (true)
+            {
+                yield return new WaitForSeconds(0.2f);
+                if (GameObject.Find("K2") != null) { 
+                    if (outline.OutlineWidth < prevOutline) { outline.OutlineWidth += (prevOutline * 0.1f); } 
+                    else { StopCoroutine(resetOutline()); } 
+                }
+                else { StopCoroutine(resetOutline()); }
+            }
+            
+        }
         /*IEnumerator clientAttackingAnimationDebug()
         {
             
