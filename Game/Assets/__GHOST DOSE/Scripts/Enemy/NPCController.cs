@@ -487,7 +487,7 @@ public class NPCController : MonoBehaviour
 
     void AttackKnife()
     {
-        AudioManager.instance.Play("KnifeAttackEnemy");
+        AudioManager.instance.Play("EnemyAttack");
     }
 
     public void TriggerEnable()
