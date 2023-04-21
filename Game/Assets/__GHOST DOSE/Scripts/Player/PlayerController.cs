@@ -81,6 +81,7 @@ public class PlayerController : MonoBehaviour
 	public bool emitDamage;
 	public Vector3 damageForce;
 	public string currentAni="";
+	public bool fireK2;
 	//private GameObject playerCam;
     private static utilities util;
 
@@ -110,7 +111,8 @@ public class PlayerController : MonoBehaviour
         GetComponent<ShootingSystem>().RigShooter();
         GetComponent<FlashlightSystem>().RigLights();
 
-		k2.SetActive(false); 
+		k2.SetActive(false);
+        fireK2 = false;
     }
 
 
@@ -175,9 +177,10 @@ public class PlayerController : MonoBehaviour
 
         if (Time.time > emit_timer + emit_delay)
             {
-                string actions = $"{{'flashlight':'{emitFlashLightOn}','gear':'{gear}','damage':'{emitDamage}','flintensity':'{gameObject.GetComponent<FlashlightSystem>().FlashLight.intensity}','aim':'{Input.GetMouseButton(1)}','walk':'{walk.ToString("F0")}','strafe':'{strafe.ToString("F0")}','run':'{Input.GetKey(InputManager.instance.running)}','x':'{transform.position.x.ToString("F2")}','y':'{transform.position.y.ToString("F2")}','z':'{transform.position.z.ToString("F2")}','speed':'{speed.ToString("F2")}','rx':'{transform.eulerAngles.x.ToString("F0")}','ry':'{transform.eulerAngles.y.ToString("F0")}','rz':'{transform.eulerAngles.z.ToString("F0")}','ax':'{crosshairPos.x.ToString("F0")}','ay':'{crosshairPos.y.ToString("F0")}','az':'{crosshairPos.z.ToString("F0")}','fx':'{damageForce.x.ToString("F2")}','fy':'{damageForce.y.ToString("F2")}','fz':'{damageForce.z.ToString("F2")}'}}";
+                string actions = $"{{'flashlight':'{emitFlashLightOn}','gear':'{gear}','fireK2':'{fireK2}','damage':'{emitDamage}','flintensity':'{gameObject.GetComponent<FlashlightSystem>().FlashLight.intensity}','aim':'{Input.GetMouseButton(1)}','walk':'{walk.ToString("F0")}','strafe':'{strafe.ToString("F0")}','run':'{Input.GetKey(InputManager.instance.running)}','x':'{transform.position.x.ToString("F2")}','y':'{transform.position.y.ToString("F2")}','z':'{transform.position.z.ToString("F2")}','speed':'{speed.ToString("F2")}','rx':'{transform.eulerAngles.x.ToString("F0")}','ry':'{transform.eulerAngles.y.ToString("F0")}','rz':'{transform.eulerAngles.z.ToString("F0")}','ax':'{crosshairPos.x.ToString("F0")}','ay':'{crosshairPos.y.ToString("F0")}','az':'{crosshairPos.z.ToString("F0")}','fx':'{damageForce.x.ToString("F2")}','fy':'{damageForce.y.ToString("F2")}','fz':'{damageForce.z.ToString("F2")}'}}";
 				if (actions != prevEmit) { NetworkDriver.instance.sioCom.Instance.Emit("player_action", JsonConvert.SerializeObject(actions), false); prevEmit = actions; }
-			emitDamage = false; 
+			emitDamage = false;
+			fireK2 = false;
 			emit_timer = Time.time;//cooldown
 			}
 

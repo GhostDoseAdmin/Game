@@ -54,16 +54,19 @@ public class Shockwave : MonoBehaviour
     IEnumerator NewShockwaveRoutine(MeshRenderer meshRenderer, Vector3 startPoint, float duration, float amplitude)
     {
         Vector3 vector = startPoint - meshRenderer.transform.position;
-
+        
+        //MeshFilter meshFilter = GetComponent<MeshFilter>();
+        //Mesh mesh = meshFilter.mesh;
+        //Vector3 point = mesh.bounds.center;
+        
         Vector3 point = meshRenderer.transform.InverseTransformPoint(meshRenderer.transform.position + vector);
-
+        
         meshRenderer.material.SetFloat("_SineAmp", amplitude);
         meshRenderer.material.SetFloat("_SineOffset", startOffsetValue);
         // Get a reference to the dome mesh
-        MeshFilter meshFilter = GetComponent<MeshFilter>();
-        Mesh mesh = meshFilter.mesh;
-        meshRenderer.material.SetVector("_Origin", new Vector4(mesh.bounds.center.x, mesh.bounds.center.y, mesh.bounds.center.z, 0));
-        //meshRenderer.material.SetVector("_Origin", new Vector4(point.x, point.y, point.z, 0));
+
+       // meshRenderer.material.SetVector("_Origin", new Vector4(mesh.bounds.center.x, mesh.bounds.center.y, mesh.bounds.center.z, 0));
+        meshRenderer.material.SetVector("_Origin", new Vector4(point.x, point.y, point.z, 0));
 
         float startTime = Time.time;
 

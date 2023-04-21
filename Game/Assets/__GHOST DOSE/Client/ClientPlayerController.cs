@@ -67,7 +67,7 @@ public class ClientPlayerController : MonoBehaviour
     private float gear_timer = 0.0f;//USED FOR EMITS
     public int gear = 1; //0 = cam 1=ks 2=rem
     public bool gearAim;
-    private GameObject k2;
+    public GameObject k2;
     private GameObject camera;
     private GameObject camInventory;
     private GameObject k2Inventory;
@@ -257,9 +257,9 @@ public class ClientPlayerController : MonoBehaviour
 					//--------------------------FLASH-------------------------------------
 					 GameObject newFlash = Instantiate(camFlash);
 					newFlash.transform.position = shootPoint.position;
-                newFlash.name = "CamFlashClient";
-                //---POINT FLASH IN DIRECTION OF THE SHOT
-                Quaternion newYRotation = Quaternion.Euler(0f, shootPoint.rotation.eulerAngles.y, 0f);
+                    newFlash.name = "CamFlashClient";
+                    //---POINT FLASH IN DIRECTION OF THE SHOT
+                    Quaternion newYRotation = Quaternion.Euler(0f, shootPoint.rotation.eulerAngles.y, 0f);
 					newFlash.transform.rotation = newYRotation;
 
 					triggerShoot = false;

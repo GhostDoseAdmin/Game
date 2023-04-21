@@ -19,8 +19,7 @@ public class K2 : MonoBehaviour
     void Start()
     {
         if (transform.root.name == "CLIENT") { isClient = true; }
-
-        if (!isClient) { shootPoint = GameDriver.instance.Player.GetComponent<ShootingSystem>().shootPoint; } //util.FindChildObject(this.gameObject.transform, "Knife_Hand");
+        if (!isClient) { shootPoint = GameDriver.instance.Player.GetComponent<ShootingSystem>().shootPoint; } 
         else { shootPoint = GameDriver.instance.Client.GetComponent<ClientPlayerController>().shootPoint; }
     }
 
@@ -28,23 +27,25 @@ public class K2 : MonoBehaviour
     void Update()
     {
         //AIMING
-
+        if(!isClient && GameDriver.instance.Player.GetComponent<PlayerController>().gearAim)
+        {
             if (Time.time > pulse_timer + pulse_delay)
             {
-                if ((!isClient && GameDriver.instance.Player.GetComponent<PlayerController>().gearAim) || (isClient && GameDriver.instance.Client.GetComponent<ClientPlayerController>().gearAim))
-                {
-                    GameObject newK2wave = Instantiate(k2wave);
-                    newK2wave.transform.position = shootPoint.position;
-                    Quaternion newYRotation = Quaternion.Euler(0f, shootPoint.rotation.eulerAngles.y + 90f, 90f);
-                    newK2wave.transform.rotation = newYRotation;
-                    newK2wave.GetComponent<K2Wave>().isClient = isClient;
-                }
+                fire(false);
                 pulse_timer = Time.time;//cooldown
             }
-        
-
+        }
     }
 
+    public void fire(bool otherPlayer)
+    {
+        GameObject newK2wave = Instantiate(k2wave);
+        newK2wave.transform.position = shootPoint.position;
+        Quaternion newYRotation = Quaternion.Euler(0f, shootPoint.rotation.eulerAngles.y + 90f, 90f);
+        newK2wave.transform.rotation = newYRotation;
+        newK2wave.GetComponent<K2Wave>().isClient = isClient;
+        if (!otherPlayer) { GameDriver.instance.Player.GetComponent<PlayerController>().fireK2 = true; }//EMIT FIRE
+    }
     /*private void OnDisable()
     {
         //----------TURN OFF OUTLINES

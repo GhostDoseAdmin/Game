@@ -131,7 +131,7 @@ public class NPCController : MonoBehaviour
 
             if (actions != prevActions || playerJoined) //actions change
             {
-                Debug.Log("--------------------------------SENDING PLAYER JOINED-----------------------------------" + playerJoined); 
+                //Debug.Log("--------------------------------SENDING PLAYER JOINED-----------------------------------" + playerJoined); 
                 send = $"{{'object':'{this.name}','dead':'false','Attack':'{attacking}','target':'{target}','teleport':'{teleChange}','curWayPoint':'{curWayPoint}','x':'{transform.position.x}','y':'{transform.position.y}','z':'{transform.position.z}','dx':'{destination.x}','dy':'{destination.y}','dz':'{destination.z}'}}";
                     NetworkDriver.instance.sioCom.Instance.Emit("enemy", JsonConvert.SerializeObject(send), false);
                
@@ -139,15 +139,18 @@ public class NPCController : MonoBehaviour
                 prevActions = actions;
             }
         }
+
         //----------------------RESET OUTLINE---------------------
         if (GameObject.Find("K2") == null)
         {
+            //Debug.Log("------------------------------------------CANT FIND A K2");
             activateOutline = false;
             if (outline.OutlineWidth > 0) { outline.OutlineWidth -= 0.01f; }
         }
+        else { outline.OutlineWidth -= 0.005f; }
         if (activateOutline)
         {
-            if (outline.OutlineWidth < 10) { outline.OutlineWidth += 0.1f; } else { activateOutline = false; }
+            if (outline.OutlineWidth < 7) { outline.OutlineWidth += 0.1f;  } else { activateOutline = false; } //Debug.Log("------------------------------------------ACTIVATING OUTLINE");
         }
 
 
@@ -403,14 +406,14 @@ public class NPCController : MonoBehaviour
 
                 if (angle <= angleView) // can u see target
                 {
-                    Debug.Log("----------------------------------CAN SEE TARGET----------------------------------------");
+                    //Debug.Log("----------------------------------CAN SEE TARGET----------------------------------------");
                     RaycastHit hit;
                     Debug.DrawLine(head.position, targetPlayer.position + Vector3.up * 1.4f); //1.6
                    // LayerMask mask = (1 << LayerMask.NameToLayer("Player")) | (1 << LayerMask.NameToLayer("Default"));
                    LayerMask mask = (1 << LayerMask.NameToLayer("Player"));
                     if (Physics.Linecast(head.position, targetPlayer.position + Vector3.up * 1.4f, out hit, mask.value) && hit.transform != head && hit.transform != transform)
                     {
-                        Debug.Log("----------TARGET -------------------" + hit.collider.gameObject.name);
+                        //Debug.Log("----------TARGET -------------------" + hit.collider.gameObject.name);
                         if (hit.transform == targetPlayer)
                         {
                             target = targetPlayer;
@@ -475,6 +478,7 @@ public class NPCController : MonoBehaviour
             if (NetworkDriver.instance.HOST) { GetComponent<Teleport>().Invoke("Respawn", spawnTimer); }
 
             this.gameObject.transform.GetChild(0).GetComponent<SkinnedMeshRenderer>().enabled = false;
+            this.gameObject.transform.GetChild(0).GetComponent<Outline>().OutlineWidth = 0;
             GameObject death = Instantiate(Death, transform.position, transform.rotation);
             if (Shadower) { death.GetComponent<GhostVFX>().Shadower = true; death.GetComponent<EnemyDeath>().Shadower = true; }
 

@@ -138,7 +138,7 @@ public class ShootingSystem : MonoBehaviour
             focusIndicatorUI.color = Color.white;
 
             //TARGET PARAMS
-            targetParams(20);
+            targetParams(50);
             if (isVisible)
             {
                 if (target != null) { 
@@ -252,7 +252,7 @@ public class ShootingSystem : MonoBehaviour
         Vector3 startPoint = GameObject.Find("PlayerCamera").transform.position;
         Vector3 direction = (targetLook.position -startPoint).normalized;
 
-        Debug.DrawLine(startPoint, startPoint + direction * distance, UnityEngine.Color.red);
+        Debug.DrawLine(startPoint, startPoint + direction * distance, Color.red);
         if (Physics.Raycast(startPoint, direction, out hit, distance, mask.value))
         {
             string ghostType = hit.collider.gameObject.transform.root.tag;
