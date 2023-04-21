@@ -93,6 +93,7 @@ public class NPCController : MonoBehaviour
         startAngleView = angleView;
         startRange = range;
 
+        //if (wayPoint[0] == null) { wayPoint[0] = this.gameObject.transform; }
         wayPoint[0].position = transform.position;
         playerJoined = false; //UPDATE POSITIONS
         HIT_COL.GetComponent<SphereCollider>().enabled = false;
@@ -147,7 +148,11 @@ public class NPCController : MonoBehaviour
             activateOutline = false;
             if (outline.OutlineWidth > 0) { outline.OutlineWidth -= 0.01f; }
         }
-        else { outline.OutlineWidth -= 0.005f; }
+        else
+        {
+            if (outline.OutlineWidth > 0) { outline.OutlineWidth -= 0.005f; }
+        }
+
         if (activateOutline)
         {
             if (outline.OutlineWidth < 7) { outline.OutlineWidth += 0.1f;  } else { activateOutline = false; } //Debug.Log("------------------------------------------ACTIVATING OUTLINE");
@@ -216,7 +221,7 @@ public class NPCController : MonoBehaviour
                 }
                 else if (wayPoint.Count == 1)
                 {
-
+                   
                     if (NetworkDriver.instance.HOST) { navmesh.SetDestination(wayPoint[0].position); destination = wayPoint[0].position; }
                     else { navmesh.SetDestination(clientWaypointDest); }
 
@@ -249,7 +254,7 @@ public class NPCController : MonoBehaviour
         navmesh.SetDestination(target.position);
         GetComponent<NavMeshAgent>().stoppingDistance = hitRange;
         float distance = Vector3.Distance(transform.position, target.position);
-
+        animEnemy.SetBool("Walk", true);
 
         //------------------------------ H O S T ----------------------------------------
         if (NetworkDriver.instance.HOST)
@@ -259,23 +264,15 @@ public class NPCController : MonoBehaviour
                 target = null;
 
             }
-                //RUN TO TARGET
-                if (distance > hitRange)
+            //RUN TO TARGET
+            if (distance > hitRange)
             {
                 animEnemy.SetBool("Fighting", false);
-                GetComponent<NavMeshAgent>().speed = walkSpeed;//DOESNT AFFECT THIS
-                //GetComponent<NavMeshAgent>().enabled = true;
-                if (attacking)
-                {
-                    attacking = false;
-                    //send = $"{{'object':'{this.name}','Attack':'{attacking}','target':'{target}','curWayPoint':'{curWayPoint}','x':'{transform.position.x}','y':'{transform.position.y}','z':'{transform.position.z}','dx':'{destination.x}','dy':'{destination.y}','dz':'{destination.z}'}}";
-                    //ND.sioCom.Instance.Emit("enemy", JsonConvert.SerializeObject(send), false);
-
-                }
-                navmesh.isStopped = false;
-                if (!GetComponent<GhostVFX>().invisible) { animEnemy.SetBool("Run", true); }
-                //if(GetComponent<GhostVFX>().invisible) { animEnemy.SetBool("Run", false); animEnemy.SetBool("walk", true); }
+                animEnemy.SetBool("Run", true);
                 animEnemy.SetBool("Attack", false);
+                GetComponent<NavMeshAgent>().speed = walkSpeed;//DOESNT AFFECT THIS
+                if (attacking){attacking = false;}
+                navmesh.isStopped = false;
                 if (distance > minDist) { transform.LookAt(targetPlayer); }
             }
             //ATTACK TARGET
@@ -283,19 +280,14 @@ public class NPCController : MonoBehaviour
             {
                 attacking = true;
                 animEnemy.SetBool("Fighting", true);
-                //GetComponent<NavMeshAgent>().enabled = false;
+                animEnemy.SetBool("Run", true);
+                animEnemy.SetBool("Attack", true);
+
                 GetComponent<NavMeshAgent>().speed = 0;
 
-                if (!attacking)
-                {
-                    attacking = true;
-                    //send = $"{{'object':'{this.name}','Attack':'{attacking}','target':'{target}','curWayPoint':'{curWayPoint}','x':'{transform.position.x}','y':'{transform.position.y}','z':'{transform.position.z}','dx':'{destination.x}','dy':'{destination.y}','dz':'{destination.z}'}}";
-                    //ND.sioCom.Instance.Emit("enemy", JsonConvert.SerializeObject(send), false);
-
-                }
+                if (!attacking){attacking = true;}
                 navmesh.isStopped = true;
-                if (!GetComponent<GhostVFX>().invisible) { animEnemy.SetBool("Run", true); }
-                // animEnemy.SetBool("Walk", false);
+
                 //TURN TO TARGET
                 if (distance > minDist)
                 {
@@ -304,7 +296,6 @@ public class NPCController : MonoBehaviour
                     transform.rotation = Quaternion.Slerp(transform.rotation, lookRotation, Time.deltaTime * 10);
                 }
 
-                animEnemy.SetBool("Attack", true);
                 if (distance > minDist) { transform.LookAt(targetPlayer); }
             }
         }
@@ -315,21 +306,22 @@ public class NPCController : MonoBehaviour
             if (!attacking)
             {
                 animEnemy.SetBool("Fighting", false);
+                animEnemy.SetBool("Run", true);
+                animEnemy.SetBool("Attack", false);
                 //GetComponent<NavMeshAgent>().speed = walkSpeed;
                 GetComponent<NavMeshAgent>().speed = walkSpeed;
 
                 navmesh.isStopped = false;
                 if (distance <= hitRange) { navmesh.isStopped = true; }
-                animEnemy.SetBool("Run", true);
-               // if (GetComponent<GhostVFX>().invisible) { animEnemy.SetBool("Run", false); animEnemy.SetBool("walk", true); }
-                animEnemy.SetBool("Attack", false);
                 if (distance > minDist) { transform.LookAt(targetPlayer); }
             }
             //ATTACK TARGET
             else
             {
                 animEnemy.SetBool("Fighting", true);
-                //GetComponent<NavMeshAgent>().speed = 0;
+                animEnemy.SetBool("Run", true);
+                animEnemy.SetBool("Attack", true);
+
                 GetComponent<NavMeshAgent>().speed = 0;
 
                 //KEEP NAVMESH IN SYNC WITH LERP
@@ -339,8 +331,8 @@ public class NPCController : MonoBehaviour
                 }
 
                 navmesh.isStopped = true;
-                animEnemy.SetBool("Run", false);
-               // animEnemy.SetBool("Walk", false);
+
+
                 //TURN TO TARGET
                 if (distance > minDist)
                 {
@@ -349,7 +341,7 @@ public class NPCController : MonoBehaviour
                     transform.rotation = Quaternion.Slerp(transform.rotation, lookRotation, Time.deltaTime * 10);
                 }
 
-                animEnemy.SetBool("Attack", true);
+                
                 
                 if (GetComponent<Teleport>().debugAttack) { animEnemy.Play("Attack"); GetComponent<Teleport>().debugAttack = false; }
                 if (distance > minDist) { transform.LookAt(targetPlayer); }
