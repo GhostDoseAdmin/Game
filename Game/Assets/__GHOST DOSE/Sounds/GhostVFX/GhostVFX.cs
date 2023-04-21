@@ -208,7 +208,7 @@ public class GhostVFX : MonoBehaviour
             }
 
             //--------------OUTLINE VISABILITY----------------------
-            if (gameObject.transform.GetChild(0).GetComponent<Outline>().OutlineWidth > 0.1f) { invisible = false; }
+            if (gameObject.transform.GetChild(0).GetComponent<Outline>() != null) { if (gameObject.transform.GetChild(0).GetComponent<Outline>().OutlineWidth > 0.1f) { invisible = false; } }
 
 
 

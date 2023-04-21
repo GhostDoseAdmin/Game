@@ -1,4 +1,5 @@
 using InteractionSystem;
+using Newtonsoft.Json;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -11,7 +12,8 @@ public class InteractiveTrigger : MonoBehaviour
     [SerializeField] public GameObject interact;
 
     public bool allowInteraction;
-
+    private float delay = 1f;
+    private float timer = 0f;
 
     private void Start()
     {
@@ -23,8 +25,14 @@ public class InteractiveTrigger : MonoBehaviour
     {
         if (Input.GetKeyDown(InputManager.instance.interactButton) && allowInteraction)
         {
-            interactiveObject.GetComponent<Item>().ActivateObject(false);
+            if (Time.time > timer + delay)
+            {
+                Debug.Log("-----------------------------------------INTERACTING");
+                interactiveObject.GetComponent<Item>().ActivateObject(false);
+                timer = Time.time;//cooldown
+            }
         }
+
 
         if (interactiveObject == null)
         {

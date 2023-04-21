@@ -10,9 +10,8 @@ Material:
   m_Name: k2shockwavemat
   m_Shader: {fileID: 4800000, guid: 76a70d2104b89bc4a886a4f9c777b1e5, type: 3}
   m_ValidKeywords:
-  - _EmissionColor_MAP
-  - _NORMAL_MAP
-  - _RENDERING_TRANSPARENT
+  - _EQUITANGULAR
+  - _RENDERING_FADE
   - _SEMITRANSPARENT_SHADOWS
   m_InvalidKeywords:
   - Detail
@@ -24,7 +23,7 @@ Material:
   m_LightmapFlags: 4
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 0
-  m_CustomRenderQueue: 3000
+  m_CustomRenderQueue: 2000
   stringTagMap:
     RenderType: Transparent
   disabledShaderPasses: []
@@ -65,7 +64,7 @@ Material:
         m_Offset: {x: 0, y: 0}
     - _MainTex:
         m_Texture: {fileID: 2800000, guid: c29d715c42767fb4ab3e5e776468c4fe, type: 3}
-        m_Scale: {x: 1, y: 1}
+        m_Scale: {x: 5.34, y: 13.5}
         m_Offset: {x: 0, y: 0}
     - _MetallicGlossMap:
         m_Texture: {fileID: 0}
@@ -100,41 +99,41 @@ Material:
     - _DetailNormalMapScale: 1
     - _DstBlend: 10
     - _EMISSION_MAP: 0
-    - _EQUITANGULAR: 0
-    - _EmissionColor_MAP: 1
+    - _EQUITANGULAR: 1
+    - _EmissionColor_MAP: 0
     - _EnableAlphaCutoff: 0
     - _EnablePlayerColor: 0
     - _FADE_ON: 0
-    - _Fade: 0.6233062
+    - _Fade: 0.34417343
     - _FadeOn: 1
     - _GlossMapScale: 1
     - _Glossiness: 0
     - _GlossyReflections: 1
     - _METALLIC_MAP: 0
-    - _Metallic: 0
+    - _Metallic: 1
     - _Mode: 3
-    - _NORMAL_MAP: 1
+    - _NORMAL_MAP: 0
     - _OCCLUSION_MAP: 0
     - _OcclusionStrength: 1
     - _Parallax: 0.02
     - _RENDERDUMMY: 0
-    - _Shrink: 1
-    - _SineAmp: 0.15
+    - _Shrink: 0.9268293
+    - _SineAmp: 0.3
     - _SineAmp2: 1
     - _SineFreq: 20
     - _SineOffset: 35
-    - _SineRepetition: 3
+    - _SineRepetition: 5
     - _Smoothness: 1
     - _SmoothnessTextureChannel: 0
     - _SpecularHighlights: 1
-    - _SrcBlend: 1
+    - _SrcBlend: 5
     - _UVSec: 0
     - _ZWrite: 0
     m_Colors:
     - _Color: {r: 1, g: 1, b: 1, a: 1}
     - _DetailColor: {r: 1, g: 1, b: 1, a: 1}
     - _Emission: {r: 0, g: 0, b: 0, a: 1}
-    - _EmissionColor: {r: 0, g: 0, b: 0, a: 1}
+    - _EmissionColor: {r: 1, g: 1, b: 1, a: 0}
     - _ObjectPos: {r: 0, g: 0, b: 0, a: 0}
     - _Origin: {r: 0, g: -0.25, b: 0, a: 0}
     - _PlayerColor: {r: 1, g: 1, b: 1, a: 1}

@@ -50,8 +50,9 @@ public class Teleport : MonoBehaviour
                 canTeleport = false;
                 isWaypoint = WayPoints;
                 DEATH = death;
-                prevOutline = outline.OutlineWidth;
+                if (!death) { prevOutline = outline.OutlineWidth; }
                 outline.OutlineWidth = 0;
+                //outline.enabled = false;
 
             }
         }
@@ -166,6 +167,7 @@ public class Teleport : MonoBehaviour
         //--------FADE OUTLINE BACK IN 
         IEnumerator resetOutline()
         {
+            //outline.enabled = true;
             while (true)
             {
                 yield return new WaitForSeconds(0.2f);

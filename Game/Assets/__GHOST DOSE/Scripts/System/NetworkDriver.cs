@@ -96,11 +96,11 @@ namespace NetworkSystem
                 Dictionary<string, string> dict = data.ToObject<Dictionary<string, string>>();
                 if (dict["sid"] != sioCom.Instance.SocketID)//OTHERS PING
                 { //IF ITS THEIR PING
-                    Debug.Log("THEIR PING IS " + dict["ping"]);
+                    //Debug.Log("THEIR PING IS " + dict["ping"]);
                     if (float.Parse(dict["ping"]) == 0) //THEY JUST JOINED
                     {
                         GameDriver.instance.MSG = "Player Joined";
-                        Debug.Log("PLAYER JOINED SENDING MY PING SPEED TO OTHER PLAYER");
+                        //Debug.Log("PLAYER JOINED SENDING MY PING SPEED TO OTHER PLAYER");
                         GameDriver.instance.twoPlayer = true;
 
                         dict = new Dictionary<string, string> {
@@ -171,6 +171,7 @@ namespace NetworkSystem
                     GameDriver.instance.Client.GetComponent<ClientPlayerController>().aim = bool.Parse(dict["aim"]);
                     GameDriver.instance.Client.GetComponent<ClientPlayerController>().gameObject.GetComponent<ClientFlashlightSystem>().FlashLight.intensity = float.Parse(dict["flintensity"]);
                     GameDriver.instance.Client.GetComponent<ClientPlayerController>().Flashlight(bool.Parse(dict["flashlight"]));
+                    if (bool.Parse(dict["fireK2"])) { GameDriver.instance.Client.GetComponent<ClientPlayerController>().k2.GetComponent<K2>().fire(true); }
                     if (GameDriver.instance.Client.GetComponent<ClientPlayerController>().gear != int.Parse(dict["gear"])) { GameDriver.instance.Client.GetComponent<ClientPlayerController>().ChangeGear(int.Parse(dict["gear"])); }//gear changes
                     if (bool.Parse(dict["damage"])) { GameDriver.instance.Client.GetComponent<ClientPlayerController>().Flinch(new Vector3(float.Parse(dict["fx"]), float.Parse(dict["fy"]), float.Parse(dict["fz"]))); }
                 }
