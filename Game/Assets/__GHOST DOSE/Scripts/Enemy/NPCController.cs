@@ -147,7 +147,10 @@ public class NPCController : MonoBehaviour
             activateOutline = false;
             if (outline.OutlineWidth > 0) { outline.OutlineWidth -= 0.01f; }
         }
-        else { outline.OutlineWidth -= 0.005f; }
+        else
+        {
+            if (outline.OutlineWidth > 0) { outline.OutlineWidth -= 0.005f; } 
+        }
         if (activateOutline)
         {
             if (outline.OutlineWidth < 7) { outline.OutlineWidth += 0.1f;  } else { activateOutline = false; } //Debug.Log("------------------------------------------ACTIVATING OUTLINE");
@@ -249,7 +252,7 @@ public class NPCController : MonoBehaviour
         navmesh.SetDestination(target.position);
         GetComponent<NavMeshAgent>().stoppingDistance = hitRange;
         float distance = Vector3.Distance(transform.position, target.position);
-
+        animEnemy.SetBool("Walk", true);
 
         //------------------------------ H O S T ----------------------------------------
         if (NetworkDriver.instance.HOST)
@@ -273,7 +276,7 @@ public class NPCController : MonoBehaviour
 
                 }
                 navmesh.isStopped = false;
-                if (!GetComponent<GhostVFX>().invisible) { animEnemy.SetBool("Run", true); }
+                animEnemy.SetBool("Run", true); 
                 //if(GetComponent<GhostVFX>().invisible) { animEnemy.SetBool("Run", false); animEnemy.SetBool("walk", true); }
                 animEnemy.SetBool("Attack", false);
                 if (distance > minDist) { transform.LookAt(targetPlayer); }
@@ -294,7 +297,7 @@ public class NPCController : MonoBehaviour
 
                 }
                 navmesh.isStopped = true;
-                if (!GetComponent<GhostVFX>().invisible) { animEnemy.SetBool("Run", true); }
+               animEnemy.SetBool("Run", true); 
                 // animEnemy.SetBool("Walk", false);
                 //TURN TO TARGET
                 if (distance > minDist)
@@ -339,7 +342,7 @@ public class NPCController : MonoBehaviour
                 }
 
                 navmesh.isStopped = true;
-                animEnemy.SetBool("Run", false);
+                animEnemy.SetBool("Run", true);
                // animEnemy.SetBool("Walk", false);
                 //TURN TO TARGET
                 if (distance > minDist)
