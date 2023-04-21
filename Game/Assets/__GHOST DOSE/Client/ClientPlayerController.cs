@@ -144,7 +144,8 @@ public class ClientPlayerController : MonoBehaviour
         shootPoint = util.FindChildObject(this.gameObject.transform, "ShootPoint").transform;
         muzzleFlash = util.FindChildObject(this.gameObject.transform, "MuzzleFlashEffect").GetComponent<ParticleSystem>();
         Shell = util.FindChildObject(this.gameObject.transform, "Puff").GetComponent<ParticleSystem>();
-		GetComponent<ClientFlashlightSystem>().RigLights();
+        k2.SetActive(false);
+        GetComponent<ClientFlashlightSystem>().RigLights();
 
         //ND = GameObject.Find("GameController").GetComponent<GameDriver>().ND;
 

@@ -1069,7 +1069,7 @@ CapsuleCollider:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 3873627965758635757}
   m_Material: {fileID: 0}
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_Enabled: 1
   m_Radius: 0.2
   m_Height: 1
@@ -1978,6 +1978,7 @@ GameObject:
   m_Component:
   - component: {fileID: 3407966951756998310}
   - component: {fileID: 2848707207987942989}
+  - component: {fileID: 7916104249765636969}
   m_Layer: 9
   m_Name: body
   m_TagString: Untagged
@@ -2108,6 +2109,24 @@ SkinnedMeshRenderer:
     m_Center: {x: 0.002014935, y: -0.22813633, z: 0.057124868}
     m_Extent: {x: 0.82715714, y: 0.8889692, z: 0.25514024}
   m_DirtyAABB: 0
+--- !u!114 &7916104249765636969
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6355252700959289464}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5fea29bb7c508c244a1f805a5fd3fc4d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  outlineMode: 0
+  outlineColor: {r: 1, g: 0, b: 0, a: 1}
+  outlineWidth: 0
+  precomputeOutline: 0
+  bakeKeys: []
+  bakeValues: []
 --- !u!1 &6473262913271309395
 GameObject:
   m_ObjectHideFlags: 0

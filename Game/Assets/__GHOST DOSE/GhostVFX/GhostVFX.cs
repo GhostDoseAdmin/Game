@@ -41,11 +41,14 @@ public class GhostVFX : MonoBehaviour
         //-----STORE ORIGINAL ALPHA SETTINGS
         for (int i = 0; i < skin.GetComponent<SkinnedMeshRenderer>().materials.Length; i++)
         {
-            Material material = skin.GetComponent<SkinnedMeshRenderer>().materials[i];
-            float alphaValue = material.GetFloat("_Alpha");
-            originalMaxAlpha.Add(alphaValue);
-            currentMaxAlpha.Add(alphaValue);
-            if(Shadower) { gameObject.tag = "Shadower"; HEAD.tag = "Shadower"; material.SetInt("_Shadower", 1); }
+            if (skin.GetComponent<SkinnedMeshRenderer>().materials[i].shader.name == "Custom/Ghost" || skin.GetComponent<SkinnedMeshRenderer>().materials[i].shader.name == "Custom/GhostAlphaCutoff")
+            {
+                Material material = skin.GetComponent<SkinnedMeshRenderer>().materials[i];
+                float alphaValue = material.GetFloat("_Alpha");
+                originalMaxAlpha.Add(alphaValue);
+                currentMaxAlpha.Add(alphaValue);
+                if (Shadower) { gameObject.tag = "Shadower"; HEAD.tag = "Shadower"; material.SetInt("_Shadower", 1); }
+            }
         }
     }
 
@@ -186,10 +189,11 @@ public class GhostVFX : MonoBehaviour
             else { Fade(false, 1f, 0); }
             for (int i = 0; i < skin.GetComponent<SkinnedMeshRenderer>().materials.Length; i++)
             {
-                if (skin.GetComponent<SkinnedMeshRenderer>().materials[i].shader.name != "Custom/GhostAlphaCutoff") { 
+                if (skin.GetComponent<SkinnedMeshRenderer>().materials[i].shader.name == "Custom/Ghost") { 
+                    
                     skin.GetComponent<SkinnedMeshRenderer>().materials[i].SetFloat("_Alpha", currentMaxAlpha[i]); 
                 }
-                else
+                else if (skin.GetComponent<SkinnedMeshRenderer>().materials[i].shader.name == "Custom/GhostAlphaCutoff")
                 {
                     skin.GetComponent<SkinnedMeshRenderer>().materials[i].SetFloat("_Emission", currentMaxAlpha[i]); 
                 }
@@ -202,12 +206,9 @@ public class GhostVFX : MonoBehaviour
                 if (this.gameObject.tag == "Ghost") { visible = false; }
                 else { visible = true; }
             }
-            //MANUAL ALPHA FADE BASED ON LIGHT MEASUREMENTS
 
-            //---TEST TRUE VISIBLIITY--debugs visible flickering / TRIGGERS DISAPPEAR
-            /*invisible = false;
-        if (!visible) { if (invisibleCounter < 15) { invisibleCounter++; } if (invisibleCounter == 15) { invisible = true; } }
-        else { invisibleCounter =0; }*/
+            //--------------OUTLINE VISABILITY----------------------
+            if (gameObject.transform.GetChild(0).GetComponent<Outline>().OutlineWidth > 0.1f) { invisible = false; }
 
 
 
@@ -219,20 +220,23 @@ public class GhostVFX : MonoBehaviour
     {
         for (int i = 0; i < skin.GetComponent<SkinnedMeshRenderer>().materials.Length; i++)
         {
+            if (skin.GetComponent<SkinnedMeshRenderer>().materials[i].shader.name == "Custom/Ghost" || skin.GetComponent<SkinnedMeshRenderer>().materials[i].shader.name == "Custom/GhostAlphaCutoff")
+            {
                 if (fadeIn)
                 {
-                if (currentMaxAlpha[i] < originalMaxAlpha[i]) { currentMaxAlpha[i] = Mathf.Lerp(currentMaxAlpha[i], originalMaxAlpha[i], Time.deltaTime * speed); }
-               // if (Mathf.Abs(currentMaxAlpha[i] - (originalMaxAlpha[i] * 0.5f)) < 0.1f) { fadeDone = true; }
-
+                    if (currentMaxAlpha[i] < originalMaxAlpha[i]) { currentMaxAlpha[i] = Mathf.Lerp(currentMaxAlpha[i], originalMaxAlpha[i], Time.deltaTime * speed); }
+                    // if (Mathf.Abs(currentMaxAlpha[i] - (originalMaxAlpha[i] * 0.5f)) < 0.1f) { fadeDone = true; }
                 }
                 else//FADE OUT
                 {
-                if (currentMaxAlpha[i] > 0.01) { currentMaxAlpha[i] = Mathf.Lerp(currentMaxAlpha[i], currentMaxAlpha[i] * 0.5f * fadeOutLimit, Time.deltaTime * speed); }
-                if (Mathf.Abs(currentMaxAlpha[i] - 0.1f) < 0.1f) {
-                    invisible = true; 
+                    if (currentMaxAlpha[i] > 0.01) { currentMaxAlpha[i] = Mathf.Lerp(currentMaxAlpha[i], currentMaxAlpha[i] * 0.5f * fadeOutLimit, Time.deltaTime * speed); }
+                    if (Mathf.Abs(currentMaxAlpha[i] - 0.1f) < 0.1f)
+                    {
+                        invisible = true;
+                    }
                 }
-                }
-        }
+            }
+        }   
 
        // Debug.Log("------------------------------------------ FADE --------------------------------" + fadeDone);
       //  return fadeDone;

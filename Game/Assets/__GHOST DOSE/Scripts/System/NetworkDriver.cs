@@ -223,7 +223,7 @@ namespace NetworkSystem
 
                 JObject data = JObject.Parse(payload);
                 Dictionary<string, string> dict = data.ToObject<Dictionary<string, string>>();
-                //Debug.Log("RECEIVING enemy " + data);
+                Debug.Log("RECEIVING enemy " + data);
                 GameObject enemy = GameObject.Find(dict["object"]);
                 if (enemy != null)
                 {

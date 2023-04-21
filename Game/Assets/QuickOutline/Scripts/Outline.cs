@@ -16,6 +16,7 @@ using UnityEngine;
 public class Outline : MonoBehaviour {
   private static HashSet<Mesh> registeredMeshes = new HashSet<Mesh>();
 
+
   public enum Mode {
     OutlineAll,
     OutlineVisible,
@@ -62,6 +63,8 @@ public class Outline : MonoBehaviour {
   [SerializeField, Range(0f, 10f)]
   private float outlineWidth = 2f;
 
+  //private float prevOutlineWidth;
+
   [Header("Optional")]
 
   [SerializeField, Tooltip("Precompute enabled: Per-vertex calculations are performed in the editor and serialized with the object. "
@@ -89,8 +92,8 @@ public class Outline : MonoBehaviour {
     outlineMaskMaterial = Instantiate(Resources.Load<Material>(@"Materials/OutlineMask"));
     outlineFillMaterial = Instantiate(Resources.Load<Material>(@"Materials/OutlineFill"));
 
-    outlineMaskMaterial.name = "OutlineMask (Instance)";
-    outlineFillMaterial.name = "OutlineFill (Instance)";
+    outlineMaskMaterial.name = "OutlineMask";
+    outlineFillMaterial.name = "OutlineFill";
 
     // Retrieve or generate smooth normals
     LoadSmoothNormals();
@@ -130,7 +133,10 @@ public class Outline : MonoBehaviour {
   }
 
   void Update() {
+       // if (prevOutlineWidth != outlineWidth) { needsUpdate = true; }
+        //prevOutlineWidth = OutlineWidth;
     if (needsUpdate) {
+
       needsUpdate = false;
 
       UpdateMaterialProperties();
@@ -274,12 +280,24 @@ public class Outline : MonoBehaviour {
     // Apply properties according to mode
     outlineFillMaterial.SetColor("_OutlineColor", outlineColor);
 
-    switch (outlineMode) {
+        switch (outlineMode) {
       case Mode.OutlineAll:
+
         outlineMaskMaterial.SetFloat("_ZTest", (float)UnityEngine.Rendering.CompareFunction.Always);
-        outlineFillMaterial.SetFloat("_ZTest", (float)UnityEngine.Rendering.CompareFunction.Always);
-        outlineFillMaterial.SetFloat("_OutlineWidth", outlineWidth);
-        break;
+        //outlineFillMaterial.SetFloat("_ZTest", (float)UnityEngine.Rendering.CompareFunction.Always);
+        //outlineFillMaterial.SetFloat("_OutlineWidth", outlineWidth);
+                SkinnedMeshRenderer skinnedMeshRenderer = GetComponent<SkinnedMeshRenderer>();
+                Material[] materials = skinnedMeshRenderer.materials;
+
+                foreach (Material material in materials)
+                {
+                    if (material.name == "OutlineFill (Instance)")
+                    {
+                        material.SetFloat("_OutlineWidth", outlineWidth);
+                        material.SetFloat("_ZTest", (float)UnityEngine.Rendering.CompareFunction.Always);
+                    }
+                }
+                break;
 
       case Mode.OutlineVisible:
         outlineMaskMaterial.SetFloat("_ZTest", (float)UnityEngine.Rendering.CompareFunction.Always);

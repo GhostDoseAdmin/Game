@@ -2,6 +2,7 @@ using GameManager;
 using InteractionSystem;
 using NetworkSystem;
 using Newtonsoft.Json;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
@@ -62,9 +63,10 @@ public class NPCController : MonoBehaviour
     [HideInInspector] public Vector3 truePosition;
     [HideInInspector] public bool attacking = false;
     [HideInInspector] public bool playerJoined;
-    
-    
-    
+    private Outline outline;
+    [HideInInspector] public bool activateOutline;
+
+
     [HideInInspector] public Vector3 clientWaypointDest;
     private float minDist = 0.03f; //debug enemy rotation when ontop of player
 
@@ -76,6 +78,7 @@ public class NPCController : MonoBehaviour
 
     void Start()
     {
+        Debug.Log("---------------------------------------START");
         //GD = GameObject.Find("GameController").GetComponent<GameDriver>();
         Player = GameDriver.instance.Player;
         Client = GameDriver.instance.Client;
@@ -93,6 +96,9 @@ public class NPCController : MonoBehaviour
         wayPoint[0].position = transform.position;
         playerJoined = false; //UPDATE POSITIONS
         HIT_COL.GetComponent<SphereCollider>().enabled = false;
+        outline = transform.GetChild(0).GetComponent<Outline>();
+        Debug.Log("----------------------------------------" + HIT_COL.GetComponent<SphereCollider>().enabled);
+        
 
     }
 
@@ -118,6 +124,9 @@ public class NPCController : MonoBehaviour
             if (teleport == 0 && prevTeleport == 3) { teleChange = 3; } //dont trigger emit keep client on 3, client side changes to 0
             prevTeleport = teleChange;
             if (teleport > 0) { target = GetComponent<Teleport>().target; }
+
+
+
             actions = $"{{{target} {destination} {attacking} {teleChange}'}}";//determines what events to emit on change
 
             if (actions != prevActions || playerJoined) //actions change
@@ -130,8 +139,19 @@ public class NPCController : MonoBehaviour
                 prevActions = actions;
             }
         }
+        //----------------------RESET OUTLINE---------------------
+        if (GameObject.Find("K2") == null)
+        {
+            activateOutline = false;
+            if (outline.OutlineWidth > 0) { outline.OutlineWidth -= 0.01f; }
+        }
+        if (activateOutline)
+        {
+            if (outline.OutlineWidth < 10) { outline.OutlineWidth += 0.1f; } else { activateOutline = false; }
+        }
 
-       
+
+
 
 
     }

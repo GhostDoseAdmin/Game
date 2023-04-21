@@ -264,7 +264,7 @@ public class ShootingSystem : MonoBehaviour
                     //Ensure mesh can be read
                     //if (hit.collider.gameObject.transform.root.GetComponent<GhostVFX>() != null)
                     {
-                        isVisible = hit.collider.gameObject.transform.root.GetComponent<GhostVFX>().visible;
+                        isVisible = !hit.collider.gameObject.transform.root.GetComponent<GhostVFX>().invisible;
                         if (!isVisible) { Debug.Log("INVISISHOT"); }
                         if (hit.collider.gameObject.name == "mixamorig:Head") { isHeadshot = true; }
                     }
