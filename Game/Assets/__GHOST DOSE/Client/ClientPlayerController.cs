@@ -81,9 +81,9 @@ public class ClientPlayerController : MonoBehaviour
 	public float Float;
 	public Vector3 destination;
 	public float speed;
-	public bool running;
+	//public bool running;
 	//public Vector3 targetRotation;
-	public bool toggleFlashlight = false;//command sent from other player to turn on/off flashlight
+	//public bool toggleFlashlight = false;//command sent from other player to turn on/off flashlight
 	public bool aim = false;
 	public bool triggerShoot;
     //private NetworkDriver ND;
@@ -105,7 +105,8 @@ public class ClientPlayerController : MonoBehaviour
     public GameObject currLight;//tracks current light source
 	public GameObject camFlash;
     public GameObject death;
-    public bool wlOn, flOn;//weaplight and flashlight
+    //public bool wlOn, flOn;//weaplight and flashlight
+
 
 	private static utilities util;
 
@@ -171,13 +172,15 @@ public class ClientPlayerController : MonoBehaviour
 
             anim.SetFloat("Strafe", strafe);
             anim.SetFloat("Walk", walk);
-			if (running) { anim.SetBool("Running", true);  }
+			if (speed>=4f) { anim.SetBool("Running", true);  }
 			else { anim.SetBool("Running", false); }
         }
 		Attack();
-        if (Vector3.Distance(transform.position, destination) > 0.1) { if (speed == 0) { speed = 4f; }  }//catch up to destination
+        if (Vector3.Distance(transform.position, destination) > 0.1) { if (speed == 0) { speed = 3.99f; }  }//catch up to destination
         //KEEP POS UPDATED
         if (Vector3.Distance(transform.position, destination)>2){transform.position = new Vector3(destination.x, destination.y, destination.z);}
+        if(walk==0 && strafe ==0 && speed == 0) { anim.SetFloat("Walk", 0); anim.SetFloat("Strafe", 0); }//prevent walk animation
+
         transform.position = Vector3.Lerp(transform.position, destination, speed * 0.95f * Time.deltaTime);
 
         //--------------------ROTATION--------------------------------------
@@ -317,46 +320,44 @@ public class ClientPlayerController : MonoBehaviour
 
 	public void Flashlight()//TRIGGRED BY EMIT
 	{
-		
-
-        //TOGGLE FLASHLIGHT
-        if (
-            (GetComponent<ClientFlashlightSystem>().FlashLight.enabled == false && flOn)
-            || (GetComponent<ClientFlashlightSystem>().FlashLight.enabled == true && !flOn)
-            || (GetComponent<ClientFlashlightSystem>().WeaponLight.enabled == false && wlOn)
-            || (GetComponent<ClientFlashlightSystem>().WeaponLight.enabled == true && !wlOn)
-            )
+        if (flashlighton)
         {
-            if (GetComponent<ClientFlashlightSystem>().FlashLight.enabled == false && GetComponent<ClientFlashlightSystem>().WeaponLight.enabled == false && (flOn || wlOn)) { AudioManager.instance.Play("FlashlightClick"); }
-
-            gameObject.GetComponent<ClientFlashlightSystem>().handFlashlight.SetActive(flOn);
-            gameObject.GetComponent<ClientFlashlightSystem>().FlashLight.enabled = flOn;
-            gameObject.GetComponent<ClientFlashlightSystem>().WeaponLight.enabled = wlOn;
-
-            if (GetComponent<ClientFlashlightSystem>().FlashLight.enabled == false && GetComponent<ClientFlashlightSystem>().WeaponLight.enabled == false) { AudioManager.instance.Play("FlashlightClick"); }
-
-        }
-
-        if (aim == false)
-        {
-            if (flOn)
+            if (aim == false)//NO WEAPON
             {
                 is_FlashlightAim = true;
-                anim.SetBool("Flashlight", true);//regular flashlight hold
+                GetComponent<ClientFlashlightSystem>().FlashLight.enabled = true;
+                GetComponent<ClientFlashlightSystem>().handFlashlight.SetActive(true);
+                GetComponent<ClientFlashlightSystem>().WeaponLight.enabled = false;
+                anim.SetBool("Flashlight", true);
+
             }
-            if (!flOn)
+            if (aim == true)//WEAPON 
             {
                 is_FlashlightAim = false;
-                anim.SetBool("Flashlight", false);//regular flashlight hold
+                GetComponent<ClientFlashlightSystem>().FlashLight.enabled = false;
+                GetComponent<ClientFlashlightSystem>().handFlashlight.SetActive(false);
+                GetComponent<ClientFlashlightSystem>().WeaponLight.enabled = true;
+                anim.SetBool("Flashlight", false);
             }
-
         }
-        else { anim.SetBool("Flashlight", false); }
-
-
+        else
+        {
+            GetComponent<ClientFlashlightSystem>().FlashLight.enabled = false;
+            GetComponent<ClientFlashlightSystem>().handFlashlight.SetActive(false);
+            GetComponent<ClientFlashlightSystem>().WeaponLight.enabled = false;
+            is_FlashlightAim = false;
+            anim.SetBool("Flashlight", false);
+        }
     }
 
-
+    public void ToggleFlashlight(bool flOn)//TRIGGRED BY EMIT
+    {
+        if((flashlighton && !flOn) || (!flashlighton && flOn))
+        {
+            AudioManager.instance.Play("FlashlightClick");
+        }
+        flashlighton = flOn;
+    }
 
 
     void OnAnimatorIK()

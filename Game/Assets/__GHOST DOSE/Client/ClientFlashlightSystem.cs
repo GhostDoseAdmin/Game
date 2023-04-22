@@ -67,7 +67,6 @@ public class ClientFlashlightSystem : MonoBehaviour
         WeaponLight.enabled = false;
         FlashLight.enabled = false;
         handFlashlight.SetActive(false);
-
         inventoryFlashlight.SetActive(false);
         //FlashLight.intensity = maxFlashlightIntensity;
     }

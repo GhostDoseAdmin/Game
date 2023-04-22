@@ -81,6 +81,7 @@ public class PlayerController : MonoBehaviour
 	public Vector3 damageForce;
 	public string currentAni="";
 	public bool fireK2;
+	public bool emitFlashlight;
 	//private GameObject playerCam;
     private static utilities util;
 
@@ -181,8 +182,16 @@ public class PlayerController : MonoBehaviour
 					dmgString = $",'dmg':'{emitDamage}','fx':'{damageForce.x.ToString("F2")}','fy':'{damageForce.y.ToString("F2")}','fz':'{damageForce.z.ToString("F2")}'";
 					emitDamage = false;
 				}
+
+				string flashLightString = "";
+				if (emitFlashlight){
+				bool anyFlashlight = false;
+				if (GetComponent<FlashlightSystem>().FlashLight.GetComponent<Light>().enabled || GetComponent<FlashlightSystem>().WeaponLight.GetComponent<Light>().enabled) { anyFlashlight = true; }
+				flashLightString = $",'fl':'{anyFlashlight}'"; //,'wl':'{GetComponent<FlashlightSystem>().WeaponLight.GetComponent<Light>().enabled}'
+                emitFlashlight = false;
+				}
             
-			string actions = $"{{'fl':'{GetComponent<FlashlightSystem>().FlashLight.GetComponent<Light>().enabled}','wl':'{GetComponent<FlashlightSystem>().WeaponLight.GetComponent<Light>().enabled}','gear':'{gear}','fireK2':'{fireK2}','flintensity':'{gameObject.GetComponent<FlashlightSystem>().FlashLight.intensity}','aim':'{Input.GetMouseButton(1)}','walk':'{walk.ToString("F0")}','strafe':'{strafe.ToString("F0")}','run':'{Input.GetKey(InputManager.instance.running)}','x':'{transform.position.x.ToString("F2")}','y':'{transform.position.y.ToString("F2")}','z':'{transform.position.z.ToString("F2")}','speed':'{speed.ToString("F2")}','ax':'{crosshairPos.x.ToString("F0")}','ay':'{crosshairPos.y.ToString("F0")}','az':'{crosshairPos.z.ToString("F0")}'{dmgString}}}";
+			string actions = $"{{'gear':'{gear}','fireK2':'{fireK2}','flintensity':'{gameObject.GetComponent<FlashlightSystem>().FlashLight.intensity}','aim':'{Input.GetMouseButton(1)}','walk':'{walk.ToString("F0")}','strafe':'{strafe.ToString("F0")}','x':'{transform.position.x.ToString("F2")}','y':'{transform.position.y.ToString("F2")}','z':'{transform.position.z.ToString("F2")}','speed':'{speed.ToString("F2")}','ax':'{crosshairPos.x.ToString("F0")}','ay':'{crosshairPos.y.ToString("F0")}','az':'{crosshairPos.z.ToString("F0")}'{dmgString}{flashLightString}}}";
 
 
 			

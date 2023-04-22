@@ -125,6 +125,8 @@ public class FlashlightSystem : MonoBehaviour
                     AudioManager.instance.Play(this.flashlightClick);
                     FlashLight.enabled = true;
 
+                    GetComponent<PlayerController>().emitFlashlight = true;
+
                 }
                 else
                 {
@@ -134,6 +136,8 @@ public class FlashlightSystem : MonoBehaviour
                     inventoryFlashlight.SetActive(true);
                     AudioManager.instance.Play(this.flashlightClick);
                     FlashLight.enabled = false;
+
+                    GetComponent<PlayerController>().emitFlashlight = true;
                 }
             }
 
