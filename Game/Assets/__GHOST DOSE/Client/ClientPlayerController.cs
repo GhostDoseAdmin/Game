@@ -82,7 +82,7 @@ public class ClientPlayerController : MonoBehaviour
 	public Vector3 destination;
 	public float speed;
 	public bool running;
-	public Vector3 targetRotation;
+	//public Vector3 targetRotation;
 	public bool toggleFlashlight = false;//command sent from other player to turn on/off flashlight
 	public bool aim = false;
 	public bool triggerShoot;
@@ -156,15 +156,14 @@ public class ClientPlayerController : MonoBehaviour
         #endregion
 
         private void FixedUpdate()
-    {
+        {
 		if (!GameDriver.instance.twoPlayer){ return; }
 
-		//------------------------------------- M A I N ---------------------------------------------------
+        //------------------------------------- M A I N ---------------------------------------------------
         targetPosVec = Vector3.Lerp(targetPosVec, targetPos.position, 0.1f);//0.1
+        //targetPosVec = targetPos.position;
 
-        // transform.LookAt(targetPosVec);
-
-        //---- locomotion animations ------
+        //-------------------MOVEMENT-------------------------------
         if (speed>0f || Vector3.Distance(transform.position, destination)>0.1)
 		{
 			strafe = Mathf.Lerp(strafe, targStrafe, 0.1f);
@@ -175,18 +174,39 @@ public class ClientPlayerController : MonoBehaviour
 			if (running) { anim.SetBool("Running", true);  }
 			else { anim.SetBool("Running", false); }
         }
-
 		Attack();
-
         if (Vector3.Distance(transform.position, destination) > 0.1) { if (speed == 0) { speed = 4f; }  }//catch up to destination
-        // if (speed == 0) { speed = 4f; } 
         //KEEP POS UPDATED
-        if (Vector3.Distance(transform.position, destination)>2)//1.5
-		{
-            transform.position = new Vector3(destination.x, destination.y, destination.z);
-        }
+        if (Vector3.Distance(transform.position, destination)>2){transform.position = new Vector3(destination.x, destination.y, destination.z);}
         transform.position = Vector3.Lerp(transform.position, destination, speed * 0.95f * Time.deltaTime);
-        transform.rotation = Quaternion.RotateTowards(transform.rotation, Quaternion.Euler(targetRotation), 600f * Time.deltaTime); //150
+
+        //--------------------ROTATION--------------------------------------
+        if (walk != 0 || strafe != 0 || is_FlashlightAim == true || gearAim == true)
+        {
+            Vector3 rot = transform.eulerAngles;
+            transform.LookAt(targetPosVec);
+
+            float angleBetween = Mathf.DeltaAngle(transform.eulerAngles.y, rot.y);
+            if ((Mathf.Abs(angleBetween) > luft) || strafe != 0)
+            {
+                isPlayerRot = true;
+            }
+            if (isPlayerRot == true)
+            {
+                float bodyY = Mathf.LerpAngle(rot.y, transform.eulerAngles.y, Time.deltaTime * angularSpeed);
+                transform.eulerAngles = new Vector3(0, bodyY, 0);
+            }
+            else
+            {
+                transform.eulerAngles = new Vector3(0f, rot.y, 0f);
+            }
+        }
+        transform.eulerAngles = new Vector3(0f, transform.eulerAngles.y, 0f);
+
+
+       // transform.rotation = Quaternion.RotateTowards(transform.rotation, Quaternion.Euler(new Vector3(0f, transform.eulerAngles.y, 0f)), 600f * Time.deltaTime); //150
+
+
 
 
     }

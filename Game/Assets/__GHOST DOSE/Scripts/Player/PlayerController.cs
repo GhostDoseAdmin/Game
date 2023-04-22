@@ -176,12 +176,18 @@ public class PlayerController : MonoBehaviour
 
         if (Time.time > emit_timer + emit_delay)
             {
-                string actions = $"{{'fl':'{GetComponent<FlashlightSystem>().FlashLight.GetComponent<Light>().enabled}','wl':'{GetComponent<FlashlightSystem>().WeaponLight.GetComponent<Light>().enabled}','gear':'{gear}','fireK2':'{fireK2}','damage':'{emitDamage}','flintensity':'{gameObject.GetComponent<FlashlightSystem>().FlashLight.intensity}','aim':'{Input.GetMouseButton(1)}','walk':'{walk.ToString("F0")}','strafe':'{strafe.ToString("F0")}','run':'{Input.GetKey(InputManager.instance.running)}','x':'{transform.position.x.ToString("F2")}','y':'{transform.position.y.ToString("F2")}','z':'{transform.position.z.ToString("F2")}','speed':'{speed.ToString("F2")}','rx':'{transform.eulerAngles.x.ToString("F0")}','ry':'{transform.eulerAngles.y.ToString("F0")}','rz':'{transform.eulerAngles.z.ToString("F0")}','ax':'{crosshairPos.x.ToString("F0")}','ay':'{crosshairPos.y.ToString("F0")}','az':'{crosshairPos.z.ToString("F0")}','fx':'{damageForce.x.ToString("F2")}','fy':'{damageForce.y.ToString("F2")}','fz':'{damageForce.z.ToString("F2")}'}}";
-			
+				string dmgString = "";
+				if (emitDamage){
+					dmgString = $",'dmg':'{emitDamage}','fx':'{damageForce.x.ToString("F2")}','fy':'{damageForce.y.ToString("F2")}','fz':'{damageForce.z.ToString("F2")}'";
+					emitDamage = false;
+				}
+            
+			string actions = $"{{'fl':'{GetComponent<FlashlightSystem>().FlashLight.GetComponent<Light>().enabled}','wl':'{GetComponent<FlashlightSystem>().WeaponLight.GetComponent<Light>().enabled}','gear':'{gear}','fireK2':'{fireK2}','flintensity':'{gameObject.GetComponent<FlashlightSystem>().FlashLight.intensity}','aim':'{Input.GetMouseButton(1)}','walk':'{walk.ToString("F0")}','strafe':'{strafe.ToString("F0")}','run':'{Input.GetKey(InputManager.instance.running)}','x':'{transform.position.x.ToString("F2")}','y':'{transform.position.y.ToString("F2")}','z':'{transform.position.z.ToString("F2")}','speed':'{speed.ToString("F2")}','ax':'{crosshairPos.x.ToString("F0")}','ay':'{crosshairPos.y.ToString("F0")}','az':'{crosshairPos.z.ToString("F0")}'{dmgString}}}";
+
 
 			
 			if (actions != prevEmit) { NetworkDriver.instance.sioCom.Instance.Emit("player_action", JsonConvert.SerializeObject(actions), false); prevEmit = actions; }
-			emitDamage = false;
+			
 			fireK2 = false;
 			emit_timer = Time.time;//cooldown
 			}
@@ -201,15 +207,8 @@ public class PlayerController : MonoBehaviour
         strafe =Input.GetAxis("Horizontal");
 
         anim.SetFloat("Strafe", strafe); 
-		anim.SetFloat("Walk", walk*3f);
+		anim.SetFloat("Walk", walk);
 
-        //Westin.SetFloat("Strafe", strafe);
-        //Westin.SetFloat("Walk", walk);
-
-        //currentAni = anim.GetCurrentAnimatorClipInfo(0)[0].clip.name;
-        //AnimatorClipInfo[] clipInfo = anim.GetCurrentAnimatorClipInfo(0);
-        //string animName = anim.GetCurrentAnimatorClipInfo(0)[0].clip.name;
-        //Debug.Log(" ANIMATION " + GetComponent<Animator>().GetCurrentAnimatorClipInfo(0)[0].clip.name);
 
         if (walk != 0 || strafe != 0 || is_FlashlightAim == true || gearAim == true || CameraType.FPS == cameraController.cameraType)
         {
