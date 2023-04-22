@@ -305,6 +305,7 @@ public class ClientPlayerController : MonoBehaviour
             || (aim && GetComponent<ClientFlashlightSystem>().WeaponLight.enabled == true && !on)
             )
         {
+            Debug.Log("--------------------------------------FLASHLIGHT----------------------------------------------");
             AudioManager.instance.Play("FlashlightClick");
             if (aim == false)
             {
