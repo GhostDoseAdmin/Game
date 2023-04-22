@@ -105,6 +105,7 @@ public class ClientPlayerController : MonoBehaviour
     public GameObject currLight;//tracks current light source
 	public GameObject camFlash;
     public GameObject death;
+    public bool wlOn, flOn;//weaplight and flashlight
 
 	private static utilities util;
 
@@ -194,11 +195,13 @@ public class ClientPlayerController : MonoBehaviour
     #region Update
     void Update() 
 	{
+        Flashlight();
+
         //SET CURRENT LIGHT SOURCE FOR CLIENT
         if (GetComponent<ClientFlashlightSystem>().FlashLight.GetComponent<Light>().enabled) { currLight = GetComponent<ClientFlashlightSystem>().FlashLight.gameObject; }
         else if (GetComponent<ClientFlashlightSystem>().WeaponLight.enabled) { currLight = GetComponent<ClientFlashlightSystem>().WeaponLight.gameObject; }
 
-
+       
 
     }
     #endregion
@@ -292,62 +295,43 @@ public class ClientPlayerController : MonoBehaviour
     }
 
 
-	public void Flashlight(bool on)//TRIGGRED BY EMIT
+	public void Flashlight()//TRIGGRED BY EMIT
 	{
 		
-		is_Flashlight = on;
 
-		//TOGGLE FLASHLIGHT
-		if (
-            (!aim && GetComponent<ClientFlashlightSystem>().FlashLight.enabled == false && on) 
-            || (!aim && GetComponent<ClientFlashlightSystem>().FlashLight.enabled == true && !on)
-            || (aim && GetComponent<ClientFlashlightSystem>().WeaponLight.enabled == false && on)
-            || (aim && GetComponent<ClientFlashlightSystem>().WeaponLight.enabled == true && !on)
+        //TOGGLE FLASHLIGHT
+        if (
+            (GetComponent<ClientFlashlightSystem>().FlashLight.enabled == false && flOn)
+            || (GetComponent<ClientFlashlightSystem>().FlashLight.enabled == true && !flOn)
+            || (GetComponent<ClientFlashlightSystem>().WeaponLight.enabled == false && wlOn)
+            || (GetComponent<ClientFlashlightSystem>().WeaponLight.enabled == true && !wlOn)
             )
         {
-            Debug.Log("--------------------------------------FLASHLIGHT----------------------------------------------");
-            AudioManager.instance.Play("FlashlightClick");
-            if (aim == false)
-            {
-                gameObject.GetComponent<ClientFlashlightSystem>().WeaponLight.enabled = false;
-                if (on)
-                {
-                    is_FlashlightAim = true;
+            if (GetComponent<ClientFlashlightSystem>().FlashLight.enabled == false && GetComponent<ClientFlashlightSystem>().WeaponLight.enabled == false && (flOn || wlOn)) { AudioManager.instance.Play("FlashlightClick"); }
 
-                    gameObject.GetComponent<ClientFlashlightSystem>().handFlashlight.SetActive(true);
-                    gameObject.GetComponent<ClientFlashlightSystem>().FlashLight.enabled = true;
-                    anim.SetBool("Flashlight", true);//regular flashlight hold
-                }
-                if (!on)
-                {
-                    is_FlashlightAim = false;
+            gameObject.GetComponent<ClientFlashlightSystem>().handFlashlight.SetActive(flOn);
+            gameObject.GetComponent<ClientFlashlightSystem>().FlashLight.enabled = flOn;
+            gameObject.GetComponent<ClientFlashlightSystem>().WeaponLight.enabled = wlOn;
 
-                    gameObject.GetComponent<ClientFlashlightSystem>().handFlashlight.SetActive(true);
-                    gameObject.GetComponent<ClientFlashlightSystem>().FlashLight.enabled = true;
-                    anim.SetBool("Flashlight", false);//regular flashlight hold
-                }
+            if (GetComponent<ClientFlashlightSystem>().FlashLight.enabled == false && GetComponent<ClientFlashlightSystem>().WeaponLight.enabled == false) { AudioManager.instance.Play("FlashlightClick"); }
 
-            }
-
-            if (aim == true)
-            {
-                anim.SetBool("Flashlight", false);//regular flashlight hold
-                gameObject.GetComponent<ClientFlashlightSystem>().handFlashlight.SetActive(false);
-                gameObject.GetComponent<ClientFlashlightSystem>().FlashLight.enabled = false;
-
-                if (on)
-                {
-                    gameObject.GetComponent<ClientFlashlightSystem>().WeaponLight.enabled = true;
-
-                }
-                if (!on)
-                {
-                    gameObject.GetComponent<ClientFlashlightSystem>().WeaponLight.enabled = false;
-                }
-
-            }
         }
 
+        if (aim == false)
+        {
+            if (flOn)
+            {
+                is_FlashlightAim = true;
+                anim.SetBool("Flashlight", true);//regular flashlight hold
+            }
+            if (!flOn)
+            {
+                is_FlashlightAim = false;
+                anim.SetBool("Flashlight", false);//regular flashlight hold
+            }
+
+        }
+        else { anim.SetBool("Flashlight", false); }
 
 
     }

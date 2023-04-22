@@ -138,13 +138,13 @@ public class Teleport : MonoBehaviour
             }
         }
         //SETP 3 - REAPPEAR --CLIENT
-        if(teleport == 3)
+        if(teleport == 3)//runs twice
         {
-            if (GetComponent<NPCController>().agro) { AudioManager.instance.Play("Reappear"); }
             if (!delayForEmit)
             { //skip a frame to allow NPCcontroller to emit state 3
                 teleport = 0;
                 //if (!GetComponent<NPCController>().GD.ND.HOST) { transform.position = new Vector3(transform.position.x, b4Pos.y, transform.position.z); }
+                if (GetComponent<NPCController>().agro && !GetComponent<NPCController>().enabled) { AudioManager.instance.Play("Reappear"); }
                 GetComponent<NavMeshAgent>().enabled = true;
                 GetComponent<NPCController>().enabled = true;
                 GetComponent<Animator>().enabled = true;
@@ -152,12 +152,8 @@ public class Teleport : MonoBehaviour
                 GetComponent<NPCController>().SKEL_ROOT.GetComponent<CapsuleCollider>().isTrigger = false;
                 GetComponent<NPCController>().HIT_COL.GetComponent<SphereCollider>().isTrigger = false;
                 StartCoroutine(resetOutline());
-                //GetComponent<NPCController>().target = target;
                 StartCoroutine(resetCanTeleport());
-                if (!NetworkDriver.instance.HOST && GetComponent<NPCController>().healthEnemy<=0)
-                {
-                    Respawn();
-                }
+                if (!NetworkDriver.instance.HOST && GetComponent<NPCController>().healthEnemy<=0){Respawn();}
             }
             if (delayForEmit){ delayForEmit = false; }
         }

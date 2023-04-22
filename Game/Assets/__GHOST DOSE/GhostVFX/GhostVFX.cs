@@ -6,6 +6,7 @@ using System.Net;
 using Unity.VisualScripting;
 using UnityEngine;
 using GameManager;
+using InteractionSystem;
 
 //[ExecuteInEditMode]
 public class GhostVFX : MonoBehaviour
@@ -27,6 +28,9 @@ public class GhostVFX : MonoBehaviour
     public GameObject HEAD;
     public bool death;
     private bool visibilitySet;
+    //private float sound_timer = 0f;
+    //private float sound_delay = 5f;
+    private bool playedSound;
 
 
 
@@ -68,8 +72,7 @@ public class GhostVFX : MonoBehaviour
         //if (PlayerLight != null && ClientLight != null)
         {
 
-            // if (shader == "Custom/Ghost") { envLights = GameObject.FindGameObjectsWithTag("GhostLight"); }
-            //else { envLights = GameObject.FindGameObjectsWithTag("ShadowerLight"); }
+
             envLights = new Light[0];
             GhostLight[] ghostLights = FindObjectsOfType<GhostLight>();
             List<Light> lights = new List<Light>();
@@ -139,6 +142,7 @@ public class GhostVFX : MonoBehaviour
                 //FLASHLIGHT OVERRIDES SHADOW AND ENVIORNMENT
                 else if (IsObjectInLightCone(lightSource, true))//directly under light source
                 {
+                    if(!invisible) { TriggerWanderSound(); }
                     if (this.gameObject.tag == "Ghost") { visible = true; visibilitySet = true; } else { visible = false; visibilitySet = true; }
                 } 
             }
@@ -232,7 +236,7 @@ public class GhostVFX : MonoBehaviour
                     if (currentMaxAlpha[i] > 0.01) { currentMaxAlpha[i] = Mathf.Lerp(currentMaxAlpha[i], currentMaxAlpha[i] * 0.5f * fadeOutLimit, Time.deltaTime * speed); }
                     if (Mathf.Abs(currentMaxAlpha[i] - 0.1f) < 0.1f)
                     {
-                        invisible = true;
+                        invisible = true; playedSound = false;
                     }
                 }
             }
@@ -326,7 +330,22 @@ public class GhostVFX : MonoBehaviour
         return inRange && inCone;
     }
 
+    public void TriggerWanderSound()
+    {
+        {
+            //if (Time.time > sound_timer + sound_delay)
+            if(!playedSound)
+            {
+                int i;
+                i = UnityEngine.Random.Range(1, 4);
+                if (!GetComponent<GhostVFX>().invisible) { AudioManager.instance.Play("Wander" + i.ToString()); }
+                playedSound = true;
+                //sound_timer = Time.time;//cooldown
+            }
 
+            
+        }
+    }
 
 }
 

@@ -62,13 +62,14 @@ public class NPCController : MonoBehaviour
     [HideInInspector] public Vector3 destination;
     [HideInInspector] public Vector3 truePosition;
     [HideInInspector] public bool attacking = false;
-    [HideInInspector] public bool playerJoined;
+    [HideInInspector] public bool update;
     private Outline outline;
     [HideInInspector] public bool activateOutline;
 
 
     [HideInInspector] public Vector3 clientWaypointDest;
     private float minDist = 0.03f; //debug enemy rotation when ontop of player
+    private float distance, p1_dist,p2_dist;
 
     private void Awake()
     {
@@ -78,7 +79,7 @@ public class NPCController : MonoBehaviour
 
     void Start()
     {
-        Debug.Log("---------------------------------------START");
+        
         //GD = GameObject.Find("GameController").GetComponent<GameDriver>();
         Player = GameDriver.instance.Player;
         Client = GameDriver.instance.Client;
@@ -94,7 +95,7 @@ public class NPCController : MonoBehaviour
         startRange = range;
 
         wayPoint[0].position = transform.position;
-        playerJoined = false; //UPDATE POSITIONS
+        update = false; //UPDATE POSITIONS
         HIT_COL.GetComponent<SphereCollider>().enabled = false;
         outline = transform.GetChild(0).GetComponent<Outline>();
         Debug.Log("----------------------------------------" + HIT_COL.GetComponent<SphereCollider>().enabled);
@@ -105,7 +106,10 @@ public class NPCController : MonoBehaviour
     void Update()
     {
 
-        //if (agro) { animEnemy.SetFloat("Speed", 1f); }
+         p1_dist = Vector3.Distance(head.position, Player.transform.position);
+         p2_dist = Vector3.Distance(head.position, Client.transform.position);
+        //ALWAYS CHOOSE CLOSEST TARGET
+        if (p1_dist < p2_dist) { distance = p1_dist; targetPlayer = Player.transform; } else { distance = p2_dist; targetPlayer = Client.transform; }
 
         float teleport = GetComponent<Teleport>().teleport;
 
@@ -129,13 +133,13 @@ public class NPCController : MonoBehaviour
 
             actions = $"{{{target} {destination} {attacking} {teleChange}'}}";//determines what events to emit on change
 
-            if (actions != prevActions || playerJoined) //actions change
+            if (actions != prevActions || update) //actions change
             {
                 //Debug.Log("--------------------------------SENDING PLAYER JOINED-----------------------------------" + playerJoined); 
                 send = $"{{'object':'{this.name}','dead':'false','Attack':'{attacking}','target':'{target}','teleport':'{teleChange}','curWayPoint':'{curWayPoint}','x':'{transform.position.x}','y':'{transform.position.y}','z':'{transform.position.z}','dx':'{destination.x}','dy':'{destination.y}','dz':'{destination.z}'}}";
                     NetworkDriver.instance.sioCom.Instance.Emit("enemy", JsonConvert.SerializeObject(send), false);
-               
-                playerJoined = false;
+
+                update = false;
                 prevActions = actions;
             }
         }
@@ -143,7 +147,6 @@ public class NPCController : MonoBehaviour
         //----------------------RESET OUTLINE---------------------
         if (GameObject.Find("K2") == null)
         {
-            //Debug.Log("------------------------------------------CANT FIND A K2");
             activateOutline = false;
             if (outline.OutlineWidth > 0) { outline.OutlineWidth -= 0.01f; }
         }
@@ -151,15 +154,25 @@ public class NPCController : MonoBehaviour
         {
             if (outline.OutlineWidth > 0) { outline.OutlineWidth -= 0.005f; } 
         }
-        if (activateOutline)
-        {
-            if (outline.OutlineWidth < 7) { outline.OutlineWidth += 0.1f;  } else { activateOutline = false; } //Debug.Log("------------------------------------------ACTIVATING OUTLINE");
+        if (activateOutline){            if (outline.OutlineWidth < 7) { outline.OutlineWidth += 0.1f;  } else { activateOutline = false; }         }
+        if (distance > 18) { if (outline.OutlineWidth > 0) { outline.OutlineWidth -= 0.1f; activateOutline = false; } }
+        if (outline.OutlineWidth < 0) { outline.OutlineWidth = 0; }
+        
+
+
+
+
         }
 
 
-
-
-
+    public void OnDisable()
+    {
+        transform.GetChild(0).GetComponent<Outline>().OutlineWidth = 0;
+        GetComponent<NPCController>().activateOutline = false;
+    }
+    public void OnEnable()
+    {
+        GetComponent<NPCController>().update = true;
     }
 
 
@@ -395,27 +408,6 @@ public class NPCController : MonoBehaviour
     {
         if (target == null)
         {
-            
-            //DETERMINE TARGET
-            float distance;
-            float p1_dist = Vector3.Distance(head.position, Player.transform.position);
-            float p2_dist = Vector3.Distance(head.position, Client.transform.position);
-
-
-
-            if(Mathf.Approximately(Mathf.Round(p1_dist * 10) / 10f, 10f))
-            {
-                Debug.Log("----------------------------------------------------------SOUNDS");
-                int i;
-                i = Random.Range(1, 3);
-                AudioManager.instance.Play("Wander" + i.ToString());
-            }
-
-
-            //ALWAYS CHOOSE CLOSEST TARGET
-            if (p1_dist < p2_dist) { distance = p1_dist; targetPlayer = Player.transform; } else { distance = p2_dist; targetPlayer =Client.transform; }
-
-            // Debug.Log("DISTANCE FROM TARGET " + distance);
 
             if (distance <= range)
             {

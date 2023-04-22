@@ -138,7 +138,7 @@ public class ShootingSystem : MonoBehaviour
             focusIndicatorUI.color = Color.white;
 
             //TARGET PARAMS
-            targetParams(50);
+            targetParams(20); //GetComponent<FlashlightSystem>().FlashLight.range
             if (isVisible)
             {
                 if (target != null) { 
@@ -176,14 +176,6 @@ public class ShootingSystem : MonoBehaviour
     {
         //if (AmmoShoot)
         {
-            //if (!this.canShoot)
-            // return;
-
-
-
-            //Debug.Log(isEnemy.ToString() + isVisible.ToString() + isHeadshot.ToString());
-            //Debug.Log(camera.fieldOfView);
-
 
             //---------------------CAN SHOOT------------------------------------
             if (Mathf.Approximately(Mathf.Round(camera.fieldOfView * 10) / 10f, aiming.zoom))//if current zoom is close to target zoom
@@ -226,19 +218,6 @@ public class ShootingSystem : MonoBehaviour
 
 
         }
-
-        /*if (ammoClipCount <= 0)
-        {
-            AmmoShoot = false;
-
-            if (!this.canShoot)
-                return;
-            AudioManager.instance.Play(noAmmo);
-        }
-        else
-        {
-            AmmoShoot = true;
-        }*/
 
         return true;
     }

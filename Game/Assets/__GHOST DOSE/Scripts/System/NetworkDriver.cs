@@ -18,7 +18,7 @@ namespace NetworkSystem
         //private float sync_timer = 0.0f;
         //private float delay = 15f;//SYNC DELAY
 
-        public bool HOST = false;
+        public bool HOST = true;
         public bool connected = false;
         private float pingTimer = 0.0f;
         private float PING = 0.0f;
@@ -30,7 +30,6 @@ namespace NetworkSystem
             //=================================================================  S E T  U P  ===============================================================
 
             Debug.Log("SETTING UP NETWORK");
-
 
             sioCom = gameObject.AddComponent<SocketIOCommunicator>();
             sioCom.secureConnection = true;
@@ -114,16 +113,18 @@ namespace NetworkSystem
                         GameDriver.instance.twoPlayer = true;
                         // COMPARE PING VALUES
                         if (float.Parse(dict["ping"]) > PING) { Debug.Log("IM HOST"); sioCom.Instance.Emit("host", sioCom.Instance.SocketID, true); }
-                        else { Debug.Log("THEYRE HOST"); HOST = false; sioCom.Instance.Emit("host", dict["sid"], true); }
+                        else { Debug.Log("THEYRE HOST"); if (!GameDriver.instance.NETWORK_TEST) { HOST = false; } sioCom.Instance.Emit("host", dict["sid"], true); }
                     }
                 }
             });
             //-----------------HOST / GAME START----------------->
             sioCom.Instance.On("host", (payload) =>
             {
-                GameDriver.instance.MSG = "Two Player Mode - HOST " + payload + "     MY SOCKET    " + sioCom.Instance.SocketID;
+                //GameDriver.instance.MSG = "Two Player Mode - HOST " + payload + "     MY SOCKET    " + sioCom.Instance.SocketID;
                 Debug.Log("HOST DETERMINED " + payload);
-                if (payload.ToString() == sioCom.Instance.SocketID && !GameDriver.instance.NETWORK_TEST) { HOST = true; UpdateEnemies(); } //
+                if (payload.ToString() != sioCom.Instance.SocketID) { if (!GameDriver.instance.NETWORK_TEST) { HOST = false; } }
+                else { UpdateEnemies(); }
+                GameDriver.instance.MSG = "Two Player Mode - HOST " + HOST;
 
             });
             //-----------------CHOOSE BRO----------------->
@@ -158,7 +159,7 @@ namespace NetworkSystem
                 if (GameDriver.instance.GAMESTART)
                 {
                     JObject data = JObject.Parse(payload);
-                    Debug.Log("PLAYER ACTION" + data);
+                    //Debug.Log("PLAYER ACTION" + data);
                     Dictionary<string, string> dict = data.ToObject<Dictionary<string, string>>();
                     //Client.GetComponent<ClientPlayerController>().animation = dict["animation"];
                     GameDriver.instance.Client.GetComponent<ClientPlayerController>().targWalk = float.Parse(dict["walk"]);
@@ -170,7 +171,8 @@ namespace NetworkSystem
                     GameDriver.instance.Client.GetComponent<ClientPlayerController>().speed = float.Parse(dict["speed"]);
                     GameDriver.instance.Client.GetComponent<ClientPlayerController>().aim = bool.Parse(dict["aim"]);
                     GameDriver.instance.Client.GetComponent<ClientPlayerController>().gameObject.GetComponent<ClientFlashlightSystem>().FlashLight.intensity = float.Parse(dict["flintensity"]);
-                    GameDriver.instance.Client.GetComponent<ClientPlayerController>().Flashlight(bool.Parse(dict["flashlight"]));
+                    GameDriver.instance.Client.GetComponent<ClientPlayerController>().flOn = bool.Parse(dict["fl"]);//FLASHLIGHT
+                    GameDriver.instance.Client.GetComponent<ClientPlayerController>().wlOn = bool.Parse(dict["wl"]);//WEAPONLIGHT
                     if (bool.Parse(dict["fireK2"])) { GameDriver.instance.Client.GetComponent<ClientPlayerController>().k2.GetComponent<K2>().fire(true); }
                     if (GameDriver.instance.Client.GetComponent<ClientPlayerController>().gear != int.Parse(dict["gear"])) { GameDriver.instance.Client.GetComponent<ClientPlayerController>().ChangeGear(int.Parse(dict["gear"])); }//gear changes
                     if (bool.Parse(dict["damage"])) { GameDriver.instance.Client.GetComponent<ClientPlayerController>().Flinch(new Vector3(float.Parse(dict["fx"]), float.Parse(dict["fy"]), float.Parse(dict["fz"]))); }
@@ -218,6 +220,22 @@ namespace NetworkSystem
                 }
 
             });
+            //-----------------DISABLE  ----------------->
+            sioCom.Instance.On("disable", (payload) =>
+            {
+                Debug.Log(" DISABLE EVENT  " + payload);
+                JObject data = JObject.Parse(payload);
+                Dictionary<string, string> dict = data.ToObject<Dictionary<string, string>>();
+                foreach (GameObject enemyObject in GetComponent<DisablerControl>().enemyObjects)
+                {
+                    if(enemyObject.name == dict["obj"])
+                    {
+                        enemyObject.SetActive(bool.Parse(dict["active"]));
+                        break;
+                    }
+                }
+            });
+
             //-----------------ENEMY  ----------------->
             sioCom.Instance.On("enemy", (payload) =>
             {
@@ -295,16 +313,23 @@ namespace NetworkSystem
             //--------------------SYNC ROOM--------------------
             sioCom.Instance.On("sync", (payload) =>
             {
-                /*JObject data = JObject.Parse(payload);
+                JObject data = JObject.Parse(payload);
                 Debug.Log("SYNCING " + data);
                 Dictionary<string, Dictionary<string, string>> dict = data.ToObject<Dictionary<string, Dictionary<string, string>>>();
                 // Log the object positions to the console
                 foreach (KeyValuePair<string, Dictionary<string, string>> obj in dict)
                 {
-                    GameObject thisObj = GameObject.Find(obj.Key);
-                    Vector3 newPosition = new Vector3(float.Parse(obj.Value["x"]), float.Parse(obj.Value["y"]), float.Parse(obj.Value["z"]));
-                    thisObj.transform.position = newPosition;
-                }*/
+                    //search list of enemies for corresopnding obj
+                    foreach (GameObject enemyObject in GetComponent<DisablerControl>().enemyObjects)
+                    {
+                        if (enemyObject.name == obj.Key)
+                        {
+                            enemyObject.transform.position = new Vector3(float.Parse(obj.Value["x"]), float.Parse(obj.Value["y"]), float.Parse(obj.Value["z"]));
+                            enemyObject.SetActive(bool.Parse(obj.Value["active"]));
+                            break;
+                        }
+                    }
+                }
 
             });
             //-----------------CREATE----------------->
@@ -327,68 +352,32 @@ namespace NetworkSystem
         }
 
 
-        public void UpdateEnemies()
-        {
-
-            List<NPCController> enemyObjects = new List<NPCController>();
-
-            GameObject[] shadowers = GameObject.FindGameObjectsWithTag("Shadower");
-            GameObject[] ghosts = GameObject.FindGameObjectsWithTag("Ghost");
-
-            foreach (GameObject shadower in shadowers)
-            {
-                NPCController ghostVFX = shadower.GetComponent<NPCController>();
-                if (ghostVFX != null)
-                {
-                    enemyObjects.Add(ghostVFX);
-                }
-            }
-
-            foreach (GameObject ghost in ghosts)
-            {
-                NPCController ghostVFX = ghost.GetComponent<NPCController>();
-                if (ghostVFX != null)
-                {
-                    enemyObjects.Add(ghostVFX);
-                }
-            }
-
-            foreach (NPCController ghostVFX in enemyObjects)
-            {
-                ghostVFX.playerJoined = true;
-            }
-        }
 
         //-----------------------------SYNC UP EVERYTHING----------------------------
-        public void Update()
+        public void UpdateEnemies()
         {
-            // if (GameDriver.instance.twoPlayer && GameDriver.instance.GAMESTART) { GameDriver.instance.MSG = "Two Player Mode - is Host " + HOST; }
-            //if (GameDriver.instance.TEST) { if (GameDriver.instance.HOSTOVERRIDE) { HOST = true; } else { HOST = false; } }
-            /*if ((Time.time > sync_timer + delay) && HOST)
-            {
-                Debug.Log("SYNCING ");
+            
+                //Debug.Log("SYNCING ");
                 //Create a dictionary for this object's position in structure {"objPlayer":{"x":-2.17,"y":-0.01,"z":0.0},"objOtherPlayer":{"x":4.06,"y":-0.01,"z":0.0}}
                Dictionary<string, Dictionary<string, string>> objStates = new Dictionary<string, Dictionary<string, string>>();
-               foreach (GameObject obj in GameObject.FindGameObjectsWithTag("sync"))
+               foreach (GameObject obj in GetComponent<DisablerControl>().enemyObjects)
                {
-                   //if (GetComponent<Rigidbody>().velocity.magnitude > 0.1f)//if its moving
                    {
                        string objName;
-                       Dictionary<string, string> positionDict = new Dictionary<string, string>();
+                       Dictionary<string, string> propsDict = new Dictionary<string, string>();
 
-                       // Add the position values to the dictionary
-                       positionDict.Add("x", obj.transform.position.x.ToString("F2"));
-                       positionDict.Add("y", obj.transform.position.y.ToString("F2"));
-                       positionDict.Add("z", obj.transform.position.z.ToString("F2"));
+                        // Add the position values to the dictionary
+                        propsDict.Add("x", obj.gameObject.transform.position.x.ToString("F2"));
+                        propsDict.Add("y", obj.gameObject.transform.position.y.ToString("F2"));
+                        propsDict.Add("z", obj.gameObject.transform.position.z.ToString("F2"));
+                        propsDict.Add("active", obj.gameObject.activeSelf.ToString());
 
-                       // Add the object's dictionary to the main dictionary with the object name as the key
-                       objName = obj.name;
-                       objStates.Add(objName, positionDict);
+                        // Add the object's dictionary to the main dictionary with the object name as the key
+                        objName = obj.name;
+                       objStates.Add(objName, propsDict);
                    }
                }
                sioCom.Instance.Emit("sync", JsonConvert.SerializeObject(objStates), false);
-               sync_timer = Time.time;
-           }*/
 
         }
 
