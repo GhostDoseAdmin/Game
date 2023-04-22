@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using static UnityEngine.GraphicsBuffer;
+using InteractionSystem;
 
 //[ExecuteInEditMode]
 public class CamFlash : MonoBehaviour
@@ -19,6 +20,8 @@ public class CamFlash : MonoBehaviour
 
     public void Start()
     {
+        AudioManager.instance.Play("ShotCam");
+
         StartCoroutine(DestroyAfterDelay(this.gameObject));
        
         ghostObjects = new List<NPCController>();

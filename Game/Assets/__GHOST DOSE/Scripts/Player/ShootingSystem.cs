@@ -190,7 +190,7 @@ public class ShootingSystem : MonoBehaviour
             {
 
 
-                AudioManager.instance.Play("ShotCam");
+                //AudioManager.instance.Play("ShotCam");
                 muzzleFlash.Play();
                 Shell.Play();
                 int damage = 0;

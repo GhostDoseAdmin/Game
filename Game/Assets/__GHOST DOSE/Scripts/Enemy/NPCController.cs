@@ -480,8 +480,8 @@ public class NPCController : MonoBehaviour
     {
         if (damageAmount == 100) { AudioManager.instance.Play("Headshot"); }
         //--------AGRO-----------
+        if (!agro) { AudioManager.instance.Play("Agro"); }
         agro = true; angleView = 360;
-        AudioManager.instance.Play("Agro");
         if (damageAmount == 0) { range = 10; }
         else { range = 30; }
 
@@ -505,6 +505,7 @@ public class NPCController : MonoBehaviour
             this.gameObject.transform.GetChild(0).GetComponent<Outline>().OutlineWidth = 0;
             GameObject death = Instantiate(Death, transform.position, transform.rotation);
             if (Shadower) { death.GetComponent<GhostVFX>().Shadower = true; death.GetComponent<EnemyDeath>().Shadower = true; }
+            healthEnemy = startHealth;
 
 
         }

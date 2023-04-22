@@ -200,7 +200,7 @@ public class Teleport : MonoBehaviour
         DEATH = false;
         GetComponent<NPCController>().agro = false;
         GetComponent<NPCController>().target = null;
-        GetComponent<NPCController>().healthEnemy = GetComponent<NPCController>().startHealth;
+        //GetComponent<NPCController>().healthEnemy = GetComponent<NPCController>().startHealth;
         GetComponent<NPCController>().angleView = GetComponent<NPCController>().startAngleView;
         GetComponent<NPCController>().range = GetComponent<NPCController>().startRange;
     }

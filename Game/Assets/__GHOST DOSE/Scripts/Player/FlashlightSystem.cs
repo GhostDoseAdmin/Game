@@ -13,7 +13,7 @@ public class FlashlightSystem : MonoBehaviour
     [SerializeField] public GameObject inventoryFlashlight;
     public Light FlashLight = null;
      public Light WeaponLight = null;
-    [SerializeField] public float maxFlashlightIntensity = 1.0f;
+    //[SerializeField] public float maxFlashlightIntensity = 1.0f;
 
     [Header("BATTERY PARAMETERS")]
     [Space(10)]
@@ -40,9 +40,9 @@ public class FlashlightSystem : MonoBehaviour
 
 
     public float weapLightAngle = 45;
-    private float flashLightAngle = 50;
-    public float weapLightIntensity = 10;
-    private float flashLightIntensity = 10;
+    private float flashLightAngle = 52;
+    public float weapLightIntensity = 5;//20
+    private float flashLightIntensity = 5;
 
 
     public static FlashlightSystem instance;
@@ -83,7 +83,7 @@ public class FlashlightSystem : MonoBehaviour
         handFlashlight.SetActive(false);
 
         inventoryFlashlight.SetActive(false);
-        FlashLight.intensity = maxFlashlightIntensity;
+        //FlashLight.intensity = maxFlashlightIntensity;
         batteryCountUI.text = batteryCount.ToString("0");
     }
 
@@ -105,7 +105,7 @@ public class FlashlightSystem : MonoBehaviour
     void Update()
     {
         Flashlight();
-        ReloadBattery();
+        //ReloadBattery();
     }
 
     void Flashlight()
@@ -139,13 +139,13 @@ public class FlashlightSystem : MonoBehaviour
 
             if (isFlashlightOn)
             {
-                if (FlashLight.intensity <= maxFlashlightIntensity && FlashLight.intensity > 0)
+                //if (FlashLight.intensity <= maxFlashlightIntensity && FlashLight.intensity > 0)
                 {
                     //FlashLight.intensity -= (0.007f * Time.deltaTime) * maxFlashlightIntensity;
                     //batteryLevel.fillAmount -= 0.007f * Time.deltaTime;
                 }
 
-                if (FlashLight.intensity >= maxFlashlightIntensity)
+                //if (FlashLight.intensity >= maxFlashlightIntensity)
                 {
                     //FlashLight.intensity = maxFlashlightIntensity;
                 }
@@ -160,19 +160,19 @@ public class FlashlightSystem : MonoBehaviour
             if (FlashLight.enabled == false)
             {
                 {
-                    FlashLight.intensity += (0.05f * Time.deltaTime) * maxFlashlightIntensity;
+                   // FlashLight.intensity += (0.05f * Time.deltaTime) * maxFlashlightIntensity;
                     batteryLevel.fillAmount += 0.05f * Time.deltaTime;
                 }
 
-                if (FlashLight.intensity >= maxFlashlightIntensity)
+                //if (FlashLight.intensity >= maxFlashlightIntensity)
                 {
-                    FlashLight.intensity = maxFlashlightIntensity;
+                    //FlashLight.intensity = maxFlashlightIntensity;
                 }
             }
         }
     }
 
-    void ReloadBattery()
+    /*void ReloadBattery()
     {
         if (Input.GetKey(InputManager.instance.reloadBattery) && batteryCount > 0 && FlashLight.intensity < maxFlashlightIntensity)
         {
@@ -238,5 +238,6 @@ public class FlashlightSystem : MonoBehaviour
             }
         }
     }
+    */
 
 }

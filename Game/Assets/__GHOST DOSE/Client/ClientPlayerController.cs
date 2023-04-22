@@ -250,7 +250,7 @@ public class ClientPlayerController : MonoBehaviour
                 {
                     shootPoint.LookAt(targetPos);
                     anim.SetBool("Shoot", true);
-                    AudioManager.instance.Play("ShotCam");
+                    //AudioManager.instance.Play("ShotCam");
                     muzzleFlash.Play();
                     Shell.Play();
 
@@ -305,6 +305,7 @@ public class ClientPlayerController : MonoBehaviour
             || (aim && GetComponent<ClientFlashlightSystem>().WeaponLight.enabled == true && !on)
             )
         {
+            Debug.Log("--------------------------------------FLASHLIGHT----------------------------------------------");
             AudioManager.instance.Play("FlashlightClick");
             if (aim == false)
             {

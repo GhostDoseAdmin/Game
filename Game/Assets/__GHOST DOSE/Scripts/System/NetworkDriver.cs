@@ -158,7 +158,7 @@ namespace NetworkSystem
                 if (GameDriver.instance.GAMESTART)
                 {
                     JObject data = JObject.Parse(payload);
-                    //Debug.Log("PLAYER ACTION" + data);
+                    Debug.Log("PLAYER ACTION" + data);
                     Dictionary<string, string> dict = data.ToObject<Dictionary<string, string>>();
                     //Client.GetComponent<ClientPlayerController>().animation = dict["animation"];
                     GameDriver.instance.Client.GetComponent<ClientPlayerController>().targWalk = float.Parse(dict["walk"]);
@@ -224,7 +224,7 @@ namespace NetworkSystem
 
                 JObject data = JObject.Parse(payload);
                 Dictionary<string, string> dict = data.ToObject<Dictionary<string, string>>();
-                Debug.Log("RECEIVING enemy " + data);
+                //Debug.Log("RECEIVING enemy " + data);
                 GameObject enemy = GameObject.Find(dict["object"]);
                 if (enemy != null)
                 {
