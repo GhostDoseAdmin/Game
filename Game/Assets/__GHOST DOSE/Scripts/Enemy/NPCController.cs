@@ -266,7 +266,9 @@ public class NPCController : MonoBehaviour
                 if (distance > hitRange)
             {
                 animEnemy.SetBool("Fighting", false);
-                GetComponent<NavMeshAgent>().speed = walkSpeed;//DOESNT AFFECT THIS
+                animEnemy.SetBool("Run", true);
+                animEnemy.SetBool("Attack", false);
+                GetComponent<NavMeshAgent>().speed = walkSpeed*2;//DOESNT AFFECT THIS
                 //GetComponent<NavMeshAgent>().enabled = true;
                 if (attacking)
                 {
@@ -276,9 +278,9 @@ public class NPCController : MonoBehaviour
 
                 }
                 navmesh.isStopped = false;
-                animEnemy.SetBool("Run", true); 
+               
                 //if(GetComponent<GhostVFX>().invisible) { animEnemy.SetBool("Run", false); animEnemy.SetBool("walk", true); }
-                animEnemy.SetBool("Attack", false);
+                
                 if (distance > minDist) { transform.LookAt(targetPlayer); }
             }
             //ATTACK TARGET
@@ -286,6 +288,8 @@ public class NPCController : MonoBehaviour
             {
                 attacking = true;
                 animEnemy.SetBool("Fighting", true);
+                animEnemy.SetBool("Run", true);
+                animEnemy.SetBool("Attack", true);
                 //GetComponent<NavMeshAgent>().enabled = false;
                 GetComponent<NavMeshAgent>().speed = 0;
 
@@ -297,7 +301,7 @@ public class NPCController : MonoBehaviour
 
                 }
                 navmesh.isStopped = true;
-               animEnemy.SetBool("Run", true); 
+              
                 // animEnemy.SetBool("Walk", false);
                 //TURN TO TARGET
                 if (distance > minDist)
@@ -307,7 +311,7 @@ public class NPCController : MonoBehaviour
                     transform.rotation = Quaternion.Slerp(transform.rotation, lookRotation, Time.deltaTime * 10);
                 }
 
-                animEnemy.SetBool("Attack", true);
+               
                 if (distance > minDist) { transform.LookAt(targetPlayer); }
             }
         }
@@ -318,20 +322,24 @@ public class NPCController : MonoBehaviour
             if (!attacking)
             {
                 animEnemy.SetBool("Fighting", false);
+                animEnemy.SetBool("Run", true);
+                animEnemy.SetBool("Attack", false);
                 //GetComponent<NavMeshAgent>().speed = walkSpeed;
-                GetComponent<NavMeshAgent>().speed = walkSpeed;
+                GetComponent<NavMeshAgent>().speed = walkSpeed*2;
 
                 navmesh.isStopped = false;
                 if (distance <= hitRange) { navmesh.isStopped = true; }
-                animEnemy.SetBool("Run", true);
+                
                // if (GetComponent<GhostVFX>().invisible) { animEnemy.SetBool("Run", false); animEnemy.SetBool("walk", true); }
-                animEnemy.SetBool("Attack", false);
+                
                 if (distance > minDist) { transform.LookAt(targetPlayer); }
             }
             //ATTACK TARGET
             else
             {
                 animEnemy.SetBool("Fighting", true);
+                animEnemy.SetBool("Run", true);
+                animEnemy.SetBool("Attack", true);
                 //GetComponent<NavMeshAgent>().speed = 0;
                 GetComponent<NavMeshAgent>().speed = 0;
 
@@ -342,7 +350,7 @@ public class NPCController : MonoBehaviour
                 }
 
                 navmesh.isStopped = true;
-                animEnemy.SetBool("Run", true);
+                
                // animEnemy.SetBool("Walk", false);
                 //TURN TO TARGET
                 if (distance > minDist)
@@ -352,7 +360,7 @@ public class NPCController : MonoBehaviour
                     transform.rotation = Quaternion.Slerp(transform.rotation, lookRotation, Time.deltaTime * 10);
                 }
 
-                animEnemy.SetBool("Attack", true);
+                
                 
                 if (GetComponent<Teleport>().debugAttack) { animEnemy.Play("Attack"); GetComponent<Teleport>().debugAttack = false; }
                 if (distance > minDist) { transform.LookAt(targetPlayer); }
@@ -393,14 +401,25 @@ public class NPCController : MonoBehaviour
             float p1_dist = Vector3.Distance(head.position, Player.transform.position);
             float p2_dist = Vector3.Distance(head.position, Client.transform.position);
 
+
+
+            if(Mathf.Approximately(Mathf.Round(p1_dist * 10) / 10f, 10f))
+            {
+                Debug.Log("----------------------------------------------------------SOUNDS");
+                int i;
+                i = Random.Range(1, 3);
+                AudioManager.instance.Play("Wander" + i.ToString());
+            }
+
+
             //ALWAYS CHOOSE CLOSEST TARGET
             if (p1_dist < p2_dist) { distance = p1_dist; targetPlayer = Player.transform; } else { distance = p2_dist; targetPlayer =Client.transform; }
 
-           // Debug.Log("DISTANCE FROM TARGET " + distance);
+            // Debug.Log("DISTANCE FROM TARGET " + distance);
 
             if (distance <= range)
             {
-                
+
                 // Debug.Log("TARGET IS " + targetPlayer.gameObject.name + " DISTANCE " + distance);
 
                 Quaternion look = Quaternion.LookRotation(targetPlayer.position - head.position);
@@ -420,6 +439,7 @@ public class NPCController : MonoBehaviour
                         if (hit.transform == targetPlayer)
                         {
                             target = targetPlayer;
+                            AudioManager.instance.Play("EnemyEngage");
                         }
                         else
                         {
@@ -458,9 +478,10 @@ public class NPCController : MonoBehaviour
 
     public void TakeDamage(int damageAmount, bool otherPlayer)
     {
-        if (damageAmount == 100) { AudioManager.instance.Play("Headshot"); Debug.Log("-------------------------------HEADSHOT--------------------------------------"); }
+        if (damageAmount == 100) { AudioManager.instance.Play("Headshot"); }
         //--------AGRO-----------
-        agro = true; angleView = 360; 
+        agro = true; angleView = 360;
+        AudioManager.instance.Play("Agro");
         if (damageAmount == 0) { range = 10; }
         else { range = 30; }
 
@@ -479,7 +500,7 @@ public class NPCController : MonoBehaviour
             }
             GetComponent<Teleport>().CheckTeleport(true, true);
             if (NetworkDriver.instance.HOST) { GetComponent<Teleport>().Invoke("Respawn", spawnTimer); }
-
+            AudioManager.instance.Play("EnemyDeath");
             this.gameObject.transform.GetChild(0).GetComponent<SkinnedMeshRenderer>().enabled = false;
             this.gameObject.transform.GetChild(0).GetComponent<Outline>().OutlineWidth = 0;
             GameObject death = Instantiate(Death, transform.position, transform.rotation);

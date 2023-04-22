@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using static UnityEngine.ParticleSystem;
-
+using InteractionSystem;
 
 public class EnemyDeath : MonoBehaviour
 {
@@ -41,7 +41,7 @@ public class EnemyDeath : MonoBehaviour
     {
         if (Shadower) { explo_Shadower.SetActive(true); }
         else { explo.SetActive(true); }
-
+        AudioManager.instance.Play("EnemyExplode");
         Invoke("Finish", 1f);
         Invoke("StopMesh", 0.5f);
 
@@ -53,7 +53,7 @@ public class EnemyDeath : MonoBehaviour
     }
     private void Finish()
     {
- 
+        AudioManager.instance.Play("EnemyExplode");
         effect.SetActive(false);
         end = true;
         Destroy(gameObject, 0.5f);

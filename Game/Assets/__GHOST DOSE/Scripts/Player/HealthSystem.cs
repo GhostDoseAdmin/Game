@@ -118,9 +118,8 @@ public class HealthSystem : MonoBehaviour
 
 	public void HealthDamage(int damage , Vector3 force)
     {
-		Debug.Log("-------------------------------------------------------------------------------OUCH");
-
-		GetComponent<PlayerController>().emitDamage = true;
+        AudioManager.instance.Play("EnemyHit");
+        GetComponent<PlayerController>().emitDamage = true;
 		GetComponent<PlayerController>().damageForce = force;
         GetComponent<Rigidbody>().AddForce(force, ForceMode.Impulse);
         GetComponent<Animator>().Play("Flinch", -1, 0f); //-1

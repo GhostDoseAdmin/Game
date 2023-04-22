@@ -4,6 +4,7 @@ using NetworkSystem;
 using UnityEngine;
 using UnityEngine.AI;
 using UnityEngine.InputSystem.Controls;
+using InteractionSystem;
 
 public class Teleport : MonoBehaviour
 {
@@ -74,6 +75,7 @@ public class Teleport : MonoBehaviour
         //STEP 1 - SETUP
         if (teleport == 1)
         {
+            if (GetComponent<NPCController>().agro) { AudioManager.instance.Play("Disappear"); }
             fadeTimer = Time.time;
             if (GetComponent<NPCController>().target != null) { target = GetComponent<NPCController>().target; }
             if (!NetworkDriver.instance.HOST) { GetComponent<NPCController>().enabled = false; }
@@ -138,6 +140,7 @@ public class Teleport : MonoBehaviour
         //SETP 3 - REAPPEAR --CLIENT
         if(teleport == 3)
         {
+            if (GetComponent<NPCController>().agro) { AudioManager.instance.Play("Reappear"); }
             if (!delayForEmit)
             { //skip a frame to allow NPCcontroller to emit state 3
                 teleport = 0;
