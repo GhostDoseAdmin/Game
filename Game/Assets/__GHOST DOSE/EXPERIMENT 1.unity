@@ -1388,7 +1388,6 @@ MonoBehaviour:
   inventoryFlashlight: {fileID: 0}
   FlashLight: {fileID: 0}
   WeaponLight: {fileID: 0}
-  maxFlashlightIntensity: 2
   batteryCount: 1
   replaceBatteryTimer: 1
   maxReplaceBatteryTimer: 1
@@ -8800,7 +8799,6 @@ MonoBehaviour:
   inventoryFlashlight: {fileID: 0}
   FlashLight: {fileID: 0}
   WeaponLight: {fileID: 0}
-  maxFlashlightIntensity: 1
   pickUp: 
   flashlightClick: 
   reloadBattery: 
@@ -10147,36 +10145,9 @@ MonoBehaviour:
     loop: 0
     mixerGroup: {fileID: 0}
     source: {fileID: 0}
-  - name: AttackKnife
-    clip: {fileID: 8300000, guid: 5108fa2e19d04fa40a2246c54a8360a0, type: 3}
-    volume: 0.1
-    volumeVariance: 0
-    pitch: 1
-    pitchVariance: 0
-    loop: 0
-    mixerGroup: {fileID: 0}
-    source: {fileID: 0}
   - name: ShotCam
     clip: {fileID: 8300000, guid: 46ebdfbbac7e29e4882c311929ee6a72, type: 3}
     volume: 0.4
-    volumeVariance: 0
-    pitch: 1
-    pitchVariance: 0
-    loop: 0
-    mixerGroup: {fileID: 0}
-    source: {fileID: 0}
-  - name: EmptyGun
-    clip: {fileID: 8300000, guid: 1fc091528901794428878431cf13540a, type: 3}
-    volume: 0.1
-    volumeVariance: 0
-    pitch: 1
-    pitchVariance: 0
-    loop: 0
-    mixerGroup: {fileID: 0}
-    source: {fileID: 0}
-  - name: ReloadPistol
-    clip: {fileID: 8300000, guid: b7fb9f5b54a492849a13190d220eb7f5, type: 3}
-    volume: 0.1
     volumeVariance: 0
     pitch: 1
     pitchVariance: 0
@@ -12806,7 +12777,6 @@ MonoBehaviour:
   inventoryFlashlight: {fileID: 0}
   FlashLight: {fileID: 0}
   WeaponLight: {fileID: 0}
-  maxFlashlightIntensity: 2
   batteryCount: 1
   replaceBatteryTimer: 1
   maxReplaceBatteryTimer: 1

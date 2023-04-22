@@ -250,7 +250,7 @@ public class ClientPlayerController : MonoBehaviour
                 {
                     shootPoint.LookAt(targetPos);
                     anim.SetBool("Shoot", true);
-                    AudioManager.instance.Play("ShotCam");
+                    //AudioManager.instance.Play("ShotCam");
                     muzzleFlash.Play();
                     Shell.Play();
 

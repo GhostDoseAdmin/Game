@@ -13,7 +13,7 @@ public class ClientFlashlightSystem : MonoBehaviour
     [SerializeField] public GameObject inventoryFlashlight;
     [SerializeField] public Light FlashLight = null;
     [SerializeField] public Light WeaponLight = null;
-    [SerializeField] public float maxFlashlightIntensity = 1.0f;
+    //[SerializeField] public float maxFlashlightIntensity = 1.0f;
 
     [Header("FLASHLIGHT SOUNDS")]
     [Space(10)]
@@ -29,8 +29,8 @@ public class ClientFlashlightSystem : MonoBehaviour
 
     public float weapLightAngle = 45;
     private float flashLightAngle = 52;
-    public float weapLightIntensity =2;
-    private float flashLightIntensity =2;
+    public float weapLightIntensity =5;
+    private float flashLightIntensity =5;
 
 
     private static utilities util;
@@ -69,7 +69,7 @@ public class ClientFlashlightSystem : MonoBehaviour
         handFlashlight.SetActive(false);
 
         inventoryFlashlight.SetActive(false);
-        FlashLight.intensity = maxFlashlightIntensity;
+        //FlashLight.intensity = maxFlashlightIntensity;
     }
     /*public void Flashlight()
     {

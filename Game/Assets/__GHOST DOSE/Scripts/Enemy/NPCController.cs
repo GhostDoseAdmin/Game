@@ -480,8 +480,8 @@ public class NPCController : MonoBehaviour
     {
         if (damageAmount == 100) { AudioManager.instance.Play("Headshot"); }
         //--------AGRO-----------
+        if (!agro) { AudioManager.instance.Play("Agro"); }
         agro = true; angleView = 360;
-        AudioManager.instance.Play("Agro");
         if (damageAmount == 0) { range = 10; }
         else { range = 30; }
 
