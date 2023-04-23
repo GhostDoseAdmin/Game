@@ -50,6 +50,7 @@ public class PlayerController : MonoBehaviour
     private GameObject k2Inventory;
     public bool changingGear;
 	public bool throwing = false;
+	public bool emitGear;
 
 
     [Space(10)]
@@ -177,27 +178,45 @@ public class PlayerController : MonoBehaviour
 
         if (Time.time > emit_timer + emit_delay)
             {
+				//--------------- DAMAGE EMIT-----------------
 				string dmgString = "";
 				if (emitDamage){
 					dmgString = $",'dmg':'{emitDamage}','fx':'{damageForce.x.ToString("F2")}','fy':'{damageForce.y.ToString("F2")}','fz':'{damageForce.z.ToString("F2")}'";
 					emitDamage = false;
 				}
-
+				//--------------- FLASHLIGHT EMIT-----------------
 				string flashLightString = "";
 				if (emitFlashlight){
 				bool anyFlashlight = false;
 				if (GetComponent<FlashlightSystem>().FlashLight.GetComponent<Light>().enabled || GetComponent<FlashlightSystem>().WeaponLight.GetComponent<Light>().enabled) { anyFlashlight = true; }
-				flashLightString = $",'fl':'{anyFlashlight}'"; //,'wl':'{GetComponent<FlashlightSystem>().WeaponLight.GetComponent<Light>().enabled}'
+				flashLightString = $",'fl':'{anyFlashlight}'";
                 emitFlashlight = false;
 				}
-            
-			string actions = $"{{'gear':'{gear}','fireK2':'{fireK2}','flintensity':'{gameObject.GetComponent<FlashlightSystem>().FlashLight.intensity}','aim':'{Input.GetMouseButton(1)}','x':'{transform.position.x.ToString("F2")}','y':'{transform.position.y.ToString("F2")}','z':'{transform.position.z.ToString("F2")}','speed':'{speed.ToString("F2")}','ax':'{crosshairPos.x.ToString("F0")}','ay':'{crosshairPos.y.ToString("F0")}','az':'{crosshairPos.z.ToString("F0")}'{dmgString}{flashLightString}}}";
+				//--------------- K2 EMIT-----------------
+				string k2String ="";
+				if (fireK2){
+                k2String = $",'k2':''";
+                fireK2 = false;
+				}
+				//--------------- GEAR EMIT-----------------
+				string gearString ="";
+				if (emitGear){
+                gearString = $",'gear':'{gear}'";
+                emitGear = false;
+				}
+				//--------------- AIM EMIT-----------------
+				string aimString = "";
+				if (Input.GetMouseButton(1)){
+					aimString = $",'aim':''";
+				}
+			//--------------- E M I T   S T R I N G ----------------------
+            string actions = $"{{'flintensity':'{gameObject.GetComponent<FlashlightSystem>().FlashLight.intensity}','x':'{transform.position.x.ToString("F2")}','y':'{transform.position.y.ToString("F2")}','z':'{transform.position.z.ToString("F2")}','speed':'{speed.ToString("F2")}','ax':'{crosshairPos.x.ToString("F0")}','ay':'{crosshairPos.y.ToString("F0")}','az':'{crosshairPos.z.ToString("F0")}'{dmgString}{flashLightString}{k2String}{gearString}{aimString}}}";
 
 
 			
 			if (actions != prevEmit) { NetworkDriver.instance.sioCom.Instance.Emit("player_action", JsonConvert.SerializeObject(actions), false); prevEmit = actions; }
 			
-			fireK2 = false;
+			
 			emit_timer = Time.time;//cooldown
 			}
 
@@ -297,6 +316,7 @@ public class PlayerController : MonoBehaviour
             //START OF GEARCHANGE
             if (Input.GetKeyDown(InputManager.instance.gear))
 			{
+				emitGear = true;
                 anim.SetBool("GetGear",true);
                 gear += 1;
 				if (gear > 2) { gear = 1; }

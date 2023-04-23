@@ -125,6 +125,7 @@ namespace NetworkSystem
                 if (payload.ToString() != sioCom.Instance.SocketID) { if (!GameDriver.instance.NETWORK_TEST) { HOST = false; } }
                 else { UpdateEnemies(); }
                 GameDriver.instance.Player.GetComponent<PlayerController>().emitFlashlight = true;
+                GameDriver.instance.Player.GetComponent<PlayerController>().emitGear = true;
                 GameDriver.instance.MSG = "Two Player Mode - HOST " + HOST;
 
             });
@@ -162,20 +163,15 @@ namespace NetworkSystem
                     JObject data = JObject.Parse(payload);
                     Debug.Log("PLAYER ACTION" + data);
                     Dictionary<string, string> dict = data.ToObject<Dictionary<string, string>>();
-                    //Client.GetComponent<ClientPlayerController>().animation = dict["animation"];
-                   // GameDriver.instance.Client.GetComponent<ClientPlayerController>().targWalk = float.Parse(dict["walk"]);
-                    //GameDriver.instance.Client.GetComponent<ClientPlayerController>().targStrafe = float.Parse(dict["strafe"]);
-                    //GameDriver.instance.Client.GetComponent<ClientPlayerController>().running = bool.Parse(dict["run"]);
-                    //GameDriver.instance.Client.GetComponent<ClientPlayerController>().targetRotation = new Vector3(float.Parse(dict["rx"]), float.Parse(dict["ry"]), float.Parse(dict["rz"]));
                     GameDriver.instance.Client.GetComponent<ClientPlayerController>().targetPos.position = new Vector3(float.Parse(dict["ax"]), float.Parse(dict["ay"]), float.Parse(dict["az"]));
                     GameDriver.instance.Client.GetComponent<ClientPlayerController>().destination = new Vector3(float.Parse(dict["x"]), float.Parse(dict["y"]), float.Parse(dict["z"]));
                     GameDriver.instance.Client.GetComponent<ClientPlayerController>().speed = float.Parse(dict["speed"]);
-                    GameDriver.instance.Client.GetComponent<ClientPlayerController>().aim = bool.Parse(dict["aim"]);
+                    if (dict.ContainsKey("aim")) { GameDriver.instance.Client.GetComponent<ClientPlayerController>().aim = true; } else { GameDriver.instance.Client.GetComponent<ClientPlayerController>().aim = false; }
                     GameDriver.instance.Client.GetComponent<ClientPlayerController>().gameObject.GetComponent<ClientFlashlightSystem>().FlashLight.intensity = float.Parse(dict["flintensity"]);
                     if (dict.ContainsKey("fl")) { GameDriver.instance.Client.GetComponent<ClientPlayerController>().ToggleFlashlight(bool.Parse(dict["fl"])); }//FLASHLIGHT
                     //if (dict.ContainsKey("wl")) { GameDriver.instance.Client.GetComponent<ClientPlayerController>().wlOn = bool.Parse(dict["wl"]); }//WEAPONLIGHT
-                    if (bool.Parse(dict["fireK2"])) { GameDriver.instance.Client.GetComponent<ClientPlayerController>().k2.GetComponent<K2>().fire(true); }
-                    if (GameDriver.instance.Client.GetComponent<ClientPlayerController>().gear != int.Parse(dict["gear"])) { GameDriver.instance.Client.GetComponent<ClientPlayerController>().ChangeGear(int.Parse(dict["gear"])); }//gear changes
+                   if (dict.ContainsKey("k2")) { GameDriver.instance.Client.GetComponent<ClientPlayerController>().k2.GetComponent<K2>().fire(true); }
+                    if (dict.ContainsKey("gear")) { if (GameDriver.instance.Client.GetComponent<ClientPlayerController>().gear != int.Parse(dict["gear"])) { GameDriver.instance.Client.GetComponent<ClientPlayerController>().ChangeGear(int.Parse(dict["gear"])); } }//gear changes
                     if (dict.ContainsKey("dmg")) { if (bool.Parse(dict["dmg"])) { GameDriver.instance.Client.GetComponent<ClientPlayerController>().Flinch(new Vector3(float.Parse(dict["fx"]), float.Parse(dict["fy"]), float.Parse(dict["fz"]))); } }
                 }
 
