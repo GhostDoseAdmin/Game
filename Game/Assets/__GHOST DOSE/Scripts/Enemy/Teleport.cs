@@ -75,7 +75,8 @@ public class Teleport : MonoBehaviour
         //STEP 1 - SETUP
         if (teleport == 1)
         {
-            if (GetComponent<NPCController>().agro) { AudioManager.instance.Play("Disappear"); }
+            GetComponent<NPCController>().teleEmit = 1;
+            if (GetComponent<NPCController>().agro && !isWaypoint) { AudioManager.instance.Play("Disappear"); }
             fadeTimer = Time.time;
             if (GetComponent<NPCController>().target != null) { target = GetComponent<NPCController>().target; }
             if (!NetworkDriver.instance.HOST) { GetComponent<NPCController>().enabled = false; }
@@ -140,11 +141,12 @@ public class Teleport : MonoBehaviour
         //SETP 3 - REAPPEAR --CLIENT
         if(teleport == 3)//runs twice
         {
+            GetComponent<NPCController>().teleEmit = 3;
             if (!delayForEmit)
             { //skip a frame to allow NPCcontroller to emit state 3
                 teleport = 0;
                 //if (!GetComponent<NPCController>().GD.ND.HOST) { transform.position = new Vector3(transform.position.x, b4Pos.y, transform.position.z); }
-                if (GetComponent<NPCController>().agro && !GetComponent<NPCController>().enabled) { AudioManager.instance.Play("Reappear"); }
+                if (GetComponent<NPCController>().agro && !GetComponent<NPCController>().enabled && !isWaypoint) { AudioManager.instance.Play("Reappear"); }
                 GetComponent<NavMeshAgent>().enabled = true;
                 GetComponent<NPCController>().enabled = true;
                 GetComponent<Animator>().enabled = true;

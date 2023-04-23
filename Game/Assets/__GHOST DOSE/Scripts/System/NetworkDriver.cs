@@ -161,7 +161,7 @@ namespace NetworkSystem
                 if (GameDriver.instance.GAMESTART)
                 {
                     JObject data = JObject.Parse(payload);
-                    Debug.Log("PLAYER ACTION" + data);
+                    //Debug.Log("PLAYER ACTION" + data);
                     Dictionary<string, string> dict = data.ToObject<Dictionary<string, string>>();
                     GameDriver.instance.Client.GetComponent<ClientPlayerController>().targetPos.position = new Vector3(float.Parse(dict["ax"]), float.Parse(dict["ay"]), float.Parse(dict["az"]));
                     GameDriver.instance.Client.GetComponent<ClientPlayerController>().destination = new Vector3(float.Parse(dict["x"]), float.Parse(dict["y"]), float.Parse(dict["z"]));
@@ -169,7 +169,6 @@ namespace NetworkSystem
                     if (dict.ContainsKey("aim")) { GameDriver.instance.Client.GetComponent<ClientPlayerController>().aim = true; } else { GameDriver.instance.Client.GetComponent<ClientPlayerController>().aim = false; }
                     GameDriver.instance.Client.GetComponent<ClientPlayerController>().gameObject.GetComponent<ClientFlashlightSystem>().FlashLight.intensity = float.Parse(dict["flintensity"]);
                     if (dict.ContainsKey("fl")) { GameDriver.instance.Client.GetComponent<ClientPlayerController>().ToggleFlashlight(bool.Parse(dict["fl"])); }//FLASHLIGHT
-                    //if (dict.ContainsKey("wl")) { GameDriver.instance.Client.GetComponent<ClientPlayerController>().wlOn = bool.Parse(dict["wl"]); }//WEAPONLIGHT
                    if (dict.ContainsKey("k2")) { GameDriver.instance.Client.GetComponent<ClientPlayerController>().k2.GetComponent<K2>().fire(true); }
                     if (dict.ContainsKey("gear")) { if (GameDriver.instance.Client.GetComponent<ClientPlayerController>().gear != int.Parse(dict["gear"])) { GameDriver.instance.Client.GetComponent<ClientPlayerController>().ChangeGear(int.Parse(dict["gear"])); } }//gear changes
                     if (dict.ContainsKey("dmg")) { if (bool.Parse(dict["dmg"])) { GameDriver.instance.Client.GetComponent<ClientPlayerController>().Flinch(new Vector3(float.Parse(dict["fx"]), float.Parse(dict["fy"]), float.Parse(dict["fz"]))); } }
@@ -239,42 +238,41 @@ namespace NetworkSystem
 
                 JObject data = JObject.Parse(payload);
                 Dictionary<string, string> dict = data.ToObject<Dictionary<string, string>>();
-                //Debug.Log("RECEIVING enemy " + data);
-                GameObject enemy = GameObject.Find(dict["object"]);
+                Debug.Log("RECEIVING enemy " + data);
+                GameObject enemy = GameObject.Find(dict["obj"]);
                 if (enemy != null)
                 {
-                    string target = dict["target"];
-                    if (target.Length <= 1) { enemy.GetComponent<NPCController>().target = null; }
-                    else if (target.Contains("Player")) { enemy.GetComponent<NPCController>().target = GameDriver.instance.Client.transform; }
-                    else if (target.Contains("Client")) { enemy.GetComponent<NPCController>().target = GameDriver.instance.Player.transform; }
 
-                    Vector3 targPos = new Vector3(float.Parse(dict["x"]), float.Parse(dict["y"]), float.Parse(dict["z"]));
-
-                    //if (enemy.GetComponent<NPCController>().target!=null)
-                    {
-                        if (Vector3.Distance(targPos, enemy.transform.position) > 5 && enemy.GetComponent<Teleport>().teleport == 0)
-                        {
-                            enemy.transform.position = targPos;
-                        }
+                    //--------POSITION---------
+                    Vector3 targPos;
+                    if (dict.ContainsKey("x")) { 
+                        targPos = new Vector3(float.Parse(dict["x"]), float.Parse(dict["y"]), float.Parse(dict["z"]));
+                        if (Vector3.Distance(targPos, enemy.transform.position) > 5 && enemy.GetComponent<Teleport>().teleport == 0) { enemy.transform.position = targPos; }
+                        if (dict.ContainsKey("tele")) { enemy.transform.position = targPos; }
                     }
-                    //if (targPos != null)
+                    //--------TARGET-----------
+                    if (dict.ContainsKey("targ"))
                     {
-                        //if (float.Parse(dict["teleport"]) == 1) { enemy.transform.position = targPos; }
-                        if (float.Parse(dict["teleport"]) == 3 && enemy.GetComponent<Teleport>().teleport == 1.5) { enemy.transform.position = targPos; }
+                        string target = dict["targ"];
+                        if (target.Contains("Player")) { enemy.GetComponent<NPCController>().target = GameDriver.instance.Client.transform; }
+                        if (target.Contains("Client")) { enemy.GetComponent<NPCController>().target = GameDriver.instance.Player.transform; }
+                        if (target.Length<2) { enemy.GetComponent<NPCController>().target = null; }
                     }
-                    //if (enemy.GetComponent<NPCController>().target != null) { enemy.transform.position = ((enemy.GetComponent<NPCController>().target.position - enemy.transform.position).normalized) * 0.25f; }
-                    enemy.GetComponent<NPCController>().clientWaypointDest = new Vector3(float.Parse(dict["dx"]), float.Parse(dict["dy"]), float.Parse(dict["dz"]));
-
-                    ///Vector3 destination = new Vector3(float.Parse(dict["dx"]), float.Parse(dict["dy"]), float.Parse(dict["dz"]));
-                    //enemy.GetComponent<ClientSidePrediction>().SetTargetPosition(enemy.GetComponent<NPCController>().destination);
-
-                    enemy.GetComponent<NPCController>().curWayPoint = int.Parse(dict["curWayPoint"]);
-                    enemy.GetComponent<NPCController>().attacking = bool.Parse(dict["Attack"]);
-                    if (!HOST) { enemy.GetComponent<Teleport>().teleport = float.Parse(dict["teleport"]); }
-
-                    if (bool.Parse(dict["dead"])) { enemy.GetComponent<NPCController>().healthEnemy = 0; }
+                    //--------TELEPORT-----------
+                    if (dict.ContainsKey("tele"))
+                    {
+                        enemy.GetComponent<Teleport>().teleport = float.Parse(dict["tele"]);
+                    }
+                    //--------PATROL-----------
+                    if (dict.ContainsKey("dx")) { 
+                        enemy.GetComponent<NPCController>().clientWaypointDest = new Vector3(float.Parse(dict["dx"]), float.Parse(dict["dy"]), float.Parse(dict["dz"]));
+                        enemy.GetComponent<NPCController>().curWayPoint = int.Parse(dict["wp"]);
+                    }
+                    //-------ATTACK-------------
+                    if (dict.ContainsKey("attk")) { enemy.GetComponent<NPCController>().attacking = bool.Parse(dict["attk"]); }
+                    //-------DEAD-------------
+                    if (dict.ContainsKey("dead")) { enemy.GetComponent<NPCController>().healthEnemy = 0; }
                 }
-
             });
 
             //-----------------JUMP ----------------->

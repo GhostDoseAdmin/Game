@@ -6,6 +6,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
+using static UnityEngine.GraphicsBuffer;
 
 public class NPCController : MonoBehaviour
 {
@@ -50,15 +51,19 @@ public class NPCController : MonoBehaviour
     [HideInInspector] public NavMeshAgent navmesh;
 
     //NETWORK
-    //[HideInInspector]public GameDriver GD;
+    private bool emitDest;
+    [HideInInspector] public float teleEmit;
+    private Transform prevTarg;
+    private bool prevAttack;
+    private bool emitPos;
 
     [HideInInspector] public Transform targetPlayer;
     private GameObject Player;
     private GameObject Client;
     private string actions;
     private string send;
-    private string prevActions;
-    private float prevTeleport;
+
+
     [HideInInspector] public Vector3 destination;
     [HideInInspector] public Vector3 truePosition;
     [HideInInspector] public bool attacking = false;
@@ -116,31 +121,58 @@ public class NPCController : MonoBehaviour
         if (this.gameObject.activeSelf) { if (teleport == 0) { AI(); } }
 
         if (NetworkDriver.instance.HOST) { if (teleport == 0 && canAttack) { FindTargetRayCast(); } } //dtermines & finds target
-        
+
+        if (teleport > 0) { target = GetComponent<Teleport>().target; }
+
         //=================================== E M I T =============================================
         if (GameDriver.instance.twoPlayer && NetworkDriver.instance.HOST)
         {
-            //actions = this.name + target + destination + attacking; 
             
-            //ONLY EMIT on STEPS 1 & 3
-            float teleChange = teleport;
-            if (teleport == 2 || teleport ==1.5) { teleChange = 1; }//skip step 2 of tele
-            if (teleport == 0 && prevTeleport == 3) { teleChange = 3; } //dont trigger emit keep client on 3, client side changes to 0
-            prevTeleport = teleChange;
-            if (teleport > 0) { target = GetComponent<Teleport>().target; }
 
-
-
-            actions = $"{{{target} {destination} {attacking} {teleChange}'}}";//determines what events to emit on change
-
-            if (actions != prevActions || update) //actions change
+            //--------------- DESTINATION EMIT-----------------
+            string destString = "";
+            if (emitDest){
+                destString = $",'wp':'{curWayPoint}','dx':'{destination.x}','dy':'{destination.y}','dz':'{destination.z}'";
+                emitDest = false;
+                emitPos = true;
+            }
+            //--------------- TELEPORT EMIT-----------------
+            string teleString = "";
+            if (teleEmit>0){
+                teleString = $",'tele':'{teleEmit}'";
+                emitPos = true;
+            }
+            //--------------- TARGET EMIT-----------------
+            string targString = "";
+            if (prevTarg != target){
+                targString = $",'targ':'{target}'";
+            }
+            prevTarg = target;
+            //--------------- ATTACK EMIT-----------------
+            string attackString = "";
+            if (prevAttack != attacking){
+                attackString = $",'attk':'{attacking}'";
+                if (!prevAttack) { emitPos = true; }
+            }
+            prevAttack = attacking;
+            //--------------- POSITION EMIT-----------------
+            string posString = "";
+            if (emitPos){
+                posString = $",'x':'{transform.position.x}','y':'{transform.position.y}','z':'{transform.position.z}'";
+                emitPos = false;
+            }
+            //actions = $"{{{target} {destination} {attacking} {teleChange}'}}";//determines what events to emit on change
+            //if (actions != prevActions || update) //actions change
+            if (destString.Length > 1 || teleEmit>0 || targString.Length > 1 || attackString.Length>1)
             {
                 //Debug.Log("--------------------------------SENDING PLAYER JOINED-----------------------------------" + playerJoined); 
-                send = $"{{'object':'{this.name}','dead':'false','Attack':'{attacking}','target':'{target}','teleport':'{teleChange}','curWayPoint':'{curWayPoint}','x':'{transform.position.x}','y':'{transform.position.y}','z':'{transform.position.z}','dx':'{destination.x}','dy':'{destination.y}','dz':'{destination.z}'}}";
-                    NetworkDriver.instance.sioCom.Instance.Emit("enemy", JsonConvert.SerializeObject(send), false);
-
+                send = $"{{'obj':'{this.name}'{destString}{teleString}{targString}{attackString}{posString}}}";
+                Debug.Log("SENDING DATA " + send);
+                NetworkDriver.instance.sioCom.Instance.Emit("enemy", JsonConvert.SerializeObject(send), false);
+                
+                teleEmit = 0;
                 update = false;
-                prevActions = actions;
+                //prevActions = actions;
             }
         }
 
@@ -210,7 +242,7 @@ public class NPCController : MonoBehaviour
                     if (wayPoint.Count > curWayPoint)
                     {
 
-                        if (NetworkDriver.instance.HOST) { destination = wayPoint[curWayPoint].position; navmesh.SetDestination(wayPoint[curWayPoint].position); }
+                        if (NetworkDriver.instance.HOST) { if (destination != wayPoint[curWayPoint].position) { destination = wayPoint[curWayPoint].position; emitDest = true;  } navmesh.SetDestination(wayPoint[curWayPoint].position); }
                         else { navmesh.SetDestination(clientWaypointDest); }
 
                         float distance = Vector3.Distance(transform.position, wayPoint[curWayPoint].position);
@@ -233,7 +265,7 @@ public class NPCController : MonoBehaviour
                 else if (wayPoint.Count == 1)
                 {
 
-                    if (NetworkDriver.instance.HOST) { navmesh.SetDestination(wayPoint[0].position); destination = wayPoint[0].position; }
+                    if (NetworkDriver.instance.HOST) { if (destination != wayPoint[0].position) { destination = wayPoint[0].position; emitDest = true;   } navmesh.SetDestination(wayPoint[0].position); }
                     else { navmesh.SetDestination(clientWaypointDest); }
 
                     float distance = Vector3.Distance(transform.position, wayPoint[curWayPoint].position);
@@ -286,9 +318,6 @@ public class NPCController : MonoBehaviour
                 if (attacking)
                 {
                     attacking = false;
-                    //send = $"{{'object':'{this.name}','Attack':'{attacking}','target':'{target}','curWayPoint':'{curWayPoint}','x':'{transform.position.x}','y':'{transform.position.y}','z':'{transform.position.z}','dx':'{destination.x}','dy':'{destination.y}','dz':'{destination.z}'}}";
-                    //ND.sioCom.Instance.Emit("enemy", JsonConvert.SerializeObject(send), false);
-
                 }
                 navmesh.isStopped = false;
                
@@ -309,9 +338,6 @@ public class NPCController : MonoBehaviour
                 if (!attacking)
                 {
                     attacking = true;
-                    //send = $"{{'object':'{this.name}','Attack':'{attacking}','target':'{target}','curWayPoint':'{curWayPoint}','x':'{transform.position.x}','y':'{transform.position.y}','z':'{transform.position.z}','dx':'{destination.x}','dy':'{destination.y}','dz':'{destination.z}'}}";
-                    //ND.sioCom.Instance.Emit("enemy", JsonConvert.SerializeObject(send), false);
-
                 }
                 navmesh.isStopped = true;
               
@@ -486,7 +512,7 @@ public class NPCController : MonoBehaviour
             {
                 if(!otherPlayer)
                 {
-                    send = $"{{'object':'{this.name}','dead':'true','Attack':'{attacking}','target':'{target}','teleport':'{0}','curWayPoint':'{curWayPoint}','x':'{transform.position.x}','y':'{transform.position.y}','z':'{transform.position.z}','dx':'{destination.x}','dy':'{destination.y}','dz':'{destination.z}'}}";
+                    send = $"{{'obj':'{this.name}','dead':''}}";
                     NetworkDriver.instance.sioCom.Instance.Emit("enemy", JsonConvert.SerializeObject(send), false);
                 }
             }

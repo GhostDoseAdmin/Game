@@ -334,7 +334,7 @@ public class GhostVFX : MonoBehaviour
     {
         {
             //if (Time.time > sound_timer + sound_delay)
-            if(!playedSound)
+            if(!playedSound && !GetComponent<NPCController>().agro)
             {
                 int i;
                 i = UnityEngine.Random.Range(1, 4);
