@@ -163,8 +163,8 @@ namespace NetworkSystem
                     Debug.Log("PLAYER ACTION" + data);
                     Dictionary<string, string> dict = data.ToObject<Dictionary<string, string>>();
                     //Client.GetComponent<ClientPlayerController>().animation = dict["animation"];
-                    GameDriver.instance.Client.GetComponent<ClientPlayerController>().targWalk = float.Parse(dict["walk"]);
-                    GameDriver.instance.Client.GetComponent<ClientPlayerController>().targStrafe = float.Parse(dict["strafe"]);
+                   // GameDriver.instance.Client.GetComponent<ClientPlayerController>().targWalk = float.Parse(dict["walk"]);
+                    //GameDriver.instance.Client.GetComponent<ClientPlayerController>().targStrafe = float.Parse(dict["strafe"]);
                     //GameDriver.instance.Client.GetComponent<ClientPlayerController>().running = bool.Parse(dict["run"]);
                     //GameDriver.instance.Client.GetComponent<ClientPlayerController>().targetRotation = new Vector3(float.Parse(dict["rx"]), float.Parse(dict["ry"]), float.Parse(dict["rz"]));
                     GameDriver.instance.Client.GetComponent<ClientPlayerController>().targetPos.position = new Vector3(float.Parse(dict["ax"]), float.Parse(dict["ay"]), float.Parse(dict["az"]));

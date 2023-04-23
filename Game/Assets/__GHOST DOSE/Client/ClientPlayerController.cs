@@ -59,8 +59,8 @@ public class ClientPlayerController : MonoBehaviour
 	public Vector3 targetPosVec;
 	public float walk = 0f;
 	public float strafe = 0f;
-    public float targStrafe = 0f;
-    public float targWalk = 0f;
+    //public float targStrafe = 0f;
+    //public float targWalk = 0f;
 
     //-------GEAR
     private float gear_delay = 1f;//0.25
@@ -158,60 +158,60 @@ public class ClientPlayerController : MonoBehaviour
 
         private void FixedUpdate()
         {
-		if (!GameDriver.instance.twoPlayer){ return; }
+		    if (!GameDriver.instance.twoPlayer){ return; }
 
-        //------------------------------------- M A I N ---------------------------------------------------
-        targetPosVec = Vector3.Lerp(targetPosVec, targetPos.position, 0.1f);//0.1
-        //targetPosVec = targetPos.position;
+            //------------------------------------- M A I N ---------------------------------------------------
+            targetPosVec = Vector3.Lerp(targetPosVec, targetPos.position, 0.1f);//0.1
+                                                                                //targetPosVec = targetPos.position;
 
-        //-------------------MOVEMENT-------------------------------
-        if (speed>0f || Vector3.Distance(transform.position, destination)>0.1)
-		{
-			strafe = Mathf.Lerp(strafe, targStrafe, 0.1f);
-            walk = Mathf.Lerp(walk, targWalk, 0.1f);
+            //-----------CALCULATE STRAFE & WALK-------------------
+            Vector3 playerDirection = targetPosVec - transform.position;
+            Vector3 playerMoveDirection = destination - transform.position;
+            float horizontal = Vector3.Dot(transform.right, playerMoveDirection.normalized);
+            float vertical = Vector3.Dot(transform.forward, playerMoveDirection.normalized);
 
-            anim.SetFloat("Strafe", strafe);
-            anim.SetFloat("Walk", walk);
-			if (speed>=4f) { anim.SetBool("Running", true);  }
-			else { anim.SetBool("Running", false); }
-        }
-		Attack();
-        if (Vector3.Distance(transform.position, destination) > 0.1) { if (speed == 0) { speed = 3.99f; }  }//catch up to destination
-        //KEEP POS UPDATED
-        if (Vector3.Distance(transform.position, destination)>2){transform.position = new Vector3(destination.x, destination.y, destination.z);}
-        if(walk==0 && strafe ==0 && speed == 0) { anim.SetFloat("Walk", 0); anim.SetFloat("Strafe", 0); }//prevent walk animation
 
-        transform.position = Vector3.Lerp(transform.position, destination, speed * 0.95f * Time.deltaTime);
+            //-------------------MOVEMENT-------------------------------
+            if (speed>0f || Vector3.Distance(transform.position, destination)>0.1)
+		    {
+			    strafe = Mathf.Lerp(strafe, horizontal, 0.1f);
+                walk = Mathf.Lerp(walk, vertical, 0.1f);
 
-        //--------------------ROTATION--------------------------------------
-        if (walk != 0 || strafe != 0 || is_FlashlightAim == true || gearAim == true)
-        {
-            Vector3 rot = transform.eulerAngles;
-            transform.LookAt(targetPosVec);
-
-            float angleBetween = Mathf.DeltaAngle(transform.eulerAngles.y, rot.y);
-            if ((Mathf.Abs(angleBetween) > luft) || strafe != 0)
-            {
-                isPlayerRot = true;
+                anim.SetFloat("Strafe", strafe);
+                anim.SetFloat("Walk", walk);
+			    if (speed>=4f) { anim.SetBool("Running", true);  }
+			    else { anim.SetBool("Running", false); }
             }
-            if (isPlayerRot == true)
+		    Attack();
+            if (Vector3.Distance(transform.position, destination) > 0.1) { if (speed == 0) { speed = 3.99f; }  }//catch up to destination
+            //KEEP POS UPDATED
+            if (Vector3.Distance(transform.position, destination)>2){transform.position = new Vector3(destination.x, destination.y, destination.z);}
+            if(speed == 0) { anim.SetFloat("Walk", 0); anim.SetFloat("Strafe", 0); }//prevent walk animation
+
+            transform.position = Vector3.Lerp(transform.position, destination, speed * 0.95f * Time.deltaTime);
+
+            //--------------------ROTATION--------------------------------------
+            if (walk != 0 || strafe != 0 || is_FlashlightAim == true || gearAim == true)
             {
-                float bodyY = Mathf.LerpAngle(rot.y, transform.eulerAngles.y, Time.deltaTime * angularSpeed);
-                transform.eulerAngles = new Vector3(0, bodyY, 0);
+                Vector3 rot = transform.eulerAngles;
+                transform.LookAt(targetPosVec);
+
+                float angleBetween = Mathf.DeltaAngle(transform.eulerAngles.y, rot.y);
+                if ((Mathf.Abs(angleBetween) > luft) || strafe != 0)
+                {
+                    isPlayerRot = true;
+                }
+                if (isPlayerRot == true)
+                {
+                    float bodyY = Mathf.LerpAngle(rot.y, transform.eulerAngles.y, Time.deltaTime * angularSpeed);
+                    transform.eulerAngles = new Vector3(0, bodyY, 0);
+                }
+                else
+                {
+                    transform.eulerAngles = new Vector3(0f, rot.y, 0f);
+                }
             }
-            else
-            {
-                transform.eulerAngles = new Vector3(0f, rot.y, 0f);
-            }
-        }
-        transform.eulerAngles = new Vector3(0f, transform.eulerAngles.y, 0f);
-
-
-       // transform.rotation = Quaternion.RotateTowards(transform.rotation, Quaternion.Euler(new Vector3(0f, transform.eulerAngles.y, 0f)), 600f * Time.deltaTime); //150
-
-
-
-
+            transform.eulerAngles = new Vector3(0f, transform.eulerAngles.y, 0f);
     }
 
 
