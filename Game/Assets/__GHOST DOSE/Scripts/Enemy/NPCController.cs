@@ -99,7 +99,9 @@ public class NPCController : MonoBehaviour
         startAngleView = angleView;
         startRange = range;
 
-        wayPoint[0].position = transform.position;
+        if (wayPoint[0] == null) { 
+            wayPoint[0].position = transform.position; 
+        }//First waypoint is always self
         update = false; //UPDATE POSITIONS
         HIT_COL.GetComponent<SphereCollider>().enabled = false;
         outline = transform.GetChild(0).GetComponent<Outline>();

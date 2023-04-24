@@ -33,7 +33,13 @@ public class GhostVFX : MonoBehaviour
     //private float sound_delay = 5f;
     private bool playedSound;
 
-
+    //ENVIRONMENT LIGHTS
+    int envLightCount;
+    Vector4[] lightPositions;
+    Vector4[] lightDirections;
+    float[] lightAngles;
+    float[] ScalarStrengths;
+    float[] lightRanges;
 
     //public RenderTexture DynamicShadowMap;
 
@@ -55,6 +61,46 @@ public class GhostVFX : MonoBehaviour
                 if (Shadower) { gameObject.tag = "Shadower"; HEAD.tag = "Shadower"; material.SetInt("_Shadower", 1); }
             }
         }
+        //------FIND ENVIRONMENT LIGHTS---------------
+        envLights = new Light[0];
+        GhostLight[] ghostLights = FindObjectsOfType<GhostLight>();
+        List<Light> lights = new List<Light>();
+        foreach (GhostLight ghostLight in ghostLights)
+        {
+            if ((ghostLight.ghost && this.gameObject.tag == "Ghost") || (ghostLight.shadower && this.gameObject.tag == "Shadower"))
+            {
+                Light light = ghostLight.GetComponent<Light>();
+                if (light != null)
+                {
+                    lights.Add(light);
+                }
+            }
+        }
+        envLights = lights.ToArray();
+
+        //-------SETUP LIGHTS-------------
+        Light lightSource;
+        if (envLights.Length > 0)
+        {
+            envLightCount = envLights.Length;
+            lightPositions = new Vector4[envLightCount];
+            lightDirections = new Vector4[envLightCount];
+            lightAngles = new float[envLightCount];
+            ScalarStrengths = new float[envLightCount];
+            lightRanges = new float[envLightCount];
+
+            for (int i = 0; i < envLightCount; i++)
+            {
+                lightSource = envLights[i].GetComponent<Light>();
+
+                lightPositions[i] = lightSource.transform.position;
+                lightDirections[i] = -lightSource.transform.forward;
+                lightAngles[i] = lightSource.spotAngle + 5;
+                ScalarStrengths[i] = lightSource.GetComponent<GhostLight>().strength;//50
+                lightRanges[i] = lightSource.range;//30
+            }
+        }
+        //Debug.Log("--------------------------------------------- LIGHT COUNT " + envLightCount);
     }
 
     public void UpdateShaderValues()
@@ -65,55 +111,21 @@ public class GhostVFX : MonoBehaviour
             ClientLight = GameDriver.instance.Client.GetComponent<ClientPlayerController>().currLight;
 
             if (GameObject.Find("CamFlashPlayer") != null) { PlayerLight = GameObject.Find("CamFlashPlayer"); }
-            if (GameObject.Find("CamFlashClient") != null) { PlayerLight = GameObject.Find("CamFlashClient"); }
+            if (GameObject.Find("CamFlashClient") != null) { ClientLight = GameObject.Find("CamFlashClient"); }
         }
         visibilitySet = false;
         //-------------------DEATH LIGHT UP ENEMY-----------------------------
         if (death) { if (gameObject.tag != "Shadower") { PlayerLight = GetComponent<EnemyDeath>().light; } else { inShadow = true; }  }
         //if (PlayerLight != null && ClientLight != null)
         {
-
-
-            envLights = new Light[0];
-            GhostLight[] ghostLights = FindObjectsOfType<GhostLight>();
-            List<Light> lights = new List<Light>();
-            foreach (GhostLight ghostLight in ghostLights)
-            {
-                if ((ghostLight.ghost && this.gameObject.tag == "Ghost") || (ghostLight.shadower && this.gameObject.tag == "Shadower"))
-                {
-                    Light light = ghostLight.GetComponent<Light>();
-                    if (light != null)
-                    {
-                        lights.Add(light);
-                    }
-                }
-            }
-            envLights = lights.ToArray();
-
-
             Light lightSource;
-
-            //ADD IN ENVIRONMENT LIGHT SOURCES
+            //UPDATE ENVIRONMENT LIGHT SOURCES
             if (envLights.Length > 0)
             {
-                int envLightCount = envLights.Length;
-                Vector4[] lightPositions = new Vector4[envLightCount];
-                Vector4[] lightDirections = new Vector4[envLightCount];
-                float[] lightAngles = new float[envLightCount];
-                float[] ScalarStrengths = new float[envLightCount];
-                float[] lightRanges = new float[envLightCount];
-
                 for (int i = 0; i < envLightCount; i++)
                 {
                     lightSource = envLights[i].GetComponent<Light>();
-
-                    lightPositions[i] = lightSource.transform.position;
-                    lightDirections[i] = -lightSource.transform.forward;
                     lightAngles[i] = lightSource.spotAngle+5;
-                    ScalarStrengths[i] = lightSource.GetComponent<GhostLight>().strength;//50
-                    lightRanges[i] = lightSource.range;//30
-
-
                 }
                 IsVisible(envLights);
                 foreach (Material material in skin.GetComponent<SkinnedMeshRenderer>().materials)
@@ -124,6 +136,7 @@ public class GhostVFX : MonoBehaviour
                     material.SetFloatArray("_LightAngles", lightAngles);
                     material.SetFloatArray("_StrengthScalarLight", ScalarStrengths);
                     material.SetFloatArray("_LightRanges", lightRanges);
+                    Debug.Log("--LIGHTS--" + "count " + envLightCount + "pos " + lightPositions[0] + "dir " + lightDirections[0] + "angle " + lightAngles[0] + "strength " + ScalarStrengths[0] + "range " + lightRanges[0]);
                 }
             }
 
@@ -285,7 +298,7 @@ public class GhostVFX : MonoBehaviour
     private bool InLineOfSight(Light light, bool ignoreShadow)
     {
         LayerMask mask = 1 << LayerMask.NameToLayer("Default");
-        if (!ignoreShadow){mask = mask | (1 << LayerMask.NameToLayer("ShadowBox"));}//INCLUDE SHADOW LAYER
+        if (!ignoreShadow){mask |= 1 << LayerMask.NameToLayer("ShadowBox"); }// INCLUDE SHADOW LAYER
 
         float hitHeight = 0f; // adjust the hit height 1.3
         Vector3 targPos = new Vector3(HEAD.transform.position.x, HEAD.transform.position.y + hitHeight, HEAD.transform.position.z);
@@ -293,21 +306,20 @@ public class GhostVFX : MonoBehaviour
         float distance = Vector3.Distance(light.transform.position, targPos);
         Vector3 endPoint = ray.GetPoint(distance);
         Debug.DrawLine(light.transform.position, endPoint, UnityEngine.Color.blue);
+
         // Perform the raycast, excluding the specified layers
-        RaycastHit hit;
-        //if (Physics.Raycast(ray, out hit, Mathf.Infinity, mask.value))
-        if(Physics.Linecast(light.transform.position, endPoint, out hit, mask.value))
+        RaycastHit[] hits = Physics.RaycastAll(ray, distance, mask);
+        bool targetHit = false;
+        foreach (RaycastHit hit in hits)
         {
-            //Debug.Log("COLLIDNG WITH " + light.gameObject.name + "         " + hit.collider.gameObject.name);
-            //if (light.gameObject == PlayerLight) { Debug.Log("COLLIDNG WITH " + hit.collider.gameObject.name); }
+            if (hit.collider.transform.root.tag != "Ghost" && hit.collider.transform.root.tag != "Shadower") { targetHit = false; break; }//environment obstruction
             if (hit.collider.transform.root.gameObject == this.gameObject)
             {
-                return true;
+                targetHit = true;
+                break;
             }
-            //Debug.DrawLine(light.transform.position, targPos, UnityEngine.Color.red);
         }
-        
-        return false;
+        return targetHit;
     }
 
 
