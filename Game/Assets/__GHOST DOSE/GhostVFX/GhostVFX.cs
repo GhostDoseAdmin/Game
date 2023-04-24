@@ -68,7 +68,7 @@ public class GhostVFX : MonoBehaviour
             if (GameObject.Find("CamFlashClient") != null) { PlayerLight = GameObject.Find("CamFlashClient"); }
         }
         visibilitySet = false;
-        //-------------------DEATH CHANGES-----------------------------
+        //-------------------DEATH LIGHT UP ENEMY-----------------------------
         if (death) { if (gameObject.tag != "Shadower") { PlayerLight = GetComponent<EnemyDeath>().light; } else { inShadow = true; }  }
         //if (PlayerLight != null && ClientLight != null)
         {
