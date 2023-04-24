@@ -23,7 +23,7 @@ public class EnemyDamage : MonoBehaviour
 
                 Vector3 oppositeForce = -main.GetComponent<NPCController>().transform.forward * main.GetComponent<NPCController>().force;
                 oppositeForce.y = 0f; // Set the y component to 0
-                collision.gameObject.GetComponent<HealthSystem>().HealthDamage(main.GetComponent<NPCController>().damage, oppositeForce);
+               // collision.gameObject.GetComponent<HealthSystem>().HealthDamage(main.GetComponent<NPCController>().damage, oppositeForce);
 
 
 

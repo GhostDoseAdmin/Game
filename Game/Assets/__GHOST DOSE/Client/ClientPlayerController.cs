@@ -105,6 +105,9 @@ public class ClientPlayerController : MonoBehaviour
     public GameObject currLight;//tracks current light source
 	public GameObject camFlash;
     public GameObject death;
+    public float targWalk;
+    public float targStrafe;
+    public bool running;
     //public bool wlOn, flOn;//weaplight and flashlight
 
 
@@ -162,36 +165,28 @@ public class ClientPlayerController : MonoBehaviour
 
             //------------------------------------- M A I N ---------------------------------------------------
             targetPosVec = Vector3.Lerp(targetPosVec, targetPos.position, 0.1f);//0.1
-                                                                                //targetPosVec = targetPos.position;
-
-            //-----------CALCULATE STRAFE & WALK-------------------
-            Vector3 playerDirection = targetPosVec - transform.position;
-            Vector3 playerMoveDirection = destination - transform.position;
-            float horizontal = Vector3.Dot(transform.right, playerMoveDirection.normalized);
-            float vertical = Vector3.Dot(transform.forward, playerMoveDirection.normalized);
-
-
-            //-------------------MOVEMENT-------------------------------
-            if (speed>0f || Vector3.Distance(transform.position, destination)>0.1)
-		    {
-			    strafe = Mathf.Lerp(strafe, horizontal, 0.1f);
-                walk = Mathf.Lerp(walk, vertical, 0.1f);
+		    
+       
+            if (running) { speed = 4f; } else { speed = 2f; }
+            if (strafe == 0 && walk == 0) { speed = 0f; }
+        //-------------------ANIMATION----------------------------
+            strafe = Mathf.Lerp(strafe, targStrafe, 0.1f);
+            walk = Mathf.Lerp(walk, targWalk, 0.1f);
 
                 anim.SetFloat("Strafe", strafe);
                 anim.SetFloat("Walk", walk);
 			    if (speed>=4f) { anim.SetBool("Running", true);  }
 			    else { anim.SetBool("Running", false); }
-            }
-		    Attack();
-            if (Vector3.Distance(transform.position, destination) > 0.1) { if (speed == 0) { speed = 3.99f; }  }//catch up to destination
-            //KEEP POS UPDATED
-            if (Vector3.Distance(transform.position, destination)>2){transform.position = new Vector3(destination.x, destination.y, destination.z);}
-            if(speed == 0) { anim.SetFloat("Walk", 0); anim.SetFloat("Strafe", 0); }//prevent walk animation
+            
+		   
+        //-------------------MOVEMENT---------------------------
+         if (Vector3.Distance(transform.position, destination)>2){transform.position = new Vector3(destination.x, destination.y, destination.z);}
+        float distance = Vector3.Distance(transform.position, destination);
+        float timeToTravel = distance / (speed+0.00001f);
+        transform.position = Vector3.Lerp(transform.position, destination, Time.deltaTime / timeToTravel);
 
-            transform.position = Vector3.Lerp(transform.position, destination, speed * 0.95f * Time.deltaTime);
-
-            //--------------------ROTATION--------------------------------------
-            if (walk != 0 || strafe != 0 || is_FlashlightAim == true || gearAim == true)
+        //--------------------ROTATION--------------------------------------
+        if (walk != 0 || strafe != 0 || is_FlashlightAim == true || gearAim == true)
             {
                 Vector3 rot = transform.eulerAngles;
                 transform.LookAt(targetPosVec);
@@ -219,7 +214,7 @@ public class ClientPlayerController : MonoBehaviour
     void Update() 
 	{
         Flashlight();
-
+        Attack();
         //SET CURRENT LIGHT SOURCE FOR CLIENT
         if (GetComponent<ClientFlashlightSystem>().FlashLight.GetComponent<Light>().enabled) { currLight = GetComponent<ClientFlashlightSystem>().FlashLight.gameObject; }
         else if (GetComponent<ClientFlashlightSystem>().WeaponLight.enabled) { currLight = GetComponent<ClientFlashlightSystem>().WeaponLight.gameObject; }

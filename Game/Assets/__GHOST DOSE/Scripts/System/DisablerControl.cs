@@ -8,10 +8,15 @@ using Newtonsoft.Json;
 public class DisablerControl : MonoBehaviour
 {
     public List<GameObject> enemyObjects;
+    private List<GameObject> emitEnableObjects;
+    private List<GameObject> emitDisableObjects;
+
     GameObject Player;
     GameObject Client;
     private float closestPlayerDist;
-
+    private float timer_delay = 1f;
+    private float timer = 0.0f;
+    private float disableDistance = 20;
 
     private void Awake()
     {
@@ -32,7 +37,7 @@ public class DisablerControl : MonoBehaviour
         {
             if (ghost.GetComponent<NPCController>() != null)
             {
-                Debug.Log("----------------------------------------------------------------" + ghost.name);
+                //Debug.Log("----------------------------------------------------------------" + ghost.name);
                 enemyObjects.Add(ghost);
             }
         }
@@ -49,34 +54,67 @@ public class DisablerControl : MonoBehaviour
     void Update()
     {
 
+
         if (NetworkDriver.instance.HOST)
         {
-            foreach (GameObject enemy in enemyObjects)
+            if (Time.time > timer + timer_delay)
             {
-                float p1_dist = Vector3.Distance(enemy.gameObject.transform.position, Player.transform.position);
-                float p2_dist = Vector3.Distance(enemy.gameObject.transform.position, Client.transform.position);
-                if (p1_dist < p2_dist) { closestPlayerDist = p1_dist; } else { closestPlayerDist = p2_dist; }
+                emitEnableObjects = new List<GameObject>();
+                emitDisableObjects = new List<GameObject>();
 
-                //-------------DEACTIVATE----------------------
-                if (closestPlayerDist > 20 && enemy.GetComponent<NPCController>().target == null && enemy.activeSelf )
+                foreach (GameObject enemy in enemyObjects)
                 {
+                    float p1_dist = Vector3.Distance(enemy.gameObject.transform.position, Player.transform.position);
+                    float p2_dist = Vector3.Distance(enemy.gameObject.transform.position, Client.transform.position);
+                    if (p1_dist < p2_dist) { closestPlayerDist = p1_dist; } else { closestPlayerDist = p2_dist; }
 
-                    enemy.gameObject.SetActive(false);
-                    if (GameDriver.instance.twoPlayer) { NetworkDriver.instance.sioCom.Instance.Emit("disable", JsonConvert.SerializeObject($"{{'obj':'{enemy.name}','active':'false'}}"), false); }
-                }
-                //-------------REACTIVATE------------------
-                if (closestPlayerDist <= 20 && !enemy.activeSelf)
-                {
-                    if (!enemy.gameObject.activeSelf)
+                    //-------------DEACTIVATE----------------------
+                    if (closestPlayerDist > disableDistance && enemy.GetComponent<NPCController>().target == null && enemy.activeSelf && enemy.GetComponent<Teleport>().teleport==0)
                     {
-                        if (GameDriver.instance.twoPlayer) { NetworkDriver.instance.sioCom.Instance.Emit("disable", JsonConvert.SerializeObject($"{{'obj':'{enemy.name}','active':'true'}}"), false); }
-                        enemy.gameObject.SetActive(true);
+                        emitDisableObjects.Add(enemy);
+                    }
+                    //-------------REACTIVATE------------------
+                    if (closestPlayerDist <= disableDistance && !enemy.activeSelf)
+                    {
+                        if (!enemy.gameObject.activeSelf)
+                        {
+                            emitEnableObjects.Add(enemy);
+                        }
 
                     }
+                    //------------------------------BULK EMIT--------------------------------------
+                    Dictionary<string, Dictionary<string, string>> enableObjects = new Dictionary<string, Dictionary<string, string>>();
+                    foreach (GameObject obj in GetComponent<DisablerControl>().emitEnableObjects)
+                    {
+                        {
+                            string objName;
+                            Dictionary<string, string> propsDict = new Dictionary<string, string>();
+                            propsDict.Add("active", "true");
+                            objName = obj.name;
+                            enableObjects.Add(objName, propsDict);
+                            obj.gameObject.SetActive(true);
+                        }
+                    }
+
+                    foreach (GameObject obj in GetComponent<DisablerControl>().emitDisableObjects)
+                    {
+                        {
+                            string objName;
+                            Dictionary<string, string> propsDict = new Dictionary<string, string>();
+                            propsDict.Add("active", "false");
+                            objName = obj.name;
+                            enableObjects.Add(objName, propsDict);
+                            obj.gameObject.SetActive(false);
+                        }
+                    }
+                    if (GameDriver.instance.twoPlayer && enableObjects.Count>0) { NetworkDriver.instance.sioCom.Instance.Emit("disable", JsonConvert.SerializeObject(enableObjects), false); }
+
 
                 }
-
+                timer = Time.time;//cooldown
             }
+
+
 
         }
 

@@ -7,6 +7,7 @@ using Unity.VisualScripting;
 using UnityEngine;
 using GameManager;
 using InteractionSystem;
+using NetworkSystem;
 
 //[ExecuteInEditMode]
 public class GhostVFX : MonoBehaviour
@@ -179,7 +180,7 @@ public class GhostVFX : MonoBehaviour
             //--------------VISIBLE IF CLOSE ----------------
              if(Vector3.Distance(PlayerLight.gameObject.transform.position, this.transform.position)<2 || Vector3.Distance(ClientLight.gameObject.transform.position, this.transform.position) < 2)
             {
-               visible = true; visibilitySet = true; //if (GetComponent<Teleport>().teleport == 0) { }
+                if (this.gameObject.tag == "Ghost") { visible = true; visibilitySet = true; }//if (GetComponent<Teleport>().teleport == 0) { }
             }
 
             //-------------SET TOTAL ALPHA--------------------------------
@@ -332,21 +333,22 @@ public class GhostVFX : MonoBehaviour
 
     public void TriggerWanderSound()
     {
-        {
+        //if(NetworkDriver.instance.HOST)
+        
             //if (Time.time > sound_timer + sound_delay)
-            if(!playedSound && !GetComponent<NPCController>().agro)
+            if(GetComponent<Teleport>() != null && GetComponent<Teleport>().teleport==0)
             {
-                int i;
-                i = UnityEngine.Random.Range(1, 4);
-                if (!GetComponent<GhostVFX>().invisible) { AudioManager.instance.Play("Wander" + i.ToString()); }
-                playedSound = true;
-                //sound_timer = Time.time;//cooldown
+                if (!playedSound && GetComponent<NPCController>()!=null && !GetComponent<NPCController>().agro)
+                {
+                    int i;
+                    i = UnityEngine.Random.Range(1, 4);
+                    if (!invisible) { AudioManager.instance.Play("Wander" + i.ToString()); }
+                    playedSound = true;
+                    //sound_timer = Time.time;//cooldown
+                }
             }
-
-            
-        }
+        
     }
-
 }
 
 

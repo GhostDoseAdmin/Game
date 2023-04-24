@@ -76,8 +76,10 @@ public class CamFlash : MonoBehaviour
                 RaycastHit hit;
                 if (Physics.Linecast(spotlight.transform.position, endPoint, out hit, mask.value))
                 {
+
                     if (hit.collider.transform.root.gameObject == ghost.gameObject)
                     {
+                        if(ghost.gameObject.GetComponent<Teleport>().teleport==0 && ghost.healthEnemy>0)
                        // Debug.Log("ENYM HIT -------------------------------------------------------");
                         ghost.TakeDamage(0, false);
                         //ghost.agro = true;

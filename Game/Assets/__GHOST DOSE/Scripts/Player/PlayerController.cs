@@ -51,8 +51,9 @@ public class PlayerController : MonoBehaviour
     public bool changingGear;
 	public bool throwing = false;
 	public bool emitGear;
-
-
+	public float shotDmg;
+	public string shotName="";
+	public bool emitShoot;
     [Space(10)]
 
 	[Header("STAMINA UI")]
@@ -72,6 +73,7 @@ public class PlayerController : MonoBehaviour
 	Vector3 targetPosVec;
 	float walk = 0f;
 	float strafe = 0f;
+	public bool emitPos;
     //public GameDriver GD;
     private float emit_timer = 0.0f;//USED FOR EMITS
     private float emit_delay = 0.33f;//0.25
@@ -83,6 +85,7 @@ public class PlayerController : MonoBehaviour
 	public string currentAni="";
 	public bool fireK2;
 	public bool emitFlashlight;
+	public bool emitKill;
 	//private GameObject playerCam;
     private static utilities util;
 
@@ -209,9 +212,50 @@ public class PlayerController : MonoBehaviour
 				if (Input.GetMouseButton(1)){
 					aimString = $",'aim':''";
 				}
-			//--------------- E M I T   S T R I N G ----------------------
-            string actions = $"{{'flintensity':'{gameObject.GetComponent<FlashlightSystem>().FlashLight.intensity}','x':'{transform.position.x.ToString("F2")}','y':'{transform.position.y.ToString("F2")}','z':'{transform.position.z.ToString("F2")}','speed':'{speed.ToString("F2")}','ax':'{crosshairPos.x.ToString("F0")}','ay':'{crosshairPos.y.ToString("F0")}','az':'{crosshairPos.z.ToString("F0")}'{dmgString}{flashLightString}{k2String}{gearString}{aimString}}}";
+				//--------------- WALK EMIT-----------------
+				string walkString = "";
+				if (walk != 0){
+				walkString = $",'w':'{walk.ToString("F1")}'";
+				emitPos = true;
+                }
+				//--------------- STRAFE EMIT-----------------
+			    string strafeString = "";
+				if (strafe != 0){
+                strafeString = $",'s':'{strafe.ToString("F1")}'";
+				emitPos = true;
+				}
+				//--------------- RUN EMIT-----------------
+				string runString ="";
+				if (Input.GetKey(InputManager.instance.running)){
+					runString = $",'r':''";
+				}
+				//--------------- POSITION EMIT-----------------
+				string posString ="";
+				if(emitPos){
+                posString = $",'x':'{transform.position.x.ToString("F2")}','y':'{transform.position.y.ToString("F2")}','z':'{transform.position.z.ToString("F2")}'";
+				emitPos = false;
+                }
+				//--------------- CAMSHOT EMIT-----------------
+				string shotString = "";
+				if (emitShoot)
+				{
+					shotString = $",'shoot':'{shotName}'";
+					if (shotName.Length > 1)					{
+						shotString = $",'shoot':'{shotName}','sdmg':'{shotDmg}'";
+					}
+					shotName = "";
+					emitShoot = false;
+				}
 
+				//--------------- KILL EMIT-----------------
+				string killString = "";
+				if (emitKill){
+					killString = $",'kill':''";
+					emitKill = false;
+				}
+            //--------------- E M I T   S T R I N G ----------------------
+            string actions = $"{{'flintensity':'{gameObject.GetComponent<FlashlightSystem>().FlashLight.intensity}','ax':'{crosshairPos.x.ToString("F0")}','ay':'{crosshairPos.y.ToString("F0")}','az':'{crosshairPos.z.ToString("F0")}'{dmgString}{flashLightString}{k2String}{gearString}{aimString}{walkString}{strafeString}{runString}{posString}{shotString}{killString}}}";
+			//Debug.Log("------------------------------------------SENDING STRING " + actions);
 
 			
 			if (actions != prevEmit) { NetworkDriver.instance.sioCom.Instance.Emit("player_action", JsonConvert.SerializeObject(actions), false); prevEmit = actions; }
@@ -226,6 +270,7 @@ public class PlayerController : MonoBehaviour
     }
     #endregion
 
+
     #region Locomotion
     void Locomotion()
 	{
@@ -236,7 +281,7 @@ public class PlayerController : MonoBehaviour
 
         anim.SetFloat("Strafe", strafe); 
 		anim.SetFloat("Walk", walk);
-
+        //Debug.Log("SPEED---------------------------------------------------" + strafe + walk);
 
         if (walk != 0 || strafe != 0 || is_FlashlightAim == true || gearAim == true || CameraType.FPS == cameraController.cameraType)
         {

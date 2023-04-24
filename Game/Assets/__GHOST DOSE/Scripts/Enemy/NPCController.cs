@@ -41,7 +41,7 @@ public class NPCController : MonoBehaviour
     [Header("TESTING")]
     [Space(10)]
     public bool canAttack = true;
-    public bool agro = true;//HAUNTS THE PLAYER
+    public bool agro = false;//HAUNTS THE PLAYER
     public Transform target;
 
     //public Transform player;
@@ -103,7 +103,7 @@ public class NPCController : MonoBehaviour
         update = false; //UPDATE POSITIONS
         HIT_COL.GetComponent<SphereCollider>().enabled = false;
         outline = transform.GetChild(0).GetComponent<Outline>();
-        Debug.Log("----------------------------------------" + HIT_COL.GetComponent<SphereCollider>().enabled);
+        //Debug.Log("----------------------------------------" + HIT_COL.GetComponent<SphereCollider>().enabled);
         
 
     }
@@ -152,13 +152,13 @@ public class NPCController : MonoBehaviour
             string attackString = "";
             if (prevAttack != attacking){
                 attackString = $",'attk':'{attacking}'";
-                if (!prevAttack) { emitPos = true; }
+                emitPos = true; 
             }
             prevAttack = attacking;
             //--------------- POSITION EMIT-----------------
             string posString = "";
             if (emitPos){
-                posString = $",'x':'{transform.position.x}','y':'{transform.position.y}','z':'{transform.position.z}'";
+                posString = $",'x':'{transform.position.x.ToString("F2")}','y':'{transform.position.y.ToString("F2")}','z':'{transform.position.z.ToString("F2")}'";
                 emitPos = false;
             }
             //actions = $"{{{target} {destination} {attacking} {teleChange}'}}";//determines what events to emit on change
@@ -167,11 +167,10 @@ public class NPCController : MonoBehaviour
             {
                 //Debug.Log("--------------------------------SENDING PLAYER JOINED-----------------------------------" + playerJoined); 
                 send = $"{{'obj':'{this.name}'{destString}{teleString}{targString}{attackString}{posString}}}";
-                Debug.Log("SENDING DATA " + send);
+                //Debug.Log("SENDING DATA " + send);
                 NetworkDriver.instance.sioCom.Instance.Emit("enemy", JsonConvert.SerializeObject(send), false);
                 
                 teleEmit = 0;
-                update = false;
                 //prevActions = actions;
             }
         }
@@ -204,7 +203,7 @@ public class NPCController : MonoBehaviour
     }
     public void OnEnable()
     {
-        GetComponent<NPCController>().update = true;
+        emitPos = true;
     }
 
 
@@ -253,7 +252,7 @@ public class NPCController : MonoBehaviour
                         }
                         else //waypoint reached
                         {
-                            GetComponent<Teleport>().CheckTeleport(true, false);
+                            if (NetworkDriver.instance.HOST) { GetComponent<Teleport>().CheckTeleport(true, false); }
                             curWayPoint++;
                         }
                     }
@@ -508,22 +507,20 @@ public class NPCController : MonoBehaviour
 
         if (healthEnemy <= 0)
         {
-            if (GameDriver.instance.twoPlayer) //&& GD.ND.HOST
-            {
-                if(!otherPlayer)
-                {
-                    send = $"{{'obj':'{this.name}','dead':''}}";
-                    NetworkDriver.instance.sioCom.Instance.Emit("enemy", JsonConvert.SerializeObject(send), false);
-                }
+            GetComponent<Teleport>().teleport = 0;
+            GetComponent<Teleport>().canTeleport = true;
+            if (NetworkDriver.instance.HOST) {
+                GetComponent<Teleport>().CheckTeleport(true, true);
+                GetComponent<Teleport>().Invoke("Respawn", spawnTimer); 
             }
-            GetComponent<Teleport>().CheckTeleport(true, true);
-            if (NetworkDriver.instance.HOST) { GetComponent<Teleport>().Invoke("Respawn", spawnTimer); }
             AudioManager.instance.Play("EnemyDeath");
+            agro = false;
+            target = null;
             this.gameObject.transform.GetChild(0).GetComponent<SkinnedMeshRenderer>().enabled = false;
             this.gameObject.transform.GetChild(0).GetComponent<Outline>().OutlineWidth = 0;
             GameObject death = Instantiate(Death, transform.position, transform.rotation);
             if (Shadower) { death.GetComponent<GhostVFX>().Shadower = true; death.GetComponent<EnemyDeath>().Shadower = true; }
-            healthEnemy = startHealth;
+            //healthEnemy = startHealth;
 
 
         }

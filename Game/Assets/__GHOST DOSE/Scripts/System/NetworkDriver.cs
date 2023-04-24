@@ -126,6 +126,7 @@ namespace NetworkSystem
                 else { UpdateEnemies(); }
                 GameDriver.instance.Player.GetComponent<PlayerController>().emitFlashlight = true;
                 GameDriver.instance.Player.GetComponent<PlayerController>().emitGear = true;
+                GameDriver.instance.Player.GetComponent<PlayerController>().emitPos = true;//triggers position emit
                 GameDriver.instance.MSG = "Two Player Mode - HOST " + HOST;
 
             });
@@ -164,14 +165,24 @@ namespace NetworkSystem
                     //Debug.Log("PLAYER ACTION" + data);
                     Dictionary<string, string> dict = data.ToObject<Dictionary<string, string>>();
                     GameDriver.instance.Client.GetComponent<ClientPlayerController>().targetPos.position = new Vector3(float.Parse(dict["ax"]), float.Parse(dict["ay"]), float.Parse(dict["az"]));
-                    GameDriver.instance.Client.GetComponent<ClientPlayerController>().destination = new Vector3(float.Parse(dict["x"]), float.Parse(dict["y"]), float.Parse(dict["z"]));
-                    GameDriver.instance.Client.GetComponent<ClientPlayerController>().speed = float.Parse(dict["speed"]);
+                    if (dict.ContainsKey("x")) { GameDriver.instance.Client.GetComponent<ClientPlayerController>().destination = new Vector3(float.Parse(dict["x"]), float.Parse(dict["y"]), float.Parse(dict["z"])); }
+                    if (dict.ContainsKey("r")) { GameDriver.instance.Client.GetComponent<ClientPlayerController>().running = true; } else { GameDriver.instance.Client.GetComponent<ClientPlayerController>().running = false; }
+                    if (dict.ContainsKey("w")) { GameDriver.instance.Client.GetComponent<ClientPlayerController>().targWalk = float.Parse(dict["w"]); } else { GameDriver.instance.Client.GetComponent<ClientPlayerController>().targWalk = 0; } //WALK
+                    if (dict.ContainsKey("s")) { GameDriver.instance.Client.GetComponent<ClientPlayerController>().targStrafe = float.Parse(dict["s"]); } else { GameDriver.instance.Client.GetComponent<ClientPlayerController>().targStrafe = 0; } //STRAFE
                     if (dict.ContainsKey("aim")) { GameDriver.instance.Client.GetComponent<ClientPlayerController>().aim = true; } else { GameDriver.instance.Client.GetComponent<ClientPlayerController>().aim = false; }
                     GameDriver.instance.Client.GetComponent<ClientPlayerController>().gameObject.GetComponent<ClientFlashlightSystem>().FlashLight.intensity = float.Parse(dict["flintensity"]);
                     if (dict.ContainsKey("fl")) { GameDriver.instance.Client.GetComponent<ClientPlayerController>().ToggleFlashlight(bool.Parse(dict["fl"])); }//FLASHLIGHT
                    if (dict.ContainsKey("k2")) { GameDriver.instance.Client.GetComponent<ClientPlayerController>().k2.GetComponent<K2>().fire(true); }
                     if (dict.ContainsKey("gear")) { if (GameDriver.instance.Client.GetComponent<ClientPlayerController>().gear != int.Parse(dict["gear"])) { GameDriver.instance.Client.GetComponent<ClientPlayerController>().ChangeGear(int.Parse(dict["gear"])); } }//gear changes
                     if (dict.ContainsKey("dmg")) { if (bool.Parse(dict["dmg"])) { GameDriver.instance.Client.GetComponent<ClientPlayerController>().Flinch(new Vector3(float.Parse(dict["fx"]), float.Parse(dict["fy"]), float.Parse(dict["fz"]))); } }
+                    if (dict.ContainsKey("shoot")) { //DAMAGE AND KILL
+                        GameDriver.instance.Client.GetComponent<ClientPlayerController>().triggerShoot = true;
+                        GameObject enemy = GameObject.Find(dict["shoot"]); 
+                        if (enemy != null) {
+                            if (!dict.ContainsKey("kill")) { enemy.GetComponent<NPCController>().TakeDamage(int.Parse(dict["sdmg"]), true); }//hurt
+                            else { enemy.GetComponent<NPCController>().healthEnemy = 0; enemy.GetComponent<NPCController>().TakeDamage(0 , true); }//kill
+                        } 
+                    }
                 }
 
             });
@@ -219,15 +230,20 @@ namespace NetworkSystem
             //-----------------DISABLE  ----------------->
             sioCom.Instance.On("disable", (payload) =>
             {
-                Debug.Log(" DISABLE EVENT  " + payload);
                 JObject data = JObject.Parse(payload);
-                Dictionary<string, string> dict = data.ToObject<Dictionary<string, string>>();
-                foreach (GameObject enemyObject in GetComponent<DisablerControl>().enemyObjects)
+                Debug.Log("RECEIVED DISABLE " + data);
+                Dictionary<string, Dictionary<string, string>> dict = data.ToObject<Dictionary<string, Dictionary<string, string>>>();
+                // Log the object positions to the console
+                foreach (KeyValuePair<string, Dictionary<string, string>> obj in dict)
                 {
-                    if(enemyObject.name == dict["obj"])
+                    //search list of enemies for corresopnding obj
+                    foreach (GameObject enemyObject in GetComponent<DisablerControl>().enemyObjects)
                     {
-                        enemyObject.SetActive(bool.Parse(dict["active"]));
-                        break;
+                        if (enemyObject.name == obj.Key)
+                        {
+                            enemyObject.SetActive(bool.Parse(obj.Value["active"]));
+                            break;
+                        }
                     }
                 }
             });
@@ -261,7 +277,7 @@ namespace NetworkSystem
                     //--------TELEPORT-----------
                     if (dict.ContainsKey("tele"))
                     {
-                        enemy.GetComponent<Teleport>().teleport = float.Parse(dict["tele"]);
+                        enemy.GetComponent<Teleport>().teleport = float.Parse(dict["tele"]); 
                     }
                     //--------PATROL-----------
                     if (dict.ContainsKey("dx")) { 
@@ -271,7 +287,7 @@ namespace NetworkSystem
                     //-------ATTACK-------------
                     if (dict.ContainsKey("attk")) { enemy.GetComponent<NPCController>().attacking = bool.Parse(dict["attk"]); }
                     //-------DEAD-------------
-                    if (dict.ContainsKey("dead")) { enemy.GetComponent<NPCController>().healthEnemy = 0; }
+                    //if (dict.ContainsKey("dead")) { enemy.GetComponent<NPCController>().TakeDamage(enemy.GetComponent<NPCController>().healthEnemy, true); }
                 }
             });
 
@@ -305,7 +321,7 @@ namespace NetworkSystem
                     thisObj.gameObject.GetComponent<Rigidbody>().AddForce(-velocity * 1.5f, ForceMode.Impulse);
                 }
             });
-            //--------------------SYNC ROOM--------------------
+            //--------------------SYNC ENEMIES--------------------
             sioCom.Instance.On("sync", (payload) =>
             {
                 JObject data = JObject.Parse(payload);

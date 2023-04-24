@@ -186,13 +186,16 @@ public class ShootingSystem : MonoBehaviour
                 muzzleFlash.Play();
                 Shell.Play();
                 int damage = 0;
+                GetComponent<PlayerController>().emitShoot = true;
                 //DO DAMAGE
                 if (isVisible && target!=null && target.GetComponent<Teleport>().teleport==0)
                 {
                     damage = 40;
                     if (isHeadshot) { damage = 100; }
+                    if (damage >= target.GetComponent<NPCController>().healthEnemy) { GetComponent<PlayerController>().emitKill = true; }
                     target.GetComponent<NPCController>().TakeDamage(damage, false);
-                    //target.GetComponent<NPCController>().agro=true;//15
+                    GetComponent<PlayerController>().shotName = target.name;
+                    GetComponent<PlayerController>().shotDmg = damage;
                 }
 
                 //--------------FLASH-----------------
@@ -202,14 +205,6 @@ public class ShootingSystem : MonoBehaviour
                 //---POINT FLASH IN DIRECTION OF THE SHOT
                 Quaternion newYRotation = Quaternion.Euler(0f, shootPoint.rotation.eulerAngles.y, 0f);
                 newFlash.transform.rotation = newYRotation;
-
-
-
-                //EMIT SHOOT
-                string targName = "none";
-                if(target!=null) { targName = target.name; }
-                if (GameDriver.instance.twoPlayer ) { NetworkDriver.instance.sioCom.Instance.Emit("shoot", JsonConvert.SerializeObject($"{{'name':'{targName}','damage':'{damage}'}}"), false); }
-
 
                 camera.fieldOfView = 40;//40
             }
@@ -234,14 +229,14 @@ public class ShootingSystem : MonoBehaviour
         Debug.DrawLine(startPoint, startPoint + direction * distance, Color.red);
         if (Physics.Raycast(startPoint, direction, out hit, distance, mask.value))
         {
-            string ghostType = hit.collider.gameObject.transform.root.tag;
-            if (hit.collider.gameObject.transform.root.GetComponent<NPCController>() != null)
+            GameObject ghost = hit.collider.gameObject.transform.root.gameObject;
+            if (ghost.GetComponent<NPCController>() != null)
             {
                 //Debug.Log(hit.collider.gameObject.name);
-                if (ghostType == "Ghost" || ghostType == "Shadower")
+                if (ghost.tag == "Ghost" || ghost.tag == "Shadower")
                 {
                     //Ensure mesh can be read
-                    //if (hit.collider.gameObject.transform.root.GetComponent<GhostVFX>() != null)
+                    if (ghost.GetComponent<NPCController>().healthEnemy>0 && ghost.GetComponent<Teleport>().teleport == 0)
                     {
                         isVisible = !hit.collider.gameObject.transform.root.GetComponent<GhostVFX>().invisible;
                         if (!isVisible) { Debug.Log("INVISISHOT"); }

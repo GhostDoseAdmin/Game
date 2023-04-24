@@ -23,7 +23,7 @@ public class Teleport : MonoBehaviour
     private float delay = 4.0f; //relocate interval / musta llow time to fade
     private int relocate = 0;
     private float prevOutline;
-    private bool canTeleport = true;
+    public bool canTeleport = true;
     public bool debugAttack;//resets attack ani state for client as would get stuck after restarting animator 
     private bool isWaypoint;
     public bool DEATH;
@@ -76,7 +76,7 @@ public class Teleport : MonoBehaviour
         if (teleport == 1)
         {
             GetComponent<NPCController>().teleEmit = 1;
-            if (GetComponent<NPCController>().agro && !isWaypoint) { AudioManager.instance.Play("Disappear"); }
+            if (GetComponent<NPCController>().agro && !isWaypoint && !DEATH) { AudioManager.instance.Play("Disappear"); }
             fadeTimer = Time.time;
             if (GetComponent<NPCController>().target != null) { target = GetComponent<NPCController>().target; }
             if (!NetworkDriver.instance.HOST) { GetComponent<NPCController>().enabled = false; }
@@ -122,7 +122,7 @@ public class Teleport : MonoBehaviour
                     Vector3 randomOffset = new Vector3(randomDirection.x, 0f, randomDirection.y) * randomDistance;//MAKE SURE SLIGHTLY ELEVATED
                     transform.position = target.position + randomOffset;
                 }
-                else//USE WAYPOINTS
+                else//USE WAYPOINTS / FOR DEATH AS WELL
                 {
                     // Get a random index from the list
                     int randomWP = Random.Range(0, GetComponent<NPCController>().wayPoint.Count);
@@ -155,7 +155,7 @@ public class Teleport : MonoBehaviour
                 GetComponent<NPCController>().HIT_COL.GetComponent<SphereCollider>().isTrigger = false;
                 StartCoroutine(resetOutline());
                 StartCoroutine(resetCanTeleport());
-                if (!NetworkDriver.instance.HOST && GetComponent<NPCController>().healthEnemy<=0){Respawn();}
+                if (!NetworkDriver.instance.HOST && GetComponent<NPCController>().healthEnemy<=0){ GetComponent<NPCController>().healthEnemy = GetComponent<NPCController>().startHealth; }
             }
             if (delayForEmit){ delayForEmit = false; }
         }
@@ -196,9 +196,7 @@ public class Teleport : MonoBehaviour
     public void Respawn()
     {
         DEATH = false;
-        GetComponent<NPCController>().agro = false;
-        GetComponent<NPCController>().target = null;
-        //GetComponent<NPCController>().healthEnemy = GetComponent<NPCController>().startHealth;
+        GetComponent<NPCController>().healthEnemy = GetComponent<NPCController>().startHealth;
         GetComponent<NPCController>().angleView = GetComponent<NPCController>().startAngleView;
         GetComponent<NPCController>().range = GetComponent<NPCController>().startRange;
     }
