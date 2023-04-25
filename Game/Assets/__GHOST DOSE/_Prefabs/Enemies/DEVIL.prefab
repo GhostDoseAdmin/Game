@@ -927,7 +927,7 @@ Animator:
   m_GameObject: {fileID: 3207942481899366270}
   m_Enabled: 1
   m_Avatar: {fileID: 9000000, guid: 439fe401d8593d24ab701f585e59386c, type: 3}
-  m_Controller: {fileID: 9100000, guid: 18c57f131f3e71c4fa720d2133fe3b6b, type: 2}
+  m_Controller: {fileID: 9100000, guid: 46c1e7d2850f372419bbfb3a22224206, type: 2}
   m_CullingMode: 1
   m_UpdateMode: 0
   m_ApplyRootMotion: 1
@@ -957,7 +957,7 @@ NavMeshAgent:
   m_AutoBraking: 1
   m_AutoRepath: 1
   m_Height: 1.68
-  m_BaseOffset: 0
+  m_BaseOffset: 0.3
   m_WalkableMask: 4294967295
   m_ObstacleAvoidanceType: 4
 --- !u!114 &3207942481899366264
@@ -996,11 +996,12 @@ MonoBehaviour:
   target: {fileID: 0}
   animEnemy: {fileID: 0}
   navmesh: {fileID: 0}
+  teleEmit: 0
   targetPlayer: {fileID: 0}
   destination: {x: 0, y: 0, z: 0}
   truePosition: {x: 0, y: 0, z: 0}
   attacking: 0
-  playerJoined: 0
+  update: 0
   activateOutline: 0
   clientWaypointDest: {x: 0, y: 0, z: 0}
 --- !u!114 &3207942481899366265
@@ -1041,6 +1042,7 @@ MonoBehaviour:
   target: {fileID: 0}
   minRadius: 2
   maxRadius: 4
+  canTeleport: 1
   debugAttack: 0
   DEATH: 0
 --- !u!1 &3285822748090249058
