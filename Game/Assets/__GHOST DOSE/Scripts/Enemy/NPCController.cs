@@ -187,8 +187,10 @@ public class NPCController : MonoBehaviour
         {
             if (outline.OutlineWidth > 0) { outline.OutlineWidth -= 0.005f; } 
         }
-        if (activateOutline){            if (outline.OutlineWidth < 7) { outline.OutlineWidth += 0.1f;  } else { activateOutline = false; }         }
-        if (distance > 18) { if (outline.OutlineWidth > 0) { outline.OutlineWidth -= 0.1f; activateOutline = false; } }
+        if (activateOutline){if (outline.OutlineWidth < 7) { outline.OutlineWidth += 0.1f;  } else { activateOutline = false; }}//fade in
+        if (distance > 15) { if (outline.OutlineWidth > 0) { outline.OutlineWidth -= 0.1f; activateOutline = false; } }//fade fast out of range
+        else { if (!activateOutline) { outline.OutlineWidth -= (distance*0.0025f); } }
+
         if (outline.OutlineWidth < 0) { outline.OutlineWidth = 0; }
         
 

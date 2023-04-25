@@ -114,7 +114,7 @@ Transform:
   m_GameObject: {fileID: 4929269169683610931}
   m_LocalRotation: {x: 0.7071068, y: 0, z: 0, w: 0.7071068}
   m_LocalPosition: {x: -0.476, y: 1.298, z: 1.987}
-  m_LocalScale: {x: 1.6436385, y: 1.2397412, z: 1.6436385}
+  m_LocalScale: {x: 4, y: 1.2397412, z: 4}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 5309754779169041861}
@@ -216,6 +216,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   startPoint: {x: 0, y: 0, z: 0}
   isClient: 0
+  K2Source: {fileID: 0}
+  hud: {fileID: 0}
 --- !u!64 &7847365961381861138
 MeshCollider:
   m_ObjectHideFlags: 0
