@@ -1,13 +1,18 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
+using System.Threading;
 using UnityEngine;
+using InteractionSystem;
 
-public class Light_on : MonoBehaviour
+public class k2beep : MonoBehaviour
 {
     // Start is called before the first frame update
     public int Level = 0; // Level 0 - 5 0, all lamps disable and 5 all lamps enable
     public bool random_mode = false;
     public bool start = true;
+    private float timer = 0f;
+    private float delay;
+
 
     void Start()
     {
@@ -19,7 +24,21 @@ public class Light_on : MonoBehaviour
     {
         if (random_mode == false)
         {
-            Detect();
+
+
+
+            // Calculate the new delay based on the level value
+            delay = Mathf.Lerp(2f, 0.1f, (float)Level / 5f);
+            // Ensure that the new delay is within the allowed range
+            delay = Mathf.Clamp(delay, 0.1f, 2f);
+
+            //BEEP
+            if (Time.time > timer + delay)
+            {
+                Detect();
+                timer = Time.time;
+            }
+           
         }
         else
         {
@@ -33,10 +52,18 @@ public class Light_on : MonoBehaviour
        
 
     }
-
+    void lightOff()
+    {
+        gameObject.GetComponent<Renderer>().materials[1].DisableKeyword("_EMISSION");
+        gameObject.GetComponent<Renderer>().materials[2].DisableKeyword("_EMISSION");
+        gameObject.GetComponent<Renderer>().materials[3].DisableKeyword("_EMISSION");
+        gameObject.GetComponent<Renderer>().materials[4].DisableKeyword("_EMISSION");
+        gameObject.GetComponent<Renderer>().materials[5].DisableKeyword("_EMISSION");
+    }
 
         void Detect()
         {
+        if (Level > 0) { AudioManager.instance.Play("k2beep"); Invoke("lightOff", delay*0.5f); }
             switch (Level)
             {
                 case 5:
