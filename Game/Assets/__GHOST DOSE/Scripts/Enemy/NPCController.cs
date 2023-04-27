@@ -70,7 +70,7 @@ public class NPCController : MonoBehaviour
     [HideInInspector] public bool update;
     private Outline outline;
     [HideInInspector] public bool activateOutline;
-
+    [HideInInspector] Vector3 lookAtVec;
 
     [HideInInspector] public Vector3 clientWaypointDest;
     //private float minDist = 0.03f; //debug enemy rotation when ontop of player
@@ -301,18 +301,27 @@ public class NPCController : MonoBehaviour
         //MOVE TOWARDS TARGET
         navmesh.SetDestination(target.position);
         GetComponent<NavMeshAgent>().stoppingDistance = hitRange;
-        float distance = Vector3.Distance(transform.position, target.position);
         animEnemy.SetBool("Walk", true);
 
+
+        float distance = Vector3.Distance(transform.position, new Vector3(target.position.x, transform.position.y, target.position.z));//measured at same level Yaxis
+
         //------PUSH PLAYER AWAY
-        if(distance<0.5)
+        Debug.Log("-----------------------------DISTANCE " + distance);
+        if (distance < 0.4f)
         {
-            Vector3 pushDirection = targetPlayer.transform.position - transform.position;
+            Vector3 pushDirection = transform.forward;//target.transform.position - transform.position;
             pushDirection.y = 0f; // Set Y component to 0
             pushDirection.Normalize();
-            targetPlayer.transform.Translate(pushDirection * 0.2f, Space.World);
+            float pushDistance = 1f; // The distance to push the target object
+            Vector3 targetPosition = target.transform.position + pushDirection * pushDistance; // The target position
+            float speed = 1.5f; // The speed of the movement
+            target.transform.position = Vector3.Lerp(target.transform.position, targetPosition, speed * Time.deltaTime);
         }
-
+        if (distance >= 0.55){lookAtVec = Vector3.Lerp(lookAtVec, target.position, 3f * Time.deltaTime);}
+        else { lookAtVec = Vector3.Lerp(lookAtVec, new Vector3(target.position.x, transform.position.y, target.position.z), 3f * Time.deltaTime); }
+       
+        transform.LookAt(lookAtVec);
 
         //------------------------------ H O S T ----------------------------------------
         if (NetworkDriver.instance.HOST)
@@ -335,10 +344,8 @@ public class NPCController : MonoBehaviour
                     attacking = false;
                 }
                 navmesh.isStopped = false;
-               
-                //if(GetComponent<GhostVFX>().invisible) { animEnemy.SetBool("Run", false); animEnemy.SetBool("walk", true); }
-                
-                 transform.LookAt(targetPlayer); 
+
+
             }
             //ATTACK TARGET
             if (distance <= hitRange)
@@ -355,18 +362,6 @@ public class NPCController : MonoBehaviour
                     attacking = true;
                 }
                 navmesh.isStopped = true;
-              
-                // animEnemy.SetBool("Walk", false);
-                //TURN TO TARGET
-               // if (distance > minDist)
-                {
-                    //Vector3 direction = (target.position - transform.position).normalized;
-                   // Quaternion lookRotation = Quaternion.LookRotation(new Vector3(direction.x, 0, direction.z));
-                   // transform.rotation = Quaternion.Slerp(transform.rotation, lookRotation, Time.deltaTime * 10);
-                }
-
-               
-               transform.LookAt(targetPlayer); 
             }
         }
         else//------------------------- C L I E N T  --------------------------------------------
@@ -384,9 +379,6 @@ public class NPCController : MonoBehaviour
                 navmesh.isStopped = false;
                 if (distance <= hitRange) { navmesh.isStopped = true; }
                 
-               // if (GetComponent<GhostVFX>().invisible) { animEnemy.SetBool("Run", false); animEnemy.SetBool("walk", true); }
-                
-                 transform.LookAt(targetPlayer); 
             }
             //ATTACK TARGET
             else
@@ -405,19 +397,7 @@ public class NPCController : MonoBehaviour
 
                 navmesh.isStopped = true;
                 
-               // animEnemy.SetBool("Walk", false);
-                //TURN TO TARGET
-               // if (distance > minDist)
-                {
-                   // Vector3 direction = (target.position - transform.position).normalized;
-                   // Quaternion lookRotation = Quaternion.LookRotation(new Vector3(direction.x, 0, direction.z));
-                   // transform.rotation = Quaternion.Slerp(transform.rotation, lookRotation, Time.deltaTime * 10);
-                }
-
-                
-                
                 if (GetComponent<Teleport>().debugAttack) { animEnemy.Play("Attack"); GetComponent<Teleport>().debugAttack = false; }
-                 transform.LookAt(targetPlayer); 
             }
 
         }
