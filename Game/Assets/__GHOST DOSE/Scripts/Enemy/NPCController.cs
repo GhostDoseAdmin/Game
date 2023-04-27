@@ -73,7 +73,7 @@ public class NPCController : MonoBehaviour
 
 
     [HideInInspector] public Vector3 clientWaypointDest;
-    private float minDist = 0.03f; //debug enemy rotation when ontop of player
+    //private float minDist = 0.03f; //debug enemy rotation when ontop of player
     private float distance, p1_dist,p2_dist;
 
     private void Awake()
@@ -102,7 +102,9 @@ public class NPCController : MonoBehaviour
         if (wayPoint[0] == null) { 
             wayPoint[0].position = transform.position; 
         }//First waypoint is always self
-        update = false; //UPDATE POSITIONS
+        update = false; //UPDATE POSITIONS\
+        SKEL_ROOT.GetComponent<CapsuleCollider>().isTrigger = true;
+        HIT_COL.GetComponent<SphereCollider>().isTrigger = true;
         HIT_COL.GetComponent<SphereCollider>().enabled = false;
         outline = transform.GetChild(0).GetComponent<Outline>();
         //Debug.Log("----------------------------------------" + HIT_COL.GetComponent<SphereCollider>().enabled);
@@ -302,6 +304,16 @@ public class NPCController : MonoBehaviour
         float distance = Vector3.Distance(transform.position, target.position);
         animEnemy.SetBool("Walk", true);
 
+        //------PUSH PLAYER AWAY
+        if(distance<0.5)
+        {
+            Vector3 pushDirection = targetPlayer.transform.position - transform.position;
+            pushDirection.y = 0f; // Set Y component to 0
+            pushDirection.Normalize();
+            targetPlayer.transform.Translate(pushDirection * 0.2f, Space.World);
+        }
+
+
         //------------------------------ H O S T ----------------------------------------
         if (NetworkDriver.instance.HOST)
         {
@@ -326,7 +338,7 @@ public class NPCController : MonoBehaviour
                
                 //if(GetComponent<GhostVFX>().invisible) { animEnemy.SetBool("Run", false); animEnemy.SetBool("walk", true); }
                 
-                if (distance > minDist) { transform.LookAt(targetPlayer); }
+                 transform.LookAt(targetPlayer); 
             }
             //ATTACK TARGET
             if (distance <= hitRange)
@@ -346,15 +358,15 @@ public class NPCController : MonoBehaviour
               
                 // animEnemy.SetBool("Walk", false);
                 //TURN TO TARGET
-                if (distance > minDist)
+               // if (distance > minDist)
                 {
-                    Vector3 direction = (target.position - transform.position).normalized;
-                    Quaternion lookRotation = Quaternion.LookRotation(new Vector3(direction.x, 0, direction.z));
-                    transform.rotation = Quaternion.Slerp(transform.rotation, lookRotation, Time.deltaTime * 10);
+                    //Vector3 direction = (target.position - transform.position).normalized;
+                   // Quaternion lookRotation = Quaternion.LookRotation(new Vector3(direction.x, 0, direction.z));
+                   // transform.rotation = Quaternion.Slerp(transform.rotation, lookRotation, Time.deltaTime * 10);
                 }
 
                
-                if (distance > minDist) { transform.LookAt(targetPlayer); }
+               transform.LookAt(targetPlayer); 
             }
         }
         else//------------------------- C L I E N T  --------------------------------------------
@@ -374,7 +386,7 @@ public class NPCController : MonoBehaviour
                 
                // if (GetComponent<GhostVFX>().invisible) { animEnemy.SetBool("Run", false); animEnemy.SetBool("walk", true); }
                 
-                if (distance > minDist) { transform.LookAt(targetPlayer); }
+                 transform.LookAt(targetPlayer); 
             }
             //ATTACK TARGET
             else
@@ -395,17 +407,17 @@ public class NPCController : MonoBehaviour
                 
                // animEnemy.SetBool("Walk", false);
                 //TURN TO TARGET
-                if (distance > minDist)
+               // if (distance > minDist)
                 {
-                    Vector3 direction = (target.position - transform.position).normalized;
-                    Quaternion lookRotation = Quaternion.LookRotation(new Vector3(direction.x, 0, direction.z));
-                    transform.rotation = Quaternion.Slerp(transform.rotation, lookRotation, Time.deltaTime * 10);
+                   // Vector3 direction = (target.position - transform.position).normalized;
+                   // Quaternion lookRotation = Quaternion.LookRotation(new Vector3(direction.x, 0, direction.z));
+                   // transform.rotation = Quaternion.Slerp(transform.rotation, lookRotation, Time.deltaTime * 10);
                 }
 
                 
                 
                 if (GetComponent<Teleport>().debugAttack) { animEnemy.Play("Attack"); GetComponent<Teleport>().debugAttack = false; }
-                if (distance > minDist) { transform.LookAt(targetPlayer); }
+                 transform.LookAt(targetPlayer); 
             }
 
         }
@@ -536,6 +548,10 @@ public class NPCController : MonoBehaviour
             //if (animator.GetCurrentAnimatorStateInfo(0).IsName(animationName)) ;
         }
     }
+
+
+
+
 
     void AttackKnife()
     {

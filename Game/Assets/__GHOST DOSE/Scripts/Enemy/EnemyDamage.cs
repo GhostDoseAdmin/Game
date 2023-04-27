@@ -14,16 +14,16 @@ public class EnemyDamage : MonoBehaviour
     {
         main = transform.root.gameObject;
     }
-    private void OnCollisionEnter(Collision collision)
+    private void OnTriggerEnter(Collider other)
     {
 
-            if (collision.gameObject.tag == "Player")
+            if (other.gameObject.tag == "Player")
             {
-                Debug.Log("---------------------------------------COLLSION----------------------------------------" );
+                //Debug.Log("---------------------------------------COLLSION----------------------------------------" );
 
-                Vector3 oppositeForce = -main.GetComponent<NPCController>().transform.forward * main.GetComponent<NPCController>().force;
+                Vector3 oppositeForce = main.GetComponent<NPCController>().transform.forward * main.GetComponent<NPCController>().force;
                 oppositeForce.y = 0f; // Set the y component to 0
-               // collision.gameObject.GetComponent<HealthSystem>().HealthDamage(main.GetComponent<NPCController>().damage, oppositeForce);
+                other.gameObject.GetComponent<HealthSystem>().HealthDamage(main.GetComponent<NPCController>().damage, oppositeForce);
 
 
 

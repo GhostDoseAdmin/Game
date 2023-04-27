@@ -8,7 +8,6 @@ public class K2Wave : MonoBehaviour
     public Vector3 startPoint;
     private Vector3 direction;
     public bool isClient = false;
-    private float xoffset;
     public GameObject K2Source;
     public GameObject hud;
     private 
@@ -68,7 +67,8 @@ public class K2Wave : MonoBehaviour
     private void OnTriggerEnter(Collider other)
     {
         Vector3 closestPoint = other.ClosestPointOnBounds(transform.position);
-        //Debug.Log("------------------------------------------COLLIDING");
+
+        //Debug.Log("------------------------------------------COLLIDING" + other.name);
         if (!other.gameObject.isStatic) { GetComponent<Shockwave>().NewShockwave(closestPoint, 2); }//2
 
         if (other.gameObject.transform.root.tag == "Ghost" || other.gameObject.transform.root.tag == "Shadower")
@@ -77,7 +77,11 @@ public class K2Wave : MonoBehaviour
             if (other.gameObject.transform.root.GetComponent<Teleport>().teleport==0) { 
                 other.gameObject.transform.root.GetComponent<NPCController>().activateOutline = true;
             }
-            
+        }
+        //SPIRIT BOX SPOT
+        if (other.gameObject.transform.root.GetComponent<SB7Event>() !=null)
+        {
+            other.gameObject.transform.root.GetComponent<SB7Event>().Exposed();
         }
     }
 }
