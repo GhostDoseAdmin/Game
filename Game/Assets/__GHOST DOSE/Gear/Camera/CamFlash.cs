@@ -66,7 +66,7 @@ public class CamFlash : MonoBehaviour
             //CHECK FOR OBSTRUCTION
             if (inCone && inRange)
             {
-                LayerMask mask = 1 << LayerMask.NameToLayer("Default");
+                LayerMask mask = 1 << LayerMask.NameToLayer("Default") | 1 << LayerMask.NameToLayer("Enemy");
                 hitHeight = 1.3f; // adjust the hit height 
                 Vector3 targPos = new Vector3(ghost.gameObject.transform.position.x, ghost.gameObject.transform.position.y + hitHeight, ghost.gameObject.transform.position.z);
                 Ray ray = new Ray(spotlight.transform.position, (targPos - spotlight.transform.position).normalized);

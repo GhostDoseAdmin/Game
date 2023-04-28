@@ -24,10 +24,10 @@ namespace GameManager
         //public NetworkDriver ND;
 
         //GHOST EFFECT LIGHT REFS
-        public Light PlayerWeapLight;
-        public Light PlayerFlashLight;
-        public Light ClientWeapLight;
-        public Light ClientFlashLight;
+        [HideInInspector] public Light PlayerWeapLight;
+        [HideInInspector] public Light PlayerFlashLight;
+        [HideInInspector] public Light ClientWeapLight;
+        [HideInInspector] public Light ClientFlashLight;
 
         public GameObject mySelectedRig;
         public GameObject theirSelectedRig;

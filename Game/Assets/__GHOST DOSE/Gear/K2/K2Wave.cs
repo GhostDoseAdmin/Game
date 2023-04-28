@@ -15,7 +15,7 @@ public class K2Wave : MonoBehaviour
     void Start()
     {
 
-        hud.transform.localScale = Vector3.one*20;
+        hud.transform.localScale = Vector3.one*40;
             // transform.localScale = Vector3.Lerp(transform.localScale, transform.localScale * 0.0001f, Time.deltaTime * 1);
         GetComponent<Shockwave>().NewShockwave(startPoint, 2);//3
         if (!isClient) { direction = (GameObject.Find("Player").GetComponent<ShootingSystem>().targetLook.transform.position - GameObject.Find("PlayerCamera").transform.position).normalized; }
@@ -28,7 +28,7 @@ public class K2Wave : MonoBehaviour
     void Update()
     {
         //----------------------HUD-----------------------------
-        hud.transform.localScale = Vector3.Lerp(hud.transform.localScale, hud.transform.localScale * 0.001f, Time.deltaTime * 1);
+        hud.transform.localScale = Vector3.Lerp(hud.transform.localScale, hud.transform.localScale * 0.0015f, Time.deltaTime * 1);
         // Get position of object to track
         Vector3 objectPosition = gameObject.transform.position;
         // Calculate distance between object and camera
@@ -36,8 +36,8 @@ public class K2Wave : MonoBehaviour
         // Position HUD relative to object position
         Vector2 viewportPosition = Camera.main.WorldToViewportPoint(objectPosition);
         Vector2 hudPosition = new Vector2(
-            (viewportPosition.x * Screen.width) + new Vector2(-600f, -300f).x,
-            (viewportPosition.y * Screen.height) + new Vector2(-600f, -300f).y
+            (viewportPosition.x * Screen.width) + new Vector2(-Screen.width*0.5f, -Screen.height * 0.5f).x,
+            (viewportPosition.y * Screen.height) + new Vector2(-Screen.width * 0.5f, -Screen.height * 0.5f).y
         );
 
         hud.GetComponent<RectTransform>().pivot = new Vector2(0.5f, 0.5f);
@@ -55,12 +55,14 @@ public class K2Wave : MonoBehaviour
         float distance = Vector3.Distance(transform.position, startPoint);
         GetComponent<MeshRenderer>().material.SetFloat("_Fade", GetComponent<MeshRenderer>().material.GetFloat("_Fade") - 0.0045f);
         if (distance > 10) {  }// transform.localScale = Vector3.Lerp(transform.localScale, transform.localScale * 0.0001f, Time.deltaTime * 1); }
-       // else { if (transform.localScale.x < 2) { transform.localScale = Vector3.Lerp(transform.localScale, transform.localScale * 10f, Time.deltaTime * 1); } }
-        //if (transform.localScale.x <= 0.01f)
-        if(GetComponent<MeshRenderer>().material.GetFloat("_Fade")<0)
+                               // else { if (transform.localScale.x < 2) { transform.localScale = Vector3.Lerp(transform.localScale, transform.localScale * 10f, Time.deltaTime * 1); } }
+                               //if (transform.localScale.x <= 0.01f)
+        if (GetComponent<MeshRenderer>().material.GetFloat("_Fade") < 0)
         {
+            hud.GetComponent<Animator>().enabled = false;
             Destroy(gameObject); // destroy the object
         }
+        else { hud.GetComponent<Animator>().enabled = true; }
     }
 
 
