@@ -156,6 +156,7 @@ public class GhostVFX : MonoBehaviour
                 //FLASHLIGHT OVERRIDES SHADOW AND ENVIORNMENT
                 else if (IsObjectInLightCone(lightSource, true))//directly under light source
                 {
+                    if (NetworkDriver.instance.HOST) { if (GetComponent<NPCController>() != null) { GetComponent<NPCController>().alertLevelPlayer += 2; } }
                     if(!invisible) { TriggerWanderSound(); }
                     if (this.gameObject.tag == "Ghost") { visible = true; visibilitySet = true; } else { visible = false; visibilitySet = true; }
                 } 
@@ -178,6 +179,7 @@ public class GhostVFX : MonoBehaviour
                 //FLASHLIGHT OVERRIDES SHADOW AND ENVIORNMENT
                 else if(IsObjectInLightCone(lightSource, true))//directly under light source
                 {
+                    if (NetworkDriver.instance.HOST) { if (GetComponent<NPCController>() != null) { GetComponent<NPCController>().alertLevelClient += 2; } }
                     if (this.gameObject.tag == "Ghost") { visible = true; visibilitySet = true; } else { visible = false; visibilitySet = true; }
                 }
             }
@@ -297,7 +299,7 @@ public class GhostVFX : MonoBehaviour
 
     private bool InLineOfSight(Light light, bool ignoreShadow)
     {
-        LayerMask mask = 1 << LayerMask.NameToLayer("Default");
+        LayerMask mask = 1 << LayerMask.NameToLayer("Default") | 1 << LayerMask.NameToLayer("Enemy");
         if (!ignoreShadow){mask |= 1 << LayerMask.NameToLayer("ShadowBox"); }// INCLUDE SHADOW LAYER
 
         float hitHeight = 0f; // adjust the hit height 1.3
@@ -312,7 +314,7 @@ public class GhostVFX : MonoBehaviour
         bool targetHit = false;
         foreach (RaycastHit hit in hits)
         {
-            if (hit.collider.transform.root.tag != "Ghost" && hit.collider.transform.root.tag != "Shadower") { targetHit = false; break; }//environment obstruction
+            if (hit.collider.gameObject.layer != LayerMask.NameToLayer("Enemy")) { targetHit = false; break; }//environment obstruction
             if (hit.collider.transform.root.gameObject == this.gameObject)
             {
                 targetHit = true;

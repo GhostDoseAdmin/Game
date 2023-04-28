@@ -221,7 +221,7 @@ public class ShootingSystem : MonoBehaviour
         isHeadshot = false;
         isVisible = false;
         //RETUNRS 1 for visible 2 for headshot
-        LayerMask mask = 1 << LayerMask.NameToLayer("Default");
+        LayerMask mask = 1 << LayerMask.NameToLayer("Default") | 1 << LayerMask.NameToLayer("Enemy");
         RaycastHit hit;
         Vector3 startPoint = GameObject.Find("PlayerCamera").transform.position;
         Vector3 direction = (targetLook.position -startPoint).normalized;
@@ -233,7 +233,7 @@ public class ShootingSystem : MonoBehaviour
             if (ghost.GetComponent<NPCController>() != null)
             {
                 //Debug.Log(hit.collider.gameObject.name);
-                if (ghost.tag == "Ghost" || ghost.tag == "Shadower")
+                if (ghost.layer == LayerMask.NameToLayer("Enemy"))
                 {
                     //Ensure mesh can be read
                     if (ghost.GetComponent<NPCController>().healthEnemy>0 && ghost.GetComponent<Teleport>().teleport == 0)

@@ -124,6 +124,7 @@ namespace NetworkSystem
                 Debug.Log("HOST DETERMINED " + payload);
                 if (payload.ToString() != sioCom.Instance.SocketID) { if (!GameDriver.instance.NETWORK_TEST) { HOST = false; } }
                 else { UpdateEnemies(); }
+                GameDriver.instance.Client.GetComponent<Rigidbody>().constraints = RigidbodyConstraints.None;
                 GameDriver.instance.Player.GetComponent<PlayerController>().emitFlashlight = true;
                 GameDriver.instance.Player.GetComponent<PlayerController>().emitGear = true;
                 GameDriver.instance.Player.GetComponent<PlayerController>().emitPos = true;//triggers position emit
