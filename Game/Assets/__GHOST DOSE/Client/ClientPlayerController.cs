@@ -104,6 +104,7 @@ public class ClientPlayerController : MonoBehaviour
 	public bool flashlighton =false;
     public GameObject currLight;//tracks current light source
 	public GameObject camFlash;
+    private GameObject SB7;
     public GameObject death;
     public float targWalk;
     public float targStrafe;
@@ -143,6 +144,8 @@ public class ClientPlayerController : MonoBehaviour
         camera = util.FindChildObject(this.gameObject.transform, "camera").gameObject;
         camInventory = util.FindChildObject(this.gameObject.transform, "CamInventory").gameObject;
         k2Inventory = util.FindChildObject(this.gameObject.transform, "K2Inventory").gameObject;
+        SB7 = util.FindChildObject(this.gameObject.transform, "SB7").gameObject;
+        SB7.SetActive(false);
         camInventory.SetActive(false);
 
 
@@ -233,9 +236,10 @@ public class ClientPlayerController : MonoBehaviour
 
         //START OF GEARCHANGE
         anim.SetBool("GetGear", true);
-        if (gear == 1){camera.SetActive(true); k2.SetActive(false); camInventory.SetActive(false); k2Inventory.SetActive(true); }
-				if (gear == 2){camera.SetActive(false); k2.SetActive(true); camInventory.SetActive(true); k2Inventory.SetActive(false);  }
-                
+        if (gear == 1){camera.SetActive(true); k2.SetActive(false); camInventory.SetActive(false); k2Inventory.SetActive(true); SB7.SetActive(false); }
+		if (gear == 2){camera.SetActive(false); k2.SetActive(true); camInventory.SetActive(true); k2Inventory.SetActive(false); SB7.SetActive(false); }
+        if (gear == 0) { camera.SetActive(false); k2.SetActive(false); camInventory.SetActive(false); k2Inventory.SetActive(false); SB7.SetActive(true); }
+
             gearAim = false;
 			throwing = false;
             //handWeight = 0f;
@@ -372,7 +376,7 @@ public class ClientPlayerController : MonoBehaviour
             stanceRH = rightHandTargetCam;
             stanceLH = leftHandTargetCam;
         }
-        if (gear == 2)
+        if (gear == 2 || gear==0)
         {
             stanceRH = rightHandTargetK2;
             stanceLH = leftHandTargetK2;

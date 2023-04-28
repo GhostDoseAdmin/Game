@@ -48,6 +48,7 @@ public class PlayerController : MonoBehaviour
 	private GameObject camera;
     private GameObject camInventory;
     private GameObject k2Inventory;
+	private GameObject SB7;
     public bool changingGear;
 	public bool throwing = false;
 	public bool emitGear;
@@ -86,6 +87,7 @@ public class PlayerController : MonoBehaviour
 	public bool fireK2;
 	public bool emitFlashlight;
 	public bool emitKill;
+	public bool sb7;
 	//private GameObject playerCam;
     private static utilities util;
 
@@ -108,6 +110,8 @@ public class PlayerController : MonoBehaviour
         camera = util.FindChildObject(this.gameObject.transform, "camera").gameObject;
         camInventory = util.FindChildObject(this.gameObject.transform, "CamInventory").gameObject;
         k2Inventory = util.FindChildObject(this.gameObject.transform, "K2Inventory").gameObject;
+        SB7 = util.FindChildObject(this.gameObject.transform, "SB7").gameObject;
+        SB7.SetActive(false);
         camInventory.SetActive(false);
 		//playerCam = GameObject.Find("PlayerCamera");
 
@@ -134,11 +138,7 @@ public class PlayerController : MonoBehaviour
     #endregion
 
     #region Update
-    private void FixedUpdate()
-    {
-        
 
-    }
     void Update() 
 	{
         //gearAim = true;
@@ -150,7 +150,7 @@ public class PlayerController : MonoBehaviour
 		{
 			Locomotion();
 			Running();
-			ChangeGear();
+			ChangeGear(false);
 			Throwing();
 			GearAim();
 			CheckFlashlight();
@@ -329,9 +329,6 @@ public class PlayerController : MonoBehaviour
 	}
 	#endregion
 
-	#region Melee Сombat
-
-
 
 
 	//--------------------THROWING (REM POD)-----------------------
@@ -346,63 +343,91 @@ public class PlayerController : MonoBehaviour
 
         }
 	}
-    #endregion
     public void ThrowRemPod()	{		Debug.Log("--------------------------------THROWING ---------------------------------"); }//ANIMATION EVENT
     public void EndThrow()	{		throwing = false; }//ANIMATION EVENT
 
    
-	private void ChangeGear()
+	public void ChangeGear(bool triggerSb7)
 	{
-        //END OF GEAR CHANGE
-        //if (Mathf.Abs(Time.time - gear_timer) < 0.001f)
-        if (Time.time > gear_timer)
+		//END OF GEAR CHANGE
+		//if (Mathf.Abs(Time.time - gear_timer) < 0.001f)
+		//if (!changeGearThisFrame)
 		{
-			changingGear = false;
-            //START OF GEARCHANGE
-            if (Input.GetKeyDown(InputManager.instance.gear))
+
+            if (Time.time > gear_timer)
 			{
-				emitGear = true;
-                anim.SetBool("GetGear",true);
-                gear += 1;
-				if (gear > 2) { gear = 1; }
-                if (gear == 1){camera.SetActive(true); k2.SetActive(false); camInventory.SetActive(false); k2Inventory.SetActive(true); }
-				if (gear == 2){camera.SetActive(false); k2.SetActive(true); camInventory.SetActive(true); k2Inventory.SetActive(false);  }
-                
-                gear_timer = Time.time + gear_delay;//cooldown
+				changingGear = false;
+				//START OF GEARCHANGE
+				if ((Input.GetKeyDown(InputManager.instance.gear)) || (triggerSb7 && !sb7) || (triggerSb7 && sb7))
+				{
+
+					emitGear = true;
+					anim.SetBool("GetGear", true);
+                    SB7.SetActive(false);
+                    gear += 1;
+					if (gear > 2) { gear = 1; }
+					//-----E
+					if (triggerSb7)
+					{
+						if (sb7)
+						{ //PUT AWAY sb7
+							sb7 = false;
+							gear = 1;
+
+						}
+						else
+						{ //TAKE OUT sb7
+							sb7 = true;
+							gear = 0;
+							camera.SetActive(false); k2.SetActive(false); camInventory.SetActive(false); k2Inventory.SetActive(false); SB7.SetActive(true);
+						}
+					}
+					//------Q
+					else { sb7 = false; }
+
+					if (gear == 1) { camera.SetActive(true); k2.SetActive(false); camInventory.SetActive(false); k2Inventory.SetActive(true); }
+					if (gear == 2) { camera.SetActive(false); k2.SetActive(true); camInventory.SetActive(true); k2Inventory.SetActive(false); }
+
+					gear_timer = Time.time + gear_delay;//cooldown
+				}
+			}
+			else
+			{ //DURING GEAR CHANGE
+				Debug.Log("----------------------------------------------CHANING");
+				changingGear = true;
+				gearAim = false;
+				throwing = false;
+				//handWeight = 0f;
+				anim.SetBool("Pistol", false);
+				anim.SetBool("Shoot", false);
+				if (is_FlashlightAim)
+				{
+					anim.SetBool("Flashlight", true);
+					gameObject.GetComponent<FlashlightSystem>().handFlashlight.SetActive(true);
+					gameObject.GetComponent<FlashlightSystem>().FlashLight.enabled = true;
+					gameObject.GetComponent<FlashlightSystem>().WeaponLight.enabled = false;
+				}
+				//anim.SetBool("GetGear", false);
+
 			}
 		}
-		else { //DURING GEAR CHANGE
-			changingGear = true;
-            gearAim = false;
-			throwing = false;
-            //handWeight = 0f;
-			anim.SetBool("Pistol", false); 
-            anim.SetBool("Shoot", false);
-            if (is_FlashlightAim)
-            {
-				anim.SetBool("Flashlight", true); 
-                gameObject.GetComponent<FlashlightSystem>().handFlashlight.SetActive(true);
-                gameObject.GetComponent<FlashlightSystem>().FlashLight.enabled = true;
-                gameObject.GetComponent<FlashlightSystem>().WeaponLight.enabled = false;
-            }
-            anim.SetBool("GetGear", false);
-
-        }
+    }
+    private void LateUpdate()
+    {
+        anim.SetBool("GetGear", false);
     }
 
-
-	void GearAim()
+    void GearAim()
 	{
 
 		if (!changingGear)
 		{
-            if (gear == 3)
+            if (gear == 3 || gear==0)
             {
 				gearAim = true;
                 anim.SetBool("Pistol", true);
-                handWeight = Mathf.Lerp(handWeight, 1f, Time.deltaTime * handSpeed);
+				newHandWeight = 1f;
             }
-
             //if (gear == 1 || gear == 2)
             {
 				if (Input.GetMouseButton(1)) //AIMING
@@ -509,7 +534,7 @@ public class PlayerController : MonoBehaviour
 				stanceRH = rightHandTargetCam;
 				stanceLH = leftHandTargetCam;
 			}
-			if (gear == 2)
+			if (gear == 2 || gear==0)
 			{
 				stanceRH = rightHandTargetK2;
 				stanceLH = leftHandTargetK2;

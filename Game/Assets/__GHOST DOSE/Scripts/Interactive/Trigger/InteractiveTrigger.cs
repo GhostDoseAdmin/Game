@@ -3,6 +3,7 @@ using Newtonsoft.Json;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using GameManager;
 
 public class InteractiveTrigger : MonoBehaviour
 {
@@ -27,7 +28,6 @@ public class InteractiveTrigger : MonoBehaviour
         {
             if (Time.time > timer + delay)
             {
-                Debug.Log("-----------------------------------------INTERACTING");
                 interactiveObject.GetComponent<Item>().ActivateObject(false);
                 timer = Time.time;//cooldown
             }
@@ -55,6 +55,9 @@ public class InteractiveTrigger : MonoBehaviour
         {
             allowInteraction = false;
             interact.SetActive(false);
+            if (GameDriver.instance.Player.GetComponent<PlayerController>().sb7) { GameDriver.instance.Player.GetComponent<PlayerController>().ChangeGear(true); }
         }
     }
+
+
 }

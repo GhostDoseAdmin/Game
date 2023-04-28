@@ -84,8 +84,8 @@ public class Teleport : MonoBehaviour
             GetComponent<NavMeshAgent>().enabled = false;
             GetComponent<Animator>().enabled = false;
             b4Pos = transform.position;
-            GetComponent<NPCController>().SKEL_ROOT.GetComponent<CapsuleCollider>().isTrigger = true;
-            GetComponent<NPCController>().HIT_COL.GetComponent<SphereCollider>().isTrigger = true;
+            //GetComponent<NPCController>().SKEL_ROOT.GetComponent<CapsuleCollider>().isTrigger = true;
+            //GetComponent<NPCController>().HIT_COL.GetComponent<SphereCollider>().isTrigger = true;
             teleport = 1.5f;
 
         }
@@ -151,8 +151,8 @@ public class Teleport : MonoBehaviour
                 GetComponent<NPCController>().enabled = true;
                 GetComponent<Animator>().enabled = true;
                 this.gameObject.transform.GetChild(0).GetComponent<SkinnedMeshRenderer>().enabled = true;
-                GetComponent<NPCController>().SKEL_ROOT.GetComponent<CapsuleCollider>().isTrigger = false;
-                GetComponent<NPCController>().HIT_COL.GetComponent<SphereCollider>().isTrigger = false;
+                //GetComponent<NPCController>().SKEL_ROOT.GetComponent<CapsuleCollider>().isTrigger = false;
+                //GetComponent<NPCController>().HIT_COL.GetComponent<SphereCollider>().isTrigger = false;
                 StartCoroutine(resetOutline());
                 StartCoroutine(resetCanTeleport());
                 if (!NetworkDriver.instance.HOST && GetComponent<NPCController>().healthEnemy<=0){ GetComponent<NPCController>().healthEnemy = GetComponent<NPCController>().startHealth; }
