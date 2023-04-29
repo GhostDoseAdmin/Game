@@ -283,6 +283,7 @@ public class ClientPlayerController : MonoBehaviour
 					 GameObject newFlash = Instantiate(camFlash);
 					newFlash.transform.position = shootPoint.position;
                     newFlash.name = "CamFlashClient";
+                    newFlash.GetComponent<CamFlash>().isClient = true;
                     //---POINT FLASH IN DIRECTION OF THE SHOT
                     Quaternion newYRotation = Quaternion.Euler(0f, shootPoint.rotation.eulerAngles.y, 0f);
 					newFlash.transform.rotation = newYRotation;

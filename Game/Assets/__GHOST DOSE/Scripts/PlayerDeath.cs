@@ -9,11 +9,12 @@ public class PlayerDeath : MonoBehaviour
     private GameObject death;
     public GameObject deathAnimator;
     private static utilities util;
+    public bool otherPlayer = false;
 
-    void Awake()
+    void Start()
     {
         util = new utilities();
-        if (NetworkDriver.instance.HOST) { death = Instantiate(GameDriver.instance.mySelectedRig, transform.position, transform.rotation); }
+        if (!otherPlayer) { death = Instantiate(GameDriver.instance.mySelectedRig, transform.position, transform.rotation); }
         else { death = Instantiate(GameDriver.instance.theirSelectedRig, transform.position, transform.rotation); }
         death.transform.SetParent(deathAnimator.transform);
         StartCoroutine(util.ReactivateAnimator(deathAnimator));

@@ -941,7 +941,7 @@ MonoBehaviour:
   startRange: 0
   angleView: 120
   startAngleView: 0
-  hitRange: 1.5
+  hitRange: 1.6
   chaseSpeed: 1
   spawnTimer: 0
   damage: 0
@@ -952,6 +952,7 @@ MonoBehaviour:
   persist: 200
   canRespawn: 1
   teleports: 1
+  canFlinch: 1
   startHealth: 0
   canAttack: 1
   agro: 0
@@ -960,7 +961,7 @@ MonoBehaviour:
   animEnemy: {fileID: 0}
   navmesh: {fileID: 0}
   teleEmit: 0
-  targetPlayer: {fileID: 0}
+  closestPlayer: {fileID: 0}
   alertLevelPlayer: 0
   alertLevelClient: 0
   prevAlerted: 0
@@ -970,6 +971,7 @@ MonoBehaviour:
   attacking: 0
   update: 0
   activateOutline: 0
+  dead: 0
   clientWaypointDest: {x: 0, y: 0, z: 0}
 --- !u!95 &3207942481899366261
 Animator:
@@ -1783,7 +1785,7 @@ Transform:
   m_GameObject: {fileID: 6317807412509641469}
   m_LocalRotation: {x: 0.00081172, y: 0.077594616, z: -0.0001092691, w: 0.99698466}
   m_LocalPosition: {x: 0.023, y: 0.318, z: 0.001}
-  m_LocalScale: {x: 1.0845001, y: 1.0845001, z: 1.0845001}
+  m_LocalScale: {x: 1.2091091, y: 1.2091091, z: 1.2091091}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 3971384889940981755}
@@ -1814,7 +1816,7 @@ SphereCollider:
   m_IsTrigger: 1
   m_Enabled: 1
   serializedVersion: 2
-  m_Radius: 0.5
+  m_Radius: 0.6
   m_Center: {x: 0, y: 0, z: 0}
 --- !u!1 &6510881114185251982
 GameObject:

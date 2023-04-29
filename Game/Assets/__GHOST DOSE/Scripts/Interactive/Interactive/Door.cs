@@ -58,7 +58,7 @@ public class Door : Item
             emitEvent = "locked";
         }
 
-        if (GameDriver.instance.twoPlayer) { NetworkDriver.instance.sioCom.Instance.Emit("event", JsonConvert.SerializeObject($"{{'obj':'{gameObject.name}','type':'door','event':'{emitEvent}'}}"), false); }
+        if (GameDriver.instance.twoPlayer) { Debug.Log("----------------------SENDING OPEN DOOR"); NetworkDriver.instance.sioCom.Instance.Emit("event", JsonConvert.SerializeObject($"{{'obj':'{gameObject.name}','type':'door','event':'{emitEvent}'}}"), false); }
     }
 
     public void OpenClose()

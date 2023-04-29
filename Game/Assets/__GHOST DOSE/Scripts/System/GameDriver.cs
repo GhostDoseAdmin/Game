@@ -39,7 +39,7 @@ namespace GameManager
             // Debug.unityLogger.logEnabled = false;
 
             MSG = "Welcome to GhostDose";
-            ROOM = "gttt";//DEFAULT ROOM
+            //ROOM = "gttt";//DEFAULT ROOM
 
             util = new utilities();
 

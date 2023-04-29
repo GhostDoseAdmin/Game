@@ -9,6 +9,7 @@ public class CamFlash : MonoBehaviour
 {
     // Start is called before the first frame update
     private List<NPCController> ghostObjects;
+    public bool isClient;
 
     IEnumerator DestroyAfterDelay(GameObject obj)
     {
@@ -79,9 +80,9 @@ public class CamFlash : MonoBehaviour
 
                     if (hit.collider.transform.root.gameObject == ghost.gameObject)
                     {
-                        if(ghost.gameObject.GetComponent<Teleport>().teleport==0 && ghost.healthEnemy>0)
-                       // Debug.Log("ENYM HIT -------------------------------------------------------");
-                        ghost.TakeDamage(0, false);
+                        if (ghost.gameObject.GetComponent<Teleport>().teleport == 0 && ghost.healthEnemy > 0)
+                            // Debug.Log("ENYM HIT -------------------------------------------------------");
+                        ghost.TakeDamage(0, isClient);
                         //ghost.agro = true;
                         //ghost.range = ghost.range * 2;
                     }

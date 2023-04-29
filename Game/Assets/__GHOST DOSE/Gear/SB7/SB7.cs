@@ -12,6 +12,8 @@ public class SB7 : MonoBehaviour
     void Start()
     {
         if (transform.root.name == "CLIENT") { isClient = true; }
+        else if (transform.root.name == "WESTIN" || transform.root.name == "TRAVIS") { isClient = false; }
+        else { DestroyImmediate(this.gameObject); }//DEAD PLAYER
     }
 
     // Update is called once per frame

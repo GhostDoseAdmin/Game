@@ -205,7 +205,8 @@ namespace NetworkSystem
                 Debug.Log(" RECEIVED DEATH  " + payload);
                 //JObject data = JObject.Parse(payload);
                 //Dictionary<string, string> dict = data.ToObject<Dictionary<string, string>>();
-                Instantiate(GameDriver.instance.Client.GetComponent<ClientPlayerController>().death, GameDriver.instance.Client.transform.position, GameDriver.instance.Client.transform.rotation);
+                GameObject newDeath = Instantiate(GameDriver.instance.Client.GetComponent<ClientPlayerController>().death, GameDriver.instance.Client.transform.position, GameDriver.instance.Client.transform.rotation);
+                newDeath.GetComponent<PlayerDeath>().otherPlayer = true;
                 GameDriver.instance.Client.SetActive(false);
                 GameDriver.instance.Client.GetComponent<ClientPlayerController>().hp = 0;
             });
@@ -255,7 +256,7 @@ namespace NetworkSystem
 
                 JObject data = JObject.Parse(payload);
                 Dictionary<string, string> dict = data.ToObject<Dictionary<string, string>>();
-                //Debug.Log("RECEIVING enemy " + data);
+                Debug.Log("RECEIVING enemy " + data);
                 GameObject enemy = GameObject.Find(dict["obj"]);
                 if (enemy != null)
                 {
@@ -368,14 +369,12 @@ namespace NetworkSystem
         //-----------------------------SYNC UP EVERYTHING----------------------------
         public void UpdateEnemies()
         {
-            
                 //Debug.Log("SYNCING ");
                 //Create a dictionary for this object's position in structure {"objPlayer":{"x":-2.17,"y":-0.01,"z":0.0},"objOtherPlayer":{"x":4.06,"y":-0.01,"z":0.0}}
                Dictionary<string, Dictionary<string, string>> objStates = new Dictionary<string, Dictionary<string, string>>();
                foreach (GameObject obj in GetComponent<DisablerControl>().enemyObjects)
                {
                    {
-                       string objName;
                        Dictionary<string, string> propsDict = new Dictionary<string, string>();
 
                         // Add the position values to the dictionary
@@ -384,13 +383,47 @@ namespace NetworkSystem
                         propsDict.Add("z", obj.gameObject.transform.position.z.ToString("F2"));
                         propsDict.Add("active", obj.gameObject.activeSelf.ToString());
 
-                        // Add the object's dictionary to the main dictionary with the object name as the key
-                        objName = obj.name;
-                       objStates.Add(objName, propsDict);
+                    Debug.Log("ADDING -----------------------------" + obj.name);
+                       objStates.Add(obj.name, propsDict);
                    }
                }
                sioCom.Instance.Emit("sync", JsonConvert.SerializeObject(objStates), false);
         }
 
+        private float timer = 0f;
+        private float timer_delay = 2f;
+        public void Update()
+        {
+
+            //----------------------------------SYNC ACTIVE ENEMIES-----------------------------------------
+           /* if (Time.time > timer + timer_delay)
+            {
+                Dictionary<string, Dictionary<string, string>> syncObjects = new Dictionary<string, Dictionary<string, string>>();
+                foreach (GameObject obj in GetComponent<DisablerControl>().enemyObjects)
+                {
+                    if(obj.activeSelf==true)
+                    {
+                        Dictionary<string, string> propsDict = new Dictionary<string, string>();
+
+                        // Add the position values to the dictionary
+                        propsDict.Add("x", obj.gameObject.transform.position.x.ToString("F2"));
+                        propsDict.Add("y", obj.gameObject.transform.position.y.ToString("F2"));
+                        propsDict.Add("z", obj.gameObject.transform.position.z.ToString("F2"));
+                        propsDict.Add("dx", obj.GetComponent<NPCController>().activeWayPoint.name);
+                        propsDict.Add("tx", obj.GetComponent<NPCController>().target.name);
+                        //propsDict.Add("tp", obj.GetComponent<NPCController>().teleport);
+
+                        syncObjects.Add(obj.name, propsDict);
+                    }
+                }
+                sioCom.Instance.Emit("sync", JsonConvert.SerializeObject(syncObjects), false);
+
+                timer = Time.time;//cooldown
+           */
+        }
+           
+
     }
+
+ 
 }

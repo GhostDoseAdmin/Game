@@ -66,7 +66,7 @@ public class Teleport : MonoBehaviour
         {
             if (GetComponent<NPCController>().agro && GetComponent<NPCController>().target != null && GetComponent<NPCController>().teleports)
             {
-                if (Vector3.Distance(transform.position, GetComponent<NPCController>().target.transform.position) > 3)
+               // if (Vector3.Distance(transform.position, GetComponent<NPCController>().target.transform.position) > 3)//3
                 {
                     CheckTeleport(false, false);
                 }
@@ -76,9 +76,10 @@ public class Teleport : MonoBehaviour
         if (teleport == 1)
         {
             GetComponent<NPCController>().teleEmit = 1;
-            if (GetComponent<NPCController>().agro && !isWaypoint && !DEATH) { AudioManager.instance.Play("Disappear"); }
+            //if (GetComponent<NPCController>().agro && !isWaypoint && !DEATH) { AudioManager.instance.Play("Disappear"); }
             fadeTimer = Time.time;
             if (GetComponent<NPCController>().target != null) { target = GetComponent<NPCController>().target; }
+            if (target != null && GetComponent<NPCController>().healthEnemy>0) { AudioManager.instance.Play("Disappear"); }
             if (!NetworkDriver.instance.HOST) { GetComponent<NPCController>().enabled = false; }
             debugAttack = true;
             GetComponent<NavMeshAgent>().enabled = false;
@@ -151,11 +152,11 @@ public class Teleport : MonoBehaviour
                 GetComponent<NPCController>().enabled = true;
                 GetComponent<Animator>().enabled = true;
                 this.gameObject.transform.GetChild(0).GetComponent<SkinnedMeshRenderer>().enabled = true;
-                //GetComponent<NPCController>().SKEL_ROOT.GetComponent<CapsuleCollider>().isTrigger = false;
-                //GetComponent<NPCController>().HIT_COL.GetComponent<SphereCollider>().isTrigger = false;
                 StartCoroutine(resetOutline());
                 StartCoroutine(resetCanTeleport());
-                if (!NetworkDriver.instance.HOST && GetComponent<NPCController>().healthEnemy<=0){ GetComponent<NPCController>().healthEnemy = GetComponent<NPCController>().startHealth; }
+               
+                //CLIENT RESPAWN
+                if (!NetworkDriver.instance.HOST && GetComponent<NPCController>().healthEnemy<=0){ Respawn(); }
             }
             if (delayForEmit){ delayForEmit = false; }
         }
@@ -196,6 +197,7 @@ public class Teleport : MonoBehaviour
     public void Respawn()
     {
         DEATH = false;
+        GetComponent<NPCController>().dead = false;
         GetComponent<NPCController>().healthEnemy = GetComponent<NPCController>().startHealth;
         GetComponent<NPCController>().angleView = GetComponent<NPCController>().startAngleView;
         GetComponent<NPCController>().range = GetComponent<NPCController>().startRange;

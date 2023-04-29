@@ -178,7 +178,7 @@ public class ShootingSystem : MonoBehaviour
         {
 
             //---------------------CAN SHOOT------------------------------------
-            if (Mathf.Approximately(Mathf.Round(camera.fieldOfView * 10) / 10f, aiming.zoom))//if current zoom is close to target zoom
+            //if (Mathf.Approximately(Mathf.Round(camera.fieldOfView * 10) / 10f, aiming.zoom))//if current zoom is close to target zoom
             {
 
 

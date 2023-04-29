@@ -41,6 +41,7 @@ public class NPCController : MonoBehaviour
     public int persist;
     public bool canRespawn;
     public bool teleports;
+    public bool canFlinch;
    
     [HideInInspector] public int startHealth;
 
@@ -63,7 +64,7 @@ public class NPCController : MonoBehaviour
     private bool prevAttack;
     private bool emitPos;
 
-    [HideInInspector] public Transform targetPlayer;
+    [HideInInspector] public Transform closestPlayer;
     private GameObject Player;
     private GameObject Client;
     private string actions;
@@ -80,11 +81,13 @@ public class NPCController : MonoBehaviour
     private Outline outline;
     [HideInInspector] public bool activateOutline;
     [HideInInspector] Vector3 lookAtVec;
+    public bool dead;
 
     [HideInInspector] public Vector3 clientWaypointDest;
     //private float minDist = 0.03f; //debug enemy rotation when ontop of player
     private float distance, p1_dist,p2_dist;
-
+    private bool onlyOnceThisFrame;
+    public GameObject activeWayPoint;
     private void Awake()
     {
         GetComponent<GhostVFX>().Shadower = Shadower;
@@ -101,7 +104,7 @@ public class NPCController : MonoBehaviour
         animEnemy = GetComponent<Animator>();
         navmesh = GetComponent<NavMeshAgent>();
 
-        targetPlayer = Client.transform;
+        closestPlayer = Client.transform;
         head = animEnemy.GetBoneTransform(HumanBodyBones.Head).transform;
 
         startHealth = healthEnemy;
@@ -126,8 +129,11 @@ public class NPCController : MonoBehaviour
 
          p1_dist = Vector3.Distance(head.position, Player.transform.position);
          p2_dist = Vector3.Distance(head.position, Client.transform.position);
+
+        activeWayPoint = wayPoint[curWayPoint].gameObject;
+
         //ALWAYS CHOOSE CLOSEST TARGET
-        if (p1_dist < p2_dist) { distance = p1_dist; targetPlayer = Player.transform; } else { distance = p2_dist; targetPlayer = Client.transform; }
+        if (p1_dist < p2_dist) { distance = p1_dist; closestPlayer = Player.transform; } else { distance = p2_dist; closestPlayer = Client.transform; }
 
         float teleport = GetComponent<Teleport>().teleport;
 
@@ -222,15 +228,7 @@ public class NPCController : MonoBehaviour
     }
 
 
-    public void TriggerHitEnable()
-    {
-        HIT_COL.GetComponent<SphereCollider>().enabled = true;
 
-    }
-    public void TriggerHitDisable()
-    {
-        HIT_COL.GetComponent<SphereCollider>().enabled = false;
-    }
 
 
     public void AI()
@@ -253,6 +251,7 @@ public class NPCController : MonoBehaviour
         //-------------------------WAY POINTS ------------------------
         else if (target == null)
         {
+            agro = false;
 
             //GetComponent<NavMeshAgent>().enabled = true;
             GetComponent<NavMeshAgent>().speed = 0.1f;
@@ -261,7 +260,7 @@ public class NPCController : MonoBehaviour
             animEnemy.SetBool("Attack", false);
             animEnemy.SetBool("Run", false);
            
-            if (prevAlerted != alerted && alerted) { AudioManager.instance.Play("enemyalert"); Debug.Log("---------------------------------------ALERT"); }
+            if (prevAlerted != alerted && alerted) { AudioManager.instance.Play("enemyalert");}
             prevAlerted = alerted;
             alerted = false;
             //-------------ALERT------------------
@@ -319,8 +318,9 @@ public class NPCController : MonoBehaviour
                 }
                 else if (wayPoint.Count == 1)
                 {
+                    curWayPoint = 0;
 
-                    if (NetworkDriver.instance.HOST) { if (destination != wayPoint[0].position) { destination = wayPoint[0].position; emitDest = true;   } navmesh.SetDestination(wayPoint[0].position); }
+                    if (NetworkDriver.instance.HOST) { if (destination != wayPoint[curWayPoint].position) { destination = wayPoint[curWayPoint].position; emitDest = true;   } navmesh.SetDestination(wayPoint[0].position); }
                     else { navmesh.SetDestination(clientWaypointDest); }
 
                     float distance = Vector3.Distance(transform.position, wayPoint[curWayPoint].position);
@@ -372,9 +372,12 @@ public class NPCController : MonoBehaviour
         //---------LOOKING-------
         // Rotate towards the target position along the y-axis only
         transform.rotation = Quaternion.RotateTowards(transform.rotation, Quaternion.LookRotation(target.transform.position- transform.position), 100f * Time.deltaTime);
-        //------------------------------ H O S T ----------------------------------------
-        if (NetworkDriver.instance.HOST)
-        {
+
+        //if (GetComponent<Animator>().GetCurrentAnimatorClipInfo(0)[0].clip.name == "agro") { transform.LookAt(target); }
+        
+            //------------------------------ H O S T ----------------------------------------
+            if (NetworkDriver.instance.HOST)
+            {
             //-----------DISENGAGE--------------------
             if (distance > range)// && !agro) || (distance > range*1.5 && agro))
             {
@@ -388,7 +391,7 @@ public class NPCController : MonoBehaviour
                 animEnemy.SetBool("Run", true);
                 animEnemy.SetBool("Attack", false);
                 GetComponent<NavMeshAgent>().speed = chaseSpeed * 2;//DOESNT AFFECT THIS
-                if (GetComponent<Animator>().GetCurrentAnimatorClipInfo(0)[0].clip.name == "agro") { GetComponent<NavMeshAgent>().speed = 0; }
+                if (animEnemy.GetCurrentAnimatorClipInfo(0)[0].clip.name == "agro") { GetComponent<NavMeshAgent>().speed = 0; }
                 //GetComponent<NavMeshAgent>().enabled = true;
                 if (attacking)
                 {
@@ -417,7 +420,7 @@ public class NPCController : MonoBehaviour
         }
         else//------------------------- C L I E N T  --------------------------------------------
         {
-            targetPlayer = target;
+            closestPlayer = target;
             //RUN TO TARGET
             if (!attacking)
             {
@@ -481,13 +484,11 @@ public class NPCController : MonoBehaviour
     {
         if (target == null)
         {
-
             if (distance <= range)
             {
-
                 // Debug.Log("TARGET IS " + targetPlayer.gameObject.name + " DISTANCE " + distance);
 
-                Quaternion look = Quaternion.LookRotation(targetPlayer.position - head.position);
+                Quaternion look = Quaternion.LookRotation(closestPlayer.position - head.position);
                 float angle = Quaternion.Angle(head.rotation, look);
 
 
@@ -495,33 +496,22 @@ public class NPCController : MonoBehaviour
                 {
                     //Debug.Log("----------------------------------CAN SEE TARGET----------------------------------------");
                     RaycastHit hit;
-                    Vector3 targPos = targetPlayer.position + Vector3.up * 1.4f;
+                    Vector3 targPos = closestPlayer.position + Vector3.up * 1.4f;
                     Debug.DrawLine(head.position, targPos); //1.6
                     LayerMask mask = (1 << LayerMask.NameToLayer("Player")) | (1 << LayerMask.NameToLayer("Default"));
                     if (xrayvision) { mask = (1 << LayerMask.NameToLayer("Player")); }//disregard default layer
                     if (Physics.Linecast(head.position, targPos, out hit, mask.value))
                     {
                         //Debug.Log("----------TARGET -------------------" + hit.collider.gameObject.name);
-                        if (hit.transform == targetPlayer)
+                        if (hit.transform == closestPlayer)
                         {
-                            target = targetPlayer;
+                            //Engage(closestPlayer);
+                            target = closestPlayer;
                             AudioManager.instance.Play("EnemyEngage");
                             follow = persist;
                         }
-                        else
-                        {
-                             DisEngage();
-                        }
                     }
                 }
-                else
-                {
-                    DisEngage();
-                }
-            }
-            else
-            {
-                 DisEngage();
             }
         }
         else //DISENGAGE WHEN OUT OF SIGHT
@@ -535,7 +525,7 @@ public class NPCController : MonoBehaviour
             {
                 if (hit.collider.transform != target)
                 {//HIDING
-                    if (follow > 0) { follow--; } else {  DisEngage(); }
+                    if (follow > 0) { follow--; } else { Disengage(); }
 
                 }
                 else { follow = persist; }
@@ -543,66 +533,100 @@ public class NPCController : MonoBehaviour
         }
     }
 
-    public void DisEngage()
+    private void Disengage()
     {
         target = null;
-        agro = false;
         angleView = startAngleView;
         range = startRange;
-        
     }
 
+    public void TriggerHitEnable()
+    {
+        HIT_COL.GetComponent<SphereCollider>().enabled = true;
 
+    }
+    public void TriggerHitDisable()
+    {
+        HIT_COL.GetComponent<SphereCollider>().enabled = false;
+    }
+
+    private void Flinch()
+    {
+        if (animEnemy.GetCurrentAnimatorClipInfo(0)[0].clip.name != "agro" && distance>=hitRange+0.5f && canFlinch) // && !animEnemy.GetCurrentAnimatorStateInfo(0).IsName("Attack")
+        {
+            animEnemy.Play("React");
+        }
+    }
     public void TakeDamage(int damageAmount, bool otherPlayer)
     {
-        if (damageAmount == 100) { AudioManager.instance.Play("Headshot"); }
-        //--------AGRO-----------
-        if (!agro) { AudioManager.instance.Play("Agro"); animEnemy.SetBool("agro", true); } else { if (damageAmount > 0) { animEnemy.SetBool("agro", false); } }
-        
-        //Debug.Log("--------------------------------------ANIM " + animEnemy.GetBool("agro") + damageAmount);
-        AudioManager.instance.Play("enemyflinchimpact");
-        //if (damageAmount == 0) { if (!agro) { range = 10; } } //CAM SHOT
-        //else { range = 20; agro = true; angleView = 360; } //REGULAR
-        range = 20; agro = true; angleView = 360;
-
-
-        //-----------ENEMY DEATH---------------
-        if (!otherPlayer) { healthEnemy -= damageAmount; }//do damage only locally
-        //-----------RETREAT-------------------
-        if(healthEnemy< startHealth* retreatThreshold)        {            if(hasRetreated==0)            {                hasRetreated = 1;            }        }
-
-        if (healthEnemy <= 0)
+        if (!onlyOnceThisFrame)//prevent flash from interrupting
         {
-            GetComponent<Teleport>().teleport = 0;
-            GetComponent<Teleport>().canTeleport = true;
-            if (NetworkDriver.instance.HOST) {
-                GetComponent<Teleport>().CheckTeleport(true, true);
-                GetComponent<Teleport>().Invoke("Respawn", spawnTimer); 
+            onlyOnceThisFrame = true;
+
+            if (damageAmount == 100) { AudioManager.instance.Play("Headshot"); }
+            AudioManager.instance.Play("enemyflinchimpact");
+            if (animEnemy.GetCurrentAnimatorClipInfo(0)[0].clip.name != "agro") { healthEnemy -= damageAmount; }
+            //MAKE SUSPECIOUS
+            if (!otherPlayer) { transform.LookAt(Player.transform); alertLevelPlayer = unawareness * 2; } else { transform.LookAt(Client.transform); alertLevelClient = unawareness * 2; }
+
+            //CAMSHOT
+            if (damageAmount <= 0) { range += 1; angleView = startAngleView * 2; Flinch(); }
+            //--------AGRO-----------
+            if (damageAmount > 0)
+            {
+                if (agro) { Flinch(); }
+                if (!agro)
+                {
+                    if (NetworkDriver.instance.HOST)
+                    {   //AQUIRE TARGET
+                        if (!otherPlayer) { target = Player.transform; } else { target = Client.transform; }
+                        follow = persist;
+                    }
+                    AudioManager.instance.Play("Agro"); animEnemy.Play("agro"); //animEnemy.CrossFade("agro", 0.25f);
+                    range = 20; agro = true; angleView = 360;
+                }
+
             }
-            AudioManager.instance.Play("EnemyDeath");
-            agro = false;
-            target = null;
-            hasRetreated = 0;
-            this.gameObject.transform.GetChild(0).GetComponent<SkinnedMeshRenderer>().enabled = false;
-            this.gameObject.transform.GetChild(0).GetComponent<Outline>().OutlineWidth = 0;
-            GameObject death = Instantiate(Death, transform.position, transform.rotation);
-            if (Shadower) { death.GetComponent<GhostVFX>().Shadower = true; death.GetComponent<EnemyDeath>().Shadower = true; }
-            if (!canRespawn) { DestroyImmediate(this.gameObject); }
-            HIT_COL.GetComponent<SphereCollider>().enabled = false;
-            //healthEnemy = startHealth;
 
 
-        }
-        else
-        {
-            //animEnemy.SetTrigger("Damage"); 
-            animEnemy.SetBool("Attack", false);
-            animEnemy.Play("React");
-            //if (animator.GetCurrentAnimatorStateInfo(0).IsName(animationName)) ;
+
+            //-----------ENEMY DEATH---------------
+            //if (!otherPlayer) { healthEnemy -= damageAmount; }//do damage only locally
+            healthEnemy -= damageAmount;
+            //-----------RETREAT-------------------
+            if (healthEnemy < startHealth * retreatThreshold) { if (hasRetreated == 0) { hasRetreated = 1; } }
+
+            if (healthEnemy <= 0 && !dead)
+            {
+                dead = true;
+                GetComponent<Teleport>().teleport = 0;
+                GetComponent<Teleport>().canTeleport = true;
+                if (NetworkDriver.instance.HOST)
+                {
+                    GetComponent<Teleport>().CheckTeleport(true, true);
+                    GetComponent<Teleport>().Invoke("Respawn", spawnTimer);
+                }
+                AudioManager.instance.Play("EnemyDeath");
+                agro = false;
+                target = null;
+                hasRetreated = 0;
+                this.gameObject.transform.GetChild(0).GetComponent<SkinnedMeshRenderer>().enabled = false;
+                this.gameObject.transform.GetChild(0).GetComponent<Outline>().OutlineWidth = 0;
+                GameObject death = Instantiate(Death, transform.position, transform.rotation);
+                if (Shadower) { death.GetComponent<GhostVFX>().Shadower = true; death.GetComponent<EnemyDeath>().Shadower = true; }
+                HIT_COL.GetComponent<SphereCollider>().enabled = false;
+                if (!canRespawn) { DestroyImmediate(this.gameObject); }
+                //healthEnemy = startHealth;
+
+
+            }
         }
     }
 
-
+    private void LateUpdate()
+    {
+        onlyOnceThisFrame = false;
+    }
 
 
 
