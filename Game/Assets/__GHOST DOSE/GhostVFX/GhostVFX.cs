@@ -355,7 +355,7 @@ public class GhostVFX : MonoBehaviour
                 if (!playedSound && GetComponent<NPCController>()!=null && !GetComponent<NPCController>().agro)
                 {
                     int i;
-                    i = UnityEngine.Random.Range(1, 4);
+                    i = UnityEngine.Random.Range(1, 5);
                     if (!invisible) { AudioManager.instance.Play("Wander" + i.ToString()); }
                     playedSound = true;
                     //sound_timer = Time.time;//cooldown

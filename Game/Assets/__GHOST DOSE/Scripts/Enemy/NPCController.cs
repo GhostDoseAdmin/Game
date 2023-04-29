@@ -31,7 +31,7 @@ public class NPCController : MonoBehaviour
     public int angleView;
     [HideInInspector] public int startAngleView;
     public float hitRange = 1.5f;
-    public float walkSpeed = 1f;
+    public float chaseSpeed = 1f;
     public float spawnTimer;
     public int damage;
     public float force;
@@ -71,7 +71,8 @@ public class NPCController : MonoBehaviour
     private int hasRetreated;
     public int alertLevelPlayer;
     public int alertLevelClient;
-
+    public bool prevAlerted;
+    public bool alerted;
     public Vector3 destination;
     [HideInInspector] public Vector3 truePosition;
     [HideInInspector] public bool attacking = false;
@@ -254,12 +255,15 @@ public class NPCController : MonoBehaviour
         {
 
             //GetComponent<NavMeshAgent>().enabled = true;
-            GetComponent<NavMeshAgent>().speed = walkSpeed;
-            if (hasRetreated == 1) { GetComponent<NavMeshAgent>().speed = walkSpeed*2; }
+            GetComponent<NavMeshAgent>().speed = 0.1f;
+            if (hasRetreated == 1) { GetComponent<NavMeshAgent>().speed = chaseSpeed * 2; }
             GetComponent<NavMeshAgent>().stoppingDistance = 0;
             animEnemy.SetBool("Attack", false);
             animEnemy.SetBool("Run", false);
-            bool alerted = false;
+           
+            if (prevAlerted != alerted && alerted) { AudioManager.instance.Play("enemyalert"); Debug.Log("---------------------------------------ALERT"); }
+            prevAlerted = alerted;
+            alerted = false;
             //-------------ALERT------------------
             if (NetworkDriver.instance.HOST)
             {
@@ -284,7 +288,7 @@ public class NPCController : MonoBehaviour
             if (destination == GameDriver.instance.Player.transform.position) { alerted = true; navmesh.SetDestination(destination); if (Vector3.Distance(transform.position, GameDriver.instance.Player.transform.position) > 1f ) { navmesh.isStopped = false; animEnemy.SetBool("Walk", true); } else { navmesh.isStopped = true; animEnemy.SetBool("Walk", false); } }
             if (clientWaypointDest == GameDriver.instance.Client.transform.position) { alerted = true; navmesh.SetDestination(clientWaypointDest); if (Vector3.Distance(transform.position, GameDriver.instance.Client.transform.position) > 1f) { navmesh.isStopped = false; animEnemy.SetBool("Walk", true); } else { navmesh.isStopped = true; animEnemy.SetBool("Walk", false); } }
             if (clientWaypointDest == GameDriver.instance.Player.transform.position) { alerted = true; navmesh.SetDestination(clientWaypointDest); if (Vector3.Distance(transform.position, GameDriver.instance.Player.transform.position) > 1f) { navmesh.isStopped = false; animEnemy.SetBool("Walk", true); } else { navmesh.isStopped = true; animEnemy.SetBool("Walk", false); } }
-
+            
             //-------------PATROL---------------
             if (!alerted){
                 if (wayPoint.Count > 1)
@@ -366,15 +370,6 @@ public class NPCController : MonoBehaviour
             target.transform.position = Vector3.Lerp(target.transform.position, targetPosition, speed * Time.deltaTime);
         }
         //---------LOOKING-------
-        //if(Quaternion.Angle(head.rotation, Quaternion.LookRotation(target.position - head.position))>0) { transform.LookAt(target); }//snap to target
-        //if (distance >= 0.55){lookAtVec = Vector3.Lerp(lookAtVec, target.position, 6f * Time.deltaTime);}//LOOK DOWN
-        //else { lookAtVec = Vector3.Lerp(lookAtVec, new Vector3(target.position.x, transform.position.y, target.position.z), 3f * Time.deltaTime); }//DONT LOOK DOWN
-        // transform.LookAt(lookAtVec);
-        //float pitch = Mathf.Clamp(transform.eulerAngles.x, -60f, 60f);
-        // transform.rotation = Quaternion.Euler(pitch, transform.eulerAngles.y, transform.eulerAngles.z);
-        // Calculate the direction towards the target
-       // Vector3 targetPosition1 = new Vector3(target.position.x, transform.position.y, target.position.z); // target position with same y-coordinate as the object
-
         // Rotate towards the target position along the y-axis only
         transform.rotation = Quaternion.RotateTowards(transform.rotation, Quaternion.LookRotation(target.transform.position- transform.position), 100f * Time.deltaTime);
         //------------------------------ H O S T ----------------------------------------
@@ -392,7 +387,8 @@ public class NPCController : MonoBehaviour
                 animEnemy.SetBool("Fighting", false);
                 animEnemy.SetBool("Run", true);
                 animEnemy.SetBool("Attack", false);
-                GetComponent<NavMeshAgent>().speed = walkSpeed*2;//DOESNT AFFECT THIS
+                GetComponent<NavMeshAgent>().speed = chaseSpeed * 2;//DOESNT AFFECT THIS
+                if (GetComponent<Animator>().GetCurrentAnimatorClipInfo(0)[0].clip.name == "agro") { GetComponent<NavMeshAgent>().speed = 0; }
                 //GetComponent<NavMeshAgent>().enabled = true;
                 if (attacking)
                 {
@@ -429,7 +425,8 @@ public class NPCController : MonoBehaviour
                 animEnemy.SetBool("Run", true);
                 animEnemy.SetBool("Attack", false);
                 //GetComponent<NavMeshAgent>().speed = walkSpeed;
-                GetComponent<NavMeshAgent>().speed = walkSpeed*2;
+                GetComponent<NavMeshAgent>().speed = chaseSpeed * 2;
+                if (GetComponent<Animator>().GetCurrentAnimatorClipInfo(0)[0].clip.name == "agro") { GetComponent<NavMeshAgent>().speed = 0; }
 
                 navmesh.isStopped = false;
                 if (distance <= hitRange) { navmesh.isStopped = true; }
@@ -552,12 +549,18 @@ public class NPCController : MonoBehaviour
         agro = false;
         angleView = startAngleView;
         range = startRange;
+        
     }
+
+
     public void TakeDamage(int damageAmount, bool otherPlayer)
     {
         if (damageAmount == 100) { AudioManager.instance.Play("Headshot"); }
         //--------AGRO-----------
-        if (!agro) { AudioManager.instance.Play("Agro"); }
+        if (!agro) { AudioManager.instance.Play("Agro"); animEnemy.SetBool("agro", true); } else { if (damageAmount > 0) { animEnemy.SetBool("agro", false); } }
+        
+        Debug.Log("--------------------------------------ANIM " + animEnemy.GetBool("agro") + damageAmount);
+        AudioManager.instance.Play("enemyflinchimpact");
         //if (damageAmount == 0) { if (!agro) { range = 10; } } //CAM SHOT
         //else { range = 20; agro = true; angleView = 360; } //REGULAR
         range = 20; agro = true; angleView = 360;
