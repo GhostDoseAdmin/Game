@@ -559,7 +559,7 @@ public class NPCController : MonoBehaviour
         //--------AGRO-----------
         if (!agro) { AudioManager.instance.Play("Agro"); animEnemy.SetBool("agro", true); } else { if (damageAmount > 0) { animEnemy.SetBool("agro", false); } }
         
-        Debug.Log("--------------------------------------ANIM " + animEnemy.GetBool("agro") + damageAmount);
+        //Debug.Log("--------------------------------------ANIM " + animEnemy.GetBool("agro") + damageAmount);
         AudioManager.instance.Play("enemyflinchimpact");
         //if (damageAmount == 0) { if (!agro) { range = 10; } } //CAM SHOT
         //else { range = 20; agro = true; angleView = 360; } //REGULAR
@@ -588,6 +588,7 @@ public class NPCController : MonoBehaviour
             GameObject death = Instantiate(Death, transform.position, transform.rotation);
             if (Shadower) { death.GetComponent<GhostVFX>().Shadower = true; death.GetComponent<EnemyDeath>().Shadower = true; }
             if (!canRespawn) { DestroyImmediate(this.gameObject); }
+            HIT_COL.GetComponent<SphereCollider>().enabled = false;
             //healthEnemy = startHealth;
 
 

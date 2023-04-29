@@ -714,7 +714,6 @@ ParticleSystem:
         m_PostInfinity: 2
         m_RotationOrder: 4
     randomizeRotationDirection: 0
-    gravitySource: 0
     maxNumParticles: 1
     customEmitterVelocity: {x: 0, y: 0, z: 0}
     size3D: 0
@@ -4108,7 +4107,6 @@ ParticleSystem:
         m_RotationOrder: 4
     minVertexDistance: 0.2
     textureMode: 0
-    textureScale: {x: 1, y: 1}
     ribbonCount: 1
     shadowBias: 0.5
     worldSpace: 0
@@ -4970,7 +4968,7 @@ Transform:
   - {fileID: 1187157355396038977}
   - {fileID: 1363781640}
   m_Father: {fileID: 0}
-  m_RootOrder: 1
+  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!33 &8627709536055151171
 MeshFilter:
@@ -5034,4 +5032,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: af22d164b0916f24185392283eae5112, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  kit: 1
+  healFactor: 0.25
