@@ -95,7 +95,7 @@ public class ShootingSystem : MonoBehaviour
     {
         ammoCount = ammoCount + ammo;
         ammoCountUI.text = ammoCount.ToString("0");
-        AudioManager.instance.Play(pickUp);
+        AudioManager.instance.Play(pickUp, gameObject.GetComponent<PlayerController>().audioSource);
     }
 
     public void Update()
@@ -104,25 +104,6 @@ public class ShootingSystem : MonoBehaviour
         ReloadAmmo();
        
     }
-
-    /*public void CheckShoot()
-    {
-        if (!playerController.canShoot)
-            return;
-
-        //shootPoint.LookAt(targetLook);
-
-        if (curRateFire > 0)
-        {
-            curRateFire -= Time.deltaTime * 10;
-            this.canShoot = false;
-        }
-        else
-        {
-            curRateFire = rateOfFire;
-            this.canShoot = true;
-        }
-    }*/
 
     public void Aiming(int gear)
     {
@@ -264,7 +245,7 @@ public class ShootingSystem : MonoBehaviour
             ammoCount = ammoCount - maxAmmoClipCount;
             ammoCountUI.text = ammoCount.ToString("0");
 
-            AudioManager.instance.Play(reloadSound);
+            AudioManager.instance.Play(reloadSound, gameObject.GetComponent<PlayerController>().audioSource);
         }
     }
 }

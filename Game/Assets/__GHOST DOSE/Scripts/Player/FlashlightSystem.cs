@@ -91,7 +91,7 @@ public class FlashlightSystem : MonoBehaviour
     {
         hasFlashlight = true;
         inventoryFlashlight.SetActive(true);
-        AudioManager.instance.Play(pickUp);
+        AudioManager.instance.Play(pickUp, gameObject.GetComponent<PlayerController>().audioSource);
     }
 
     public void CollectBattery(int batteries)
@@ -99,7 +99,7 @@ public class FlashlightSystem : MonoBehaviour
         batteryCount = batteryCount + batteries;
         batteryCountUI.text = batteryCount.ToString("0");
         batteryUI.enabled = true;
-        AudioManager.instance.Play(pickUp);
+        AudioManager.instance.Play(pickUp, gameObject.GetComponent<PlayerController>().audioSource);
     }
 
     void Update()
@@ -122,7 +122,7 @@ public class FlashlightSystem : MonoBehaviour
                     handFlashlight.SetActive(true);
                     inventoryFlashlight.SetActive(false);
 
-                    AudioManager.instance.Play(this.flashlightClick);
+                    AudioManager.instance.Play(this.flashlightClick, gameObject.GetComponent<PlayerController>().audioSource);
                     FlashLight.enabled = true;
 
                     GetComponent<PlayerController>().emitFlashlight = true;
@@ -134,7 +134,7 @@ public class FlashlightSystem : MonoBehaviour
 
                     handFlashlight.SetActive(false);
                     inventoryFlashlight.SetActive(true);
-                    AudioManager.instance.Play(this.flashlightClick);
+                    AudioManager.instance.Play(this.flashlightClick, gameObject.GetComponent<PlayerController>().audioSource);
                     FlashLight.enabled = false;
 
                     GetComponent<PlayerController>().emitFlashlight = true;

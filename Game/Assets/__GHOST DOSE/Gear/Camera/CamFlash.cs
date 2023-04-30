@@ -10,6 +10,7 @@ public class CamFlash : MonoBehaviour
     // Start is called before the first frame update
     private List<NPCController> ghostObjects;
     public bool isClient;
+    private AudioSource audioSource;
 
     IEnumerator DestroyAfterDelay(GameObject obj)
     {
@@ -21,7 +22,10 @@ public class CamFlash : MonoBehaviour
 
     public void Start()
     {
-        AudioManager.instance.Play("ShotCam");
+        audioSource = gameObject.AddComponent<AudioSource>();
+        audioSource.spatialBlend = 1.0f;
+
+        AudioManager.instance.Play("camshot", audioSource);
 
         StartCoroutine(DestroyAfterDelay(this.gameObject));
        

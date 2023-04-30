@@ -34,14 +34,14 @@ public class Note : Item
         {
             this.isOpenNote = false;
             noteImage.enabled = false;
-            AudioManager.instance.Play(noteCloseSound);
+            AudioManager.instance.Play(noteCloseSound, audioSource);
             DisableManager.instance.DisablePlayer(false);
         }
         else
         {
             this.isOpenNote = true;
             noteImage.enabled = true;
-            AudioManager.instance.Play(noteShowSound);
+            AudioManager.instance.Play(noteShowSound, audioSource);
             DisableManager.instance.DisablePlayer(true);
          }
     }

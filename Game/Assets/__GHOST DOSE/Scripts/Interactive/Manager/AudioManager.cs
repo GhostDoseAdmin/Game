@@ -15,12 +15,12 @@ namespace InteractionSystem
         void Awake()
         {
             if (instance != null)
-            { 
-                Destroy(gameObject); 
+            {
+                Destroy(gameObject);
             }
-            else 
-            { 
-                instance = this; 
+            else
+            {
+                instance = this;
             }
 
             foreach (Sound s in sounds)
@@ -33,8 +33,9 @@ namespace InteractionSystem
             }
         }
 
-        public void Play(string sound)
+        public void Play(string sound, AudioSource audioSource)
         {
+
             Sound s = sounds.FirstOrDefault(item => item.name == sound);
 
             if (s == null)
@@ -43,13 +44,23 @@ namespace InteractionSystem
                 return;
             }
 
+            //specified audio source
+            if (audioSource != null)
+            {
+                audioSource.clip = s.clip;
+                audioSource.loop = s.loop;
+                audioSource.volume = s.volume;
+                audioSource.pitch = s.pitch;
+                s.source = audioSource;
+             }
+
             s.source.volume = s.volume * (1f + UnityEngine.Random.Range(-s.volumeVariance / 2f, s.volumeVariance / 2f));
             s.source.pitch = s.pitch * (1f + UnityEngine.Random.Range(-s.pitchVariance / 2f, s.pitchVariance / 2f));
 
             s.source.Play();
         }
 
-        public void StopPlaying(string sound)
+        public void StopPlaying(string sound, AudioSource audioSource)
         {
             Sound s = sounds.FirstOrDefault(item => item.name == sound);
             if (s == null)
@@ -57,9 +68,34 @@ namespace InteractionSystem
                 Debug.LogWarning("Sound: " + name + " not found!");
                 return;
             }
+
+            if (audioSource != null)
+            {
+                s.source = audioSource;
+            }
+
             s.source.volume = s.volume * (1f + UnityEngine.Random.Range(-s.volumeVariance / 2f, s.volumeVariance / 2f));
             s.source.pitch = s.pitch * (1f + UnityEngine.Random.Range(-s.pitchVariance / 2f, s.pitchVariance / 2f));
             s.source.Stop();
         }
+
+        public AudioClip GetSound(string soundName)
+        {
+            foreach (Sound s in sounds)
+            {
+                if (s.name == soundName)
+                {
+                    Debug.Log("-------------------FOUND HEADSHOT CLIP");
+                    return s.clip;
+                }
+            }
+            return null;
+        }
+
+
+
+
+
+
     }
-}
+    }

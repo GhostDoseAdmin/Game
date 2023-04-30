@@ -12,11 +12,12 @@ public class k2beep : MonoBehaviour
     public bool start = true;
     private float timer = 0f;
     private float delay;
-
+    private AudioSource audioSource;
 
     void Start()
     {
-       
+        audioSource = gameObject.AddComponent<AudioSource>();
+        audioSource.spatialBlend = 1.0f;
     }
 
     // Update is called once per frame
@@ -63,7 +64,7 @@ public class k2beep : MonoBehaviour
 
         void Detect()
         {
-        if (Level > 0) { AudioManager.instance.Play("k2beep"); Invoke("lightOff", delay*0.5f); }
+        if (Level > 0) { AudioManager.instance.Play("k2beep", audioSource); Invoke("lightOff", delay*0.5f); }
             switch (Level)
             {
                 case 5:

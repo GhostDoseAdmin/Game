@@ -53,14 +53,14 @@ public class WeaponParameters : MonoBehaviour
     {
         hasKnife = true;
         inventoryKnife.SetActive(true);
-        AudioManager.instance.Play(pickUp);
+        AudioManager.instance.Play(pickUp, gameObject.GetComponent<PlayerController>().audioSource);
     }
 
     public void EnableInventoryPistol()
     {
         hasPistol = true;
         inventoryCam.SetActive(true);
-        AudioManager.instance.Play(pickUp);
+        AudioManager.instance.Play(pickUp, gameObject.GetComponent<PlayerController>().audioSource);
     }
 
     #region Knife
@@ -84,22 +84,7 @@ public class WeaponParameters : MonoBehaviour
         handKnife.GetComponent<Collider>().enabled = false;
     }
 
-    void AttackKnifeSoundEvent()
-    {
-        AudioManager.instance.Play(attackKnife);
-    }
     #endregion
 
-    #region Pistol
-    void EnablePistol()
-    {
-        weapHand.SetActive(true);
-        inventoryCam.SetActive(false);
-    }
-    void DisablePistol()
-    {
-        weapHand.SetActive(false);
-        inventoryCam.SetActive(true);
-    }
-    #endregion
+
 }

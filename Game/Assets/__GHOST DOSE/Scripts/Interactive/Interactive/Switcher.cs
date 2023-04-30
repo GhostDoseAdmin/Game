@@ -35,7 +35,7 @@ public class Switcher : Item
         if (this.isOn)
         {
             this.isOn = false;
-            AudioManager.instance.Play(clickSwitch);
+            AudioManager.instance.Play(clickSwitch, audioSource);
             pointLight.enabled = false;
             this.animator.SetBool("Off", true);
             this.animator.SetBool("On", false);
@@ -44,7 +44,7 @@ public class Switcher : Item
         else
         {
             this.isOn = true;
-            AudioManager.instance.Play(clickSwitch);
+            AudioManager.instance.Play(clickSwitch, audioSource);
             pointLight.enabled = true;
             this.animator.SetBool("On", true);
             this.animator.SetBool("Off", false);

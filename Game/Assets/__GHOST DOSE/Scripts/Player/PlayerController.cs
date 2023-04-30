@@ -92,8 +92,15 @@ public class PlayerController : MonoBehaviour
     private static utilities util;
 
 	public GameObject currLight;
+	public AudioSource audioSource;
     #region Start
 
+
+    public void Awake()
+    {
+        audioSource = gameObject.AddComponent<AudioSource>();
+        audioSource.spatialBlend = 1.0f;
+    }
     public void SetupRig()
     {
         util = new utilities();
@@ -572,7 +579,7 @@ public class PlayerController : MonoBehaviour
 
 	void GetFromSoundEvent()
 	{
-		AudioManager.instance.Play(getFrom);
+		AudioManager.instance.Play(getFrom, audioSource);
 	}
 
 

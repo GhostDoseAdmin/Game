@@ -24289,7 +24289,7 @@ GameObject:
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 2147483647
+  m_StaticEditorFlags: 0
   m_IsActive: 1
 --- !u!4 &4128087545925299215
 Transform:
@@ -43734,7 +43734,7 @@ GameObject:
   m_TagString: TriggerMesh
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 2147483647
+  m_StaticEditorFlags: 0
   m_IsActive: 1
 --- !u!4 &8499909203070884503
 Transform:
@@ -43844,7 +43844,7 @@ GameObject:
   m_TagString: InteractiveObj
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 2147483647
+  m_StaticEditorFlags: 0
   m_IsActive: 1
 --- !u!4 &8508222748632848839
 Transform:
@@ -43876,6 +43876,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f896d14f781355c4e92188798e037fa2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  audioSource: {fileID: 0}
   effect: {fileID: 4970813168946684186}
   SessionTimer: 10
   session: 1

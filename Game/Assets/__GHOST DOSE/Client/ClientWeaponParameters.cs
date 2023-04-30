@@ -47,19 +47,8 @@ public class ClientWeaponParameters : MonoBehaviour
         inventoryPistol.SetActive(false);
     }
 
-    public void EnableInventoryKnife()
-    {
-        hasKnife = true;
-        inventoryKnife.SetActive(true);
-        AudioManager.instance.Play(pickUp);
-    }
 
-    public void EnableInventoryPistol()
-    {
-        hasPistol = true;
-        inventoryPistol.SetActive(true);
-        AudioManager.instance.Play(pickUp);
-    }
+
 
     #region Knife
     void EnableKnife()
@@ -82,10 +71,7 @@ public class ClientWeaponParameters : MonoBehaviour
         handKnife.GetComponent<Collider>().enabled = false;
     }
 
-    void AttackKnifeSoundEvent()
-    {
-        AudioManager.instance.Play(attackKnife);
-    }
+
     #endregion
 
     #region Pistol

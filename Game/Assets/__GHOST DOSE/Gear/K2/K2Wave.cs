@@ -81,9 +81,9 @@ public class K2Wave : MonoBehaviour
             }
         }
         //SPIRIT BOX SPOT
-        if (other.gameObject.transform.root.GetComponent<SB7Event>() !=null)
+        if (other.gameObject.transform.parent.GetComponent<SB7Event>() !=null)
         {
-            other.gameObject.transform.root.GetComponent<SB7Event>().Exposed();
+            other.gameObject.transform.parent.GetComponent<SB7Event>().Exposed();
         }
     }
 }
