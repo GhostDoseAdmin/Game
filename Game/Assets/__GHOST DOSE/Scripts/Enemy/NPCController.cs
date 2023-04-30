@@ -58,17 +58,9 @@ public class NPCController : MonoBehaviour
     [HideInInspector] public NavMeshAgent navmesh;
 
     //NETWORK
-    public bool emitDest;
-    [HideInInspector] public float teleEmit;
-    private Transform prevTarg;
-    private bool emitPos;
-    private bool emitTarg;
-
     [HideInInspector] public Transform closestPlayer;
     private GameObject Player;
     private GameObject Client;
-    private string actions;
-    private string send;
     private int hasRetreated;
     public int alertLevelPlayer;
     public int alertLevelClient;
@@ -131,7 +123,7 @@ public class NPCController : MonoBehaviour
         //---CLIENT SIDE PREDICTION--close position gap
         if(!NetworkDriver.instance.HOST)
         {
-            float distance = Vector3.Distance(transform.position, destination.transform.position);
+            //float distance = Vector3.Distance(transform.position, destination.transform.position);
             //float timeToTravel = distance / 0.2f + 0.00001f; //navmesh.speed * animation speed
             //if (target == null) { transform.position = Vector3.Lerp(transform.position, destination.transform.position, Time.deltaTime / timeToTravel); }
 
@@ -146,14 +138,8 @@ public class NPCController : MonoBehaviour
             }
         }
 
-
-
-
-
         p1_dist = Vector3.Distance(head.position, Player.transform.position);
         p2_dist = Vector3.Distance(head.position, Client.transform.position);
-
-        //activeWayPoint = wayPoint[curWayPoint].gameObject;
 
         //ALWAYS CHOOSE CLOSEST TARGET
         if (p1_dist < p2_dist) { distance = p1_dist; closestPlayer = Player.transform; } else { distance = p2_dist; closestPlayer = Client.transform; }
@@ -165,54 +151,6 @@ public class NPCController : MonoBehaviour
         if (NetworkDriver.instance.HOST) { if (teleport == 0 && canAttack) { FindTargetRayCast(); } } //dtermines & finds target
 
         if (teleport > 0) { target = GetComponent<Teleport>().target; }
-
-        //=================================== E M I T =============================================
-        if (GameDriver.instance.twoPlayer && NetworkDriver.instance.HOST)
-        {
-            
-
-            //--------------- DESTINATION EMIT-----------------
-            string destString = "";
-            if (emitDest){
-                destString = $",'dx':'{destination.name}'";
-                emitDest = false;
-                emitPos = true;
-                Debug.Log("EMIT DEST");
-            }
-            //--------------- TELEPORT EMIT-----------------
-            string teleString = "";
-            if (teleEmit>0){
-                teleString = $",'tele':'{teleEmit}'";
-                emitPos = true; emitTarg = true;
-            }
-            //--------------- TARGET EMIT-----------------
-            string targString = "";
-            if (prevTarg != target || emitTarg)
-            {
-                targString = $",'tx':'{target}'";
-                emitTarg = false;
-            }
-            prevTarg = target;
-            //--------------- POSITION EMIT-----------------
-            string posString = "";
-            if (emitPos){
-                posString = $",'x':'{transform.position.x.ToString("F2")}','y':'{transform.position.y.ToString("F2")}','z':'{transform.position.z.ToString("F2")}'";
-                emitPos = false;
-            }
-            //actions = $"{{{target} {destination} {attacking} {teleChange}'}}";//determines what events to emit on change
-            //if (actions != prevActions || update) //actions change
-            //if (destString.Length > 1 || teleEmit>0 || targString.Length > 1)
-            if (teleEmit > 0)
-            {
-                //Debug.Log("--------------------------------SENDING PLAYER JOINED-----------------------------------" + playerJoined); 
-                send = $"{{'obj':'{this.name}'{teleString}{targString}{posString}}}";
-                //Debug.Log("SENDING DATA " + send);
-                NetworkDriver.instance.sioCom.Instance.Emit("enemy", JsonConvert.SerializeObject(send), false);
-                
-                teleEmit = 0;
-                //prevActions = actions;
-            }
-        }
 
         //----------------------RESET OUTLINE---------------------
         if (GameObject.Find("K2") == null)
@@ -230,10 +168,6 @@ public class NPCController : MonoBehaviour
 
         if (outline.OutlineWidth < 0) { outline.OutlineWidth = 0; }
         
-
-
-
-
         }
 
 
@@ -361,7 +295,6 @@ public class NPCController : MonoBehaviour
 
     public void Attack()
     {
-        Debug.Log("===================ATTACKING========================");
         //MOVE TOWARDS TARGET
         navmesh.SetDestination(target.position);
         destination = target.gameObject;
@@ -370,9 +303,10 @@ public class NPCController : MonoBehaviour
 
 
         float distance = Vector3.Distance(transform.position, new Vector3(target.position.x, transform.position.y, target.position.z));//measured at same level Yaxis
+         //-----------DISENGAGE--------------------
+         if (distance > range){ Disengage(); }
 
         //------PUSH PLAYER AWAY
-        //Debug.Log("-----------------------------DISTANCE " + distance);
         if (distance < 0.4f)
         {
             Vector3 pushDirection = transform.forward;//target.transform.position - transform.position;
@@ -387,15 +321,7 @@ public class NPCController : MonoBehaviour
         // Rotate towards the target position along the y-axis only
         transform.rotation = Quaternion.RotateTowards(transform.rotation, Quaternion.LookRotation(target.transform.position- transform.position), 100f * Time.deltaTime);
 
-        //if (GetComponent<Animator>().GetCurrentAnimatorClipInfo(0)[0].clip.name == "agro") { transform.LookAt(target); }
-        
-            //------------------------------ H O S T ----------------------------------------
 
-            //-----------DISENGAGE--------------------
-            if (distance > range)// && !agro) || (distance > range*1.5 && agro))
-            {
-                target = null;
-            }
                 //RUN TO TARGET
             if (distance > hitRange)
             {
@@ -489,7 +415,7 @@ public class NPCController : MonoBehaviour
             {
                 if (hit.collider.transform != target)
                 {//HIDING
-                    if (follow > 0) { follow--; } else { Disengage(); }
+                    if (GetComponent<Teleport>().teleport == 0) { if (follow > 0) { follow--; } else { Disengage(); } }
 
                 }
                 else { follow = persist; }
@@ -529,7 +455,8 @@ public class NPCController : MonoBehaviour
 
             if (damageAmount == 100) { AudioManager.instance.Play("Headshot"); }
             AudioManager.instance.Play("enemyflinchimpact");
-            if (animEnemy.GetCurrentAnimatorClipInfo(0)[0].clip!= null && animEnemy.GetCurrentAnimatorClipInfo(0)[0].clip.name != "agro") { healthEnemy -= damageAmount; }
+            if (animEnemy.GetCurrentAnimatorClipInfo(0)[0].clip!= null && animEnemy.GetCurrentAnimatorClipInfo(0)[0].clip.name != "agro" && GetComponent<Teleport>().teleport==0) { healthEnemy -= damageAmount; }
+
             //MAKE SUSPECIOUS
             if (!otherPlayer) { transform.LookAt(Player.transform); alertLevelPlayer = unawareness * 2; } else { transform.LookAt(Client.transform); alertLevelClient = unawareness * 2; }
 
@@ -551,12 +478,8 @@ public class NPCController : MonoBehaviour
                 }
 
             }
-
-
-
             //-----------ENEMY DEATH---------------
-            //if (!otherPlayer) { healthEnemy -= damageAmount; }//do damage only locally
-            healthEnemy -= damageAmount;
+
             //-----------RETREAT-------------------
             if (healthEnemy < startHealth * retreatThreshold) { if (hasRetreated == 0) { hasRetreated = 1; } }
 

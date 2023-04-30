@@ -5,6 +5,7 @@ using UnityEngine;
 using UnityEngine.AI;
 using UnityEngine.InputSystem.Controls;
 using InteractionSystem;
+using Newtonsoft.Json;
 
 public class Teleport : MonoBehaviour
 {
@@ -64,7 +65,7 @@ public class Teleport : MonoBehaviour
         //---------------AGRO----------------------
         if (NetworkDriver.instance.HOST)
         {
-            if (GetComponent<NPCController>().agro && GetComponent<NPCController>().target != null && GetComponent<NPCController>().teleports)
+            if (GetComponent<NPCController>().target != null && GetComponent<NPCController>().teleports) //GetComponent<NPCController>().agro && 
             {
                // if (Vector3.Distance(transform.position, GetComponent<NPCController>().target.transform.position) > 3)//3
                 {
@@ -75,9 +76,7 @@ public class Teleport : MonoBehaviour
         //STEP 1 - SETUP
         if (teleport == 1)
         {
-            GetComponent<NPCController>().teleEmit = 1;
-            Debug.Log("EMIT TELE");
-            //if (GetComponent<NPCController>().agro && !isWaypoint && !DEATH) { AudioManager.instance.Play("Disappear"); }
+            if (NetworkDriver.instance.HOST) { NetworkDriver.instance.sioCom.Instance.Emit("teleport", JsonConvert.SerializeObject($"{{'obj':'{gameObject.name}','tp':'1','x':'{transform.position.x}','y':'{transform.position.y}','z':'{transform.position.z}'}}"), false); }
             fadeTimer = Time.time;
             if (GetComponent<NPCController>().target != null) { target = GetComponent<NPCController>().target; }
             if (target != null && GetComponent<NPCController>().healthEnemy>0) { AudioManager.instance.Play("Disappear"); }
@@ -138,12 +137,13 @@ public class Teleport : MonoBehaviour
             if(GetComponent<GhostVFX>().invisible && !GetComponent<GhostVFX>().visible && relocate>2 && !DEATH)
             {
                 teleport = 3;
-                GetComponent<NPCController>().teleEmit = 3;
+                if (NetworkDriver.instance.HOST) { NetworkDriver.instance.sioCom.Instance.Emit("teleport", JsonConvert.SerializeObject($"{{'obj':'{gameObject.name}','tp':'3','x':'{transform.position.x}','y':'{transform.position.y}','z':'{transform.position.z}'}}"), false); }
             }
         }
         //SETP 3 - REAPPEAR --CLIENT
         if(teleport == 3)//runs twice
         {
+            
             if (!delayForEmit)
             { //skip a frame to allow NPCcontroller to emit state 3
                 teleport = 0;

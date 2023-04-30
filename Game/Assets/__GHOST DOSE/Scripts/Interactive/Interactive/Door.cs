@@ -40,28 +40,25 @@ public class Door : Item
         if (this.isNeedKey)
             this.CheckKeyPass();
         else
-            this.OpenClose();
+            this.OpenClose(false);
     }
 
     private void CheckKeyPass()
     {
         var key = KeyInventory.instance.GetKeyWithPath(this.doorPass);
-        string emitEvent;
         if (key == this.doorPass)
         {
-            this.OpenClose();
-            emitEvent = "openclose";
+            this.OpenClose(false);
         }
         else
         {
-            this.Locked();
-            emitEvent = "locked";
+            this.Locked(false);
         }
-
-        if (GameDriver.instance.twoPlayer) { Debug.Log("----------------------SENDING OPEN DOOR"); NetworkDriver.instance.sioCom.Instance.Emit("event", JsonConvert.SerializeObject($"{{'obj':'{gameObject.name}','type':'door','event':'{emitEvent}'}}"), false); }
+        
+        
     }
 
-    public void OpenClose()
+    public void OpenClose(bool otherPlayer)
     {
         if (this.isOpen)
         {
@@ -76,14 +73,16 @@ public class Door : Item
             this.animator.SetBool("Close", false);
         }
 
-       
+        if (GameDriver.instance.twoPlayer && !otherPlayer) { NetworkDriver.instance.sioCom.Instance.Emit("event", JsonConvert.SerializeObject($"{{'obj':'{gameObject.name}','type':'door','event':'openclose'}}"), false); }
 
     }
 
-    public void Locked()
+    public void Locked(bool otherPlayer)
     {
         this.animator.SetTrigger("CantOpen");
         AudioManager.instance.Play(this.doorLockSound);
+
+        if (GameDriver.instance.twoPlayer && !otherPlayer) { NetworkDriver.instance.sioCom.Instance.Emit("event", JsonConvert.SerializeObject($"{{'obj':'{gameObject.name}','type':'door','event':'locked'}}"), false); }
     }
 
     public void OpenSound()

@@ -229,11 +229,23 @@ namespace NetworkSystem
                 }
                 if (dict["type"] == "door")
                 {
-                    if (dict["event"] == "openclose") { obj.GetComponent<Door>().OpenClose(); }
-                    if (dict["event"] == "locked") { obj.GetComponent<Door>().Locked(); }
+                    if (dict["event"] == "openclose") { obj.GetComponent<Door>().OpenClose(true); }
+                    if (dict["event"] == "locked") { obj.GetComponent<Door>().Locked(true); }
                 }
 
             });
+            //-----------------TELEPORT  ----------------->
+            sioCom.Instance.On("teleport", (payload) =>
+            {
+                JObject data = JObject.Parse(payload);
+                Dictionary<string, string> dict = data.ToObject<Dictionary<string, string>>();
+                Debug.Log("RECEIVING TELEPORT " + data);
+                GameObject enemy = GameObject.Find(dict["obj"]);
+                enemy.GetComponent<Teleport>().teleport = float.Parse(dict["tp"]);
+                enemy.transform.position = new Vector3(float.Parse(dict["x"]), float.Parse(dict["y"]), float.Parse(dict["z"]));
+
+            });
+
             //-----------------DISABLE  ----------------->
             sioCom.Instance.On("disable", (payload) =>
             {
@@ -255,60 +267,12 @@ namespace NetworkSystem
                 }
             });
 
-            //-----------------ENEMY  ----------------->
-            sioCom.Instance.On("enemy", (payload) =>
-            {
-
-                JObject data = JObject.Parse(payload);
-                Dictionary<string, string> dict = data.ToObject<Dictionary<string, string>>();
-                Debug.Log("RECEIVING enemy " + data);
-                GameObject enemy = GameObject.Find(dict["obj"]);
-                if (enemy != null)
-                {
-
-                    //--------POSITION---------
-                    Vector3 targPos;
-                    if (dict.ContainsKey("x"))
-                    {
-                        targPos = new Vector3(float.Parse(dict["x"]), float.Parse(dict["y"]), float.Parse(dict["z"]));
-                        if (Vector3.Distance(targPos, enemy.transform.position) > 3 && enemy.GetComponent<Teleport>().teleport == 0) { enemy.transform.position = targPos; }
-                        if (dict.ContainsKey("tele")) { enemy.transform.position = targPos; }
-                    }
-                    //--------TARGET-----------
-                    if (dict.ContainsKey("tx"))
-                    {
-                        string target = dict["tx"];
-                        if (target.Contains("Player")) { enemy.GetComponent<NPCController>().target = GameDriver.instance.Client.transform; Debug.Log("SETTING TARGET FOR CLIENT " + GameDriver.instance.Client.transform); }
-                        if (target.Contains("Client")) { enemy.GetComponent<NPCController>().target = GameDriver.instance.Player.transform; Debug.Log("SETTING TARGET FOR CLIENT " + GameDriver.instance.Player.transform); }
-                        if (target.Length < 2) { enemy.GetComponent<NPCController>().target = null; Debug.Log("SETTING TARGET FOR CLIENT NULL"); }
-                    }
-                    //--------TELEPORT-----------
-                    if (dict.ContainsKey("tele"))
-                    {
-                        enemy.GetComponent<Teleport>().teleport = float.Parse(dict["tele"]);
-                    }
-                    //--------PATROL-----------
-                    if (dict.ContainsKey("dx"))
-                    {
-                        GameObject dest = GameObject.Find(dict["dx"]);
-                        if (dest == GameDriver.instance.Player) { dest = GameDriver.instance.Client; }
-                        else if (dest == GameDriver.instance.Client) { dest = GameDriver.instance.Player; }
-                        enemy.GetComponent<NPCController>().destination = dest;//new Vector3(float.Parse(dict["dx"]), float.Parse(dict["dy"]), float.Parse(dict["dz"]));
-                        //enemy.GetComponent<NPCController>().curWayPoint = int.Parse(dict["wp"]);
-                    }
-                    //-------ATTACK-------------
-                    //if (dict.ContainsKey("attk")) { enemy.GetComponent<NPCController>().attacking = bool.Parse(dict["attk"]); }
-                    //-------DEAD-------------
-                    //if (dict.ContainsKey("dead")) { enemy.GetComponent<NPCController>().TakeDamage(enemy.GetComponent<NPCController>().healthEnemy, true); }
-                }
-            });
-
             //--------------------SYNC ENEMIES--------------------
             //enemyObject.SetActive(bool.Parse(obj.Value["active"]));
             sioCom.Instance.On("sync", (payload) =>
             {
                 JObject data = JObject.Parse(payload);
-                Debug.Log("SYNCING " + data);
+                //Debug.Log("SYNCING " + data);
                 Dictionary<string, Dictionary<string, string>> dict = data.ToObject<Dictionary<string, Dictionary<string, string>>>();
                 // Log the object positions to the console
                 foreach (KeyValuePair<string, Dictionary<string, string>> obj in dict)
@@ -376,7 +340,6 @@ namespace NetworkSystem
 
 
 
-        //-----------------------------SYNC UP EVERYTHING----------------------------
         public void UpdateEnemies(bool checkActive)
         {
             Dictionary<string, Dictionary<string, string>> syncObjects = new Dictionary<string, Dictionary<string, string>>();
@@ -402,7 +365,6 @@ namespace NetworkSystem
                 }
             }
             sioCom.Instance.Emit("sync", JsonConvert.SerializeObject(syncObjects), false);
-            Debug.Log("EMIT SYNCE");
             timer = Time.time;//cooldown
         }
 
@@ -414,7 +376,7 @@ namespace NetworkSystem
         {
 
             //----------------------------------SYNC ACTIVE ENEMIES-----------------------------------------
-            if (HOST) //&& GameDriver.instance.twoPlayer
+            if (HOST && GameDriver.instance.twoPlayer) //&& GameDriver.instance.twoPlayer
             {
                 if (Time.time > timer + timer_delay)
                 {
