@@ -80,28 +80,28 @@ public class Door : Item
     public void Locked(bool otherPlayer)
     {
         this.animator.SetTrigger("CantOpen");
-        AudioManager.instance.Play(this.doorLockSound);
+        AudioManager.instance.Play(this.doorLockSound, audioSource);
 
         if (GameDriver.instance.twoPlayer && !otherPlayer) { NetworkDriver.instance.sioCom.Instance.Emit("event", JsonConvert.SerializeObject($"{{'obj':'{gameObject.name}','type':'door','event':'locked'}}"), false); }
     }
 
     public void OpenSound()
     {
-        AudioManager.instance.Play(this.doorOpenSound);
+        AudioManager.instance.Play(this.doorOpenSound, audioSource);
     }
 
     public void CloseSound()
     {
-        AudioManager.instance.Play(this.doorCloseSound);
+        AudioManager.instance.Play(this.doorCloseSound, audioSource);
     }
 
     public void SpecialOpenSound()
     {
-        AudioManager.instance.Play(this.doorSpecialOpenSound);
+        AudioManager.instance.Play(this.doorSpecialOpenSound, audioSource);
     }
 
     public void SpecialCloseSound()
     {
-        AudioManager.instance.Play(this.doorSpecialCloseSound);
+        AudioManager.instance.Play(this.doorSpecialCloseSound, audioSource);
     }
 }

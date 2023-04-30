@@ -29,10 +29,10 @@ public class SB7 : MonoBehaviour
     }
     private void OnDisable()
     {
-        AudioManager.instance.StopPlaying("sb7sweep");
+        AudioManager.instance.StopPlaying("sb7sweep", null);
     }
     private void OnEnable()
     {
-        AudioManager.instance.Play("sb7sweep");
+        AudioManager.instance.Play("sb7sweep", null);
     }
 }

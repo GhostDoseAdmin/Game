@@ -21,7 +21,7 @@ public class Key : Item
     private void AddKey()
     {
         KeyInventory.instance.AddKey(keyPass);
-        AudioManager.instance.Play(pickUpKey);
+        AudioManager.instance.Play(pickUpKey, audioSource);
         NetworkDriver.instance.sioCom.Instance.Emit("event", JsonConvert.SerializeObject($"{{'obj':'{gameObject.name}','type':'key','event':'pickup','pass':'{keyPass}'}}"), false);
 
         this.DestroyObject(0);

@@ -80,7 +80,7 @@ public class HealthSystem : MonoBehaviour
 		kitCount = kitCount + firstkit;
 		kitCountUI.text = kitCount.ToString("0");
 		kitIndicator.enabled = true;
-		AudioManager.instance.Play(pickUp);
+		AudioManager.instance.Play(pickUp, gameObject.GetComponent<PlayerController>().audioSource);
 	}
 
 	void Update()
@@ -118,7 +118,7 @@ public class HealthSystem : MonoBehaviour
 
 	public void HealthDamage(int damage , Vector3 force)
     {
-        AudioManager.instance.Play("EnemyHit");
+        AudioManager.instance.Play("EnemyHit", gameObject.GetComponent<PlayerController>().audioSource);
         //GetComponent<PlayerController>().emitDamage = true;
         GetComponent<PlayerController>().damageForce = force;
         GetComponent<Rigidbody>().AddForce(force, ForceMode.Impulse);
@@ -173,7 +173,7 @@ public class HealthSystem : MonoBehaviour
 				kitCount--;
 				kitCountUI.text = kitCount.ToString("0");
 				Health += maxHealth;
-				AudioManager.instance.Play(treatmentKit);
+				AudioManager.instance.Play(treatmentKit, gameObject.GetComponent<PlayerController>().audioSource);
 				//healthLevel.fillAmount = maxHealth;
 				replaceKitTimer = maxReplaceKitTimer;
 				kitIndicator.fillAmount = maxReplaceKitTimer;

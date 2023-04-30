@@ -14,6 +14,7 @@ public class EnemyDeath : MonoBehaviour
     public GameObject light;
     public bool Shadower;
     private bool end;
+    public AudioSource audioSource;
 
 
     public Vector3 targetScale = Vector3.one * 2f;
@@ -21,6 +22,11 @@ public class EnemyDeath : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        audioSource = gameObject.AddComponent<AudioSource>();
+        audioSource.spatialBlend = 1.0f;
+
+        AudioManager.instance.Play("EnemyDeath", audioSource);
+
         Invoke("Explode", 2f);
         end = false;
 
@@ -41,7 +47,7 @@ public class EnemyDeath : MonoBehaviour
     {
         if (Shadower) { explo_Shadower.SetActive(true); }
         else { explo.SetActive(true); }
-        AudioManager.instance.Play("EnemyExplode");
+        AudioManager.instance.Play("EnemyExplode", audioSource);
         Invoke("Finish", 1f);
         Invoke("StopMesh", 0.5f);
 
@@ -53,7 +59,7 @@ public class EnemyDeath : MonoBehaviour
     }
     private void Finish()
     {
-        AudioManager.instance.Play("EnemyExplode");
+        AudioManager.instance.Play("EnemyExplode", audioSource);
         effect.SetActive(false);
         end = true;
         Destroy(gameObject, 0.5f);

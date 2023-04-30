@@ -42,7 +42,8 @@ public class NPCController : MonoBehaviour
     public bool canRespawn;
     public bool teleports;
     public bool canFlinch;
-   
+
+
     [HideInInspector] public int startHealth;
 
     [Header("TESTING")]
@@ -78,10 +79,15 @@ public class NPCController : MonoBehaviour
     private float distance, p1_dist,p2_dist;
     private bool onlyOnceThisFrame;
     public GameObject activeWayPoint;
+    public AudioSource audioSource;
+    private AudioClip audioClip;
+
     private void Awake()
     {
         GetComponent<GhostVFX>().Shadower = Shadower;
         active_timer = 99999;
+        audioSource = gameObject.AddComponent<AudioSource>();
+        audioSource.spatialBlend = 1.0f;
     }
 
 
@@ -206,7 +212,7 @@ public class NPCController : MonoBehaviour
             animEnemy.SetBool("Attack", false);
             animEnemy.SetBool("Run", false);
            
-            if (prevAlerted != alerted && alerted) { AudioManager.instance.Play("enemyalert");}
+            if (prevAlerted != alerted && alerted) { AudioManager.instance.Play("enemyalert", audioSource);}
             prevAlerted = alerted;
             alerted = false;
             //-------------ALERT------------------
@@ -397,7 +403,7 @@ public class NPCController : MonoBehaviour
                         {
                             //Engage(closestPlayer);
                             target = closestPlayer;
-                            AudioManager.instance.Play("EnemyEngage");
+                            AudioManager.instance.Play("EnemyEngage", null);
                             follow = persist;
                         }
                     }
@@ -453,8 +459,8 @@ public class NPCController : MonoBehaviour
         {
             onlyOnceThisFrame = true;
 
-            if (damageAmount == 100) { AudioManager.instance.Play("Headshot"); }
-            AudioManager.instance.Play("enemyflinchimpact");
+            AudioManager.instance.Play("enemyflinchimpact", audioSource);
+            if (damageAmount == 100) { AudioManager.instance.Play("headshot", audioSource); }
             if (animEnemy.GetCurrentAnimatorClipInfo(0)[0].clip!= null && animEnemy.GetCurrentAnimatorClipInfo(0)[0].clip.name != "agro" && GetComponent<Teleport>().teleport==0) { healthEnemy -= damageAmount; }
 
             //MAKE SUSPECIOUS
@@ -473,7 +479,7 @@ public class NPCController : MonoBehaviour
                         if (!otherPlayer) { target = Player.transform; } else { target = Client.transform; }
                         follow = persist;
                     }
-                    AudioManager.instance.Play("Agro"); animEnemy.Play("agro"); //animEnemy.CrossFade("agro", 0.25f);
+                    AudioManager.instance.Play("Agro", null); animEnemy.Play("agro"); //animEnemy.CrossFade("agro", 0.25f);
                     range = 20; agro = true; angleView = 360;
                 }
 
@@ -493,7 +499,6 @@ public class NPCController : MonoBehaviour
                     GetComponent<Teleport>().CheckTeleport(true, true);
                     GetComponent<Teleport>().Invoke("Respawn", spawnTimer);
                 }
-                AudioManager.instance.Play("EnemyDeath");
                 agro = false;
                 target = null;
                 hasRetreated = 0;
@@ -519,7 +524,7 @@ public class NPCController : MonoBehaviour
 
     void AttackKnife()
     {
-        AudioManager.instance.Play("EnemyAttack");
+        AudioManager.instance.Play("EnemyAttack", audioSource);
     }
 
     public void TriggerEnable()

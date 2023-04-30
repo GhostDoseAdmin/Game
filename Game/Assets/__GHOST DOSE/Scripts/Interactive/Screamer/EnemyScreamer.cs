@@ -26,7 +26,7 @@ public class EnemyScreamer : Item
     public void ScreamerGhost()
     {
         this.gameObject.SetActive(true);
-        AudioManager.instance.Play(screamerSound);
+        AudioManager.instance.Play(screamerSound, audioSource);
 
         StartCoroutine(EndScreamer());
     }

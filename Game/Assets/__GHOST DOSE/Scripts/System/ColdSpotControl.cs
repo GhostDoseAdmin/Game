@@ -34,14 +34,14 @@ public class ColdSpotControl : MonoBehaviour
         randNum = Random.Range(0, ColdSpotsSession2.Count);
         for (int i = 0; i < ColdSpotsSession2.Count; i++)
         {
-            if (randNum != i) { ColdSpotsSession2[i].gameObject.SetActive(false); } else { ColdSpotsSession1[i].gameObject.SetActive(true); }
+            if (randNum != i) { ColdSpotsSession2[i].gameObject.SetActive(false); } else { ColdSpotsSession2[i].gameObject.SetActive(true); }
 
         }
 
         randNum = Random.Range(0, ColdSpotsSession3.Count);
         for (int i = 0; i < ColdSpotsSession3.Count; i++)
         {
-            if (randNum != i) { ColdSpotsSession3[i].gameObject.SetActive(false); } else { ColdSpotsSession1[i].gameObject.SetActive(true); }
+            if (randNum != i) { ColdSpotsSession3[i].gameObject.SetActive(false); } else { ColdSpotsSession3[i].gameObject.SetActive(true); }
 
         }
 

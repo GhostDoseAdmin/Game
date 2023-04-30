@@ -79,7 +79,7 @@ public class Teleport : MonoBehaviour
             if (NetworkDriver.instance.HOST) { NetworkDriver.instance.sioCom.Instance.Emit("teleport", JsonConvert.SerializeObject($"{{'obj':'{gameObject.name}','tp':'1','x':'{transform.position.x}','y':'{transform.position.y}','z':'{transform.position.z}'}}"), false); }
             fadeTimer = Time.time;
             if (GetComponent<NPCController>().target != null) { target = GetComponent<NPCController>().target; }
-            if (target != null && GetComponent<NPCController>().healthEnemy>0) { AudioManager.instance.Play("Disappear"); }
+            if (target != null && GetComponent<NPCController>().healthEnemy>0) { AudioManager.instance.Play("Disappear", gameObject.GetComponent<NPCController>().audioSource); }
             if (!NetworkDriver.instance.HOST) { GetComponent<NPCController>().enabled = false; }
             debugAttack = true;
             GetComponent<NavMeshAgent>().enabled = false;
@@ -148,7 +148,7 @@ public class Teleport : MonoBehaviour
             { //skip a frame to allow NPCcontroller to emit state 3
                 teleport = 0;
                 //if (!GetComponent<NPCController>().GD.ND.HOST) { transform.position = new Vector3(transform.position.x, b4Pos.y, transform.position.z); }
-                if (GetComponent<NPCController>().agro && !GetComponent<NPCController>().enabled && !isWaypoint) { AudioManager.instance.Play("Reappear"); }
+                if (GetComponent<NPCController>().agro && !GetComponent<NPCController>().enabled && !isWaypoint) { AudioManager.instance.Play("Reappear", gameObject.GetComponent<NPCController>().audioSource); }
                 GetComponent<NavMeshAgent>().enabled = true;
                 GetComponent<NPCController>().enabled = true;
                 GetComponent<Animator>().enabled = true;

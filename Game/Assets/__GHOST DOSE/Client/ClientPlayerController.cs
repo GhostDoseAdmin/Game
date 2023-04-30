@@ -109,6 +109,7 @@ public class ClientPlayerController : MonoBehaviour
     public float targWalk;
     public float targStrafe;
     public bool running;
+    private AudioSource audioSource;
     //public bool wlOn, flOn;//weaplight and flashlight
 
 
@@ -117,15 +118,12 @@ public class ClientPlayerController : MonoBehaviour
 
     private void Awake()
     {
-
+        audioSource = gameObject.AddComponent<AudioSource>();
+        audioSource.spatialBlend = 1.0f;
     }
 
     #region Start
-    void Start()
-	{
-       // SetupRig();
 
-	}
 
 	public void SetupRig()
 	{
@@ -358,7 +356,7 @@ public class ClientPlayerController : MonoBehaviour
     {
         if((flashlighton && !flOn) || (!flashlighton && flOn))
         {
-            AudioManager.instance.Play("FlashlightClick");
+            AudioManager.instance.Play("FlashlightClick", audioSource);
         }
         flashlighton = flOn;
     }
@@ -418,6 +416,6 @@ public class ClientPlayerController : MonoBehaviour
 
     void GetFromSoundEvent()
 	{
-		AudioManager.instance.Play(getFrom);
+		AudioManager.instance.Play(getFrom, audioSource);
 	}
 }

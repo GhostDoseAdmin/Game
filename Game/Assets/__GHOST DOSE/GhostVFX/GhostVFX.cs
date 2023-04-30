@@ -345,22 +345,26 @@ public class GhostVFX : MonoBehaviour
         return inRange && inCone;
     }
 
+    private float sound_timer;
+    private float sound_delay = 30f;
     public void TriggerWanderSound()
     {
         //if(NetworkDriver.instance.HOST)
-        
-            //if (Time.time > sound_timer + sound_delay)
-            if(GetComponent<Teleport>() != null && GetComponent<Teleport>().teleport==0)
+
+        if (Time.time > sound_timer + sound_delay)
+        {
+            if (GetComponent<Teleport>() != null && GetComponent<Teleport>().teleport == 0)
             {
-                if (!playedSound && GetComponent<NPCController>()!=null && !GetComponent<NPCController>().agro)
+                if (!playedSound && GetComponent<NPCController>() != null && !GetComponent<NPCController>().agro)
                 {
                     int i;
                     i = UnityEngine.Random.Range(1, 5);
-                    if (!invisible) { AudioManager.instance.Play("Wander" + i.ToString()); }
+                    if (!invisible) { AudioManager.instance.Play("Wander" + i.ToString(), null); }
                     playedSound = true;
-                    //sound_timer = Time.time;//cooldown
+                    sound_timer = Time.time;//cooldown
                 }
             }
+        }
         
     }
 }
