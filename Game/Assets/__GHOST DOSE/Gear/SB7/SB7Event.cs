@@ -19,7 +19,7 @@ public class SB7Event : Item
     public void Awake()
     {
         effectStartSize = effect.transform.localScale.x;
-        Debug.Log("----------------------------START SIZE " + effectStartSize);
+        //Debug.Log("----------------------------START SIZE " + effectStartSize);
         effect.SetActive(false);
         Trigger.GetComponent<MeshRenderer>().enabled = false;
         startPosition = transform.position;

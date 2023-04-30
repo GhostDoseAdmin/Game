@@ -70,7 +70,7 @@ public class FlashlightSystem : MonoBehaviour
 
         GetComponent<PlayerController>().currLight =FlashLight.gameObject; 
 
-        Debug.Log("Player Lights Setup");
+        //Debug.Log("Player Lights Setup");
 
     }
 

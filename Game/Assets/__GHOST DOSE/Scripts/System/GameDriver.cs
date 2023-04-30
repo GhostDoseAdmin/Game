@@ -54,7 +54,7 @@ namespace GameManager
             //NON LOBBY INSTANCE
             if (SceneManager.GetActiveScene().name != "Lobby" && !GetComponent<LobbyControl>().start)
             {
-                Debug.Log("PRE EMPTIVE CALL");
+                //Debug.Log("PRE EMPTIVE CALL");
                 GetComponent<LobbyControl>().enabled = false;
                 //ND = this.gameObject.AddComponent<NetworkDriver>();
                 NetworkDriver.instance.NetworkSetup();
@@ -84,7 +84,7 @@ namespace GameManager
         {
             {
 
-                Debug.Log("SETTING UP SCENE");
+                //Debug.Log("SETTING UP SCENE");
                 TRAVIS = GameObject.Find("TRAVIS");
                 WESTIN = GameObject.Find("WESTIN");
 
@@ -125,8 +125,8 @@ namespace GameManager
                 if (theirSelectedRig == null) { if (isTRAVIS) { theirSelectedRig = GetComponent<RigManager>().wesRigList[0];  } else { theirSelectedRig = GetComponent<RigManager>().travRigList[0]; } }
 
                 //------------CHECK FOR MISSING A RIG------------    
-                if (TRAVIS.transform.GetChild(0).childCount <= 0) { Debug.Log("Creating Default Rig for Travis"); Instantiate(GetComponent<RigManager>().travRigList[0], TRAVIS.transform.GetChild(0).transform); }
-                if (WESTIN.transform.GetChild(0).childCount <= 0) { Debug.Log("Creating Default Rig for Westin"); Instantiate(GetComponent<RigManager>().wesRigList[0], WESTIN.transform.GetChild(0).transform); }
+                if (TRAVIS.transform.GetChild(0).childCount <= 0) {Instantiate(GetComponent<RigManager>().travRigList[0], TRAVIS.transform.GetChild(0).transform); }
+                if (WESTIN.transform.GetChild(0).childCount <= 0) { Instantiate(GetComponent<RigManager>().wesRigList[0], WESTIN.transform.GetChild(0).transform); }
 
 
 

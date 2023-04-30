@@ -182,11 +182,11 @@ public class PlayerController : MonoBehaviour
         if (Time.time > emit_timer + emit_delay)
             {
 				//--------------- DAMAGE EMIT-----------------
-				string dmgString = "";
+				/*string dmgString = "";
 				if (emitDamage){
 					dmgString = $",'dmg':'{emitDamage}','fx':'{damageForce.x.ToString("F2")}','fy':'{damageForce.y.ToString("F2")}','fz':'{damageForce.z.ToString("F2")}'";
 					emitDamage = false;
-				}
+				}*/
 				//--------------- FLASHLIGHT EMIT-----------------
 				string flashLightString = "";
 				if (emitFlashlight){
@@ -231,7 +231,7 @@ public class PlayerController : MonoBehaviour
 				}
 				//--------------- POSITION EMIT-----------------
 				string posString ="";
-				if(emitPos){
+				if(emitPos || anim.GetCurrentAnimatorClipInfo(0)[0].clip.name=="React"){
                 posString = $",'x':'{transform.position.x.ToString("F2")}','y':'{transform.position.y.ToString("F2")}','z':'{transform.position.z.ToString("F2")}'";
 				emitPos = false;
                 }
@@ -254,7 +254,7 @@ public class PlayerController : MonoBehaviour
 					emitKill = false;
 				}
             //--------------- E M I T   S T R I N G ----------------------
-            string actions = $"{{'flintensity':'{gameObject.GetComponent<FlashlightSystem>().FlashLight.intensity}','ax':'{crosshairPos.x.ToString("F0")}','ay':'{crosshairPos.y.ToString("F0")}','az':'{crosshairPos.z.ToString("F0")}'{dmgString}{flashLightString}{k2String}{gearString}{aimString}{walkString}{strafeString}{runString}{posString}{shotString}{killString}}}";
+            string actions = $"{{'flintensity':'{gameObject.GetComponent<FlashlightSystem>().FlashLight.intensity}','ax':'{crosshairPos.x.ToString("F0")}','ay':'{crosshairPos.y.ToString("F0")}','az':'{crosshairPos.z.ToString("F0")}'{flashLightString}{k2String}{gearString}{aimString}{walkString}{strafeString}{runString}{posString}{shotString}{killString}}}";
 			//Debug.Log("------------------------------------------SENDING STRING " + actions);
 
 			

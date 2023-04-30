@@ -58,7 +58,7 @@ public class ClientFlashlightSystem : MonoBehaviour
 
         GetComponent<ClientPlayerController>().currLight = FlashLight.gameObject;
 
-        Debug.Log("Client Lights Setup");
+        //Debug.Log("Client Lights Setup");
     }
 
     public void Start()

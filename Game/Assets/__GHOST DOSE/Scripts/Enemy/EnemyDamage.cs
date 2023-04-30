@@ -1,7 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
+using InteractionSystem;
 public class EnemyDamage : MonoBehaviour
 {
     [Header("NPC DAMAGE")]
@@ -17,19 +17,19 @@ public class EnemyDamage : MonoBehaviour
     private void OnTriggerEnter(Collider other)
     {
 
-            if (other.gameObject.tag == "Player")
+        Vector3 oppositeForce = main.GetComponent<NPCController>().transform.forward * main.GetComponent<NPCController>().force;
+        oppositeForce.y = 0f; // Set the y component to 0
+
+            if (other.gameObject.name == "Player")
             {
-                //Debug.Log("---------------------------------------COLLSION----------------------------------------" );
-
-                Vector3 oppositeForce = main.GetComponent<NPCController>().transform.forward * main.GetComponent<NPCController>().force;
-                oppositeForce.y = 0f; // Set the y component to 0
                 other.gameObject.GetComponent<HealthSystem>().HealthDamage(main.GetComponent<NPCController>().damage, oppositeForce);
-
-
-
-
             }
-        
+            if (other.gameObject.name == "Client")
+            {
+            AudioManager.instance.Play("EnemyHit");
+            other.gameObject.GetComponent<ClientPlayerController>().Flinch(oppositeForce);
+            }
+
     }
 
 

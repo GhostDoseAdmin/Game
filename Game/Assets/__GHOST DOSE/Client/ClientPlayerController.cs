@@ -131,7 +131,7 @@ public class ClientPlayerController : MonoBehaviour
 	{
         util = new utilities();
 
-        Debug.Log("Setting up Player References");
+        //Debug.Log("Setting up Player References");
         rightHandTargetCam = util.FindChildObject(this.gameObject.transform, "RHTargetCam").transform;
         rightHandTargetK2 = util.FindChildObject(this.gameObject.transform, "RHTargetK2").transform;
         rightHandTargetREM = util.FindChildObject(this.gameObject.transform, "RHTargetREM").transform;
@@ -183,10 +183,14 @@ public class ClientPlayerController : MonoBehaviour
             
 		   
         //-------------------MOVEMENT---------------------------
-         if (Vector3.Distance(transform.position, destination)>2){transform.position = new Vector3(destination.x, destination.y, destination.z);}
-        float distance = Vector3.Distance(transform.position, destination);
-        float timeToTravel = distance / (speed+0.00001f);
-        transform.position = Vector3.Lerp(transform.position, destination, Time.deltaTime / timeToTravel);
+        if (anim.GetCurrentAnimatorClipInfo(0)[0].clip.name!="React")
+        {
+            if (Vector3.Distance(transform.position, destination) > 2) { transform.position = new Vector3(destination.x, destination.y, destination.z); }
+            float distance = Vector3.Distance(transform.position, destination);
+            float timeToTravel = distance / (speed + 0.00001f);
+            transform.position = Vector3.Lerp(transform.position, destination, Time.deltaTime / timeToTravel);
+        }
+
 
         //--------------------ROTATION--------------------------------------
         if (walk != 0 || strafe != 0 || is_FlashlightAim == true || gearAim == true)

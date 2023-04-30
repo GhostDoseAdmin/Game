@@ -136,7 +136,7 @@ public class GhostVFX : MonoBehaviour
                     material.SetFloatArray("_LightAngles", lightAngles);
                     material.SetFloatArray("_StrengthScalarLight", ScalarStrengths);
                     material.SetFloatArray("_LightRanges", lightRanges);
-                    Debug.Log("--LIGHTS--" + "count " + envLightCount + "pos " + lightPositions[0] + "dir " + lightDirections[0] + "angle " + lightAngles[0] + "strength " + ScalarStrengths[0] + "range " + lightRanges[0]);
+                    //Debug.Log("--LIGHTS--" + "count " + envLightCount + "pos " + lightPositions[0] + "dir " + lightDirections[0] + "angle " + lightAngles[0] + "strength " + ScalarStrengths[0] + "range " + lightRanges[0]);
                 }
             }
 

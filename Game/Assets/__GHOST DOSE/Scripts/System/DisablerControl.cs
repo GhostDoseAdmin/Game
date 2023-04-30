@@ -11,12 +11,11 @@ public class DisablerControl : MonoBehaviour
     private List<GameObject> emitEnableObjects;
     private List<GameObject> emitDisableObjects;
 
-    GameObject Player;
-    GameObject Client;
-    private float closestPlayerDist;
+    public float closestPlayerDist;
     private float timer_delay = 1f;
     private float timer = 0.0f;
-    private float disableDistance = 20;
+    public float disableDistance = 20;
+    public float p1dist, p2dist;
 
     private void Awake()
     {
@@ -39,19 +38,15 @@ public class DisablerControl : MonoBehaviour
             {
                 //Debug.Log("----------------------------------------------------------------" + ghost.name);
                 enemyObjects.Add(ghost);
+                //ghost.SetActive(false);
             }
         }
 
     }
 
-    void Start()
-    {
-        Player = GameDriver.instance.Player;
-        Client = GameDriver.instance.Client;
-    }
 
     // Update is called once per frame
-    void Update()
+    void LateUpdate()
     {
 
 
@@ -64,13 +59,14 @@ public class DisablerControl : MonoBehaviour
 
                 foreach (GameObject enemy in enemyObjects)
                 {
-                    float p1_dist = Vector3.Distance(enemy.gameObject.transform.position, Player.transform.position);
-                    float p2_dist = Vector3.Distance(enemy.gameObject.transform.position, Client.transform.position);
+                    float p1_dist = Vector3.Distance(enemy.transform.position, GameDriver.instance.Player.transform.position);
+                    float p2_dist = Vector3.Distance(enemy.transform.position, GameDriver.instance.Client.transform.position);
                     if (p1_dist < p2_dist) { closestPlayerDist = p1_dist; } else { closestPlayerDist = p2_dist; }
 
                     //-------------DEACTIVATE----------------------
                     if (closestPlayerDist > disableDistance && enemy.GetComponent<NPCController>().target == null && enemy.activeSelf && enemy.GetComponent<Teleport>().teleport==0)
                     {
+                         Debug.Log("DISABLING"); 
                         emitDisableObjects.Add(enemy);
                     }
                     //-------------REACTIVATE------------------
@@ -87,11 +83,12 @@ public class DisablerControl : MonoBehaviour
                     foreach (GameObject obj in GetComponent<DisablerControl>().emitEnableObjects)
                     {
                         {
-                            string objName;
+                            if (!NetworkDriver.instance.HOST) { Debug.Log("ENABLING"); }
+                            /*string objName;
                             Dictionary<string, string> propsDict = new Dictionary<string, string>();
                             propsDict.Add("active", "true");
                             objName = obj.name;
-                            enableObjects.Add(objName, propsDict);
+                            enableObjects.Add(objName, propsDict);*/
                             obj.gameObject.SetActive(true);
                         }
                     }
@@ -99,15 +96,15 @@ public class DisablerControl : MonoBehaviour
                     foreach (GameObject obj in GetComponent<DisablerControl>().emitDisableObjects)
                     {
                         {
-                            string objName;
+                            /*string objName;
                             Dictionary<string, string> propsDict = new Dictionary<string, string>();
                             propsDict.Add("active", "false");
                             objName = obj.name;
-                            enableObjects.Add(objName, propsDict);
+                            enableObjects.Add(objName, propsDict);*/
                             obj.gameObject.SetActive(false);
                         }
                     }
-                    if (GameDriver.instance.twoPlayer && enableObjects.Count>0) { NetworkDriver.instance.sioCom.Instance.Emit("disable", JsonConvert.SerializeObject(enableObjects), false); }
+                   // if (GameDriver.instance.twoPlayer && enableObjects.Count>0) { NetworkDriver.instance.sioCom.Instance.Emit("disable", JsonConvert.SerializeObject(enableObjects), false); }
 
 
                 }

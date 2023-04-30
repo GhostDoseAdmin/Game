@@ -76,6 +76,7 @@ public class Teleport : MonoBehaviour
         if (teleport == 1)
         {
             GetComponent<NPCController>().teleEmit = 1;
+            Debug.Log("EMIT TELE");
             //if (GetComponent<NPCController>().agro && !isWaypoint && !DEATH) { AudioManager.instance.Play("Disappear"); }
             fadeTimer = Time.time;
             if (GetComponent<NPCController>().target != null) { target = GetComponent<NPCController>().target; }
@@ -137,12 +138,12 @@ public class Teleport : MonoBehaviour
             if(GetComponent<GhostVFX>().invisible && !GetComponent<GhostVFX>().visible && relocate>2 && !DEATH)
             {
                 teleport = 3;
+                GetComponent<NPCController>().teleEmit = 3;
             }
         }
         //SETP 3 - REAPPEAR --CLIENT
         if(teleport == 3)//runs twice
         {
-            GetComponent<NPCController>().teleEmit = 3;
             if (!delayForEmit)
             { //skip a frame to allow NPCcontroller to emit state 3
                 teleport = 0;
