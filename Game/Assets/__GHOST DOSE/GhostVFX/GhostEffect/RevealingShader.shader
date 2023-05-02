@@ -8,7 +8,7 @@ Shader "Custom/Ghost" {
         _Emission("Emission", Range(0,1)) = 1
         _Alpha("Alpha", Range(0,1)) = 1
         _Shadower("Shadower", Range(0,1)) = 0
-        _EMFAlpha("EmfAlpha", Range(0,0.3)) = 0
+        _EMFAlpha("EmfAlpha", Range(0,1)) = 0
 
     }
         SubShader{
