@@ -167,12 +167,6 @@ namespace GameManager
             }
         }
 
-
-
-
-
-
-
         //----------------SYSTEM CONSOLE-------------------------
         void OnGUI()
         {
@@ -193,5 +187,14 @@ namespace GameManager
             Rect labelRect = new Rect(posX - (textSize.x / 2f), posY - (textSize.y / 2f), textSize.x, textSize.y);
             GUI.Label(labelRect, MSG, style);
         }
+
+        public void WriteGuiMsg(string msg, float timer)
+        {
+            MSG = msg;
+            CancelInvoke();
+            Invoke("StopMSG", timer);
+        }
+
+        private void StopMSG() { MSG = ""; }
     }
 }

@@ -5938,6 +5938,7 @@ GameObject:
   m_Component:
   - component: {fileID: 2574540419700072342}
   - component: {fileID: 7387461457447021639}
+  - component: {fileID: 1675031440343341721}
   m_Layer: 0
   m_Name: WeaponLight
   m_TagString: Untagged
@@ -6022,6 +6023,27 @@ Light:
   m_UseViewFrustumForShadowCasterCull: 1
   m_ShadowRadius: 0
   m_ShadowAngle: 0
+--- !u!114 &1675031440343341721
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1319422734296475036}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c1455729a3006134faabce5afd1443a7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  show_Ghost: 0
+  show_Shadowers: 0
+  ghost: 0
+  shadower: 0
+  flicker: 0
+  strength: 0
+  flickerDuration: 0.1
+  minDelay: 0.1
+  maxDelay: 0.5
 --- !u!1 &1381050556533418539
 GameObject:
   m_ObjectHideFlags: 0
@@ -6460,6 +6482,7 @@ GameObject:
   m_Component:
   - component: {fileID: 754488223927460650}
   - component: {fileID: 6814090141460410894}
+  - component: {fileID: 7453869273503428831}
   m_Layer: 0
   m_Name: FlashLight
   m_TagString: Untagged
@@ -6544,6 +6567,27 @@ Light:
   m_UseViewFrustumForShadowCasterCull: 1
   m_ShadowRadius: 0
   m_ShadowAngle: 0
+--- !u!114 &7453869273503428831
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2135173618816324968}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c1455729a3006134faabce5afd1443a7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  show_Ghost: 0
+  show_Shadowers: 0
+  ghost: 0
+  shadower: 0
+  flicker: 0
+  strength: 0
+  flickerDuration: 0.1
+  minDelay: 0.1
+  maxDelay: 0.5
 --- !u!1 &2217017799773224073
 GameObject:
   m_ObjectHideFlags: 0

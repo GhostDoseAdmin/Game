@@ -85,6 +85,7 @@ public class Teleport : MonoBehaviour
             GetComponent<NavMeshAgent>().enabled = false;
             GetComponent<Animator>().enabled = false;
             b4Pos = transform.position;
+            if (GetComponent<NPCController>().healthEnemy > 0) { AudioManager.instance.Play("haunting", null); }
             //GetComponent<NPCController>().SKEL_ROOT.GetComponent<CapsuleCollider>().isTrigger = true;
             //GetComponent<NPCController>().HIT_COL.GetComponent<SphereCollider>().isTrigger = true;
             teleport = 1.5f;
@@ -95,9 +96,9 @@ public class Teleport : MonoBehaviour
             //FADE OUT
             if (Time.time - fadeTimer < 1f){
                 Vector3 currPos = transform.position; 
-                currPos.y -= 0.07f; 
-                GetComponent<GhostVFX>().Fade(false, 8f, 0);
-                if (!NetworkDriver.instance.HOST) { GetComponent<GhostVFX>().Fade(false, 16f, 0); }//client fade faster, prevent seeing them
+                currPos.y += 0.30f; 
+                GetComponent<GhostVFX>().Fade(false, 10f, 0);
+                //if (!NetworkDriver.instance.HOST) { GetComponent<GhostVFX>().Fade(false, 16f, 0); }//client fade faster, prevent seeing them
                 transform.position = currPos;//descend
             }
             else//NEXT STEP
@@ -148,14 +149,14 @@ public class Teleport : MonoBehaviour
             { //skip a frame to allow NPCcontroller to emit state 3
                 teleport = 0;
                 //if (!GetComponent<NPCController>().GD.ND.HOST) { transform.position = new Vector3(transform.position.x, b4Pos.y, transform.position.z); }
-                if (GetComponent<NPCController>().agro && !GetComponent<NPCController>().enabled && !isWaypoint) { AudioManager.instance.Play("Reappear", gameObject.GetComponent<NPCController>().audioSource); }
+                if (GetComponent<NPCController>().agro  && !isWaypoint) { AudioManager.instance.Play("Reappear", gameObject.GetComponent<NPCController>().audioSource); }
                 GetComponent<NavMeshAgent>().enabled = true;
                 GetComponent<NPCController>().enabled = true;
                 GetComponent<Animator>().enabled = true;
                 this.gameObject.transform.GetChild(0).GetComponent<SkinnedMeshRenderer>().enabled = true;
                 StartCoroutine(resetOutline());
                 StartCoroutine(resetCanTeleport());
-               
+                AudioManager.instance.StopPlaying("haunting", null);
                 //CLIENT RESPAWN
                 if (!NetworkDriver.instance.HOST && GetComponent<NPCController>().healthEnemy<=0){ Respawn(); }
             }

@@ -43,7 +43,7 @@ namespace NetworkSystem
                 if (payload != null)
                 {
                     connected = true;
-                    GameDriver.instance.MSG = "Checking Room " + GameDriver.instance.ROOM;
+                    GameDriver.instance.WriteGuiMsg("Checking Room " + GameDriver.instance.ROOM,1f);
                     //Debug.Log(payload + " CONNECTING TO ROOM " + PlayerPrefs.GetString("room"));
                     sioCom.Instance.Emit("join", GameDriver.instance.ROOM, true); //PlayerPrefs.GetString("room")
                 }
@@ -52,7 +52,7 @@ namespace NetworkSystem
             {
                 while (!connected)
                 {
-                    GameDriver.instance.MSG = "Attempting to connect to Ghost Servers";
+                    GameDriver.instance.WriteGuiMsg("Attempting to connect to Ghost Servers", 5f);
                     sioCom.Instance.Close();
                     yield return new WaitForSeconds(1f); //refresh socket
                     //Debug.Log("attempting connection ");
@@ -68,13 +68,13 @@ namespace NetworkSystem
                 Debug.Log(payload);
                 if (payload == "full")
                 {
-                    GameDriver.instance.MSG = "Room is full!";
+                    GameDriver.instance.WriteGuiMsg("Room is full! Can't join Game! ", 10f);
                     sioCom.Instance.Close();
                 }
                 else
                 {
                     GameDriver.instance.ROOM_VALID = true;
-                    GameDriver.instance.MSG = "Found Room " + GameDriver.instance.ROOM;
+                    GameDriver.instance.WriteGuiMsg("Found Room " + GameDriver.instance.ROOM, 1f);
                     var dict = new Dictionary<string, string> {
                     { "sid", sioCom.Instance.SocketID },
                     { "ping", PING.ToString() }
@@ -89,7 +89,7 @@ namespace NetworkSystem
             //-----------------PING----------------->
             sioCom.Instance.On("pong", (payload) =>
             {
-                GameDriver.instance.MSG = "Looking For Players - you may start alone";
+                GameDriver.instance.WriteGuiMsg("Looking For Players - you may start alone", 10f);
                 // Debug.Log("PONG RECEIVED " + payload);
                 if (PING == 0) { PING = Time.time - pingTimer; Debug.Log("MY PING IS " + PING); }
                 JObject data = JObject.Parse(payload);
@@ -99,7 +99,7 @@ namespace NetworkSystem
                     //Debug.Log("THEIR PING IS " + dict["ping"]);
                     if (float.Parse(dict["ping"]) == 0) //THEY JUST JOINED
                     {
-                        GameDriver.instance.MSG = "Player Joined";
+                        GameDriver.instance.WriteGuiMsg("Player Joined", 1f);
                         //Debug.Log("PLAYER JOINED SENDING MY PING SPEED TO OTHER PLAYER");
                         dict = new Dictionary<string, string> {
                         { "sid", sioCom.Instance.SocketID },
@@ -118,7 +118,7 @@ namespace NetworkSystem
             //-----------------HOST / GAME START / UPDATE GAME STATES----------------->
             sioCom.Instance.On("host", (payload) =>
             {
-                GameDriver.instance.MSG = "Two Player Mode - HOST " + payload + "     MY SOCKET    " + sioCom.Instance.SocketID;
+                //GameDriver.instance.MSG = "Two Player Mode - HOST " + payload + "     MY SOCKET    " + sioCom.Instance.SocketID;
                 //Debug.Log("HOST DETERMINED " + payload);
                 if (!GameDriver.instance.NETWORK_TEST)
                 {
@@ -131,7 +131,9 @@ namespace NetworkSystem
                 GameDriver.instance.Player.GetComponent<PlayerController>().emitGear = true;
                 GameDriver.instance.Player.GetComponent<PlayerController>().emitPos = true;//triggers position emit
                 GameDriver.instance.twoPlayer = true;
+                if (HOST) { GameObject.Find("ColdSpotManager").GetComponent<ColdSpotControl>().ChooseColdSpot(); }
                 //GameDriver.instance.MSG = "Two Player Mode - HOST " + HOST;
+                GameDriver.instance.WriteGuiMsg("Two Player Mode - HOST is " + HOST, 10f);
 
             });
             //-----------------CHOOSE BRO----------------->
@@ -180,14 +182,22 @@ namespace NetworkSystem
                     if (dict.ContainsKey("gear")) { if (GameDriver.instance.Client.GetComponent<ClientPlayerController>().gear != int.Parse(dict["gear"])) { GameDriver.instance.Client.GetComponent<ClientPlayerController>().ChangeGear(int.Parse(dict["gear"])); } }//gear changes
                     if (dict.ContainsKey("dmg")) { if (bool.Parse(dict["dmg"])) { GameDriver.instance.Client.GetComponent<ClientPlayerController>().Flinch(new Vector3(float.Parse(dict["fx"]), float.Parse(dict["fy"]), float.Parse(dict["fz"]))); } }
                     if (dict.ContainsKey("shoot"))
-                    { //DAMAGE AND KILL
+                    {
                         GameDriver.instance.Client.GetComponent<ClientPlayerController>().triggerShoot = true;
                         GameObject enemy = GameObject.Find(dict["shoot"]);
-                        if (enemy != null)
+                        //DAMAGE AND KILL
+                        if (int.Parse(dict["sdmg"])!=-1)
                         {
-                            if (!dict.ContainsKey("kill")) { enemy.GetComponent<NPCController>().TakeDamage(int.Parse(dict["sdmg"]), true); }//hurt
-                            else { enemy.GetComponent<NPCController>().healthEnemy = 0; enemy.GetComponent<NPCController>().TakeDamage(0, true); }//kill
+                            if (enemy != null)
+                            {
+                                if (!dict.ContainsKey("kill")) { enemy.GetComponent<NPCController>().TakeDamage(int.Parse(dict["sdmg"]), true); }//hurt
+                                else { enemy.GetComponent<NPCController>().healthEnemy = 0; enemy.GetComponent<NPCController>().TakeDamage(0, true); }//kill
+                            }
+                        }else//VICTIM
+                        {
+                            GameObject.Find("VictimManager").GetComponent<VictimControl>().testAnswer(enemy);
                         }
+
                     }
                 }
 
@@ -231,6 +241,10 @@ namespace NetworkSystem
                 {
                     if (dict["event"] == "openclose") { obj.GetComponent<Door>().OpenClose(true); }
                     if (dict["event"] == "locked") { obj.GetComponent<Door>().Locked(true); }
+                }
+                if (dict["event"] == "coldspot")
+                {
+                    GameObject.Find("ColdSpotManager").GetComponent<ColdSpotControl>().ChooseColdSpotNetwork(int.Parse(dict["q1"]), int.Parse(dict["q2"]), int.Parse(dict["q3"]));
                 }
 
             });
@@ -292,7 +306,6 @@ namespace NetworkSystem
                             {
                                 targPos = new Vector3(float.Parse(obj.Value["x"]), float.Parse(obj.Value["y"]), float.Parse(obj.Value["z"]));
                                 enemy.GetComponent<NPCController>().serverPosition = targPos;
-                                Debug.Log("SETTING SERVER POSITION FOR " + enemy.name);
                                 //if (Vector3.Distance(targPos, enemy.transform.position) > 5 && enemy.GetComponent<Teleport>().teleport == 0) { enemy.transform.position = targPos; }
                                 if (dict.ContainsKey("tele")) { enemy.transform.position = targPos; }
                             }

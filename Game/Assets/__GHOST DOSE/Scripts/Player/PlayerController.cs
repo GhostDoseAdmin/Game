@@ -395,12 +395,14 @@ public class PlayerController : MonoBehaviour
 					if (gear == 1) { camera.SetActive(true); k2.SetActive(false); camInventory.SetActive(false); k2Inventory.SetActive(true); }
 					if (gear == 2) { camera.SetActive(false); k2.SetActive(true); camInventory.SetActive(true); k2Inventory.SetActive(false); }
 
-					gear_timer = Time.time + gear_delay;//cooldown
+                    if (gear == 0) { AudioManager.instance.Play("sb7sweep", audioSource); }
+                    else { AudioManager.instance.StopPlaying("sb7sweep", audioSource); }
+
+                    gear_timer = Time.time + gear_delay;//cooldown
 				}
 			}
 			else
 			{ //DURING GEAR CHANGE
-				Debug.Log("----------------------------------------------CHANING");
 				changingGear = true;
 				gearAim = false;
 				throwing = false;
@@ -427,7 +429,7 @@ public class PlayerController : MonoBehaviour
     void GearAim()
 	{
 
-		if (!changingGear)
+        if (!changingGear)
 		{
             if (gear == 3 || gear==0)
             {

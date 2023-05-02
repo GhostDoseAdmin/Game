@@ -4,6 +4,7 @@ using NetworkSystem;
 using Newtonsoft.Json;
 using System.Collections;
 using System.Collections.Generic;
+using TMPro.Examples;
 using UnityEngine;
 using UnityEngine.AI;
 
@@ -88,6 +89,7 @@ public class NPCController : MonoBehaviour
         active_timer = 99999;
         audioSource = gameObject.AddComponent<AudioSource>();
         audioSource.spatialBlend = 1.0f;
+        if (wayPoint == null)        {            wayPoint.Add(transform);        }
     }
 
 
@@ -108,9 +110,7 @@ public class NPCController : MonoBehaviour
         startAngleView = angleView;
         startRange = range;
         hasRetreated = 0;
-        if (wayPoint[0] == null) { 
-            wayPoint[0].position = transform.position; 
-        }//First waypoint is always self
+
         update = false; //UPDATE POSITIONS\
         SKEL_ROOT.GetComponent<CapsuleCollider>().isTrigger = true;
         HIT_COL.GetComponent<SphereCollider>().isTrigger = true;
@@ -127,7 +127,7 @@ public class NPCController : MonoBehaviour
     void Update()
     {
         //---CLIENT SIDE PREDICTION--close position gap
-        if(!NetworkDriver.instance.HOST)
+        if (!NetworkDriver.instance.HOST)
         {
             //float distance = Vector3.Distance(transform.position, destination.transform.position);
             //float timeToTravel = distance / 0.2f + 0.00001f; //navmesh.speed * animation speed
@@ -249,9 +249,12 @@ public class NPCController : MonoBehaviour
                     {
 
                         if (NetworkDriver.instance.HOST) { destination= wayPoint[curWayPoint].gameObject; }
-                        navmesh.SetDestination(destination.transform.position);
+                        
+                        Vector3 destination2D = new Vector3(destination.transform.position.x, transform.position.y, destination.transform.position.z);
+                        
+                        navmesh.SetDestination(destination2D);
 
-                        float distance = Vector3.Distance(transform.position, destination.transform.position);
+                        float distance = Vector3.Distance(transform.position, destination2D);
 
                         if (distance > 1f)
                         {
@@ -274,9 +277,12 @@ public class NPCController : MonoBehaviour
                     curWayPoint = 0;
 
                     if (NetworkDriver.instance.HOST) {  destination = wayPoint[curWayPoint].gameObject; }
-                    navmesh.SetDestination(destination.transform.position);
 
-                    float distance = Vector3.Distance(transform.position, destination.transform.position);
+                    Vector3 destination2D = new Vector3(destination.transform.position.x, transform.position.y, destination.transform.position.z);
+
+                    navmesh.SetDestination(destination2D);
+
+                    float distance = Vector3.Distance(transform.position, destination2D);
 
                     if (distance > 1f)
                     {
@@ -334,7 +340,11 @@ public class NPCController : MonoBehaviour
                 animEnemy.SetBool("Fighting", false);
                 animEnemy.SetBool("Run", true);
                 animEnemy.SetBool("Attack", false);
-                GetComponent<NavMeshAgent>().speed = chaseSpeed * 2;//DOESNT AFFECT THIS
+                if (animEnemy.GetCurrentAnimatorClipInfo(0)[0].clip != null && animEnemy.GetCurrentAnimatorClipInfo(0)[0].clip.name != "EnemyAttack")
+                {
+                    GetComponent<NavMeshAgent>().speed = chaseSpeed;//DOESNT AFFECT THIS
+                    if (agro) { GetComponent<NavMeshAgent>().speed = chaseSpeed * 2; }
+                }
                 if (animEnemy.GetCurrentAnimatorClipInfo(0)[0].clip!=null && animEnemy.GetCurrentAnimatorClipInfo(0)[0].clip.name == "agro") { GetComponent<NavMeshAgent>().speed = 0; }
                 //GetComponent<NavMeshAgent>().enabled = true;
                 navmesh.isStopped = false;
@@ -450,6 +460,7 @@ public class NPCController : MonoBehaviour
     {
         if (animEnemy.GetCurrentAnimatorClipInfo(0)[0].clip.name != "agro" && distance>=hitRange+0.5f && canFlinch) // && !animEnemy.GetCurrentAnimatorStateInfo(0).IsName("Attack")
         {
+            Debug.Log("-----------------------------FLINCH");
             animEnemy.Play("React");
         }
     }
@@ -480,6 +491,7 @@ public class NPCController : MonoBehaviour
                         follow = persist;
                     }
                     AudioManager.instance.Play("Agro", null); animEnemy.Play("agro"); //animEnemy.CrossFade("agro", 0.25f);
+                    GameObject.Find("PlayerCamera").GetComponent<Camera_Controller>().InvokeShake(2f);
                     range = 20; agro = true; angleView = 360;
                 }
 
@@ -489,6 +501,7 @@ public class NPCController : MonoBehaviour
             //-----------RETREAT-------------------
             if (healthEnemy < startHealth * retreatThreshold) { if (hasRetreated == 0) { hasRetreated = 1; } }
 
+            //-----------DEATH--------------------
             if (healthEnemy <= 0 && !dead)
             {
                 dead = true;
@@ -508,7 +521,6 @@ public class NPCController : MonoBehaviour
                 if (Shadower) { death.GetComponent<GhostVFX>().Shadower = true; death.GetComponent<EnemyDeath>().Shadower = true; }
                 HIT_COL.GetComponent<SphereCollider>().enabled = false;
                 if (!canRespawn) { DestroyImmediate(this.gameObject); }
-                //healthEnemy = startHealth;
 
 
             }
