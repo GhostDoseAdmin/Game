@@ -102,7 +102,6 @@ public class CamFlash : MonoBehaviour
         {
             if (currentTransform.GetComponent<NPCController>() != null)
             {
-                Debug.Log("Found parent with Person component: " + currentTransform.name);
                 return currentTransform.gameObject;
             }
             currentTransform = currentTransform.parent;
