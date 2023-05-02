@@ -85,7 +85,7 @@ public class VictimControl : Item
             }
             else
             {   //EXPAND
-                if (zozoSpawn.transform.localScale.x < 20) { zozoSpawn.transform.localScale = Vector3.Lerp(zozoSpawn.transform.localScale, zozoSpawn.transform.localScale * 1.1f, Time.deltaTime * 1); }
+                if (zozoSpawn.transform.localScale.x < 30) { zozoSpawn.transform.localScale = Vector3.Lerp(zozoSpawn.transform.localScale, zozoSpawn.transform.localScale * 1.05f, Time.deltaTime * 1); }
                 //PUSH AWAY PLAYER
                 if (Vector3.Distance(GameDriver.instance.Player.transform.position, transform.position) < 10)
                 {
@@ -147,5 +147,11 @@ public class VictimControl : Item
         zozo = true;
         startCircle = false;
         AudioManager.instance.Play("enterzozomusic", null);
+
+    }
+
+    public void CreateZozo()
+    {
+
     }
 }
