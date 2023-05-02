@@ -16,7 +16,7 @@ public class Aiming : MonoBehaviour {
 	public int gear;
 
     private int smoothZoom = 5;//10
-	private int normal = 60;
+	public int normal = 60;//field of view
 	private float isZoomed = 0;
 
 	public GameObject player;

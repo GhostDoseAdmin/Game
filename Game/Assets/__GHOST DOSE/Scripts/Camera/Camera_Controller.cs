@@ -253,6 +253,9 @@ public class Camera_Controller : MonoBehaviour
             targetPosition = player.position;
         }
 
+
+        if (shake) { GetComponent<Camera>().fieldOfView = GetComponent<Aiming>().normal + (UnityEngine.Random.Range(-shakeMagnitude, shakeMagnitude)*5f); }
+
         targetPosWithOffset = (targetPosition + offsetVectorTransformed);
         Vector3 targetPosWithCameraOffset = targetPosition + offsetVectorTransformed + cameraOffsetVectorTransformed;
         
@@ -447,7 +450,7 @@ public class Camera_Controller : MonoBehaviour
         prevPosition = transform.position;
 
 
-        if (shake) { transform.position = transform.position + UnityEngine.Random.insideUnitSphere * (0.02f * shakeMagnitude); }
+       
     }
     
 
