@@ -491,7 +491,7 @@ public class NPCController : MonoBehaviour
                         follow = persist;
                     }
                     AudioManager.instance.Play("Agro", null); animEnemy.Play("agro"); //animEnemy.CrossFade("agro", 0.25f);
-                    GameObject.Find("PlayerCamera").GetComponent<Camera_Controller>().InvokeShake(2f);
+                    GameObject.Find("PlayerCamera").GetComponent<Camera_Controller>().InvokeShake(2f, 1f);
                     range = 20; agro = true; angleView = 360;
                 }
 

@@ -105,6 +105,7 @@ public class Camera_Controller : MonoBehaviour
     //public GameObject Player;
     private float zAxisFixTimer;
     private bool shake;
+    private float shakeMagnitude;
 
     void Awake()
     {
@@ -125,9 +126,10 @@ public class Camera_Controller : MonoBehaviour
         InitFromTarget();
     }
 
-    public void InvokeShake(float duration)
+    public void InvokeShake(float duration, float magnitude)
     {
         shake = true;
+        shakeMagnitude = magnitude;
         CancelInvoke();
         Invoke("StopShake", duration);
     }
@@ -445,7 +447,7 @@ public class Camera_Controller : MonoBehaviour
         prevPosition = transform.position;
 
 
-        if (shake) { transform.position = transform.position + UnityEngine.Random.insideUnitSphere * 0.02f; }
+        if (shake) { transform.position = transform.position + UnityEngine.Random.insideUnitSphere * (0.02f * shakeMagnitude); }
     }
     
 
