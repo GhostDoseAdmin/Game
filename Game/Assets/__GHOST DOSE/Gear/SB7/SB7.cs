@@ -1,19 +1,40 @@
 using UnityEngine;
 using InteractionSystem;
 using TMPro;
+using GameManager;
+using System.Collections.Generic;
 
 public class SB7 : MonoBehaviour
 {
     private bool isClient;
     private float timer = 0f;
     private float delay = 0.20f;
-
+    private AudioSource audioSourceSweep;
+    GameObject victim;
+    int questionIndex;
+    public List<Sound> QuestionsTravis;
+    public List<Sound> QuestionsWestin;
+    public List<Sound> AnswersYoung;
+    public List<Sound> AnswersEvil;
+    public List<Sound> AnswersMurdered;
+    private float question_timer = 0f;
+    private float question_delay = 5f;
+    private bool askedQuestion;
+    private AudioSource audioSourceVoices;
     // Start is called before the first frame update
     void Start()
     {
+
+        audioSourceSweep = gameObject.AddComponent<AudioSource>();
+        audioSourceSweep.spatialBlend = 1.0f;
+        audioSourceVoices = gameObject.AddComponent<AudioSource>();
+        audioSourceVoices.spatialBlend = 1.0f;
+
         if (transform.root.name == "CLIENT") { isClient = true; }
-        else if (transform.root.name == "WESTIN" || transform.root.name == "TRAVIS") { isClient = false; }
+        else if (transform.root.name == "WESTIN" || transform.root.name == "TRAVIS") { isClient = false;  }
         else { DestroyImmediate(this.gameObject); }//DEAD PLAYER
+
+
     }
 
     // Update is called once per frame
@@ -26,13 +47,70 @@ public class SB7 : MonoBehaviour
             transform.GetChild(0).GetComponent<TextMeshPro>().text = station.ToString();
             timer = Time.time;//cooldown
         }
+
+        
+
+        // ChosenVictim = Victims[Random.Range(0, Victims.Count)];
+
+        //ASK QUESTION
+        //if (Time.time > question_timer + question_delay)
+        {
+            if (!askedQuestion) { AskQuestion(); askedQuestion = true; }
+        
+            //question_timer = Time.time;//cooldown
+        }
+
+
+
     }
-    private void OnDisable()
+    void AskQuestion()
     {
-        AudioManager.instance.StopPlaying("sb7sweep", null);
+        List<Sound> questionList = new List<Sound>();
+        if (transform.root.name == "TRAVIS") { questionList = QuestionsTravis; }
+        else { questionList = QuestionsWestin; }
+
+        questionIndex = Random.Range(0, questionList.Count);
+        audioSourceVoices.clip = questionList[questionIndex].clip;
+        audioSourceVoices.pitch = 1f;
+        audioSourceVoices.Play();
+        
+        Invoke("GetAnswer", 2f);
     }
-    private void OnEnable()
+
+    void GetAnswer()
     {
-        AudioManager.instance.Play("sb7sweep", null);
+        victim = GameObject.Find("VictimManager").GetComponent<VictimControl>().ChosenVictim;
+        Sound s = null ;
+        //YOUNG?
+        if (questionIndex == 0)
+        {
+            if (victim.GetComponent<Person>().isYoung) {s = AnswersYoung[1]; }//YES
+            else { s = AnswersYoung[0]; }//NO
+        }
+        //EVIL?
+        if (questionIndex == 1)
+        {
+            if (victim.GetComponent<Person>().isEvil) { s = AnswersEvil[1]; }//YES
+            else { s = AnswersEvil[0]; }//NO
+        }
+        //MURDRERED?
+        if (questionIndex == 2)
+        {
+            if (victim.GetComponent<Person>().isMurdered) { s = AnswersMurdered[1]; }//YES
+            else {s = AnswersMurdered[0]; }//NO
+        }
+        if (s != null)
+        {
+            audioSourceVoices.clip = s.clip;
+            audioSourceVoices.pitch = s.pitch * (1f + Random.Range(-s.pitchVariance / 2f, s.pitchVariance / 2f));
+            audioSourceVoices.Play();
+        }
+
+        Invoke("GotAnswer", 2f);
+    }
+
+    void GotAnswer()
+    {
+        askedQuestion = false;
     }
 }

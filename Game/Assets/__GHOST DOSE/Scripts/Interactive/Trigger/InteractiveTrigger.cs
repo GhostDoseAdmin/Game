@@ -4,6 +4,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using GameManager;
+using UnityEditor.PackageManager;
 
 public class InteractiveTrigger : MonoBehaviour
 {
@@ -38,6 +39,10 @@ public class InteractiveTrigger : MonoBehaviour
         {
             Destroy(gameObject);
         }
+
+
+       
+        
     }
 
     private void OnTriggerStay(Collider other)
@@ -46,6 +51,8 @@ public class InteractiveTrigger : MonoBehaviour
         {
             allowInteraction = true;
             interact.SetActive(true);
+            if (other.gameObject.name == "Player") { interactiveObject.GetComponent<Item>().playerOn = true; }
+            if (other.gameObject.name == "Client") { interactiveObject.GetComponent<Item>().clientOn = true; }
         }
     }
 
@@ -56,6 +63,10 @@ public class InteractiveTrigger : MonoBehaviour
             allowInteraction = false;
             interact.SetActive(false);
             if (GameDriver.instance.Player.GetComponent<PlayerController>().sb7) { GameDriver.instance.Player.GetComponent<PlayerController>().ChangeGear(true); }
+            
+            if (other.gameObject.name == "Player") { interactiveObject.GetComponent<Item>().playerOn = false; }
+            if (other.gameObject.name == "Client") { interactiveObject.GetComponent<Item>().clientOn = false; }
+
         }
     }
 

@@ -1182,6 +1182,7 @@ GameObject:
   m_Component:
   - component: {fileID: 161635156410353934}
   - component: {fileID: 1325283449918623486}
+  - component: {fileID: 3292031188203025822}
   m_Layer: 0
   m_Name: WeaponLight
   m_TagString: Untagged
@@ -1266,6 +1267,27 @@ Light:
   m_UseViewFrustumForShadowCasterCull: 1
   m_ShadowRadius: 0
   m_ShadowAngle: 0
+--- !u!114 &3292031188203025822
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2357205115834476917}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c1455729a3006134faabce5afd1443a7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  show_Ghost: 0
+  show_Shadowers: 0
+  ghost: 0
+  shadower: 0
+  flicker: 0
+  strength: 0
+  flickerDuration: 0.1
+  minDelay: 0.1
+  maxDelay: 0.5
 --- !u!1 &2444500223840318269
 GameObject:
   m_ObjectHideFlags: 0
@@ -19314,6 +19336,7 @@ GameObject:
   m_Component:
   - component: {fileID: 6103749833976212041}
   - component: {fileID: 9020626631456366388}
+  - component: {fileID: 8758429132788162363}
   m_Layer: 0
   m_Name: FlashLight
   m_TagString: Untagged
@@ -19328,9 +19351,9 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 9174344783203198822}
-  m_LocalRotation: {x: -0.1072583, y: -0.71661115, z: 0.13741456, w: 0.675338}
-  m_LocalPosition: {x: -0.09360004, y: 0.0046000034, z: 0.000800075}
-  m_LocalScale: {x: 1.1, y: 1.0999997, z: 1.1000001}
+  m_LocalRotation: {x: -0.10725833, y: -0.71661115, z: 0.13741454, w: 0.675338}
+  m_LocalPosition: {x: -0.09359968, y: 0.0045998096, z: 0.00079988455}
+  m_LocalScale: {x: 1.0999994, y: 1.0999998, z: 1.1000006}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 3918834012653590871}
@@ -19398,6 +19421,27 @@ Light:
   m_UseViewFrustumForShadowCasterCull: 1
   m_ShadowRadius: 0
   m_ShadowAngle: 0
+--- !u!114 &8758429132788162363
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9174344783203198822}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c1455729a3006134faabce5afd1443a7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  show_Ghost: 0
+  show_Shadowers: 0
+  ghost: 0
+  shadower: 0
+  flicker: 0
+  strength: 0
+  flickerDuration: 0.1
+  minDelay: 0.1
+  maxDelay: 0.5
 --- !u!1001 &7696980342700393431
 PrefabInstance:
   m_ObjectHideFlags: 0

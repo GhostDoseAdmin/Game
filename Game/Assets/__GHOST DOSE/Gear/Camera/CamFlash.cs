@@ -82,7 +82,7 @@ public class CamFlash : MonoBehaviour
                 if (Physics.Linecast(spotlight.transform.position, endPoint, out hit, mask.value))
                 {
 
-                    if (hit.collider.transform.root.gameObject == ghost.gameObject)
+                    if (FindEnemyMain(hit.collider.gameObject.transform) == ghost.gameObject)
                     {
                         if (ghost.gameObject.GetComponent<Teleport>().teleport == 0 && ghost.healthEnemy > 0)
                             // Debug.Log("ENYM HIT -------------------------------------------------------");
@@ -95,5 +95,19 @@ public class CamFlash : MonoBehaviour
         }
     }
 
+    GameObject FindEnemyMain(Transform head)
+    {
+        Transform currentTransform = head;
+        while (currentTransform != null)
+        {
+            if (currentTransform.GetComponent<NPCController>() != null)
+            {
+                Debug.Log("Found parent with Person component: " + currentTransform.name);
+                return currentTransform.gameObject;
+            }
+            currentTransform = currentTransform.parent;
+        }
+        return null;
 
+    }
 }

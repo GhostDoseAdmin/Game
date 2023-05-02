@@ -315,9 +315,11 @@ public class GhostVFX : MonoBehaviour
         foreach (RaycastHit hit in hits)
         {
             if (hit.collider.gameObject.layer != LayerMask.NameToLayer("Enemy")) { targetHit = false; break; }//environment obstruction
-            if (hit.collider.transform.root.gameObject == this.gameObject)
+            if (FindEnemyMain(hit.collider.gameObject.transform) == this.gameObject)
             {
                 targetHit = true;
+                //FLICKER
+                if (GetComponent<Animator>().GetCurrentAnimatorClipInfo(0)[0].clip != null && GetComponent<Animator>().GetCurrentAnimatorClipInfo(0)[0].clip.name == "agro" && light.GetComponent<GhostLight>()!=null) { light.GetComponent<GhostLight>().InvokeFlicker(1f); }
                 break;
             }
         }
@@ -366,6 +368,22 @@ public class GhostVFX : MonoBehaviour
             }
         }
         
+    }
+
+    GameObject FindEnemyMain(Transform head)
+    {
+        Transform currentTransform = head;
+        while (currentTransform != null)
+        {
+            if (currentTransform.GetComponent<NPCController>() != null)
+            {
+                //Debug.Log("Found parent with Person component: " + currentTransform.name);
+                return currentTransform.gameObject;
+            }
+            currentTransform = currentTransform.parent;
+        }
+        return head.gameObject;
+
     }
 }
 

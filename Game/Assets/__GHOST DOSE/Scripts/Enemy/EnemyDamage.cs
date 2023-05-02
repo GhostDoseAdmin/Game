@@ -12,7 +12,7 @@ public class EnemyDamage : MonoBehaviour
     public bool triggerHit;
     public void Start()
     {
-        main = transform.root.gameObject;
+        main = FindEnemyMain(gameObject.transform);
     }
     private void OnTriggerEnter(Collider other)
     {
@@ -32,5 +32,19 @@ public class EnemyDamage : MonoBehaviour
 
     }
 
+    GameObject FindEnemyMain(Transform head)
+    {
+        Transform currentTransform = head;
+        while (currentTransform != null)
+        {
+            if (currentTransform.GetComponent<NPCController>() != null)
+            {
+                Debug.Log("Found parent with Person component: " + currentTransform.name);
+                return currentTransform.gameObject;
+            }
+            currentTransform = currentTransform.parent;
+        }
+        return null;
 
+    }
 }

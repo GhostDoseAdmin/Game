@@ -109,7 +109,7 @@ public class ClientPlayerController : MonoBehaviour
     public float targWalk;
     public float targStrafe;
     public bool running;
-    private AudioSource audioSource;
+    public AudioSource audioSource;
     //public bool wlOn, flOn;//weaplight and flashlight
 
 
@@ -254,6 +254,9 @@ public class ClientPlayerController : MonoBehaviour
                 gameObject.GetComponent<ClientFlashlightSystem>().FlashLight.enabled = true;
                 gameObject.GetComponent<ClientFlashlightSystem>().WeaponLight.enabled = false;
             }
+
+        if (gear == 0) { AudioManager.instance.Play("sb7sweep", audioSource); }
+        else { AudioManager.instance.StopPlaying("sb7sweep", audioSource); }
         //anim.Play("GetGear");
 
 
@@ -264,7 +267,7 @@ public class ClientPlayerController : MonoBehaviour
 	void Attack()
 	{
         anim.SetBool("GetGear", false);
-        if (aim)
+        if (aim || gear==0)
 			{
 
                 gearAim = true;

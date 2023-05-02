@@ -2,6 +2,7 @@ using InteractionSystem;
 using System;
 using UnityEngine;
 using System.Collections.Generic;
+using UnityEngine.UIElements;
 
 [RequireComponent(typeof(Camera))]
 public class Camera_Controller : MonoBehaviour
@@ -103,6 +104,7 @@ public class Camera_Controller : MonoBehaviour
     //FOR Z AXIS FIX
     //public GameObject Player;
     private float zAxisFixTimer;
+    private bool shake;
 
     void Awake()
     {
@@ -123,10 +125,17 @@ public class Camera_Controller : MonoBehaviour
         InitFromTarget();
     }
 
-   /* private void Start()
+    public void InvokeShake(float duration)
     {
-        Player = GameObject.Find("Player");
-    }*/
+        shake = true;
+        CancelInvoke();
+        Invoke("StopShake", duration);
+    }
+
+    public void StopShake()
+    {
+        shake = false;
+    }
     void InitFromTarget()
     {
         InitFromTarget(player);
@@ -434,6 +443,9 @@ public class Camera_Controller : MonoBehaviour
 
         prevTargetPos = targetPosition;
         prevPosition = transform.position;
+
+
+        if (shake) { transform.position = transform.position + UnityEngine.Random.insideUnitSphere * 0.02f; }
     }
     
 

@@ -5,6 +5,8 @@ using UnityEngine;
 public class Item : MonoBehaviour
 {
     public AudioSource audioSource;
+    public bool playerOn, clientOn;
+
     public void Awake()
     {
         audioSource = gameObject.AddComponent<AudioSource>();

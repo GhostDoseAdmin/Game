@@ -73,17 +73,36 @@ public class K2Wave : MonoBehaviour
         //Debug.Log("------------------------------------------COLLIDING" + other.name);
         if (!other.gameObject.isStatic) { GetComponent<Shockwave>().NewShockwave(closestPoint, 2); }//2
 
-        if (other.gameObject.transform.root.tag == "Ghost" || other.gameObject.transform.root.tag == "Shadower")
+        if (other.gameObject.tag == "Ghost" || other.gameObject.tag == "Shadower")
         {
 
-            if (other.gameObject.transform.root.GetComponent<Teleport>().teleport==0) { 
-                other.gameObject.transform.root.GetComponent<NPCController>().activateOutline = true;
+            if (FindEnemyMain(other.gameObject.transform).GetComponent<Teleport>().teleport==0) {
+                FindEnemyMain(other.gameObject.transform).GetComponent<NPCController>().activateOutline = true;
             }
         }
-        //SPIRIT BOX SPOT
-        if (other.gameObject.transform.parent.GetComponent<SB7Event>() !=null)
+        //COLD SPOT
+        if (other.gameObject.transform.parent != null)
         {
-            other.gameObject.transform.parent.GetComponent<SB7Event>().Exposed();
+            if (other.gameObject.transform.parent.GetComponent<ColdSpot>() != null)
+            {
+                other.gameObject.transform.parent.GetComponent<ColdSpot>().Exposed();
+            }
         }
     }
+    GameObject FindEnemyMain(Transform head)
+    {
+        Transform currentTransform = head;
+        while (currentTransform != null)
+        {
+            if (currentTransform.GetComponent<NPCController>() != null)
+            {
+                Debug.Log("Found parent with Person component: " + currentTransform.name);
+                return currentTransform.gameObject;
+            }
+            currentTransform = currentTransform.parent;
+        }
+        return null;
+
+    }
+
 }

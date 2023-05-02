@@ -123,7 +123,7 @@ public class ShootingSystem : MonoBehaviour
             if (isVisible)
             {
                 if (target != null) { 
-                    if(target.GetComponent<Teleport>()!=null && target.GetComponent<Teleport>().teleport == 0)
+                    if(((target.tag=="Ghost" || target.tag=="Shadower") && target.GetComponent<Teleport>()!=null && target.GetComponent<Teleport>().teleport == 0) || (target.tag=="Victim"))
                     {
                         enemyIndicatorUI.color = Color.red;
                         if (isHeadshot) { headShotIndicatorUI.color = Color.red; }
@@ -169,18 +169,29 @@ public class ShootingSystem : MonoBehaviour
                 int damage = 0;
                 GetComponent<PlayerController>().emitShoot = true;
                 //DO DAMAGE
-                if (isVisible && target!=null && target.GetComponent<Teleport>().teleport==0)
+                if(target!=null)
                 {
-                    damage = 40;
-                    if (isHeadshot) { damage = 100; }
-                    if (damage >= target.GetComponent<NPCController>().healthEnemy) { GetComponent<PlayerController>().emitKill = true; }
-                    target.GetComponent<NPCController>().TakeDamage(damage, false);
-                    GetComponent<PlayerController>().shotName = target.name;
-                    GetComponent<PlayerController>().shotDmg = damage;
+                    if ((target.tag == "Ghost" || target.tag == "Shadower") && isVisible && target.GetComponent<Teleport>().teleport == 0)
+                    {
+                        damage = 40;
+                        if (isHeadshot) { damage = 100; }
+                        if (damage >= target.GetComponent<NPCController>().healthEnemy) { GetComponent<PlayerController>().emitKill = true; }
+                        target.GetComponent<NPCController>().TakeDamage(damage, false);
+                        GetComponent<PlayerController>().shotName = target.name;
+                        GetComponent<PlayerController>().shotDmg = damage;
+                    }
+                    if (target.tag == "Victim")
+                    {
+                        GameObject.Find("VictimManager").GetComponent<VictimControl>().testAnswer(target);
+                        //used to emit answer
+                        damage = -1;
+                        GetComponent<PlayerController>().shotName = target.name;
+                        GetComponent<PlayerController>().shotDmg = damage;
+                    }
                 }
 
                 //--------------FLASH-----------------
-               GameObject newFlash = Instantiate(camFlash);
+                GameObject newFlash = Instantiate(camFlash);
                 newFlash.transform.position = shootPoint.position;
                 newFlash.name = "CamFlashPlayer";
                 //---POINT FLASH IN DIRECTION OF THE SHOT
@@ -202,7 +213,7 @@ public class ShootingSystem : MonoBehaviour
         isHeadshot = false;
         isVisible = false;
         //RETUNRS 1 for visible 2 for headshot
-        LayerMask mask = 1 << LayerMask.NameToLayer("Default") | 1 << LayerMask.NameToLayer("Enemy");
+        LayerMask mask = 1 << LayerMask.NameToLayer("Default") | 1 << LayerMask.NameToLayer("Enemy") | 1 << LayerMask.NameToLayer("Ghost");
         RaycastHit hit;
         Vector3 startPoint = GameObject.Find("PlayerCamera").transform.position;
         Vector3 direction = (targetLook.position -startPoint).normalized;
@@ -210,27 +221,65 @@ public class ShootingSystem : MonoBehaviour
         Debug.DrawLine(startPoint, startPoint + direction * distance, Color.red);
         if (Physics.Raycast(startPoint, direction, out hit, distance, mask.value))
         {
-            GameObject ghost = hit.collider.gameObject.transform.root.gameObject;
-            if (ghost.GetComponent<NPCController>() != null)
+            
+            GameObject ghost = FindEnemyMain(hit.collider.gameObject.transform);
+            if (ghost != null)
             {
-                //Debug.Log(hit.collider.gameObject.name);
                 if (ghost.layer == LayerMask.NameToLayer("Enemy"))
                 {
                     //Ensure mesh can be read
                     if (ghost.GetComponent<NPCController>().healthEnemy>0 && ghost.GetComponent<Teleport>().teleport == 0)
                     {
-                        if (ghost.tag == "Ghost") { isVisible = !hit.collider.gameObject.transform.root.GetComponent<GhostVFX>().invisible; }
-                        else { isVisible = hit.collider.gameObject.transform.root.GetComponent<GhostVFX>().visible; }
+                        if (ghost.tag == "Ghost") { isVisible = !ghost.GetComponent<GhostVFX>().invisible; }
+                        else { isVisible = ghost.GetComponent<GhostVFX>().visible; }
                         if (!isVisible) { Debug.Log("INVISISHOT"); }
                         if (hit.collider.gameObject.name == "mixamorig:Head") { isHeadshot = true; }
                     }
-                    target = hit.collider.gameObject.transform.root.gameObject;
+                    //VICTIMS
+                    target = ghost;
                 }
             }
+            //VICTIM
+            if (hit.collider.gameObject.tag == "Victim")
+            {
+                isVisible = true;
+                isHeadshot = true;
+                target = FindVictimMain(hit.collider.gameObject.transform);
+            }
+
         }
     }
-    
+    GameObject FindEnemyMain(Transform head)
+    {
+        Transform currentTransform = head;
+        while (currentTransform != null)
+        {
+            if (currentTransform.GetComponent<NPCController>() != null)
+            {
+                //Debug.Log("Found parent with Person component: " + currentTransform.name);
+                return currentTransform.gameObject;
+            }
+            currentTransform = currentTransform.parent;
+        }
+        return null;
 
+    }
+
+    GameObject FindVictimMain(Transform head)
+    {
+            Transform currentTransform = head;
+            while (currentTransform != null)
+            {
+                if (currentTransform.GetComponent<Person>() != null)
+                {
+                    Debug.Log("Found parent with Person component: " + currentTransform.name);
+                    return currentTransform.gameObject;
+                }
+                currentTransform = currentTransform.parent;
+            }
+            return null;
+        
+    }
     
     
     
