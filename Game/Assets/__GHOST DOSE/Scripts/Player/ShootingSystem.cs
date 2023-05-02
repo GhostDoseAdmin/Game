@@ -157,7 +157,7 @@ public class ShootingSystem : MonoBehaviour
     {
         //if (AmmoShoot)
         {
-
+            Debug.Log("TARGET " + target);
             //---------------------CAN SHOOT------------------------------------
             if (Mathf.Approximately(Mathf.Round(camera.fieldOfView * 10) / 10f, aiming.zoom))//if current zoom is close to target zoom
             {
@@ -212,6 +212,7 @@ public class ShootingSystem : MonoBehaviour
     {
         isHeadshot = false;
         isVisible = false;
+        target = null;
         //RETUNRS 1 for visible 2 for headshot
         LayerMask mask = 1 << LayerMask.NameToLayer("Default") | 1 << LayerMask.NameToLayer("Enemy") | 1 << LayerMask.NameToLayer("Ghost");
         RaycastHit hit;
@@ -221,7 +222,7 @@ public class ShootingSystem : MonoBehaviour
         Debug.DrawLine(startPoint, startPoint + direction * distance, Color.red);
         if (Physics.Raycast(startPoint, direction, out hit, distance, mask.value))
         {
-            
+            Debug.Log("COLLIDNG WITH " + hit.collider.gameObject.name);
             GameObject ghost = FindEnemyMain(hit.collider.gameObject.transform);
             if (ghost != null)
             {
