@@ -18,6 +18,8 @@ public class VictimControl : Item
     public GameObject effectInner;
     public GameObject effectDome;//DOME
     public GameObject zozoSpawn;
+    public GameObject zozoEffectEnd;
+    public GameObject zozoEffectMid;
     Vector3 domeStartSize;
     Vector3 zozoSpawnStartPos;
     Vector3 zozoSpawnStartSize;
@@ -77,25 +79,28 @@ public class VictimControl : Item
         {
             if (effectDome.transform.localScale.x > 0.01) { effectDome.transform.localScale = Vector3.Lerp(effectDome.transform.localScale, effectDome.transform.localScale * 0.0007f, Time.deltaTime * 1); }
             //ARISE
-            if (zozoSpawn.transform.position.y < zozoSpawnStartPos.y + 6)
+            if (zozoSpawn.transform.position.y < zozoSpawnStartPos.y + 6.5)
             {
                 Vector3 currPos = zozoSpawn.transform.position;
-                currPos.y += 0.01f;
+                currPos.y += 0.007f;
                 zozoSpawn.transform.position = currPos;
             }
             else
             {   //EXPAND
                 if (zozoSpawn.transform.localScale.x < 30) { zozoSpawn.transform.localScale = Vector3.Lerp(zozoSpawn.transform.localScale, zozoSpawn.transform.localScale * 1.05f, Time.deltaTime * 1); }
+                    //END FX
+                    else {
+                    if (zozoEffectEnd.transform.localScale.x < 100) { zozoEffectEnd.transform.localScale = Vector3.Lerp(zozoEffectEnd.transform.localScale, zozoEffectEnd.transform.localScale * 2f, Time.deltaTime * 1); }
+                }
                 //PUSH AWAY PLAYER
-                if (Vector3.Distance(GameDriver.instance.Player.transform.position, transform.position) < 10)
+                if (Vector3.Distance(GameDriver.instance.Player.transform.position, transform.position) < 3)
                 {
                     GameDriver.instance.Player.transform.position = Vector3.Lerp(GameDriver.instance.Player.transform.position,
-                        GameDriver.instance.Player.transform.position + (GameDriver.instance.Player.transform.position - transform.position).normalized * 3, 1f * Time.deltaTime);
+                        GameDriver.instance.Player.transform.position + (GameDriver.instance.Player.transform.position - transform.position).normalized * 3, 4f * Time.deltaTime);
                 }
-
             }
-
-
+            //WHITE RAYS MID EFFECT
+           if (zozoEffectMid.activeSelf == true) { if (zozoEffectMid.transform.localScale.x < 3) { zozoEffectMid.transform.localScale = Vector3.Lerp(zozoEffectMid.transform.localScale, zozoEffectMid.transform.localScale * 1.2f, Time.deltaTime * 1); } }
             GameObject.Find("PlayerCamera").GetComponent<Camera_Controller>().InvokeShake(2f, Mathf.InverseLerp(20f, 0f, Vector3.Distance(GameDriver.instance.Player.transform.position,transform.position)));
         }
 
@@ -147,11 +152,19 @@ public class VictimControl : Item
         zozo = true;
         startCircle = false;
         AudioManager.instance.Play("enterzozomusic", null);
+        Invoke("SpawnMidEffect", 38f);
+        Invoke("CreateZozo", 50f);
+       
 
+    }
+
+    public void SpawnMidEffect()
+    {
+        zozoEffectMid.SetActive(true);
     }
 
     public void CreateZozo()
     {
-
+        zozoEffectEnd.SetActive(true);
     }
 }
