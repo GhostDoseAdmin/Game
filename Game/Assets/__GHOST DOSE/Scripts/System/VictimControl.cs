@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using GameManager;
 using UnityEngine.UIElements;
+using InteractionSystem;
 
 public class VictimControl : Item
 {
@@ -18,6 +19,7 @@ public class VictimControl : Item
     // Start is called before the first frame update
     void Start()
     {
+        AudioManager.instance.Play("EnemyEngage", null);
         ChooseVictim();
     }
 
