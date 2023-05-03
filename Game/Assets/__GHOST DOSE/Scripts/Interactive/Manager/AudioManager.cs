@@ -86,7 +86,6 @@ namespace InteractionSystem
             {
                 if (s.name == soundName)
                 {
-                    Debug.Log("-------------------FOUND HEADSHOT CLIP");
                     return s.clip;
                 }
             }

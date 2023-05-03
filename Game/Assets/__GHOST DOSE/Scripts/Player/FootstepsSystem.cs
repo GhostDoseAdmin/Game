@@ -95,9 +95,17 @@ namespace Footsteps {
 			}
 		}
 
+		private float timer;
+		private float timer_delay=0.3f;
 		public void TryPlayFootstep() {
+			Debug.Log("IS GROUNDED " + isGrounded);
 			if(isGrounded) {
-				PlayFootstep();
+				//--------------------------------PREVENT OVERLAPPING COLLIDERS FROM PRODUCING SOUND, WALK SPEED TO FAST WONT DETECT, THIS BASED ON TIME BETWEEN STEPS, MAY NEED ADJUST
+                    if (Time.time > timer + timer_delay)
+                    {
+                    PlayFootstep();
+                    timer = Time.time;//cooldown
+                }
 			}
 		}
 

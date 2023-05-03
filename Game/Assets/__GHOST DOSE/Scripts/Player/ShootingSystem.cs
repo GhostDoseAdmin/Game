@@ -222,11 +222,12 @@ public class ShootingSystem : MonoBehaviour
         Debug.DrawLine(startPoint, startPoint + direction * distance, Color.red);
         if (Physics.Raycast(startPoint, direction, out hit, distance, mask.value))
         {
-            Debug.Log("COLLIDNG WITH " + hit.collider.gameObject.name);
-            GameObject ghost = FindEnemyMain(hit.collider.gameObject.transform);
+           
+            NPCController ghost = hit.collider.gameObject.GetComponentInParent<NPCController>();
+
             if (ghost != null)
             {
-                if (ghost.layer == LayerMask.NameToLayer("Enemy"))
+                if (ghost.gameObject.layer == LayerMask.NameToLayer("Enemy"))
                 {
                     //Ensure mesh can be read
                     if (ghost.GetComponent<NPCController>().healthEnemy>0 && ghost.GetComponent<Teleport>().teleport == 0)
@@ -237,7 +238,7 @@ public class ShootingSystem : MonoBehaviour
                         if (hit.collider.gameObject.name == "mixamorig:Head") { isHeadshot = true; }
                     }
                     //VICTIMS
-                    target = ghost;
+                    target = ghost.gameObject;
                 }
             }
             //VICTIM
@@ -245,7 +246,7 @@ public class ShootingSystem : MonoBehaviour
             {
                 isVisible = true;
                 isHeadshot = true;
-                target = FindVictimMain(hit.collider.gameObject.transform);
+                target = hit.collider.gameObject.GetComponentInParent<Person>().gameObject;
             }
 
         }
