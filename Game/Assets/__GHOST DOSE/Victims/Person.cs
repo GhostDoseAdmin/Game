@@ -10,6 +10,8 @@ public class Person : MonoBehaviour
 
     public GameObject eyes;
     public GameObject deathWeap;
+    public GameObject whiteLight;
+    public GameObject darkLight;
 
     public void Start()
     {

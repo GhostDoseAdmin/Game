@@ -315,7 +315,7 @@ public class GhostVFX : MonoBehaviour
         foreach (RaycastHit hit in hits)
         {
             if (hit.collider.gameObject.layer != LayerMask.NameToLayer("Enemy")) { targetHit = false; break; }//environment obstruction
-            if (FindEnemyMain(hit.collider.gameObject.transform) == this.gameObject)
+            if (hit.collider.GetComponentInParent<NPCController>().gameObject == this.gameObject)
             {
                 targetHit = true;
                 //FLICKER
@@ -370,21 +370,7 @@ public class GhostVFX : MonoBehaviour
         
     }
 
-    GameObject FindEnemyMain(Transform head)
-    {
-        Transform currentTransform = head;
-        while (currentTransform != null)
-        {
-            if (currentTransform.GetComponent<NPCController>() != null)
-            {
-                //Debug.Log("Found parent with Person component: " + currentTransform.name);
-                return currentTransform.gameObject;
-            }
-            currentTransform = currentTransform.parent;
-        }
-        return head.gameObject;
 
-    }
 }
 
 

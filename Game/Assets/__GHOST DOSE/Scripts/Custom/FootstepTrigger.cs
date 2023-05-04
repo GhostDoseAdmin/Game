@@ -35,15 +35,19 @@ namespace Footsteps {
 				return;
 			}
 		}
-
-		void OnEnable() {
+        public void Update()
+        {
+			
+        }
+        void OnEnable() {
 			SetCollisions();
 		}
 
 		void OnTriggerEnter(Collider other) {
 			if(footsteps) {
 				footsteps.TryPlayFootstep();
-			}
+               // Debug.Log("TRYING FOOTSTEPS" + footsteps);
+            }
 		}
 
 		void SetCollisions() {

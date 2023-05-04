@@ -83,7 +83,6 @@ public class SurfaceManager : MonoBehaviour {
 	// This is for footsteps
 	int GetSurfaceIndex(Collider col, Vector3 worldPos) {
 		string textureName = "";
-
 		// Case when the ground is a terrain.
 		if(col.GetType() == typeof(TerrainCollider)) {
 			Terrain terrain = col.GetComponent<Terrain>();
@@ -91,15 +90,23 @@ public class SurfaceManager : MonoBehaviour {
 			float[] textureMix = GetTerrainTextureMix(worldPos, terrainData, terrain.GetPosition());
 			int textureIndex = GetTextureIndex(worldPos, textureMix);
 			textureName = terrainData.terrainLayers[textureIndex].name;
-		}
+          //  Debug.Log("TERRAIN  " + textureName);
+            return 3;//MUST CORRESPOND WITH INDEX FOR DEFINED TEXTURES
+
+        }
 		// Case when the ground is a normal mesh.
 		else {
-			textureName = GetMeshMaterialAtPoint(worldPos, new Ray(Vector3.zero, Vector3.zero));
-		}
+
+			 textureName = GetMeshMaterialAtPoint(worldPos, new Ray(Vector3.zero, Vector3.zero)); 
+           // Debug.Log("NOT TERRAIN  " + textureName + col.gameObject.name);
+        }
+
+		//Debug.Log("TEXTURE NAME " + textureName);
 		// Searching for the found texture / material name in registered materials.
 		foreach(var material in registeredTextures) {
 			if(material.texture.name == textureName) {
-				return material.surfaceIndex;
+               // Debug.Log("Playing sound with material texture name +  texture + object  "+ material.texture.name + textureName +"GAME OBJECT "+ col.gameObject.name);
+                return material.surfaceIndex;
 			}
 		}
 

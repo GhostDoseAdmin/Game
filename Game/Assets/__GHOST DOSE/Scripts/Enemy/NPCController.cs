@@ -329,12 +329,8 @@ public class NPCController : MonoBehaviour
             float speed = 1.5f; // The speed of the movement
             target.transform.position = Vector3.Lerp(target.transform.position, targetPosition, speed * Time.deltaTime);
         }
-        //---------LOOKING-------
-        // Rotate towards the target position along the y-axis only
-        transform.rotation = Quaternion.RotateTowards(transform.rotation, Quaternion.LookRotation(target.transform.position- transform.position), 100f * Time.deltaTime);
 
-
-                //RUN TO TARGET
+            //RUN TO TARGET
             if (distance > hitRange)
             {
                 animEnemy.SetBool("Fighting", false);
@@ -354,7 +350,11 @@ public class NPCController : MonoBehaviour
             //ATTACK TARGET
             if (distance <= hitRange)
             {
-                animEnemy.SetBool("Fighting", true);
+                //---------LOOKING-------
+                // Rotate towards the target position along the y-axis only
+                transform.rotation = Quaternion.RotateTowards(transform.rotation, Quaternion.LookRotation(target.transform.position - transform.position), 100f * Time.deltaTime);
+
+            animEnemy.SetBool("Fighting", true);
                 animEnemy.SetBool("Run", true);
                 animEnemy.SetBool("Attack", true);
                 //GetComponent<NavMeshAgent>().enabled = false;
@@ -384,6 +384,7 @@ public class NPCController : MonoBehaviour
                 }
             }
         }
+        //if (zozo) { GetComponent<NavMeshAgent>().speed = 0; }
     }
 
     public void FindTargetRayCast()
@@ -426,7 +427,7 @@ public class NPCController : MonoBehaviour
             Vector3 targPos = target.position + Vector3.up * 1.4f;
             Debug.DrawLine(head.position, targPos); //
             LayerMask mask = (1 << LayerMask.NameToLayer("Player")) | (1 << LayerMask.NameToLayer("Default"));
-            //if (xrayvision) { mask = (1 << LayerMask.NameToLayer("Player")); }//disregard default layer
+            if (xrayvision) { mask = (1 << LayerMask.NameToLayer("Player")); }//disregard default layer
             if (Physics.Linecast(head.position, targPos, out hit, mask.value))
             {
                 if (hit.collider.transform != target)

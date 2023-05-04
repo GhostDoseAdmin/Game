@@ -76,8 +76,8 @@ public class K2Wave : MonoBehaviour
         if (other.gameObject.tag == "Ghost" || other.gameObject.tag == "Shadower")
         {
 
-            if (FindEnemyMain(other.gameObject.transform).GetComponent<Teleport>().teleport==0) {
-                FindEnemyMain(other.gameObject.transform).GetComponent<NPCController>().activateOutline = true;
+            if ((other.gameObject.GetComponentInParent<Teleport>().teleport==0)) {
+                other.gameObject.GetComponentInParent<NPCController>().activateOutline = true;
             }
         }
         //COLD SPOT
@@ -89,20 +89,6 @@ public class K2Wave : MonoBehaviour
             }
         }
     }
-    GameObject FindEnemyMain(Transform head)
-    {
-        Transform currentTransform = head;
-        while (currentTransform != null)
-        {
-            if (currentTransform.GetComponent<NPCController>() != null)
-            {
-                Debug.Log("Found parent with Person component: " + currentTransform.name);
-                return currentTransform.gameObject;
-            }
-            currentTransform = currentTransform.parent;
-        }
-        return null;
 
-    }
 
 }

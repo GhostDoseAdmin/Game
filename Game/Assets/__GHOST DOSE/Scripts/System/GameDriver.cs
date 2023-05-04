@@ -1,6 +1,7 @@
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using NetworkSystem;
+using System.Collections.Generic;
 
 namespace GameManager
 {
@@ -20,7 +21,6 @@ namespace GameManager
         public bool HOSTOVERRIDE;
         private GameObject WESTIN;
         private GameObject TRAVIS;
-
         //public NetworkDriver ND;
 
         //GHOST EFFECT LIGHT REFS
