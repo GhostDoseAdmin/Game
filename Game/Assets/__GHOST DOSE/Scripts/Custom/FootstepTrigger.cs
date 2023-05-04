@@ -46,7 +46,7 @@ namespace Footsteps {
 		void OnTriggerEnter(Collider other) {
 			if(footsteps) {
 				footsteps.TryPlayFootstep();
-                Debug.Log("TRYING FOOTSTEPS" + footsteps);
+               // Debug.Log("TRYING FOOTSTEPS" + footsteps);
             }
 		}
 

@@ -13,7 +13,7 @@ public class GhostLight : MonoBehaviour
 
     private float flickerDuration = 0.05f; // duration of each flicker in seconds
     private float minDelay = 0.1f; // minimum delay between flickers in seconds
-    private float maxDelay = 0.5f; // maximum delay between flickers in seconds
+    private float maxDelay = 0.3f; // maximum delay between flickers in seconds
     private Light lightComponent; // reference to the Light component
     private float originalSpotAngle; // original spot angle of the light
     private bool defaultFlicker;

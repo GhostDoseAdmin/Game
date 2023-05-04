@@ -153,52 +153,58 @@ public class ShootingSystem : MonoBehaviour
         //Debug.Log(isEnemy.ToString() + isVisible.ToString() + isHeadshot.ToString());
     }
 
+    private float shootTimer;
+    private float shootCoolDown = 0.7f;
     public bool Shoot()
     {
         //if (AmmoShoot)
         {
             Debug.Log("TARGET " + target);
             //---------------------CAN SHOOT------------------------------------
-            if (Mathf.Approximately(Mathf.Round(camera.fieldOfView * 10) / 10f, aiming.zoom))//if current zoom is close to target zoom
+            //if (Mathf.Approximately(Mathf.Round(camera.fieldOfView * 10) / 10f, aiming.zoom))//if current zoom is close to target zoom
             {
 
-
-                //AudioManager.instance.Play("ShotCam");
-                muzzleFlash.Play();
-                Shell.Play();
-                int damage = 0;
-                GetComponent<PlayerController>().emitShoot = true;
-                //DO DAMAGE
-                if(target!=null)
+                if (Time.time > shootTimer + shootCoolDown)
                 {
-                    if ((target.tag == "Ghost" || target.tag == "Shadower") && isVisible && target.GetComponent<Teleport>().teleport == 0)
+                    //AudioManager.instance.Play("ShotCam");
+                    muzzleFlash.Play();
+                    Shell.Play();
+                    int damage = 0;
+                    GetComponent<PlayerController>().emitShoot = true;
+                    //DO DAMAGE
+                    if (target != null)
                     {
-                        damage = 40;
-                        if (isHeadshot) { damage = 100; }
-                        if (damage >= target.GetComponent<NPCController>().healthEnemy) { GetComponent<PlayerController>().emitKill = true; }
-                        target.GetComponent<NPCController>().TakeDamage(damage, false);
-                        GetComponent<PlayerController>().shotName = target.name;
-                        GetComponent<PlayerController>().shotDmg = damage;
+                        if ((target.tag == "Ghost" || target.tag == "Shadower") && isVisible && target.GetComponent<Teleport>().teleport == 0)
+                        {
+                            damage = 40;
+                            if (isHeadshot) { damage = 100; }
+                            if (damage >= target.GetComponent<NPCController>().healthEnemy) { GetComponent<PlayerController>().emitKill = true; }
+                            target.GetComponent<NPCController>().TakeDamage(damage, false);
+                            GetComponent<PlayerController>().shotName = target.name;
+                            GetComponent<PlayerController>().shotDmg = damage;
+                        }
+                        if (target.tag == "Victim")
+                        {
+                            GameObject.Find("OuijaBoardManager").GetComponent<OuijaSessionControl>().OuijaSessions[GameObject.Find("OuijaBoardManager").GetComponent<OuijaSessionControl>().currentSession].GetComponent<VictimControl>().testAnswer(target, false);
+                            //used to emit answer
+                            damage = -1;
+                            GetComponent<PlayerController>().shotName = target.name;
+                            GetComponent<PlayerController>().shotDmg = damage;
+                        }
                     }
-                    if (target.tag == "Victim")
-                    {
-                        GameObject.Find("VictimManager").GetComponent<VictimControl>().testAnswer(target);
-                        //used to emit answer
-                        damage = -1;
-                        GetComponent<PlayerController>().shotName = target.name;
-                        GetComponent<PlayerController>().shotDmg = damage;
-                    }
+
+                    //--------------FLASH-----------------
+                    GameObject newFlash = Instantiate(camFlash);
+                    newFlash.transform.position = shootPoint.position;
+                    newFlash.name = "CamFlashPlayer";
+                    //---POINT FLASH IN DIRECTION OF THE SHOT
+                    Quaternion newYRotation = Quaternion.Euler(0f, shootPoint.rotation.eulerAngles.y, 0f);
+                    newFlash.transform.rotation = newYRotation;
+
+                    camera.fieldOfView = 40;//40
+                    shootTimer = Time.time;//cooldown
                 }
 
-                //--------------FLASH-----------------
-                GameObject newFlash = Instantiate(camFlash);
-                newFlash.transform.position = shootPoint.position;
-                newFlash.name = "CamFlashPlayer";
-                //---POINT FLASH IN DIRECTION OF THE SHOT
-                Quaternion newYRotation = Quaternion.Euler(0f, shootPoint.rotation.eulerAngles.y, 0f);
-                newFlash.transform.rotation = newYRotation;
-
-                camera.fieldOfView = 40;//40
             }
             
 
@@ -267,22 +273,7 @@ public class ShootingSystem : MonoBehaviour
 
     }
 
-    GameObject FindVictimMain(Transform head)
-    {
-            Transform currentTransform = head;
-            while (currentTransform != null)
-            {
-                if (currentTransform.GetComponent<Person>() != null)
-                {
-                    Debug.Log("Found parent with Person component: " + currentTransform.name);
-                    return currentTransform.gameObject;
-                }
-                currentTransform = currentTransform.parent;
-            }
-            return null;
-        
-    }
-    
+ 
     
     
     

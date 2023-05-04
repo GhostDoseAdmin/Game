@@ -859,19 +859,20 @@ MonoBehaviour:
   follow: 0
   animEnemy: {fileID: 0}
   navmesh: {fileID: 0}
-  teleEmit: 0
   closestPlayer: {fileID: 0}
   alertLevelPlayer: 0
   alertLevelClient: 0
   prevAlerted: 0
   alerted: 0
-  destination: {x: 0, y: 0, z: 0}
+  destination: {fileID: 0}
   truePosition: {x: 0, y: 0, z: 0}
-  attacking: 0
   update: 0
   activateOutline: 0
   dead: 0
-  clientWaypointDest: {x: 0, y: 0, z: 0}
+  activeWayPoint: {fileID: 0}
+  audioSource: {fileID: 0}
+  serverPosition: {x: 0, y: 0, z: 0}
+  active_timer: 0
 --- !u!95 &2910643322487040400
 Animator:
   serializedVersion: 5
@@ -912,7 +913,7 @@ NavMeshAgent:
   m_AutoBraking: 1
   m_AutoRepath: 1
   m_Height: 1.68
-  m_BaseOffset: -0.2
+  m_BaseOffset: 0
   m_WalkableMask: 4294967295
   m_ObstacleAvoidanceType: 4
 --- !u!114 &2910643322487040404

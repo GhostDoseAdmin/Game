@@ -10,7 +10,7 @@ public class Door : Item
 {
     [Header("NEED KEY")] //Do I need a key?
     [Space(10)]
-    [SerializeField] private bool isNeedKey;
+    [SerializeField] public bool isNeedKey;
 
     [Header("DOOR PASSWORD")] //The password for the door (must match the password of the key)
     [Space(10)]

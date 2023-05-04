@@ -90,7 +90,7 @@ public class SurfaceManager : MonoBehaviour {
 			float[] textureMix = GetTerrainTextureMix(worldPos, terrainData, terrain.GetPosition());
 			int textureIndex = GetTextureIndex(worldPos, textureMix);
 			textureName = terrainData.terrainLayers[textureIndex].name;
-            Debug.Log("TERRAIN  " + textureName);
+          //  Debug.Log("TERRAIN  " + textureName);
             return 3;//MUST CORRESPOND WITH INDEX FOR DEFINED TEXTURES
 
         }
@@ -98,14 +98,14 @@ public class SurfaceManager : MonoBehaviour {
 		else {
 
 			 textureName = GetMeshMaterialAtPoint(worldPos, new Ray(Vector3.zero, Vector3.zero)); 
-            Debug.Log("NOT TERRAIN  " + textureName + col.gameObject.name);
+           // Debug.Log("NOT TERRAIN  " + textureName + col.gameObject.name);
         }
 
-		Debug.Log("TEXTURE NAME " + textureName);
+		//Debug.Log("TEXTURE NAME " + textureName);
 		// Searching for the found texture / material name in registered materials.
 		foreach(var material in registeredTextures) {
 			if(material.texture.name == textureName) {
-                Debug.Log("Playing sound with material texture name +  texture + object  "+ material.texture.name + textureName +"GAME OBJECT "+ col.gameObject.name);
+               // Debug.Log("Playing sound with material texture name +  texture + object  "+ material.texture.name + textureName +"GAME OBJECT "+ col.gameObject.name);
                 return material.surfaceIndex;
 			}
 		}

@@ -131,9 +131,10 @@ namespace NetworkSystem
                 GameDriver.instance.Player.GetComponent<PlayerController>().emitGear = true;
                 GameDriver.instance.Player.GetComponent<PlayerController>().emitPos = true;//triggers position emit
                 GameDriver.instance.twoPlayer = true;
-                if (HOST) { GameObject.Find("ColdSpotManager").GetComponent<ColdSpotControl>().ChooseColdSpot(); }
-                //GameDriver.instance.MSG = "Two Player Mode - HOST " + HOST;
                 GameDriver.instance.WriteGuiMsg("Two Player Mode - HOST is " + HOST, 10f);
+                if (HOST) { GameObject.Find("ColdSpotManager").GetComponent<ColdSpotControl>().ChooseColdSpot(); GameObject.Find("OuijaBoardManager").GetComponent<OuijaSessionControl>().OuijaSessions[GameObject.Find("OuijaBoardManager").GetComponent<OuijaSessionControl>().currentSession].GetComponent<VictimControl>().RandomVictim(null); }
+                //GameDriver.instance.MSG = "Two Player Mode - HOST " + HOST;
+               
 
             });
             //-----------------CHOOSE BRO----------------->
@@ -195,7 +196,8 @@ namespace NetworkSystem
                             }
                         }else//VICTIM
                         {
-                            GameObject.Find("VictimManager").GetComponent<VictimControl>().testAnswer(enemy);
+                            Debug.Log("CLIENT CHOSE " + enemy.name);
+                            GameObject.Find("OuijaBoardManager").GetComponent<OuijaSessionControl>().OuijaSessions[GameObject.Find("OuijaBoardManager").GetComponent<OuijaSessionControl>().currentSession].GetComponent<VictimControl>().testAnswer(enemy, true);
                         }
 
                     }
@@ -246,6 +248,8 @@ namespace NetworkSystem
                 {
                     GameObject.Find("ColdSpotManager").GetComponent<ColdSpotControl>().ChooseColdSpotNetwork(int.Parse(dict["q1"]), int.Parse(dict["q2"]), int.Parse(dict["q3"]));
                 }
+                if (dict["event"] == "randomvictim"){ Debug.Log(" RECEIVED RANDOM VICTIM  " + obj.name); GameObject.Find("OuijaBoardManager").GetComponent<OuijaSessionControl>().OuijaSessions[GameObject.Find("OuijaBoardManager").GetComponent<OuijaSessionControl>().currentSession].GetComponent<VictimControl>().RandomVictim(obj);}
+                if (dict["event"] == "startcircle") { GameObject.Find("VictimManager").GetComponent<VictimControl>().ActivateCircle(true); }
 
             });
             //-----------------TELEPORT  ----------------->
@@ -377,7 +381,7 @@ namespace NetworkSystem
                     syncObjects.Add(obj.name, propsDict);
                 }
             }
-            sioCom.Instance.Emit("sync", JsonConvert.SerializeObject(syncObjects), false);
+            if (syncObjects.Count > 0) { sioCom.Instance.Emit("sync", JsonConvert.SerializeObject(syncObjects), false); }
             timer = Time.time;//cooldown
         }
 

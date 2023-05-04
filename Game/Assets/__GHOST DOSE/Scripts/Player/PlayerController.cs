@@ -74,7 +74,7 @@ public class PlayerController : MonoBehaviour
 	Vector3 targetPosVec;
 	float walk = 0f;
 	float strafe = 0f;
-	public bool emitPos;
+	//public bool emitPos;
     //public GameDriver GD;
     private float emit_timer = 0.0f;//USED FOR EMITS
     private float emit_delay = 0.33f;//0.25
@@ -88,6 +88,9 @@ public class PlayerController : MonoBehaviour
 	public bool emitFlashlight;
 	public bool emitKill;
 	public bool sb7;
+	private string currPos;
+	private string prevPos;
+	public bool emitPos;
 	//private GameObject playerCam;
     private static utilities util;
 
@@ -223,27 +226,30 @@ public class PlayerController : MonoBehaviour
 				string walkString = "";
 				if (walk != 0){
 				walkString = $",'w':'{walk.ToString("F1")}'";
-				emitPos = true;
                 }
 				//--------------- STRAFE EMIT-----------------
 			    string strafeString = "";
 				if (strafe != 0){
                 strafeString = $",'s':'{strafe.ToString("F1")}'";
-				emitPos = true;
 				}
 				//--------------- RUN EMIT-----------------
 				string runString ="";
 				if (Input.GetKey(InputManager.instance.running)){
 					runString = $",'r':''";
 				}
-				//--------------- POSITION EMIT-----------------
-				string posString ="";
+            //--------------- POSITION EMIT-----------------
+				string posString = "";
+				currPos = transform.position.x.ToString("F2") + transform.position.z.ToString("F2");
+				if (currPos != prevPos || emitPos) { posString = $",'x':'{transform.position.x.ToString("F2")}','y':'{transform.position.y.ToString("F2")}','z':'{transform.position.z.ToString("F2")}'"; }
+                prevPos = currPos; emitPos = false;
+                /*string posString ="";
 				if(emitPos || anim.GetCurrentAnimatorClipInfo(0)[0].clip.name=="React"){
                 posString = $",'x':'{transform.position.x.ToString("F2")}','y':'{transform.position.y.ToString("F2")}','z':'{transform.position.z.ToString("F2")}'";
 				emitPos = false;
-                }
-				//--------------- CAMSHOT EMIT-----------------
-				string shotString = "";
+                }*/
+
+            //--------------- CAMSHOT EMIT-----------------
+                string shotString = "";
 				if (emitShoot)
 				{
 					shotString = $",'shoot':'{shotName}'";
