@@ -62,7 +62,7 @@ public class Outline : MonoBehaviour {
 
   [SerializeField, Range(0f, 10f)]
   private float outlineWidth = 2f;
-
+    public bool canFade;
   //private float prevOutlineWidth;
 
   [Header("Optional")]
@@ -145,8 +145,9 @@ public class Outline : MonoBehaviour {
   }
 
   void Update() {
-       // if (prevOutlineWidth != outlineWidth) { needsUpdate = true; }
+        // if (prevOutlineWidth != outlineWidth) { needsUpdate = true; }
         //prevOutlineWidth = OutlineWidth;
+        if (canFade) { if (outlineWidth > 0) { outlineWidth -= 0.02f; needsUpdate = true; } }
     if (needsUpdate) {
 
       needsUpdate = false;

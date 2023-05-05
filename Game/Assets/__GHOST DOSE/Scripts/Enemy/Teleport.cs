@@ -63,7 +63,7 @@ public class Teleport : MonoBehaviour
     private void Update()
     {
         //---------------AGRO----------------------
-        if (NetworkDriver.instance.HOST)
+       // if (NetworkDriver.instance.HOST)
         {
             if (GetComponent<NPCController>().target != null && GetComponent<NPCController>().teleports) //GetComponent<NPCController>().agro && 
             {
@@ -108,7 +108,7 @@ public class Teleport : MonoBehaviour
             }
         }
         //STEP 2 - RELOCATE
-        if (teleport == 2)
+        if (teleport == 2)//HOST ONLY
         {
             //EVER delay SECONDS RELOCATE
             if ((Time.time > timer + delay))

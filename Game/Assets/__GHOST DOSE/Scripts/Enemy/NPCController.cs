@@ -26,6 +26,7 @@ public class NPCController : MonoBehaviour
     [Header("ENEMY PARAMETRS")]
     [Space(10)]
     public bool Shadower;
+    private bool ZOZO;
     public int healthEnemy = 100;
     public int range;
     [HideInInspector] public int startRange;
@@ -43,7 +44,7 @@ public class NPCController : MonoBehaviour
     public bool canRespawn;
     public bool teleports;
     public bool canFlinch;
-
+    public bool zozoLaser;
 
     [HideInInspector] public int startHealth;
 
@@ -53,6 +54,7 @@ public class NPCController : MonoBehaviour
     public bool agro = false;//HAUNTS THE PLAYER
     public Transform target;
     public int follow;
+    
     //public Transform player;
 
     [HideInInspector] private Transform head;
@@ -117,6 +119,8 @@ public class NPCController : MonoBehaviour
         HIT_COL.GetComponent<SphereCollider>().enabled = false;
         outline = transform.GetChild(0).GetComponent<Outline>();
         destination = this.gameObject;
+        zozoLaser = false;
+        if(GetComponent<ZozoControl>()!=null) { ZOZO = true; }
         //Debug.Log("----------------------------------------" + HIT_COL.GetComponent<SphereCollider>().enabled);
 
 
@@ -149,6 +153,7 @@ public class NPCController : MonoBehaviour
 
         //ALWAYS CHOOSE CLOSEST TARGET
         if (p1_dist < p2_dist) { distance = p1_dist; closestPlayer = Player.transform; } else { distance = p2_dist; closestPlayer = Client.transform; }
+        if(ZOZO) { target = closestPlayer; }
 
         float teleport = GetComponent<Teleport>().teleport;
 
@@ -330,6 +335,9 @@ public class NPCController : MonoBehaviour
             target.transform.position = Vector3.Lerp(target.transform.position, targetPosition, speed * Time.deltaTime);
         }
 
+
+        if(!zozoLaser)
+        {
             //RUN TO TARGET
             if (distance > hitRange)
             {
@@ -341,7 +349,7 @@ public class NPCController : MonoBehaviour
                     GetComponent<NavMeshAgent>().speed = chaseSpeed;//DOESNT AFFECT THIS
                     if (agro) { GetComponent<NavMeshAgent>().speed = chaseSpeed * 2; }
                 }
-                if (animEnemy.GetCurrentAnimatorClipInfo(0)[0].clip!=null && animEnemy.GetCurrentAnimatorClipInfo(0)[0].clip.name == "agro") { GetComponent<NavMeshAgent>().speed = 0; }
+                if (animEnemy.GetCurrentAnimatorClipInfo(0)[0].clip != null && animEnemy.GetCurrentAnimatorClipInfo(0)[0].clip.name == "agro") { GetComponent<NavMeshAgent>().speed = 0; }
                 //GetComponent<NavMeshAgent>().enabled = true;
                 navmesh.isStopped = false;
 
@@ -354,13 +362,15 @@ public class NPCController : MonoBehaviour
                 // Rotate towards the target position along the y-axis only
                 transform.rotation = Quaternion.RotateTowards(transform.rotation, Quaternion.LookRotation(target.transform.position - transform.position), 100f * Time.deltaTime);
 
-            animEnemy.SetBool("Fighting", true);
+                animEnemy.SetBool("Fighting", true);
                 animEnemy.SetBool("Run", true);
                 animEnemy.SetBool("Attack", true);
                 //GetComponent<NavMeshAgent>().enabled = false;
                 GetComponent<NavMeshAgent>().speed = 0;
                 navmesh.isStopped = true;
             }
+        }
+
         
         //---------------PLAYER DIES
         if (target != null && NetworkDriver.instance.HOST)
@@ -393,6 +403,8 @@ public class NPCController : MonoBehaviour
         {
             if (distance <= range)
             {
+                if (Player.GetComponent<Animator>().GetBool("Running")){ alertLevelPlayer += 100; }
+                if (Client.GetComponent<Animator>().GetBool("Running")){ alertLevelClient += 100; }
                 // Debug.Log("TARGET IS " + targetPlayer.gameObject.name + " DISTANCE " + distance);
 
                 Quaternion look = Quaternion.LookRotation(closestPlayer.position - head.position);
@@ -479,7 +491,7 @@ public class NPCController : MonoBehaviour
             if (!otherPlayer) { transform.LookAt(Player.transform); alertLevelPlayer = unawareness * 2; } else { transform.LookAt(Client.transform); alertLevelClient = unawareness * 2; }
 
             //CAMSHOT
-            if (damageAmount <= 0) { range += 1; angleView = startAngleView * 2; Flinch(); }
+            if (damageAmount <= 0) { range += 2; angleView = startAngleView + 30; Flinch(); }
             //--------AGRO-----------
             if (damageAmount > 0)
             {

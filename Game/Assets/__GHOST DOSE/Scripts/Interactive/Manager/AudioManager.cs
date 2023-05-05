@@ -80,6 +80,29 @@ namespace InteractionSystem
             s.source.Stop();
         }
 
+
+        public void UpdateVolume(string sound, AudioSource audioSource, float newVolume)
+        {
+
+            Sound s = sounds.FirstOrDefault(item => item.name == sound);
+
+            if (s == null)
+            {
+                Debug.LogWarning("Sound: " + sound + " not found!");
+                return;
+            }
+
+            //specified audio source
+            if (audioSource != null)
+            {
+                s.source = audioSource;
+            }
+
+            s.source.volume = newVolume * (1f + UnityEngine.Random.Range(-s.volumeVariance / 2f, s.volumeVariance / 2f));
+            //s.source.Play();
+        }
+
+
         public AudioClip GetSound(string soundName)
         {
             foreach (Sound s in sounds)

@@ -41,10 +41,12 @@ public class VictimControl : Item
     Quaternion ZOZOstartRot;
 
     Vector3 mainStartPos;
+    private float zozoMusicVol;
 
     // Start is called before the first frame update
     void Start()
     {
+
         RandomVictim(null);
         mainStartPos = main.transform.position;
         domeStartSize = effectDome.transform.localScale;
@@ -60,7 +62,7 @@ public class VictimControl : Item
     // Update is called once per frame
     void Update()
     {
-
+       
         //START EFFECT
         if (playerOn || clientOn)
         {
@@ -143,6 +145,9 @@ public class VictimControl : Item
         //ZOZO ENTRACE END
         if(zozoEnd)
         {
+
+            if (zozoMusicVol < 0.8) { zozoMusicVol += 0.001f; AudioManager.instance.UpdateVolume("zozomusicloop", null, zozoMusicVol); }
+
             effectDome.transform.localScale = Vector3.Lerp(effectDome.transform.localScale, effectDome.transform.localScale * 0.6f, Time.deltaTime * 1);
             zozoSpawn.transform.localScale = Vector3.Lerp(zozoSpawn.transform.localScale, zozoSpawn.transform.localScale * 0.6f, Time.deltaTime * 1);
             zozoEffectMid.transform.localScale = Vector3.Lerp(zozoEffectMid.transform.localScale, zozoEffectMid.transform.localScale * 0.6f, Time.deltaTime * 1);
@@ -192,16 +197,22 @@ public class VictimControl : Item
 
     }
 
+    //START CIRCLE
     public override void ActivateObject(bool otherPlayer)
     {
         if (!zozo)
         {
-            if ((playerOn && clientOn && GameDriver.instance.twoPlayer) || (!GameDriver.instance.twoPlayer && playerOn))
-            {
-                ActivateCircle(false);
 
+            if (GameObject.Find("OuijaBoardManager").GetComponent<OuijaSessionControl>().CandleCount >= 6)
+            {
+                if ((playerOn && clientOn && GameDriver.instance.twoPlayer) || (!GameDriver.instance.twoPlayer && playerOn))
+                {
+                    ActivateCircle(false);
+
+                }
+                else { GameDriver.instance.WriteGuiMsg("Both Players must be present!", 5f); }
             }
-            else { GameDriver.instance.WriteGuiMsg("Both Players must be present!", 5f); }
+            else { GameDriver.instance.WriteGuiMsg("Need more candles!", 5f); }
         }
     }
 
@@ -234,6 +245,7 @@ public class VictimControl : Item
     public void SetSpiritsFree()
     {
         AudioManager.instance.StopPlaying("creepywhisper", null);
+        AudioManager.instance.Play("heavenmusic", null);
         heaventVFX.SetActive(true);
         startCircle = false;
         setSpiritsFree = true;
@@ -249,14 +261,16 @@ public class VictimControl : Item
     }
     public void SummonZozo()
     {
+        GameObject.Find("OuijaBoardManager").GetComponent<OuijaSessionControl>().CandleCount = 0;
         zozo = true;
         startCircle = false;
         AudioManager.instance.Play("enterzozomusic", null);
         Invoke("SpawnInitialEffect", 15f);
         Invoke("SpawnMidEffect", 39f);
         Invoke("Climax", 50f);//CLIMAX
-       
-      
+        zozoDummy.SetActive(true);
+
+
 
     }
     public void SpawnInitialEffect()
@@ -271,7 +285,10 @@ public class VictimControl : Item
 
     public void Climax()
     {
-        zozoFXendOn = true;
+        zozoMusicVol = 0;
+        AudioManager.instance.Play("zozomusicloop", null);
+        AudioManager.instance.UpdateVolume("zozomusicloop", null, zozoMusicVol);
+      zozoFXendOn = true;
         zozoEffectEnd.SetActive(true);
         Invoke("SpawnZOZO", 10f);
     }
@@ -279,6 +296,7 @@ public class VictimControl : Item
     public void SpawnZOZO()
     {
         ZOZO.SetActive(true);
+        zozoDummy.SetActive(false);
         zozoEnd = true;
         zozoFXendOn = false;
         Invoke("DestroyZozo", 30f);//-------------HOW LONG ZOZO ALIVE
@@ -287,6 +305,7 @@ public class VictimControl : Item
 
     public void DestroyZozo()
     {
+        AudioManager.instance.StopPlaying("zozomusicloop", null);
         ZOZO.transform.position = ZOZOstartPos;
         ZOZO.transform.rotation = ZOZOstartRot;
         ZOZO.SetActive(false);

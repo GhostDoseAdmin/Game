@@ -118,17 +118,22 @@ public class HealthSystem : MonoBehaviour
 
 	public void HealthDamage(int damage , Vector3 force)
     {
-        AudioManager.instance.Play("EnemyHit", gameObject.GetComponent<PlayerController>().audioSource);
-        //GetComponent<PlayerController>().emitDamage = true;
-        GetComponent<PlayerController>().damageForce = force;
+        healthLevel.color = Color.red;
+         //GetComponent<PlayerController>().emitDamage = true;
+         GetComponent<PlayerController>().damageForce = force;
         GetComponent<Rigidbody>().AddForce(force, ForceMode.Impulse);
-        GetComponent<Animator>().Play("Flinch", -1, 0f); //-1
+        GetComponent<Animator>().Play("Flinch", 0, 0f); //-1
 
         Health -= damage;
 		//healthLevel.fillAmount -= damage * 0.01f;
 		UpdateHealth();
+		Invoke("changeHealthUIColor",0.5f);
 	}
 
+	private void changeHealthUIColor()
+	{
+        healthLevel.color = Color.white;
+    }
 	private void OnTriggerStay(Collider other)
 	{
 		if (other.tag == "DamageBox")

@@ -227,6 +227,16 @@ namespace NetworkSystem
                 GameDriver.instance.Client.SetActive(false);
                 GameDriver.instance.Client.GetComponent<ClientPlayerController>().hp = 0;
             });
+            //-----------------LASER  ----------------->
+            sioCom.Instance.On("laser", (payload) =>
+            {
+                JObject data = JObject.Parse(payload);
+                Dictionary<string, string> dict = data.ToObject<Dictionary<string, string>>();
+                Debug.Log("RECEIVING LASER " + data);
+                GameObject enemy = GameObject.Find(dict["obj"]);
+                enemy.GetComponent<ZozoControl>().ChargeLaser();
+            });
+
             //-----------------EVENT  ----------------->
             sioCom.Instance.On("event", (payload) =>
             {
@@ -236,7 +246,12 @@ namespace NetworkSystem
                 GameObject obj = GameObject.Find(dict["obj"]);
                 if (dict["event"] == "pickup")
                 {
-                    if (obj != null) { DestroyImmediate(obj); }
+                    if (obj != null) {
+                        if (dict["type"] == "key"){ obj.GetComponent<Key>().DestroyWithSound(true); }
+                        if (dict["type"] == "med"){ obj.GetComponent<FirstAidKit>().DestroyWithSound(true); }
+                        if (dict["type"] == "bat") { obj.GetComponent<Battery>().DestroyWithSound(true); }
+                        if (dict["type"] == "cand") { obj.GetComponent<Candle>().DestroyWithSound(true); GameObject.Find("OuijaBoardManager").GetComponent<OuijaSessionControl>().CandleCount++; }
+                    }
                     else { if (dict["type"] == "key") { KeyInventory.instance.RemoveKey(dict["pass"]); } }//local player already picked up
                 }
                 if (dict["type"] == "door")
@@ -259,9 +274,11 @@ namespace NetworkSystem
                 Dictionary<string, string> dict = data.ToObject<Dictionary<string, string>>();
                 Debug.Log("RECEIVING TELEPORT " + data);
                 GameObject enemy = GameObject.Find(dict["obj"]);
-                enemy.GetComponent<Teleport>().teleport = float.Parse(dict["tp"]);
-                enemy.transform.position = new Vector3(float.Parse(dict["x"]), float.Parse(dict["y"]), float.Parse(dict["z"]));
-
+                if (enemy.GetComponent<Teleport>().teleport ==0 || (enemy.GetComponent<Teleport>().teleport==1.5 && float.Parse(dict["tp"])==3f))
+                {
+                    enemy.GetComponent<Teleport>().teleport = float.Parse(dict["tp"]);
+                    enemy.transform.position = new Vector3(float.Parse(dict["x"]), float.Parse(dict["y"]), float.Parse(dict["z"]));
+                }
             });
 
             //-----------------DISABLE  ----------------->

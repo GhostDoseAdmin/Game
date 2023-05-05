@@ -24,13 +24,18 @@ public class Key : Item
         AudioManager.instance.Play(pickUpKey, audioSource);
         NetworkDriver.instance.sioCom.Instance.Emit("event", JsonConvert.SerializeObject($"{{'obj':'{gameObject.name}','type':'key','event':'pickup','pass':'{keyPass}'}}"), false);
 
-        this.DestroyObject(0);
-       
-        //EMIT PICKUP, on networkdriver send other player info to destroy the key, if it doesnt exist, remove that key from player inventory so there are no duplicates
+        DestroyWithSound(false);
     }
 
     public string GetKeyPass()
     {
         return this.keyPass;
+    }
+
+    public void DestroyWithSound(bool otherPlayer)
+    {
+        if (!otherPlayer) { AudioManager.instance.Play("PickUp", GameObject.Find("Player").GetComponent<PlayerController>().audioSource); }
+        else { AudioManager.instance.Play("PickUp", GameObject.Find("Client").GetComponent<ClientPlayerController>().audioSource); }
+        Destroy(gameObject);
     }
 }

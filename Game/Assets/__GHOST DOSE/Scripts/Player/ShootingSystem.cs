@@ -35,6 +35,7 @@ public class ShootingSystem : MonoBehaviour
     private Image headShotIndicatorUI;
     private Image flashLightIndicatorUI;
     private Image focusIndicatorUI;
+    public Image camBatteryUI;
 
     [Header("PISTOL SOUNDS")]
     [Space(10)]
@@ -164,9 +165,10 @@ public class ShootingSystem : MonoBehaviour
             //if (Mathf.Approximately(Mathf.Round(camera.fieldOfView * 10) / 10f, aiming.zoom))//if current zoom is close to target zoom
             {
 
-                if (Time.time > shootTimer + shootCoolDown)
+                if (Time.time > shootTimer + shootCoolDown && camBatteryUI.fillAmount>0)
                 {
                     //AudioManager.instance.Play("ShotCam");
+                    camBatteryUI.fillAmount -= 0.2f;
                     muzzleFlash.Play();
                     Shell.Play();
                     int damage = 0;

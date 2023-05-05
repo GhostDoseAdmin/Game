@@ -8,6 +8,7 @@ public class OuijaSessionControl : MonoBehaviour
     public List<GameObject> OuijaSessions;
     public List<GameObject> MainTunnelExitDoors;
     public GameObject GhostDoorVFX;
+    public int CandleCount;
     public int currentSession;
     // Start is called before the first frame update
     void Start()
@@ -30,6 +31,7 @@ public class OuijaSessionControl : MonoBehaviour
 
     public void NextSession()
     {
+        CandleCount = 0;
         OuijaSessions[currentSession].gameObject.SetActive(false);
         currentSession++;
         if (OuijaSessions[currentSession] != null)

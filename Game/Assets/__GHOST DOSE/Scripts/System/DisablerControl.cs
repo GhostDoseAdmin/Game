@@ -23,21 +23,14 @@ public class DisablerControl : MonoBehaviour
         enemyObjects = new List<GameObject>();
 
         //GameObject[] shadowers = GameObject.FindGameObjectsWithTag("Shadower");
-        GameObject[] ghosts = GameObject.FindGameObjectsWithTag("Ghost");
+        NPCController[] ghosts = FindObjectsOfType<NPCController>();
 
-        /*foreach (GameObject shadower in shadowers)
-        {
-            if (shadower.GetComponent<NPCController>() != null)
-            {
-                enemyObjects.Add(shadower);
-            }
-        }*/
-        foreach (GameObject ghost in ghosts)
+        foreach (NPCController ghost in ghosts)
         {
             if (ghost.GetComponent<NPCController>() != null)
             {
                 //Debug.Log("----------------------------------------------------------------" + ghost.name);
-                enemyObjects.Add(ghost);
+                enemyObjects.Add(ghost.gameObject);
                 //ghost.SetActive(false);
             }
         }

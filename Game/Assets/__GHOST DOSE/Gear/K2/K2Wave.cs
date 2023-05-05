@@ -88,6 +88,9 @@ public class K2Wave : MonoBehaviour
                 other.gameObject.transform.parent.GetComponent<ColdSpot>().Exposed();
             }
         }
+        //MEDKIT
+        if (other.GetComponentInParent<FirstAidKit>() != null) { other.GetComponentInParent<Outline>().OutlineWidth = 10; }
+        if (other.GetComponentInParent<Battery>() != null) { other.GetComponentInParent<Outline>().OutlineWidth = 10; }
     }
 
 

@@ -14,9 +14,17 @@ public class FirstAidKit : Item
 
     public override void ActivateObject(bool otherPlayer)
     {
+        AudioManager.instance.Play("GetFrom", null);
         //HealthSystem.kitinstance.CollectKit(this.kit);
         GameObject.Find("Player").GetComponent<HealthSystem>().Health += GameObject.Find("Player").GetComponent<HealthSystem>().maxHealth* healFactor; 
         NetworkDriver.instance.sioCom.Instance.Emit("event", JsonConvert.SerializeObject($"{{'obj':'{gameObject.name}','type':'med','event':'pickup','pass':'none'}}"), false);
-        this.DestroyObject(0);
+        DestroyWithSound(false);
+    }
+
+    public void DestroyWithSound(bool otherPlayer)
+    {
+        if (!otherPlayer) { AudioManager.instance.Play("GetFrom", GameObject.Find("Player").GetComponent<PlayerController>().audioSource); }
+        else { AudioManager.instance.Play("GetFrom", GameObject.Find("Client").GetComponent<ClientPlayerController>().audioSource); }
+        Destroy(gameObject);
     }
 }
