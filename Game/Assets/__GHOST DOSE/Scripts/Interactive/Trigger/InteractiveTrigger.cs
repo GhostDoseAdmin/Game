@@ -17,6 +17,10 @@ public class InteractiveTrigger : MonoBehaviour
     private float delay = 1f;
     private float timer = 0f;
 
+    private void Awake()
+    {
+        this.gameObject.layer = LayerMask.NameToLayer("Ignore Raycast");
+    }
     private void Start()
     {
         allowInteraction = false;

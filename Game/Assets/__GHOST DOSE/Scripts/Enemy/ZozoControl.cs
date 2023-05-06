@@ -179,10 +179,10 @@ public class ZozoControl : MonoBehaviour
     void OnAnimatorIK()
     {
 
-        targetPos = Vector3.Lerp(targetPos, new Vector3(GetComponent<NPCController>().target.transform.position.x, GetComponent<NPCController>().target.transform.position.y + 1f, GetComponent<NPCController>().target.transform.position.z), 1f * Time.deltaTime);
+       // targetPos = Vector3.Lerp(targetPos, GetComponent<NPCController>().target.position, 1f * Time.deltaTime); //
         Animator animator = GetComponent<Animator>();
         animator.SetLookAtWeight(1);
-        animator.SetLookAtPosition(targetPos);
+        animator.SetLookAtPosition(GetComponent<NPCController>().target.position);
 
 
     }
