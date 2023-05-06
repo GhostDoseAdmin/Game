@@ -437,7 +437,7 @@ public class PlayerController : MonoBehaviour
 
         if (!changingGear)
 		{
-            if (gear == 3 || gear==0)
+            if (gear == 3 || gear==0) //SPIRIT BOX AND REM
             {
 				gearAim = true;
                 anim.SetBool("Pistol", true);
@@ -447,7 +447,9 @@ public class PlayerController : MonoBehaviour
             {
 				if (Input.GetMouseButton(1)) //AIMING
 				{
-					if (is_FlashlightAim)
+                    if (!gearAim) { if (gear == 1) { AudioManager.instance.Play("camfocus", audioSource); } }
+
+                    if (is_FlashlightAim)
 					{
 						anim.SetBool("Flashlight", false);
 						if (gear == 1)
@@ -475,7 +477,7 @@ public class PlayerController : MonoBehaviour
 					//-------------------------------SHOOTING -----------------------------------
 					if (Input.GetMouseButtonDown(0))
 					{
-                        if (gear == 1) { anim.SetBool("Shoot", true); GetComponent<ShootingSystem>().Shoot(); }
+                        if (gear == 1) { anim.SetBool("Shoot", true); GetComponent<ShootingSystem>().Shoot(); AudioManager.instance.StopPlaying("camfocus", audioSource); }
                         if (gear == 3) { anim.SetBool("Throw", true); throwing = true; }
 
 					}

@@ -92,13 +92,6 @@ public class ShootingSystem : MonoBehaviour
         //ammo—lipCountUI.text = ammoClipCount.ToString("0");
     }
 
-    public void CollectCartridges(int ammo)
-    {
-        ammoCount = ammoCount + ammo;
-        ammoCountUI.text = ammoCount.ToString("0");
-        AudioManager.instance.Play(pickUp, gameObject.GetComponent<PlayerController>().audioSource);
-    }
-
     public void Update()
     {
         //CheckShoot();
@@ -205,6 +198,7 @@ public class ShootingSystem : MonoBehaviour
 
                     camera.fieldOfView = 40;//40
                     shootTimer = Time.time;//cooldown
+                  
                 }
 
             }

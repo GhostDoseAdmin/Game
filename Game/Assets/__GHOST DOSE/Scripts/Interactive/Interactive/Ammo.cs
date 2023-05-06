@@ -11,7 +11,7 @@ public class Ammo : Item
 
     public override void ActivateObject(bool otherPlayer)
     {
-        ShootingSystem.instance.CollectCartridges(this.countCartridges);
+        //ShootingSystem.instance.CollectCartridges(this.countCartridges);
         this.DestroyObject(0);
     }
 }
