@@ -23,8 +23,9 @@ public class FirstAidKit : Item
 
     public void DestroyWithSound(bool otherPlayer)
     {
-        if (!otherPlayer) { AudioManager.instance.Play("GetFrom", GameObject.Find("Player").GetComponent<PlayerController>().audioSource); }
-        else { AudioManager.instance.Play("GetFrom", GameObject.Find("Client").GetComponent<ClientPlayerController>().audioSource); }
+        if (!otherPlayer) { AudioManager.instance.Play("GetFrom", null); }
+        //if (!otherPlayer) { AudioManager.instance.Play("GetFrom", GameObject.Find("Player").GetComponent<PlayerController>().audioSource); }
+        //else { AudioManager.instance.Play("GetFrom", GameObject.Find("Client").GetComponent<ClientPlayerController>().audioSource); }
         Destroy(gameObject);
     }
 }

@@ -63,6 +63,7 @@ public class Outline : MonoBehaviour {
   [SerializeField, Range(0f, 10f)]
   private float outlineWidth = 2f;
     public bool canFade;
+    public bool skipChildren;
   //private float prevOutlineWidth;
 
   [Header("Optional")]
@@ -78,6 +79,7 @@ public class Outline : MonoBehaviour {
   private List<ListVector3> bakeValues = new List<ListVector3>();
 
   private Renderer[] renderers;
+  private Renderer singleRenderer;
   private Material outlineMaskMaterial;
   private Material outlineFillMaterial;
 
@@ -101,17 +103,35 @@ public class Outline : MonoBehaviour {
     // Apply material properties immediately
     needsUpdate = true;
 
-        foreach (var renderer in renderers)
+        if (!skipChildren)
         {
 
+            foreach (var renderer in renderers)
+            {
+
+                // Append outline shaders
+                var materials = renderer.sharedMaterials.ToList();
+
+                materials.Add(outlineMaskMaterial);
+                materials.Add(outlineFillMaterial);
+
+                renderer.materials = materials.ToArray();
+            }
+        }
+        else
+        {
+            singleRenderer = GetComponent<Renderer>();
             // Append outline shaders
-            var materials = renderer.sharedMaterials.ToList();
+            var materials = singleRenderer.sharedMaterials.ToList();
 
             materials.Add(outlineMaskMaterial);
             materials.Add(outlineFillMaterial);
 
-            renderer.materials = materials.ToArray();
+            singleRenderer.materials = materials.ToArray();
         }
+
+
+
     }
 
   /*void OnEnable() {
@@ -297,21 +317,38 @@ public class Outline : MonoBehaviour {
       case Mode.OutlineAll:
 
         outlineMaskMaterial.SetFloat("_ZTest", (float)UnityEngine.Rendering.CompareFunction.Always);
-        //outlineFillMaterial.SetFloat("_ZTest", (float)UnityEngine.Rendering.CompareFunction.Always);
-        //outlineFillMaterial.SetFloat("_OutlineWidth", outlineWidth);
-                SkinnedMeshRenderer skinnedMeshRenderer = GetComponent<SkinnedMeshRenderer>();
-                Material[] materials = skinnedMeshRenderer.materials;
-
-                foreach (Material material in materials)
+                //outlineFillMaterial.SetFloat("_ZTest", (float)UnityEngine.Rendering.CompareFunction.Always);
+                //outlineFillMaterial.SetFloat("_OutlineWidth", outlineWidth);
+                if (GetComponent<SkinnedMeshRenderer>() != null)
                 {
-                    if (material.name == "OutlineFill (Instance)")
-                    {
-                        material.SetFloat("_OutlineWidth", outlineWidth);
-                        material.SetFloat("_ZTest", (float)UnityEngine.Rendering.CompareFunction.Always);
-                    }
-                }
-                break;
 
+                    SkinnedMeshRenderer skinnedMeshRenderer = GetComponent<SkinnedMeshRenderer>();
+                    Material[] materials = skinnedMeshRenderer.materials;
+
+                    foreach (Material material in materials)
+                    {
+                        if (material.name == "OutlineFill (Instance)" || material.name == "OutlineFill")
+                        {
+                            material.SetFloat("_OutlineWidth", outlineWidth);
+                            material.SetFloat("_ZTest", (float)UnityEngine.Rendering.CompareFunction.Always);
+                        }
+                    }
+                    break;
+                }
+                else {
+                    MeshRenderer meshRender = GetComponent<MeshRenderer>();
+                    Material[] materials = meshRender.materials;
+
+                    foreach (Material material in materials)
+                    {
+                        if (material.name == "OutlineFill (Instance)" || material.name == "OutlineFill")
+                        {
+                            material.SetFloat("_OutlineWidth", outlineWidth);
+                            material.SetFloat("_ZTest", (float)UnityEngine.Rendering.CompareFunction.Always);
+                        }
+                    }
+                    break;
+                }
       case Mode.OutlineVisible:
         outlineMaskMaterial.SetFloat("_ZTest", (float)UnityEngine.Rendering.CompareFunction.Always);
         outlineFillMaterial.SetFloat("_ZTest", (float)UnityEngine.Rendering.CompareFunction.LessEqual);

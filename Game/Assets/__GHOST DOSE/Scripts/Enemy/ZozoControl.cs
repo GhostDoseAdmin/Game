@@ -12,7 +12,7 @@ public class ZozoControl : MonoBehaviour
 {
     AudioSource audioSourceFootStepRight, audioSourceFootStepLeft;
     public Sound[] footSteps;
-    [HideInInspector]public GameObject Head;
+    public GameObject Head;
     public GameObject laserChargeVFX;
     Vector3 laserChargeVFXstartScale;
     public GameObject chargeLight;
@@ -48,7 +48,7 @@ public class ZozoControl : MonoBehaviour
     public void Update()
     {
         //INITIATE LASER
-        if (Time.time > canLaserTimer + laserCoolDown)
+        if (Time.time > canLaserTimer + laserCoolDown && GetComponent<NPCController>().target!=null)
         {
             RaycastHit hit;
             Vector3 targPos = GetComponent<NPCController>().target.position + Vector3.up * 1.4f;

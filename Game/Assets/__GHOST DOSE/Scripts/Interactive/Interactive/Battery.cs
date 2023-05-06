@@ -24,8 +24,9 @@ public class Battery : Item
 
     public void DestroyWithSound(bool otherPlayer)
     {
-        if (!otherPlayer) { AudioManager.instance.Play("PickUp", GameObject.Find("Player").GetComponent<PlayerController>().audioSource); }
-        else { AudioManager.instance.Play("PickUp", GameObject.Find("Client").GetComponent<ClientPlayerController>().audioSource); }
+        if (!otherPlayer) { AudioManager.instance.Play("PickUp", null); }
+        //if (!otherPlayer) { AudioManager.instance.Play("PickUp", GameObject.Find("Player").GetComponent<PlayerController>().audioSource); }
+        //else { AudioManager.instance.Play("PickUp", GameObject.Find("Client").GetComponent<ClientPlayerController>().audioSource); }
         Destroy(gameObject);
     }
 }
