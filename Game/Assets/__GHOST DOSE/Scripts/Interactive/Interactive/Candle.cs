@@ -19,7 +19,6 @@ public class Candle : Item
     {
 
         //HealthSystem.kitinstance.CollectKit(this.kit);
-        GameObject.Find("Player").GetComponent<HealthSystem>().Health += GameObject.Find("Player").GetComponent<ShootingSystem>().camBatteryUI.fillAmount =1;
         NetworkDriver.instance.sioCom.Instance.Emit("event", JsonConvert.SerializeObject($"{{'obj':'{gameObject.name}','type':'cand','event':'pickup','pass':'none'}}"), false);
         GameObject.Find("OuijaBoardManager").GetComponent<OuijaSessionControl>().CandleCount++;
         DestroyWithSound(false);
