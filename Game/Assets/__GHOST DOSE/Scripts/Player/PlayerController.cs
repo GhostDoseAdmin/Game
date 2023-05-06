@@ -181,9 +181,20 @@ public class PlayerController : MonoBehaviour
 
         if (Input.GetKeyUp(KeyCode.Escape))
         {
-			Cursor.visible = true;
-			Cursor.lockState = CursorLockMode.None;
-		}
+			if (!Cursor.visible)
+			{
+                Cursor.visible = true;
+                Cursor.lockState = CursorLockMode.None;
+            }
+			else
+            {
+                Cursor.lockState = CursorLockMode.Locked;
+                Cursor.visible = false;
+            }
+
+
+
+        }
 
 		//----------------------------------  E M I T          P L A Y E R             A C T I O N S -----------------------------------------------
         Ray ray = GameObject.Find("PlayerCamera").GetComponent<Camera>().ViewportPointToRay(new Vector3(0.5f, 0.5f, 0f));

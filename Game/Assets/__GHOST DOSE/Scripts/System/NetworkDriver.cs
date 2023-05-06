@@ -187,18 +187,23 @@ namespace NetworkSystem
                         GameDriver.instance.Client.GetComponent<ClientPlayerController>().triggerShoot = true;
                         GameObject enemy = GameObject.Find(dict["shoot"]);
                         //DAMAGE AND KILL
-                        if (int.Parse(dict["sdmg"])!=-1)
+                        if (dict.ContainsKey("sdmg"))
                         {
-                            if (enemy != null)
+                            if (int.Parse(dict["sdmg"]) != -1)//victim kill
                             {
-                                if (!dict.ContainsKey("kill")) { enemy.GetComponent<NPCController>().TakeDamage(int.Parse(dict["sdmg"]), true); }//hurt
-                                else { enemy.GetComponent<NPCController>().healthEnemy = 0; enemy.GetComponent<NPCController>().TakeDamage(0, true); }//kill
+                                if (enemy != null)
+                                {
+                                    if (!dict.ContainsKey("kill")) { enemy.GetComponent<NPCController>().TakeDamage(int.Parse(dict["sdmg"]), true); }//hurt
+                                    else { enemy.GetComponent<NPCController>().healthEnemy = 0; enemy.GetComponent<NPCController>().TakeDamage(0, true); }//kill
+                                }
                             }
-                        }else//VICTIM
-                        {
-                            Debug.Log("CLIENT CHOSE " + enemy.name);
-                            GameObject.Find("OuijaBoardManager").GetComponent<OuijaSessionControl>().OuijaSessions[GameObject.Find("OuijaBoardManager").GetComponent<OuijaSessionControl>().currentSession].GetComponent<VictimControl>().testAnswer(enemy, true);
+                            else//VICTIM
+                            {
+                                Debug.Log("CLIENT CHOSE " + enemy.name);
+                                GameObject.Find("OuijaBoardManager").GetComponent<OuijaSessionControl>().OuijaSessions[GameObject.Find("OuijaBoardManager").GetComponent<OuijaSessionControl>().currentSession].GetComponent<VictimControl>().testAnswer(enemy, true);
+                            }
                         }
+
 
                     }
                 }
