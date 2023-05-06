@@ -63,7 +63,7 @@ public class Teleport : MonoBehaviour
     private void Update()
     {
         //---------------AGRO----------------------
-       // if (NetworkDriver.instance.HOST)
+        if (NetworkDriver.instance.HOST)
         {
             if (GetComponent<NPCController>().target != null && GetComponent<NPCController>().teleports) //GetComponent<NPCController>().agro && 
             {
