@@ -161,7 +161,7 @@ public class ShootingSystem : MonoBehaviour
                 if (Time.time > shootTimer + shootCoolDown && camBatteryUI.fillAmount>0)
                 {
                     //AudioManager.instance.Play("ShotCam");
-                    camBatteryUI.fillAmount -= 0.2f;
+                    camBatteryUI.fillAmount -= 0.1f;
                     muzzleFlash.Play();
                     Shell.Play();
                     int damage = 0;
