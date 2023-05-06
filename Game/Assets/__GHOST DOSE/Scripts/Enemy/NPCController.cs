@@ -26,7 +26,7 @@ public class NPCController : MonoBehaviour
     [Header("ENEMY PARAMETRS")]
     [Space(10)]
     public bool Shadower;
-    private bool ZOZO;
+    public bool ZOZO;
     public int healthEnemy = 100;
     public int range;
     [HideInInspector] public int startRange;
@@ -88,6 +88,7 @@ public class NPCController : MonoBehaviour
     private void Awake()
     {
         GetComponent<GhostVFX>().Shadower = Shadower;
+        if (GetComponent<ZozoControl>() != null) { ZOZO = true; }
         active_timer = 99999;
         audioSource = gameObject.AddComponent<AudioSource>();
         audioSource.spatialBlend = 1.0f;
@@ -120,7 +121,7 @@ public class NPCController : MonoBehaviour
         outline = transform.GetChild(0).GetComponent<Outline>();
         destination = this.gameObject;
         zozoLaser = false;
-        if(GetComponent<ZozoControl>()!=null) { ZOZO = true; }
+       
         //Debug.Log("----------------------------------------" + HIT_COL.GetComponent<SphereCollider>().enabled);
 
 
@@ -153,7 +154,7 @@ public class NPCController : MonoBehaviour
 
         //ALWAYS CHOOSE CLOSEST TARGET
         if (p1_dist < p2_dist) { distance = p1_dist; closestPlayer = Player.transform; } else { distance = p2_dist; closestPlayer = Client.transform; }
-        if(ZOZO) { target = closestPlayer; }
+        if (ZOZO) { if (closestPlayer != null) { target = closestPlayer; } }
 
         float teleport = GetComponent<Teleport>().teleport;
 
@@ -316,7 +317,7 @@ public class NPCController : MonoBehaviour
         navmesh.SetDestination(target.position);
         destination = target.gameObject;
         GetComponent<NavMeshAgent>().stoppingDistance = hitRange;
-        animEnemy.SetBool("Walk", true);
+        if (!zozoLaser) { animEnemy.SetBool("Walk", true); }
 
 
         float distance = Vector3.Distance(transform.position, new Vector3(target.position.x, transform.position.y, target.position.z));//measured at same level Yaxis
@@ -373,7 +374,7 @@ public class NPCController : MonoBehaviour
 
         
         //---------------PLAYER DIES
-        if (target != null && NetworkDriver.instance.HOST)
+        if (target != null && Player!=null && Client!=null && NetworkDriver.instance.HOST)
         {
             if (target.gameObject == Player)
             {
