@@ -220,13 +220,13 @@ MonoBehaviour:
   chargeEndTransform: {fileID: 3707700954425663319}
   laserLights: {fileID: 3707700954137539526}
   canLaser: 0
-  laserDuration: 30
-  laserDistanceMin: 1
+  laserDuration: 10
+  laserDistanceMin: 7
   laserDistanceMax: 20
   laserActive: 0
   laserForce: 100
   laserDamage: 100
-  laserCoolDown: 0
+  laserCoolDown: 30
 --- !u!82 &3707700953677419401
 AudioSource:
   m_ObjectHideFlags: 0

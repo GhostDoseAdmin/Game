@@ -7,6 +7,7 @@ using UnityEngine.AI;
 using Unity.VisualScripting;
 using Newtonsoft.Json;
 using NetworkSystem;
+using InteractionSystem;
 
 public class ZozoControl : MonoBehaviour
 {
@@ -121,6 +122,10 @@ public class ZozoControl : MonoBehaviour
         Invoke("StopLaser", laserDuration);
     }
 
+    private void TriggerLaugh()
+    {
+        AudioManager.instance.Play("zozolaugh", null);
+    }
 
     private void StopLaser()
     {
