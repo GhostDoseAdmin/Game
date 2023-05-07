@@ -9,6 +9,7 @@ Shader "Custom/GhostAlphaCutoff" {
         _Alpha("Alpha", Range(0,1)) = 1
         _MinDistance("Minimum Distance", Range(0,2)) = 1.3
         _Shadower("Shadower", Range(0,1)) = 0
+        _EMFAlpha("EmfAlpha", Range(0,1)) = 0
 
     }
         SubShader{
@@ -35,6 +36,7 @@ Shader "Custom/GhostAlphaCutoff" {
             half _Emission;
             half _YOffset;
             half _Alpha;
+            half _EMFAlpha;
             half _MinDistance;
             half _Shadower;
             fixed4 _Color;
@@ -141,7 +143,7 @@ Shader "Custom/GhostAlphaCutoff" {
                 float strength = minStrength * minStrengthPlayers;
 
                 //ALPHA CUTOFF -- only render pixels that are more visible
-                float total_alpha = (1 - (alphaStrength * alphaStrengthPlayers)) * c.a * _Alpha; //
+                float total_alpha = ((1 - (alphaStrength * alphaStrengthPlayers)) * c.a * _Alpha) +_EMFAlpha;; //
                 if (_Shadower == 1) { total_alpha = alphaStrength * alphaStrengthPlayers * c.a * _Alpha; }
 
                 if (total_alpha < 1) {//dont render the pixels

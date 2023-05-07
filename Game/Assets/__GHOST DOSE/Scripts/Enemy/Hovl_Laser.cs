@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Runtime.Serialization.Formatters;
 using System;
 using UnityEngine;
-
+using InteractionSystem;
 public class Hovl_Laser : MonoBehaviour
 {
     public int damageOverTime = 30;
@@ -28,12 +28,17 @@ public class Hovl_Laser : MonoBehaviour
     private ParticleSystem[] Hit;
     private float collideTimer;
     private float collideDelay = 1f;
+    private AudioSource laserSound;
     void Start ()
     {
         //Get LineRender and ParticleSystem components from current prefab;  
         Laser = GetComponent<LineRenderer>();
         Effects = GetComponentsInChildren<ParticleSystem>();
         Hit = HitEffect.GetComponentsInChildren<ParticleSystem>();
+        laserSound = HitEffect.gameObject.AddComponent<AudioSource>();
+        laserSound.spatialBlend = 1.0f;
+        laserSound.volume = 10f;
+        AudioManager.instance.Play("zozolasersound", laserSound);
         //if (Laser.material.HasProperty("_SpeedMainTexUVNoiseZW")) LaserStartSpeed = Laser.material.GetVector("_SpeedMainTexUVNoiseZW");
         //Save [1] and [3] textures speed
         //{ DISABLED AFTER UPDATE}
@@ -54,7 +59,7 @@ public class Hovl_Laser : MonoBehaviour
         {
             Laser.SetPosition(0, transform.position);
         
-        if (Time.time > collideTimer + collideDelay)
+
         {
             RaycastHit hit; //DELETE THIS IF YOU WANT USE LASERS IN 2D
            //ADD THIS IF YOU WANNT TO USE LASERS IN 2D: RaycastHit2D hit = Physics2D.Raycast(transform.position, transform.forward, MaxLength);       
@@ -82,7 +87,7 @@ public class Hovl_Laser : MonoBehaviour
                 //LaserSpeed[2] = (LaserStartSpeed[2] * 4) / (Vector3.Distance(transform.position, hit.point));
                 //Destroy(hit.transform.gameObject); // destroy the object hit
                 //hit.collider.SendMessage("SomeMethod"); // example
-                if (hit.collider.gameObject.name == "Player")
+                if (hit.collider.gameObject.name == "Player" && Time.time > collideTimer + collideDelay)
                 {
                     Vector3 oppositeForce = GetComponentInParent<NPCController>().transform.forward * GetComponentInParent<ZozoControl>().laserForce;
                     oppositeForce.y = 0f; // Set the y component to 0
@@ -96,6 +101,8 @@ public class Hovl_Laser : MonoBehaviour
                         //AudioManager.instance.Play("EnemyHit", GetComponentInParent<NPCController>().audioSource);
                         hit.collider.gameObject.GetComponent<ClientPlayerController>().Flinch(oppositeForce);//FLINCH DOESNT NEED FORCE AS PLAY IS MOVED BY THAT PLAYER ANYWAY UPDATED POS
                     }
+
+                        collideTimer = Time.time;//cooldown
                 }
             }
             else
@@ -114,7 +121,7 @@ public class Hovl_Laser : MonoBehaviour
                 //LaserSpeed[0] = (LaserStartSpeed[0] * 4) / (Vector3.Distance(transform.position, EndPos)); {DISABLED AFTER UPDATE}
                 //LaserSpeed[2] = (LaserStartSpeed[2] * 4) / (Vector3.Distance(transform.position, EndPos)); {DISABLED AFTER UPDATE}
             }
-                collideTimer = Time.time;//cooldown
+                
             }
             //Insurance against the appearance of a laser in the center of coordinates!
             if (Laser.enabled == false && LaserSaver == false)

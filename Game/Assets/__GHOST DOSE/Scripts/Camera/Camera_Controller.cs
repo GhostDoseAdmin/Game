@@ -254,7 +254,7 @@ public class Camera_Controller : MonoBehaviour
         }
 
 
-        if (shake) { GetComponent<Camera>().fieldOfView = GetComponent<Aiming>().normal + (UnityEngine.Random.Range(-shakeMagnitude, shakeMagnitude)*5f); }
+        if (shake) { GetComponent<Camera>().fieldOfView = GetComponent<Camera>().fieldOfView + (UnityEngine.Random.Range(-shakeMagnitude, shakeMagnitude)*5f); }
 
         targetPosWithOffset = (targetPosition + offsetVectorTransformed);
         Vector3 targetPosWithCameraOffset = targetPosition + offsetVectorTransformed + cameraOffsetVectorTransformed;

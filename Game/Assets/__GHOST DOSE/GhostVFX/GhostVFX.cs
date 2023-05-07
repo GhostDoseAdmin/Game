@@ -13,24 +13,20 @@ using NetworkSystem;
 public class GhostVFX : MonoBehaviour
 {
 
-    [HideInInspector] public bool Shadower;
+    public bool Shadower;//SET BY NPC CONTROLLER
     [HideInInspector] public GameObject PlayerLight;
     [HideInInspector] public GameObject ClientLight;
     private GameObject skin;
     Light[] envLights;
-    //private GameDriver GD;
     [HideInInspector] public List<Light> LightSources;
     List<float> originalMaxAlpha = new List<float>(); //affects total alpha
     List<float> currentMaxAlpha = new List<float>();
     public bool visible; //USD IN CONJUNCTION WITH PLAY AIM RAYCAST
     public bool inShadow;
     public bool invisible;
-    //public int invisibleCounter;
     public GameObject HEAD;
     public bool death;
     private bool visibilitySet;
-    //private float sound_timer = 0f;
-    //private float sound_delay = 5f;
     private bool playedSound;
 
     //ENVIRONMENT LIGHTS
@@ -41,12 +37,12 @@ public class GhostVFX : MonoBehaviour
     float[] ScalarStrengths;
     float[] lightRanges;
 
-    //public RenderTexture DynamicShadowMap;
+    private int updateCall;
 
-
-    public void Start()
+    public void Awake()
     {
-       // GD = GameObject.Find("GameController").GetComponent<GameDriver>();
+
+        // GD = GameObject.Find("GameController").GetComponent<GameDriver>();
         skin = gameObject.transform.GetChild(0).gameObject;
 
         //-----STORE ORIGINAL ALPHA SETTINGS
@@ -58,7 +54,12 @@ public class GhostVFX : MonoBehaviour
                 float alphaValue = material.GetFloat("_Alpha");
                 originalMaxAlpha.Add(alphaValue);
                 currentMaxAlpha.Add(alphaValue);
-                if (Shadower) { gameObject.tag = "Shadower"; HEAD.tag = "Shadower"; material.SetInt("_Shadower", 1); }
+                if (Shadower) { 
+                    if (gameObject.tag != "ZOZO") { 
+                        gameObject.tag = "Shadower"; HEAD.tag = "Shadower";
+                    } 
+                    material.SetInt("_Shadower", 1); 
+                }
             }
         }
         //------FIND ENVIRONMENT LIGHTS---------------
@@ -67,14 +68,18 @@ public class GhostVFX : MonoBehaviour
         List<Light> lights = new List<Light>();
         foreach (GhostLight ghostLight in ghostLights)
         {
-            if ((ghostLight.ghost && this.gameObject.tag == "Ghost") || (ghostLight.shadower && this.gameObject.tag == "Shadower"))
+            if(Vector3.Distance(ghostLight.gameObject.transform.position, this.gameObject.transform.position)<100)
             {
-                Light light = ghostLight.GetComponent<Light>();
-                if (light != null)
+                if (ghostLight.ghost || ghostLight.shadower)
                 {
-                    lights.Add(light);
+                    Light light = ghostLight.GetComponent<Light>();
+                    if (light != null)
+                    {
+                        lights.Add(light);
+                    }
                 }
             }
+
         }
         envLights = lights.ToArray();
 
@@ -100,142 +105,162 @@ public class GhostVFX : MonoBehaviour
                 lightRanges[i] = lightSource.range;//30
             }
         }
+        foreach (Material material in skin.GetComponent<SkinnedMeshRenderer>().materials)
+        {
+            material.SetInt("_EnvLightCount", envLightCount);
+            material.SetVectorArray("_LightPositions", lightPositions);
+            material.SetVectorArray("_LightDirections", lightDirections);
+            //material.SetFloatArray("_LightAngles", lightAngles);
+            material.SetFloatArray("_StrengthScalarLight", ScalarStrengths);
+            material.SetFloatArray("_LightRanges", lightRanges);
+            //Debug.Log("--LIGHTS--" + "count " + envLightCount + "pos " + lightPositions[0] + "dir " + lightDirections[0] + "angle " + lightAngles[0] + "strength " + ScalarStrengths[0] + "range " + lightRanges[0]);
+        }
         //Debug.Log("--------------------------------------------- LIGHT COUNT " + envLightCount);
     }
 
     public void UpdateShaderValues()
     {
-        if (Application.isPlaying)
+        updateCall++;
+        //if (updateCall > 2)
+        if (updateCall > 1 && GeometryUtility.TestPlanesAABB(GeometryUtility.CalculateFrustumPlanes(Camera.main), skin.GetComponent<SkinnedMeshRenderer>().bounds)) //
         {
-            PlayerLight = GameDriver.instance.Player.GetComponent<PlayerController>().currLight;
-            ClientLight = GameDriver.instance.Client.GetComponent<ClientPlayerController>().currLight;
-
-            if (GameObject.Find("CamFlashPlayer") != null) { PlayerLight = GameObject.Find("CamFlashPlayer"); }
-            if (GameObject.Find("CamFlashClient") != null) { ClientLight = GameObject.Find("CamFlashClient"); }
-        }
-        visibilitySet = false;
-        //-------------------DEATH LIGHT UP ENEMY-----------------------------
-        if (death) { if (gameObject.tag != "Shadower") { PlayerLight = GetComponent<EnemyDeath>().light; } else { inShadow = true; }  }
-        //if (PlayerLight != null && ClientLight != null)
-        {
-            Light lightSource;
-            //UPDATE ENVIRONMENT LIGHT SOURCES
-            if (envLights.Length > 0)
+            updateCall = 0;
+            if (Application.isPlaying)
             {
-                for (int i = 0; i < envLightCount; i++)
+                PlayerLight = GameDriver.instance.Player.GetComponent<PlayerController>().currLight;
+                ClientLight = GameDriver.instance.Client.GetComponent<ClientPlayerController>().currLight;
+
+                if (GameObject.Find("CamFlashPlayer") != null) { PlayerLight = GameObject.Find("CamFlashPlayer"); }
+                if (GameObject.Find("CamFlashClient") != null) { ClientLight = GameObject.Find("CamFlashClient"); }
+            }
+            visibilitySet = false;
+            //-------------------DEATH LIGHT UP ENEMY-----------------------------
+            // if (death) { if (gameObject.tag != "Shadower") { PlayerLight = GetComponent<EnemyDeath>().light; } else { inShadow = true; }  }
+            //if (PlayerLight != null && ClientLight != null)
+            {
+                Light lightSource;
+                //UPDATE ENVIRONMENT LIGHT SOURCES
+                if (envLights.Length > 0)
                 {
-                    lightSource = envLights[i].GetComponent<Light>();
-                    lightAngles[i] = lightSource.spotAngle+5;
+                    for (int i = 0; i < envLightCount; i++)
+                    {
+                        lightSource = envLights[i].GetComponent<Light>();
+                        lightAngles[i] = lightSource.spotAngle + 5;
+                    }
+                    IsVisible(envLights);
+                    foreach (Material material in skin.GetComponent<SkinnedMeshRenderer>().materials)
+                    {
+                        //material.SetInt("_EnvLightCount", envLightCount);
+                        //material.SetVectorArray("_LightPositions", lightPositions);
+                        //material.SetVectorArray("_LightDirections", lightDirections);
+                        material.SetFloatArray("_LightAngles", lightAngles);
+                        //material.SetFloatArray("_StrengthScalarLight", ScalarStrengths);
+                        //material.SetFloatArray("_LightRanges", lightRanges);
+                        //Debug.Log("--LIGHTS--" + "count " + envLightCount + "pos " + lightPositions[0] + "dir " + lightDirections[0] + "angle " + lightAngles[0] + "strength " + ScalarStrengths[0] + "range " + lightRanges[0]);
+                    }
                 }
-                IsVisible(envLights);
+                //SHADOW OVERRIDES ENVIRONMENT LIGHTS
+                if (inShadow)
+                {
+                    visibilitySet = true;
+                    if (!Shadower) { visible = false; } else { visible = true; }
+                }
+
+
+                //ADD IN PLAYER LIGHT
+                lightSource = PlayerLight.GetComponent<Light>();
+                float spotAngle = lightSource.spotAngle;
+                if (!lightSource.enabled) { spotAngle = 0; }
+                else
+                { //flashlight enabled
+                    if (!InLineOfSight(lightSource, true)) { spotAngle = 0; }
+                    //FLASHLIGHT OVERRIDES SHADOW AND ENVIORNMENT
+                    else if (IsObjectInLightCone(lightSource, true))//directly under light source
+                    {
+                        if (NetworkDriver.instance.HOST) { if (GetComponent<NPCController>() != null) { GetComponent<NPCController>().alertLevelPlayer += 2; } }
+                        if (!invisible) { TriggerWanderSound(); }
+                        if (!Shadower) { visible = true; visibilitySet = true; } else { visible = false; visibilitySet = true; }
+                    }
+                }
                 foreach (Material material in skin.GetComponent<SkinnedMeshRenderer>().materials)
                 {
-                    material.SetInt("_EnvLightCount", envLightCount);
-                    material.SetVectorArray("_LightPositions", lightPositions);
-                    material.SetVectorArray("_LightDirections", lightDirections);
-                    material.SetFloatArray("_LightAngles", lightAngles);
-                    material.SetFloatArray("_StrengthScalarLight", ScalarStrengths);
-                    material.SetFloatArray("_LightRanges", lightRanges);
-                    //Debug.Log("--LIGHTS--" + "count " + envLightCount + "pos " + lightPositions[0] + "dir " + lightDirections[0] + "angle " + lightAngles[0] + "strength " + ScalarStrengths[0] + "range " + lightRanges[0]);
+                    material.SetVector("_PlayerLightPosition", lightSource.transform.position);
+                    material.SetVector("_PlayerLightDirection", -lightSource.transform.forward);
+                    material.SetFloat("_PlayerLightAngle", spotAngle);
+                    material.SetFloat("_PlayerStrengthScalarLight", 20);
+                    material.SetFloat("_PlayerLightRange", lightSource.range);
                 }
-            }
-
-            //SHADOW OVERRIDES ENVIRONMENT LIGHTS
-            if (inShadow) {
-                visibilitySet = true;
-                if (this.gameObject.tag == "Ghost") { visible = false;  } else { visible = true; }
-            }
-
-
-            //ADD IN PLAYER LIGHT
-            lightSource = PlayerLight.GetComponent<Light>();
-            float spotAngle = lightSource.spotAngle;
-            if (!lightSource.enabled) { spotAngle = 0; }
-            else { //flashlight enabled
-                if (!InLineOfSight(lightSource, true)) { spotAngle = 0; }
-                //FLASHLIGHT OVERRIDES SHADOW AND ENVIORNMENT
-                else if (IsObjectInLightCone(lightSource, true))//directly under light source
+                //ADD IN CLIENT LIGHT
+                lightSource = ClientLight.GetComponent<Light>();
+                spotAngle = lightSource.spotAngle;
+                if (!lightSource.enabled) { spotAngle = 0; }
+                else
                 {
-                    if (NetworkDriver.instance.HOST) { if (GetComponent<NPCController>() != null) { GetComponent<NPCController>().alertLevelPlayer += 2; } }
-                    if(!invisible) { TriggerWanderSound(); }
-                    if (this.gameObject.tag == "Ghost") { visible = true; visibilitySet = true; } else { visible = false; visibilitySet = true; }
-                } 
-            }
-            foreach (Material material in skin.GetComponent<SkinnedMeshRenderer>().materials)
-            {
-                material.SetVector("_PlayerLightPosition", lightSource.transform.position);
-                material.SetVector("_PlayerLightDirection", -lightSource.transform.forward);
-                material.SetFloat("_PlayerLightAngle", spotAngle);
-                material.SetFloat("_PlayerStrengthScalarLight", 20);
-                material.SetFloat("_PlayerLightRange", lightSource.range);
-            }
-            //ADD IN CLIENT LIGHT
-            lightSource = ClientLight.GetComponent<Light>();
-            spotAngle = lightSource.spotAngle;
-            if (!lightSource.enabled) { spotAngle = 0; }
-            else
-            {
-                if (!InLineOfSight(lightSource,true)) { spotAngle = 0; }
-                //FLASHLIGHT OVERRIDES SHADOW AND ENVIORNMENT
-                else if(IsObjectInLightCone(lightSource, true))//directly under light source
+                    if (!InLineOfSight(lightSource, true)) { spotAngle = 0; }
+                    //FLASHLIGHT OVERRIDES SHADOW AND ENVIORNMENT
+                    else if (IsObjectInLightCone(lightSource, true))//directly under light source
+                    {
+                        if (NetworkDriver.instance.HOST) { if (GetComponent<NPCController>() != null) { GetComponent<NPCController>().alertLevelClient += 2; } }
+                        if (!Shadower) { visible = true; visibilitySet = true; } else { visible = false; visibilitySet = true; }
+                    }
+                }
+                foreach (Material material in skin.GetComponent<SkinnedMeshRenderer>().materials)
                 {
-                    if (NetworkDriver.instance.HOST) { if (GetComponent<NPCController>() != null) { GetComponent<NPCController>().alertLevelClient += 2; } }
-                    if (this.gameObject.tag == "Ghost") { visible = true; visibilitySet = true; } else { visible = false; visibilitySet = true; }
+                    material.SetVector("_ClientLightPosition", lightSource.transform.position);
+                    material.SetVector("_ClientLightDirection", -lightSource.transform.forward);
+                    material.SetFloat("_ClientLightAngle", spotAngle);
+                    material.SetFloat("_ClientStrengthScalarLight", 20);
+                    material.SetFloat("_ClientLightRange", lightSource.range);
                 }
-            }
-            foreach (Material material in skin.GetComponent<SkinnedMeshRenderer>().materials)
-            {
-                material.SetVector("_ClientLightPosition", lightSource.transform.position);
-                material.SetVector("_ClientLightDirection", -lightSource.transform.forward);
-                material.SetFloat("_ClientLightAngle", spotAngle);
-                material.SetFloat("_ClientStrengthScalarLight", 20);
-                material.SetFloat("_ClientLightRange", lightSource.range);
-            }
 
-            //--------------VISIBLE IF CLOSE ----------------
-             if(Vector3.Distance(PlayerLight.gameObject.transform.position, this.transform.position)<2 || Vector3.Distance(ClientLight.gameObject.transform.position, this.transform.position) < 2)
-            {
-                if (this.gameObject.tag == "Ghost") { visible = true; visibilitySet = true; }//if (GetComponent<Teleport>().teleport == 0) { }
-            }
-
-            //-------------SET TOTAL ALPHA--------------------------------
-            if (death) { visible = true; visibilitySet = true; Fade(true, 0.5f, 1); }
-            invisible = false;
-            if (!death)
-            {
-                if (visible) { Fade(true, 0.5f, 1); }
-                else { Fade(false, 1f, 1); }//fadeout
-            }// DEATH FADE
-            else { Fade(false, 1f, 0); }
-            for (int i = 0; i < skin.GetComponent<SkinnedMeshRenderer>().materials.Length; i++)
-            {
-                if (skin.GetComponent<SkinnedMeshRenderer>().materials[i].shader.name == "Custom/Ghost") { 
-                    
-                    skin.GetComponent<SkinnedMeshRenderer>().materials[i].SetFloat("_Alpha", currentMaxAlpha[i]); 
-                }
-                else if (skin.GetComponent<SkinnedMeshRenderer>().materials[i].shader.name == "Custom/GhostAlphaCutoff")
+                //--------------VISIBLE IF CLOSE ----------------
+                if (Vector3.Distance(PlayerLight.gameObject.transform.position, this.transform.position) < 2 || Vector3.Distance(ClientLight.gameObject.transform.position, this.transform.position) < 2)
                 {
-                    skin.GetComponent<SkinnedMeshRenderer>().materials[i].SetFloat("_Emission", currentMaxAlpha[i]); 
+                    if (!Shadower) { visible = true; visibilitySet = true; }//if (GetComponent<Teleport>().teleport == 0) { }
                 }
+
+                //-------------SET TOTAL ALPHA--------------------------------
+                if (death) { visible = true; visibilitySet = true; Fade(true, 0.5f, 1); }
+                invisible = false;
+                if (!death)
+                {
+                    if (visible) { Fade(true, 0.5f, 1); }
+                    else { Fade(false, 1f, 1); }//fadeout
+                }// DEATH FADE
+                 //else { Fade(false, 10f, 0); }
+                for (int i = 0; i < skin.GetComponent<SkinnedMeshRenderer>().materials.Length; i++)
+                {
+
+                    if (skin.GetComponent<SkinnedMeshRenderer>().materials[i].shader.name == "Custom/Ghost")
+                    {
+
+                        skin.GetComponent<SkinnedMeshRenderer>().materials[i].SetFloat("_Alpha", currentMaxAlpha[i]);
+                        if (death) { skin.GetComponent<SkinnedMeshRenderer>().materials[i].SetFloat("_EMFAlpha", 0.6f); }
+                    }
+                    else if (skin.GetComponent<SkinnedMeshRenderer>().materials[i].shader.name == "Custom/GhostAlphaCutoff")
+                    {
+                        skin.GetComponent<SkinnedMeshRenderer>().materials[i].SetFloat("_Emission", currentMaxAlpha[i]);
+                        if (death) { skin.GetComponent<SkinnedMeshRenderer>().materials[i].SetFloat("_EMFAlpha", 1f); }
+                    }
+                }
+
+                //DEFAULT VISIBLIITY
+                if (!visibilitySet)
+                {
+                    //Debug.Log("---------------------DEFAULT----------------------------");
+                    if (!Shadower) { visible = false; }
+                    else { visible = true; }
+                }
+
+                //--------------OUTLINE VISABILITY----------------------
+                if (gameObject.transform.GetChild(0).GetComponent<Outline>() != null) { if (gameObject.transform.GetChild(0).GetComponent<Outline>().OutlineWidth > 0.1f) { invisible = false; } }
+
+
+
             }
-
-            //DEFAULT VISIBLIITY
-            if (!visibilitySet)
-            {
-                //Debug.Log("---------------------DEFAULT----------------------------");
-                if (this.gameObject.tag == "Ghost") { visible = false; }
-                else { visible = true; }
-            }
-
-            //--------------OUTLINE VISABILITY----------------------
-            if (gameObject.transform.GetChild(0).GetComponent<Outline>() != null) { if (gameObject.transform.GetChild(0).GetComponent<Outline>().OutlineWidth > 0.1f) { invisible = false; } }
-
-
 
         }
-
     }
-
     public void Fade(bool fadeIn, float speed, int fadeOutLimit)
     {
         for (int i = 0; i < skin.GetComponent<SkinnedMeshRenderer>().materials.Length; i++)
@@ -250,7 +275,7 @@ public class GhostVFX : MonoBehaviour
                 else//FADE OUT
                 {
                     if (currentMaxAlpha[i] > 0.01) { currentMaxAlpha[i] = Mathf.Lerp(currentMaxAlpha[i], currentMaxAlpha[i] * 0.5f * fadeOutLimit, Time.deltaTime * speed); }
-                    if (Mathf.Abs(currentMaxAlpha[i] - 0.1f) < 0.1f)
+                    if (Mathf.Abs(currentMaxAlpha[i] - 0) < 0.1f) //if diff in alpha less than 0.1
                     {
                         invisible = true; playedSound = false;
                     }
@@ -285,15 +310,9 @@ public class GhostVFX : MonoBehaviour
             if (InLineOfSight(closestLight.GetComponent<Light>(), false))
             {
                 visibilitySet = true;
-                if (this.gameObject.tag == "Ghost") { visible = true; }
+                if (!Shadower) { visible = true; }
                 else { visible = false; } // shadower 
             }
-            else
-            {
-               // if (this.gameObject.tag == "Ghost") { visible = false; }
-               // else { visible = true; Debug.Log(closestLight + " NOT IN LINE OF SIGHT "); } // shadower
-            }
-
         }
     }
 
@@ -319,7 +338,7 @@ public class GhostVFX : MonoBehaviour
             {
                 targetHit = true;
                 //FLICKER
-                if (GetComponent<Animator>().GetCurrentAnimatorClipInfo(0)[0].clip != null && GetComponent<Animator>().GetCurrentAnimatorClipInfo(0)[0].clip.name == "agro" && light.GetComponent<GhostLight>()!=null) { light.GetComponent<GhostLight>().InvokeFlicker(1f); }
+                 if (GetComponent<Animator>().GetCurrentAnimatorClipInfo(0).Length > 0 && GetComponent<Animator>().GetCurrentAnimatorClipInfo(0)[0].clip.name == "agro" && light.GetComponent<GhostLight>() != null) { light.GetComponent<GhostLight>().InvokeFlicker(1f); } 
                 break;
             }
         }
@@ -343,7 +362,7 @@ public class GhostVFX : MonoBehaviour
         float angleToObject = Vector3.Angle(spotlight.transform.forward, directionToObject);
         bool inCone = angleToObject <= adjustedSpotAngle * 0.5f;
         //if (isPlayer && spotlight.gameObject.name == "player_light") { Debug.Log("IN CONE? " + inCone); }
-        if (isPlayer && this.gameObject.tag == "Shadower") { return inCone; }//fl effect on shadowers have no range
+        if (isPlayer && Shadower) { return inCone; }//fl effect on shadowers have no range
         return inRange && inCone;
     }
 

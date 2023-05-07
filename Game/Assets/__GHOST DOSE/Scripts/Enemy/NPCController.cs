@@ -87,6 +87,7 @@ public class NPCController : MonoBehaviour
 
     private void Awake()
     {
+        destination = this.gameObject;
         GetComponent<GhostVFX>().Shadower = Shadower;
         if (GetComponent<ZozoControl>() != null) { ZOZO = true; }
         active_timer = 99999;
@@ -119,7 +120,7 @@ public class NPCController : MonoBehaviour
         HIT_COL.GetComponent<SphereCollider>().isTrigger = true;
         HIT_COL.GetComponent<SphereCollider>().enabled = false;
         outline = transform.GetChild(0).GetComponent<Outline>();
-        destination = this.gameObject;
+
         zozoLaser = false;
        
         //Debug.Log("----------------------------------------" + HIT_COL.GetComponent<SphereCollider>().enabled);
@@ -345,12 +346,12 @@ public class NPCController : MonoBehaviour
                 animEnemy.SetBool("Fighting", false);
                 animEnemy.SetBool("Run", true);
                 animEnemy.SetBool("Attack", false);
-                if (animEnemy.GetCurrentAnimatorClipInfo(0)[0].clip != null && animEnemy.GetCurrentAnimatorClipInfo(0)[0].clip.name != "EnemyAttack")
+                if (animEnemy.GetCurrentAnimatorClipInfo(0).Length>0 && animEnemy.GetCurrentAnimatorClipInfo(0)[0].clip.name != "EnemyAttack")
                 {
                     GetComponent<NavMeshAgent>().speed = chaseSpeed;//DOESNT AFFECT THIS
                     if (agro) { GetComponent<NavMeshAgent>().speed = chaseSpeed * 2; }
                 }
-                if (animEnemy.GetCurrentAnimatorClipInfo(0)[0].clip != null && animEnemy.GetCurrentAnimatorClipInfo(0)[0].clip.name == "agro") { GetComponent<NavMeshAgent>().speed = 0; }
+                if (animEnemy.GetCurrentAnimatorClipInfo(0).Length>0 && animEnemy.GetCurrentAnimatorClipInfo(0)[0].clip.name == "agro") { GetComponent<NavMeshAgent>().speed = 0; }
                 //GetComponent<NavMeshAgent>().enabled = true;
                 navmesh.isStopped = false;
 
@@ -374,7 +375,7 @@ public class NPCController : MonoBehaviour
 
         
         //---------------PLAYER DIES
-        if (target != null && Player!=null && Client!=null && NetworkDriver.instance.HOST)
+        if (target.gameObject != null && Player!=null && Client!=null && NetworkDriver.instance!=null && NetworkDriver.instance.HOST)
         {
             if (target.gameObject == Player)
             {
@@ -486,8 +487,8 @@ public class NPCController : MonoBehaviour
 
             AudioManager.instance.Play("enemyflinchimpact", audioSource);
             if (damageAmount == 100) { AudioManager.instance.Play("headshot", audioSource); }
-            if (animEnemy.GetCurrentAnimatorClipInfo(0)[0].clip!= null && animEnemy.GetCurrentAnimatorClipInfo(0)[0].clip.name != "agro" && GetComponent<Teleport>().teleport==0) { healthEnemy -= damageAmount; }
-
+            //if (animEnemy.GetCurrentAnimatorClipInfo(0)[0].clip!= null && animEnemy.GetCurrentAnimatorClipInfo(0)[0].clip.name != "agro" && GetComponent<Teleport>().teleport==0) { healthEnemy -= damageAmount; }
+            healthEnemy -= damageAmount;
             //MAKE SUSPECIOUS
             if (!otherPlayer) { transform.LookAt(Player.transform); alertLevelPlayer = unawareness * 2; } else { transform.LookAt(Client.transform); alertLevelClient = unawareness * 2; }
 
@@ -504,8 +505,8 @@ public class NPCController : MonoBehaviour
                         if (!otherPlayer) { target = Player.transform; } else { target = Client.transform; }
                         follow = persist;
                     }
-                    AudioManager.instance.Play("Agro", null); animEnemy.Play("agro"); //animEnemy.CrossFade("agro", 0.25f);
-                    GameObject.Find("PlayerCamera").GetComponent<Camera_Controller>().InvokeShake(2f, 1f);
+                    AudioManager.instance.Play("Agro", null); if (healthEnemy > 0) { animEnemy.Play("agro"); } //animEnemy.CrossFade("agro", 0.25f);
+                    GameObject.Find("PlayerCamera").GetComponent<Camera_Controller>().InvokeShake(1f, 1f);
                     range = 20; agro = true; angleView = 360;
                 }
 

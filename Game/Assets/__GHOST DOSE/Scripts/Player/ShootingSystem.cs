@@ -117,7 +117,7 @@ public class ShootingSystem : MonoBehaviour
             if (isVisible)
             {
                 if (target != null) { 
-                    if(((target.tag=="Ghost" || target.tag=="Shadower") && target.GetComponent<Teleport>()!=null && target.GetComponent<Teleport>().teleport == 0) || (target.tag=="Victim"))
+                    if(((target.GetComponent<GhostVFX>()!=null) && target.GetComponent<Teleport>()!=null && target.GetComponent<Teleport>().teleport == 0) || (target.tag=="Victim"))
                     {
                         enemyIndicatorUI.color = Color.red;
                         if (isHeadshot) { headShotIndicatorUI.color = Color.red; }
@@ -160,18 +160,21 @@ public class ShootingSystem : MonoBehaviour
 
                 if (Time.time > shootTimer + shootCoolDown && camBatteryUI.fillAmount>0)
                 {
+                    GameObject victimManager = GameObject.Find("OuijaBoardManager").GetComponent<OuijaSessionControl>().OuijaSessions[GameObject.Find("OuijaBoardManager").GetComponent<OuijaSessionControl>().currentSession];
                     //AudioManager.instance.Play("ShotCam");
                     camBatteryUI.fillAmount -= 0.1f;
                     muzzleFlash.Play();
                     Shell.Play();
                     int damage = 0;
                     GetComponent<PlayerController>().emitShoot = true;
+                    //if (target.tag == "Victim") { GetComponent<PlayerController>().emitShoot = false; }
                     //DO DAMAGE
-                    if (target != null)
-                    {
-                        if ((target.tag == "Ghost" || target.tag == "Shadower") && isVisible && target.GetComponent<Teleport>().teleport == 0)
+                        if (target != null)
+                        {
+                        if ((target.GetComponent<GhostVFX>()!=null) && isVisible && target.GetComponent<Teleport>().teleport == 0)
                         {
                             damage = 40;
+                            if (target.GetComponent<NPCController>().animEnemy.GetCurrentAnimatorClipInfo(0)[0].clip != null && target.GetComponent<NPCController>().animEnemy.GetCurrentAnimatorClipInfo(0)[0].clip.name != "agro") { damage = 20; }
                             if (isHeadshot) { damage = 100; }
                             if (damage >= target.GetComponent<NPCController>().healthEnemy) { GetComponent<PlayerController>().emitKill = true; }
                             target.GetComponent<NPCController>().TakeDamage(damage, false);
@@ -180,7 +183,7 @@ public class ShootingSystem : MonoBehaviour
                         }
                         if (target.tag == "Victim")
                         {
-                            GameObject.Find("OuijaBoardManager").GetComponent<OuijaSessionControl>().OuijaSessions[GameObject.Find("OuijaBoardManager").GetComponent<OuijaSessionControl>().currentSession].GetComponent<VictimControl>().testAnswer(target, false);
+                            victimManager.GetComponent<VictimControl>().testAnswer(target);
                             //used to emit answer
                             damage = -1;
                             GetComponent<PlayerController>().shotName = target.name;
@@ -234,7 +237,7 @@ public class ShootingSystem : MonoBehaviour
                     //Ensure mesh can be read
                     if (ghost.GetComponent<NPCController>().healthEnemy>0 && ghost.GetComponent<Teleport>().teleport == 0)
                     {
-                        if (ghost.tag == "Ghost") { isVisible = !ghost.GetComponent<GhostVFX>().invisible; }
+                        if (!ghost.GetComponent<GhostVFX>().Shadower) { isVisible = !ghost.GetComponent<GhostVFX>().invisible; }
                         else { isVisible = ghost.GetComponent<GhostVFX>().visible; }
                         if (!isVisible) { Debug.Log("INVISISHOT"); }
                         if (hit.collider.gameObject.name == "mixamorig:Head") { isHeadshot = true; }

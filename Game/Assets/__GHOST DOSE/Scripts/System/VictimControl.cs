@@ -6,6 +6,7 @@ using UnityEngine.UIElements;
 using InteractionSystem;
 using Newtonsoft.Json;
 using NetworkSystem;
+using UnityEngine.AI;
 
 public class VictimControl : Item
 {
@@ -37,12 +38,14 @@ public class VictimControl : Item
     private bool zozoFXendOn;
     private bool setSpiritsFree;
     public GameObject ZOZO;
+    private bool canDestroyZozo;
     Vector3 ZOZOstartPos;
     Quaternion ZOZOstartRot;
 
     Vector3 mainStartPos;
     private float zozoMusicVol;
-
+    private bool fadeMusicOut;
+    public bool canTest;
     // Start is called before the first frame update
     void Start()
     {
@@ -63,6 +66,7 @@ public class VictimControl : Item
     void Update()
     {
        
+
         //START EFFECT
         if (playerOn || clientOn)
         {
@@ -72,11 +76,14 @@ public class VictimControl : Item
 
         if (startCircle)
         {
+            if (GameDriver.instance.Player != null) { GameDriver.instance.Player.GetComponent<ShootingSystem>().camBatteryUI.fillAmount = 1; }
+
             main.transform.Rotate(0f, 5f * Time.deltaTime, 0f);
 
             //ELEVATE DEAD
-            if(main.transform.position.y < mainStartPos.y+3)
+            if (main.transform.position.y < mainStartPos.y + 3)
             {
+                canTest = false;
                 Vector3 currPos = main.transform.position;
                 currPos.y += 0.01f;
                 main.transform.position = currPos;//descend
@@ -84,6 +91,7 @@ public class VictimControl : Item
                 //EXPAND DOME
                 if (effectDome.transform.localScale.x < 1) { effectDome.transform.localScale = Vector3.Lerp(effectDome.transform.localScale, effectDome.transform.localScale * 3f, Time.deltaTime * 1); }
             }
+            else { canTest = true; }
             //KEEP IN CIRCLE
             if (Vector3.Distance(GameDriver.instance.Player.transform.position, transform.position) > 3) { GameDriver.instance.Player.transform.position = Vector3.Lerp(GameDriver.instance.Player.transform.position, transform.position, 0.02f); }
             
@@ -93,7 +101,11 @@ public class VictimControl : Item
        //ZOZO SPAWN
         if(zozo && !zozoEnd)
         {
-            if (effectDome.transform.localScale.x > 0.01) { effectDome.transform.localScale = Vector3.Lerp(effectDome.transform.localScale, effectDome.transform.localScale * 0.0007f, Time.deltaTime * 1); }
+            //if (effectDome.transform.localScale.x > 0.01) { effectDome.transform.localScale = Vector3.Lerp(effectDome.transform.localScale, effectDome.transform.localScale * 0.0007f, Time.deltaTime * 1); }
+            //Expand Dome
+            if (effectDome.transform.localScale.x < 12) { effectDome.transform.localScale = Vector3.Lerp(effectDome.transform.localScale, effectDome.transform.localScale * 3f, Time.deltaTime * 1); }
+            //KEEP IN DOME
+            if (Vector3.Distance(GameDriver.instance.Player.transform.position, transform.position) > 12) { GameDriver.instance.Player.transform.position = Vector3.Lerp(GameDriver.instance.Player.transform.position, transform.position, 0.02f); }
             //ARISE GATE
             if (zozoSpawn.transform.position.y < zozoSpawnStartPos.y + 6.5)
             {
@@ -112,7 +124,7 @@ public class VictimControl : Item
 
             }
             //WHITE RAYS MID EFFECT
-           if (zozoEffectMid.activeSelf == true) { if (zozoEffectMid.transform.localScale.x < 3) { zozoEffectMid.transform.localScale = Vector3.Lerp(zozoEffectMid.transform.localScale, zozoEffectMid.transform.localScale * 1.5f, Time.deltaTime * 1); } }
+           if (zozoEffectMid.activeSelf == true) { if (zozoEffectMid.transform.localScale.x < 20) { zozoEffectMid.transform.localScale = Vector3.Lerp(zozoEffectMid.transform.localScale, zozoEffectMid.transform.localScale * 1.5f, Time.deltaTime * 1); } }
             GameObject.Find("PlayerCamera").GetComponent<Camera_Controller>().InvokeShake(2f, Mathf.InverseLerp(20f, 0f, Vector3.Distance(GameDriver.instance.Player.transform.position,transform.position)));
         }
             //EXPLOSIONG
@@ -136,9 +148,9 @@ public class VictimControl : Item
                 }
                 Vector3 currPos = main.transform.position; currPos.y -= 0.007f; main.transform.position = currPos;//DROP VICTIMS
                 zozoAlpha += 0.0005f;
-                if (zozoEffectMid.activeSelf == true) { if (zozoAlpha > 0) { zozoAlpha -= 0.0008f; } }
+                if (zozoEffectMid.activeSelf == true) { if (zozoAlpha > 0) { zozoAlpha -= 0.0006f; } }
                 zozoDummy.transform.GetChild(0).GetComponent<SkinnedMeshRenderer>().materials[0].SetFloat("_EMFAlpha", zozoAlpha);
-                zozoDummy.transform.GetChild(0).GetComponent<SkinnedMeshRenderer>().materials[1].SetFloat("_EMFAlpha", zozoAlpha);
+                //zozoDummy.transform.GetChild(0).GetComponent<SkinnedMeshRenderer>().materials[0].SetFloat("_Alpha", zozoAlpha);
 
             }
         }
@@ -186,12 +198,33 @@ public class VictimControl : Item
             }
             effectInner.SetActive(false);
         }
+
+        //DESTROY ZOZO
+        if (canDestroyZozo)
+        {
+            if (ZOZO.GetComponent<Teleport>().teleport == 2)
+            {
+                canDestroyZozo = false;
+                if (NetworkDriver.instance.HOST) { Invoke("DestroyZozo", 0.5f);
+                    if (GameDriver.instance.twoPlayer) { NetworkDriver.instance.sioCom.Instance.Emit("event", JsonConvert.SerializeObject($"{{'obj':'{gameObject.name}','type':'destroy','event':'zozo'}}"), false); } 
+                }
+            }
+        }
+
+        //ZOZO LOOP MUSIC
+        if(fadeMusicOut)
+        {
+            ZOZO.SetActive(false);
+            if (zozoMusicVol > 0) { zozoMusicVol -= 0.001f; AudioManager.instance.UpdateVolume("zozomusicloop", null, zozoMusicVol); }
+            if(zozoMusicVol <= 0) { AudioManager.instance.StopPlaying("zozomusicloop", null); fadeMusicOut = false; }
+        }
+
     }
 
     public void RandomVictim(GameObject otherPlayerVictim)
     {
         ChosenVictim = Victims[Random.Range(0, Victims.Count)];
-        if(otherPlayerVictim != null) { ChosenVictim = otherPlayerVictim; GameDriver.instance.WriteGuiMsg("RANDOM VICTIM FROM HOST" + otherPlayerVictim.name, 10f); } //GameDriver.instance.WriteGuiMsg("RANDOM VICTIM FROM HOST" + otherPlayerVictim.name, 10f);
+        if(otherPlayerVictim != null) { ChosenVictim = otherPlayerVictim; GameDriver.instance.WriteGuiMsg("RANDOM VICTIM FROM HOST" + otherPlayerVictim.name, 10f); Debug.Log("RANDOMIZING VICTIM FROM HOST "); } //GameDriver.instance.WriteGuiMsg("RANDOM VICTIM FROM HOST" + otherPlayerVictim.name, 10f);
         GameDriver.instance.WriteGuiMsg("RANDOM VICTIM " + ChosenVictim.name, 10f);
         if (NetworkDriver.instance.HOST && GameDriver.instance.twoPlayer) { NetworkDriver.instance.sioCom.Instance.Emit("event", JsonConvert.SerializeObject($"{{'obj':'{ChosenVictim.name}','type':'update','event':'randomvictim'}}"), false); }
 
@@ -225,19 +258,21 @@ public class VictimControl : Item
         if (GameDriver.instance.twoPlayer && !otherPlayer) { NetworkDriver.instance.sioCom.Instance.Emit("event", JsonConvert.SerializeObject($"{{'obj':'','type':'update','event':'startcircle'}}"), false); }
     }
 
-    public void testAnswer(GameObject victim, bool otherPlayer)
+    public void testAnswer(GameObject victim)
     {
        //SetSpiritsFree(); return;
         // GameDriver.instance.WriteGuiMsg("TEST ANSWER " + victim.name, 2f);
 
-        if (startCircle && main.transform.position.y >= mainStartPos.y + 3 || otherPlayer)
+        if (startCircle && main.transform.position.y >= mainStartPos.y + 3)
         {
             if (victim == ChosenVictim)
             {
-             SetSpiritsFree(); GameDriver.instance.WriteGuiMsg("RIGHT ANWER" + victim.name, 10f); 
+             SetSpiritsFree(); GameDriver.instance.WriteGuiMsg("RIGHT ANWER" + victim.name, 10f);
+                if (GameDriver.instance.twoPlayer) { NetworkDriver.instance.sioCom.Instance.Emit("event", JsonConvert.SerializeObject($"{{'obj':'{gameObject.name}','type':'update','event':'setfree'}}"), false); }
             }
             else {
-              SummonZozo(); GameDriver.instance.WriteGuiMsg("WRONG ANWER " + victim.name +"SUPPOSED TO BE " + ChosenVictim.name, 10f); 
+              SummonZozo(); GameDriver.instance.WriteGuiMsg("WRONG ANWER " + victim.name +"SUPPOSED TO BE " + ChosenVictim.name, 10f);
+                if (GameDriver.instance.twoPlayer) { NetworkDriver.instance.sioCom.Instance.Emit("event", JsonConvert.SerializeObject($"{{'obj':'{gameObject.name}','type':'update','event':'summon'}}"), false); }
             }
         }
     }
@@ -261,6 +296,8 @@ public class VictimControl : Item
     }
     public void SummonZozo()
     {
+        zozoDummy.transform.GetChild(0).GetComponent<SkinnedMeshRenderer>().materials[0].SetFloat("_Alpha", 0f);
+        zozoDummy.transform.GetChild(0).GetComponent<SkinnedMeshRenderer>().materials[0].SetFloat("_EMFAlpha", 0.3f);
         GameObject.Find("OuijaBoardManager").GetComponent<OuijaSessionControl>().CandleCount = 0;
         zozo = true;
         startCircle = false;
@@ -287,28 +324,46 @@ public class VictimControl : Item
     {
         zozoMusicVol = 0;
         AudioManager.instance.Play("zozomusicloop", null);
+        AudioManager.instance.Play("zozolaugh", null);
         AudioManager.instance.UpdateVolume("zozomusicloop", null, zozoMusicVol);
-      zozoFXendOn = true;
+        zozoFXendOn = true;
         zozoEffectEnd.SetActive(true);
         Invoke("SpawnZOZO", 10f);
     }
 
     public void SpawnZOZO()
     {
+        
         ZOZO.SetActive(true);
-        zozoDummy.SetActive(false);
+        //ZOZO.GetComponent<ZozoControl>().canLaser = true;
+        //ZOZO.GetComponent<ZozoControl>().ChargeLaser();
+       zozoDummy.SetActive(false);
         zozoEnd = true;
         zozoFXendOn = false;
-        Invoke("DestroyZozo", 30f);//-------------HOW LONG ZOZO ALIVE
-       
+        Invoke("CanDestroyZozo", 30f);//-------------HOW LONG ZOZO ALIVE
+
+    }
+    public void CanDestroyZozo()
+    {
+        canDestroyZozo = true;
     }
 
     public void DestroyZozo()
     {
-        AudioManager.instance.StopPlaying("zozomusicloop", null);
+        fadeMusicOut = true;
+        //AudioManager.instance.StopPlaying("zozomusicloop", null);
+        ZOZO.transform.GetChild(0).GetComponent<SkinnedMeshRenderer>().enabled = true;
+        ZOZO.transform.GetChild(0).GetComponent<Outline>().OutlineWidth = 0;
+        ZOZO.GetComponent<Teleport>().teleport = 0;
+        ZOZO.GetComponent<NPCController>().target = null;
+        ZOZO.GetComponent<Animator>().enabled = true;
+        ZOZO.GetComponent<NavMeshAgent>().enabled = true;
+        ZOZO.GetComponent<NPCController>().enabled = true;
+        ZOZO.GetComponent<Teleport>().canTeleport = true;
+
         ZOZO.transform.position = ZOZOstartPos;
         ZOZO.transform.rotation = ZOZOstartRot;
-        ZOZO.SetActive(false);
+       
         Invoke("RefreshBoard", 1f);
     }
 

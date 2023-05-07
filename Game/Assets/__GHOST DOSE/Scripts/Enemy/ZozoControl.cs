@@ -11,7 +11,7 @@ using InteractionSystem;
 
 public class ZozoControl : MonoBehaviour
 {
-    AudioSource audioSourceFootStepRight, audioSourceFootStepLeft;
+    AudioSource audioSource1, audioSource2;
     public Sound[] footSteps;
     public GameObject Head;
     public GameObject laserChargeVFX;
@@ -29,27 +29,43 @@ public class ZozoControl : MonoBehaviour
     public int laserDamage;
     public float laserCoolDown;
     private bool charging;
+    private bool startCharging;
 
+    private void Awake()
+    {
+        audioSource1 = gameObject.AddComponent<AudioSource>();
+        audioSource1.spatialBlend = 1.0f;
+        audioSource2 = gameObject.AddComponent<AudioSource>();
+        audioSource2.spatialBlend = 1.0f;
+       
+    }
     // Start is called before the first frame update
     void Start()
     {
         targetPos = transform.position;
         canLaser = true;
         laserActive = false;
-        audioSourceFootStepRight = gameObject.AddComponent<AudioSource>();
-        audioSourceFootStepRight.spatialBlend = 1.0f;
-        audioSourceFootStepLeft = gameObject.AddComponent<AudioSource>();
-        audioSourceFootStepLeft.spatialBlend = 1.0f;
+
         chargeLightStart = chargeLight.transform.localPosition;
         laserChargeVFXstartScale = laserChargeVFX.transform.localScale;
+
+        if (GetComponentInParent<VictimControl>() != null) { this.gameObject.name = "ZOZO-" + GetComponentInParent<VictimControl>().gameObject.name; this.gameObject.SetActive(false); }
     }
 
 
     private float canLaserTimer;
     public void Update()
     {
-        //INITIATE LASER
-        if (Time.time > canLaserTimer + laserCoolDown && GetComponent<NPCController>().target!=null)
+        /*if (Input.GetKeyUp(KeyCode.Escape)) 
+        {
+            canLaser = true;
+            ChargeLaser(false);
+            Debug.Log("------------TRIGGER LASER-------------------");
+        }*/
+
+
+            //INITIATE LASER
+            if (Time.time > canLaserTimer + laserCoolDown && GetComponent<NPCController>().target!=null)
         {
             RaycastHit hit;
             Vector3 targPos = GetComponent<NPCController>().target.position + Vector3.up * 1.4f;
@@ -60,11 +76,13 @@ public class ZozoControl : MonoBehaviour
                 //Debug.Log("----------TARGET -------------------" + hit.collider.gameObject.name);
                 if (hit.transform == GetComponent<NPCController>().target)
                 {
-                    if (canLaser && Vector3.Distance(transform.position, new Vector3(GetComponent<NPCController>().target.position.x, transform.position.y, GetComponent<NPCController>().target.position.z)) < laserDistanceMax
+                    if (Vector3.Distance(transform.position, new Vector3(GetComponent<NPCController>().target.position.x, transform.position.y, GetComponent<NPCController>().target.position.z)) < laserDistanceMax
                         && Vector3.Distance(transform.position, new Vector3(GetComponent<NPCController>().target.position.x, transform.position.y, GetComponent<NPCController>().target.position.z)) >= laserDistanceMin
                         )
                     {
-                        if (NetworkDriver.instance.HOST) { ChargeLaser(); }
+                        if (NetworkDriver.instance.HOST) { 
+                            ChargeLaser(false); 
+                        }
                     }
                 }
             }
@@ -82,7 +100,13 @@ public class ZozoControl : MonoBehaviour
             //SHOOTING
             if (GetComponent<Animator>().GetCurrentAnimatorClipInfo(1)[0].clip.name == "ZozoLaserAni")
             {
+                startCharging = false;
                 chargeLight.transform.localPosition = chargeLightStart;
+                if(charging)
+                {
+                    audioSource1.volume = 10f;
+                    AudioManager.instance.Play("laserorigin", audioSource1); 
+                }
                 charging = false;
                 chargeLight.SetActive(false);
                 laserChargeVFX.SetActive(false);
@@ -93,7 +117,12 @@ public class ZozoControl : MonoBehaviour
                 if (GameObject.Find("Hit") != null) { GameObject.Find("PlayerCamera").GetComponent<Camera_Controller>().InvokeShake(0.5f, Mathf.InverseLerp(20f, 0f, Vector3.Distance(GameDriver.instance.Player.transform.position, GameObject.Find("Hit").transform.position))); }
                 GameObject.Find("PlayerCamera").GetComponent<Camera_Controller>().InvokeShake(0.5f, Mathf.InverseLerp(20f, 0f, Vector3.Distance(GameDriver.instance.Player.transform.position, transform.position))); ;
             }
-           
+            //CHARGING
+            if (startCharging && GetComponent<Animator>().GetCurrentAnimatorClipInfo(1)[0].clip.name != "zozoLaserStart")
+            {
+                GetComponent<Animator>().Play("zozoLaserStart", 1, 0f);
+            }
+
             GetComponent<Animator>().SetBool("Walk", false);
             GetComponent<Animator>().SetBool("Fighting", false);
             GetComponent<Animator>().SetBool("Run", false);
@@ -109,17 +138,23 @@ public class ZozoControl : MonoBehaviour
         laserChargeVFX.SetActive(true);
     }
 
-    public void ChargeLaser()
+    public void ChargeLaser(bool otherPlayer)
     {
-        if (NetworkDriver.instance.HOST) { NetworkDriver.instance.sioCom.Instance.Emit("laser", JsonConvert.SerializeObject($"{{'obj':'{gameObject.name}'}}"), false); }
-        canLaser = false;
-        GetComponent<Animator>().SetLayerWeight(0, 0f);
-        GetComponent<Animator>().SetLayerWeight(1, 1f);
-        GetComponent<Animator>().Play("zozoLaserStart", 1, 0f);
-        GetComponent<NavMeshAgent>().speed = 0;
-        GetComponent<NavMeshAgent>().isStopped = true;
-        GetComponent<NPCController>().zozoLaser = true;//OVERRIDE ATTACK FUNCTION
-        Invoke("StopLaser", laserDuration);
+        if(canLaser || otherPlayer)
+        {
+            Debug.Log("CHARGING LASER");
+            startCharging = true;
+            if (NetworkDriver.instance.HOST && GameDriver.instance.twoPlayer) { NetworkDriver.instance.sioCom.Instance.Emit("laser", JsonConvert.SerializeObject($"{{'obj':'{gameObject.name}'}}"), false); }
+            canLaser = false;
+            GetComponent<Animator>().SetLayerWeight(0, 0f);
+            GetComponent<Animator>().SetLayerWeight(1, 1f);
+            //GetComponent<Animator>().Play("zozoLaserStart", 1, 0f);
+            GetComponent<NavMeshAgent>().speed = 0;
+            GetComponent<NavMeshAgent>().isStopped = true;
+            GetComponent<NPCController>().zozoLaser = true;//OVERRIDE ATTACK FUNCTION
+            Invoke("StopLaser", laserDuration);
+        }
+
     }
 
     private void TriggerLaugh()
@@ -142,17 +177,17 @@ public class ZozoControl : MonoBehaviour
 
     public void TriggerFootstepRight()
     {
-        audioSourceFootStepRight.clip = footSteps[Random.Range(0, footSteps.Length)].clip;
-        audioSourceFootStepRight.volume = 2f;
-        audioSourceFootStepRight.Play();
+        audioSource1.clip = footSteps[Random.Range(0, footSteps.Length)].clip;
+        audioSource1.volume = 2f;
+        audioSource1.Play();
         FootStep();
 
     }
     public void TriggerFootstepLeft()
     {
-        audioSourceFootStepLeft.clip = footSteps[Random.Range(0, footSteps.Length)].clip;
-        audioSourceFootStepLeft.volume = 2f;
-        audioSourceFootStepLeft.Play();
+        audioSource2.clip = footSteps[Random.Range(0, footSteps.Length)].clip;
+        audioSource2.volume = 2f;
+        audioSource2.Play();
         FootStep();
 
     }
@@ -173,16 +208,22 @@ public class ZozoControl : MonoBehaviour
         }
     }
 
-
+    private void OnEnable()
+    {
+        Debug.Log("ACTIVING ZOZO");
+    }
 
     //------------LASER HEAD------------------
     void OnAnimatorIK()
     {
+       if (GetComponent<NPCController>().target!=null)
+        {
+            targetPos = Vector3.Lerp(targetPos, GetComponent<NPCController>().target.position, 1f * Time.deltaTime); //
+            Animator animator = GetComponent<Animator>();
+            animator.SetLookAtWeight(1);
+            animator.SetLookAtPosition(targetPos);
 
-       // targetPos = Vector3.Lerp(targetPos, GetComponent<NPCController>().target.position, 1f * Time.deltaTime); //
-        Animator animator = GetComponent<Animator>();
-        animator.SetLookAtWeight(1);
-        animator.SetLookAtPosition(GetComponent<NPCController>().target.position);
+        }
 
 
     }

@@ -14,7 +14,7 @@ public class DisablerControl : MonoBehaviour
     public float closestPlayerDist;
     private float timer_delay = 1f;
     private float timer = 0.0f;
-    public float disableDistance = 20;
+    public float disableDistance = 50;
     public float p1dist, p2dist;
 
     private void Awake()
@@ -76,13 +76,14 @@ public class DisablerControl : MonoBehaviour
                     foreach (GameObject obj in GetComponent<DisablerControl>().emitEnableObjects)
                     {
                         {
-                            if (!NetworkDriver.instance.HOST) { Debug.Log("ENABLING"); }
+                            // if (!NetworkDriver.instance.HOST) { Debug.Log("ENABLING"); }
                             /*string objName;
                             Dictionary<string, string> propsDict = new Dictionary<string, string>();
                             propsDict.Add("active", "true");
                             objName = obj.name;
                             enableObjects.Add(objName, propsDict);*/
-                            obj.gameObject.SetActive(true);
+                            //Debug.Log("ACTIVATING " + obj.name);
+                            if (obj.tag != "ZOZO") { obj.gameObject.SetActive(true); }
                         }
                     }
 
@@ -94,7 +95,8 @@ public class DisablerControl : MonoBehaviour
                             propsDict.Add("active", "false");
                             objName = obj.name;
                             enableObjects.Add(objName, propsDict);*/
-                            obj.gameObject.SetActive(false);
+                            //Debug.Log("DEACTIVATE " + obj.name);
+                            if (obj.tag != "ZOZO") { obj.gameObject.SetActive(false); }
                         }
                     }
                    // if (GameDriver.instance.twoPlayer && enableObjects.Count>0) { NetworkDriver.instance.sioCom.Instance.Emit("disable", JsonConvert.SerializeObject(enableObjects), false); }

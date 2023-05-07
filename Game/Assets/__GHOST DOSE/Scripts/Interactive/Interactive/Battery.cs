@@ -4,7 +4,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using NetworkSystem;
-using InteractionSystem;
+
 public class Battery : Item
 {
     [Header("BATTERIES COUNT")]

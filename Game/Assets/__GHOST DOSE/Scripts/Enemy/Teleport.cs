@@ -65,7 +65,7 @@ public class Teleport : MonoBehaviour
         //---------------AGRO----------------------
         if (NetworkDriver.instance.HOST)
         {
-            if (GetComponent<NPCController>().target != null && GetComponent<NPCController>().teleports) //GetComponent<NPCController>().agro && 
+            if (GetComponent<NPCController>().target != null && GetComponent<NPCController>().teleports && !GetComponent<NPCController>().zozoLaser) //GetComponent<NPCController>().agro && 
             {
                // if (Vector3.Distance(transform.position, GetComponent<NPCController>().target.transform.position) > 3)//3
                 {

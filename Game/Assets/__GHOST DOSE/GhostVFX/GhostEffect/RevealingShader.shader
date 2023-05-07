@@ -8,6 +8,7 @@ Shader "Custom/Ghost" {
         _Emission("Emission", Range(0,1)) = 1
         _Alpha("Alpha", Range(0,1)) = 1
         _Shadower("Shadower", Range(0,1)) = 0
+        _DontInvert("DontInvert", Range(0,1)) = 0
         _EMFAlpha("EmfAlpha", Range(0,1)) = 0
 
     }
@@ -35,6 +36,7 @@ Shader "Custom/Ghost" {
             half _Metallic;
             half _Emission;
             half _Alpha;
+            half _DontInvert;
             half _EMFAlpha;
             half _Shadower;
             half _ProximityAlpha;
@@ -146,8 +148,8 @@ Shader "Custom/Ghost" {
 
                 float total_alpha = (1 - (alphaStrength * alphaStrengthPlayers)) * c.a;
 
-                if (_Shadower==1) { 
-                    c.rgb = 1.0 - c.rgb;//invert color
+                if (_Shadower==1) {
+                    if (_DontInvert == 0) { c.rgb = 1.0 - c.rgb; }//invert color
                     total_alpha = alphaStrength * alphaStrengthPlayers * c.a; 
                 }
 
