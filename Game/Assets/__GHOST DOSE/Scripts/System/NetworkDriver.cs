@@ -132,7 +132,9 @@ namespace NetworkSystem
                 GameDriver.instance.Player.GetComponent<PlayerController>().emitPos = true;//triggers position emit
                 GameDriver.instance.twoPlayer = true;
                 GameDriver.instance.WriteGuiMsg("Two Player Mode - HOST is " + HOST, 10f);
-                if (HOST) { GameObject.Find("ColdSpotManager").GetComponent<ColdSpotControl>().ChooseColdSpot();
+                if (HOST) {
+                    ColdSpot[] coldSpots = FindObjectsOfType<ColdSpot>();
+                    foreach(ColdSpot coldspot in coldSpots){ coldspot.Respawn(null); }
                     GetComponentInChildren<VictimControl>().RandomVictim(null); }
                 //GameDriver.instance.MSG = "Two Player Mode - HOST " + HOST;
                
@@ -272,7 +274,7 @@ namespace NetworkSystem
                         if (dict["type"] == "key"){ obj.GetComponent<Key>().DestroyWithSound(true); }
                         if (dict["type"] == "med"){ obj.GetComponent<FirstAidKit>().DestroyWithSound(true); }
                         if (dict["type"] == "bat") { obj.GetComponent<Battery>().DestroyWithSound(true); }
-                        if (dict["type"] == "cand") { obj.GetComponent<Candle>().DestroyWithSound(true); GetComponentInChildren<OuijaSessionControl>().CandleCount++; }
+                        if (dict["type"] == "cand") { obj.GetComponent<Candle>().DestroyWithSound(true); GetComponentInChildren<VictimControl>().candleCount++; }
                     }
                     else { if (dict["type"] == "key") { KeyInventory.instance.RemoveKey(dict["pass"]); } }//local player already picked up
                 }
@@ -283,7 +285,9 @@ namespace NetworkSystem
                 }
                 if (dict["event"] == "coldspot")
                 {
-                    GameObject.Find("ColdSpotManager").GetComponent<ColdSpotControl>().ChooseColdSpotNetwork(int.Parse(dict["q1"]), int.Parse(dict["q2"]), int.Parse(dict["q3"]));
+                    if (dict["type"] == "respawn") { obj.GetComponent<ColdSpot>().Respawn(GameObject.Find(dict["loc"])); }
+                    if (dict["type"] == "expose") { obj.GetComponent<ColdSpot>().Exposed(true); }
+                    //GameObject.Find("ColdSpotManager").GetComponent<ColdSpotControl>().ChooseColdSpotNetwork(int.Parse(dict["q1"]), int.Parse(dict["q2"]), int.Parse(dict["q3"]));
                 }
                 if (dict["event"] == "randomvictim"){ Debug.Log(" RECEIVED RANDOM VICTIM  " + obj.name); GetComponentInChildren<VictimControl>().RandomVictim(obj);}
                 if (dict["event"] == "startcircle") { GetComponentInChildren<VictimControl>().ActivateCircle(true); }

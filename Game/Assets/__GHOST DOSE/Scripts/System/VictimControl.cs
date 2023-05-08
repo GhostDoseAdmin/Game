@@ -11,6 +11,8 @@ using UnityEngine.AI;
 public class VictimControl : Item
 {
     public List<GameObject> Victims;
+    public List<GameObject> candles;
+    public int candleCount;
     private bool targetIsMurdered;
     private bool targetIsEvil;
     private bool targetIsYoung;
@@ -65,7 +67,11 @@ public class VictimControl : Item
     // Update is called once per frame
     void Update()
     {
-       
+        //CANDLES
+        if(candleCount>6) { candleCount = 6; }
+        for (int i = 0; i < candleCount; i++) {
+           candles[i].SetActive(true); 
+        }
 
         //START EFFECT
         if (playerOn || clientOn)
@@ -236,7 +242,7 @@ public class VictimControl : Item
         if (!zozo)
         {
 
-            if (GameObject.Find("OuijaBoardManager").GetComponent<OuijaSessionControl>().CandleCount >= 6)
+            if (candleCount >= 6)
             {
                 if ((playerOn && clientOn && GameDriver.instance.twoPlayer) || (!GameDriver.instance.twoPlayer && playerOn))
                 {
@@ -298,7 +304,8 @@ public class VictimControl : Item
     {
         zozoDummy.transform.GetChild(0).GetComponent<SkinnedMeshRenderer>().materials[0].SetFloat("_Alpha", 0f);
         zozoDummy.transform.GetChild(0).GetComponent<SkinnedMeshRenderer>().materials[0].SetFloat("_EMFAlpha", 0.3f);
-        GameObject.Find("OuijaBoardManager").GetComponent<OuijaSessionControl>().CandleCount = 0;
+        for (int i = 0; i < candles.Count; i++) { candles[i].SetActive(false); }
+        candleCount = 0;
         zozo = true;
         startCircle = false;
         AudioManager.instance.Play("enterzozomusic", null);

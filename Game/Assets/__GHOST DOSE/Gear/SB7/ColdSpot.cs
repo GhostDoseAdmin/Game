@@ -9,21 +9,30 @@ using static UnityEngine.GraphicsBuffer;
 public class ColdSpot : Item
 {
     public GameObject effect;
+    public List<GameObject> locations;
+    public float respawnTimer;
     private bool decay;
     public float SessionTimer = 10f;
     public int session;
     private float effectStartSize;
-    private Vector3 startPosition;
     public GameObject Trigger;
     private bool exposed;
+    public int questionIndexYoungEvilMurder;
+
+
     public void Awake()
     {
         effectStartSize = effect.transform.localScale.x;
         //Debug.Log("----------------------------START SIZE " + effectStartSize);
         effect.SetActive(false);
         Trigger.GetComponent<MeshRenderer>().enabled = false;
-        startPosition = transform.position;
+
         exposed = false;
+       
+    }
+    public void Start()
+    {
+        Respawn(null);
     }
     public void Update()
     {
@@ -33,8 +42,9 @@ public class ColdSpot : Item
             Vector3 currPos = transform.position;            currPos.y += 0.025f;            transform.position = currPos;
             if (effect.transform.localScale.x < 0.1f) { 
                 effect.SetActive(false); decay = false; exposed = false;
-                GameObject.Find("ColdSpotManager").GetComponent<ColdSpotControl>().Respawn(); 
-                this.gameObject.SetActive(false); }
+                if (NetworkDriver.instance.HOST) { Invoke("InvokeRespawn", respawnTimer); }
+                // this.gameObject.SetActive(false); 
+            }
         }
         //-----CRAZY K2 BEEP
         if(exposed)
@@ -42,17 +52,30 @@ public class ColdSpot : Item
             K2[] k2s = GameObject.FindObjectsOfType<K2>();
             foreach(K2 k2 in  k2s)
             {
-                k2.gameObject.GetComponent<k2beep>().Level = 5;
+                if (Vector3.Distance(k2.transform.position, this.gameObject.transform.position) < 5) { k2.gameObject.GetComponent<k2beep>().Level = 5; }
             }
         }
 
 
     }
+
+
+    public void Exposed(bool otherPlayer)
+    {
+        if (!exposed)
+        {
+            exposed = true;
+            effect.SetActive(true);
+            Invoke("Decay", SessionTimer);
+            if (GameDriver.instance.twoPlayer && !otherPlayer) { NetworkDriver.instance.sioCom.Instance.Emit("event", JsonConvert.SerializeObject($"{{'obj':'{gameObject.name}','type':'expose','event':'coldspot'}}"), false); }
+        }
+       
+    }
     public override void ActivateObject(bool otherPlayer)
     {
         if (exposed)
         {
-            GameObject.Find("ColdSpotManager").GetComponent<ColdSpotControl>().hasDoneSession = true;
+            GetComponentInParent<ColdSpotControl>().hasDoneSession = true;
             Trigger.transform.localScale = new Vector3(5f, 5f, 5f);
             //START UP SPIRITBOX
             GameDriver.instance.Player.GetComponent<PlayerController>().ChangeGear(true);
@@ -60,28 +83,24 @@ public class ColdSpot : Item
 
     }
 
-
-    public void Exposed()
-    {
-        if(!exposed)
-        {
-            exposed = true;
-            effect.SetActive(true);
-            Invoke("Decay", SessionTimer);
-        }
-       // if (GameDriver.instance.twoPlayer && !otherPlayer) { NetworkDriver.instance.sioCom.Instance.Emit("event", JsonConvert.SerializeObject($"{{'obj':'{gameObject.name}','type':'expose','event':'coldspot'}}"), false); }
-    }
     public void Decay()
     {
         decay = true;
+       
     }
 
-    private void OnDisable()
+    public void InvokeRespawn()    {        Respawn(null);    }
+    public void Respawn(GameObject givenDestination)
     {
-        transform.position = startPosition;
+        int randomSpot = Random.Range(0, locations.Count);
+        if (givenDestination == null) { transform.position = locations[randomSpot].transform.position; }
+        else { transform.position = givenDestination.transform.position; }//FROM HOST
         Trigger.transform.localScale = new Vector3(1f, 1f, 1f);
-        effect.transform.localScale = new Vector3(effectStartSize, effectStartSize, effectStartSize); 
+        effect.transform.localScale = new Vector3(effectStartSize, effectStartSize, effectStartSize);
+        effect.SetActive(false); decay = false; exposed = false;
+        if (GameDriver.instance.twoPlayer && NetworkDriver.instance.HOST) { NetworkDriver.instance.sioCom.Instance.Emit("event", JsonConvert.SerializeObject($"{{'obj':'{this.gameObject.name}','type':'respawn','event':'coldspot','loc':'{locations[randomSpot].name}'}}"), false); }
     }
+
 
 
 }

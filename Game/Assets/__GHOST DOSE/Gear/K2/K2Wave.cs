@@ -70,7 +70,7 @@ public class K2Wave : MonoBehaviour
     {
         Vector3 closestPoint = other.ClosestPointOnBounds(transform.position);
 
-        Debug.Log("------------------------------------------COLLIDING" + other.name);
+        //Debug.Log("------------------------------------------COLLIDING" + other.name);
         if (!other.gameObject.isStatic) { GetComponent<Shockwave>().NewShockwave(closestPoint, 2); }//2
         //GHOSTS
         if (other.gameObject.GetComponentInParent<GhostVFX>()!=null)
@@ -81,11 +81,11 @@ public class K2Wave : MonoBehaviour
             }
         }
         //COLD SPOT
-        if (other.gameObject.transform.parent != null)
+        if (other.gameObject.transform.parent != null && !isClient)
         {
             if (other.gameObject.transform.parent.GetComponent<ColdSpot>() != null)
             {
-                other.gameObject.transform.parent.GetComponent<ColdSpot>().Exposed();
+                other.gameObject.transform.parent.GetComponent<ColdSpot>().Exposed(false);
             }
         }
         //MEDKIT

@@ -17,6 +17,7 @@ public class SB7 : MonoBehaviour
     public List<Sound> AnswersYoung;
     public List<Sound> AnswersEvil;
     public List<Sound> AnswersMurdered;
+    private GameObject currentColdSpot; 
     private float question_timer = 0f;
     private float question_delay = 5f;
     private bool askedQuestion;
@@ -48,7 +49,7 @@ public class SB7 : MonoBehaviour
             timer = Time.time;//cooldown
         }
 
-        
+
 
         // ChosenVictim = Victims[Random.Range(0, Victims.Count)];
 
@@ -65,11 +66,19 @@ public class SB7 : MonoBehaviour
     }
     void AskQuestion()
     {
+        ColdSpot[] coldSpots = FindObjectsOfType<ColdSpot>();
+        float closestDistance = 9999;
+        foreach (ColdSpot coldspot in coldSpots)
+        {
+            float coldSpotDistance = Vector3.Distance(coldspot.gameObject.transform.position, transform.position);
+            if (coldSpotDistance < closestDistance) { closestDistance = coldSpotDistance; currentColdSpot = coldspot.gameObject; }
+        }
+        Debug.Log("CURRENT COLD SPOT" + currentColdSpot.name);
         List<Sound> questionList = new List<Sound>();
         if (transform.root.name == "TRAVIS") { questionList = QuestionsTravis; }
         else { questionList = QuestionsWestin; }
 
-        questionIndex = Random.Range(0, questionList.Count);
+        questionIndex = currentColdSpot.GetComponent<ColdSpot>().questionIndexYoungEvilMurder;//Random.Range(0, questionList.Count);
         audioSourceVoices.clip = questionList[questionIndex].clip;
         audioSourceVoices.pitch = 1f;
         audioSourceVoices.Play();
