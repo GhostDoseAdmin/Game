@@ -151,11 +151,11 @@ public class PlayerController : MonoBehaviour
 
     void Update() 
 	{
-        //gearAim = true;
-        //anim.SetBool("Pistol", true);
-        //handWeight = 1f;
-        //gear = 2;
-        currentAni = anim.GetCurrentAnimatorClipInfo(0)[0].clip.name;
+		//gearAim = true;
+		//anim.SetBool("Pistol", true);
+		//handWeight = 1f;
+		//gear = 2;
+		if (anim.GetCurrentAnimatorClipInfo(0).Length > 0){ currentAni = anim.GetCurrentAnimatorClipInfo(0)[0].clip.name; }
 		if (currentAni != "React")
 		{
 			Locomotion();

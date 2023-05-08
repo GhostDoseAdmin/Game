@@ -11,7 +11,6 @@ public class EnemyDeath : MonoBehaviour
     public GameObject effect_Shadower;
     public GameObject explo;
     public GameObject explo_Shadower;
-    public GameObject light;
     public bool Shadower;
     private bool end;
     public AudioSource audioSource;
@@ -30,7 +29,7 @@ public class EnemyDeath : MonoBehaviour
         Invoke("Explode", 2f);
         end = false;
 
-        if(Shadower) {              effect_Shadower.SetActive(true);   DestroyImmediate(light);      }
+        if(Shadower) {              effect_Shadower.SetActive(true);     }
         else        {            effect.SetActive(true);        }
     }
 

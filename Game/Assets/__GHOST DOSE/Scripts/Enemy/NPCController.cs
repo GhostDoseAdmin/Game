@@ -84,9 +84,10 @@ public class NPCController : MonoBehaviour
     public GameObject activeWayPoint;
     public AudioSource audioSource;
     private AudioClip audioClip;
-
+    GameObject PlayerWP, ClientWP;
     private void Awake()
     {
+        destination = this.gameObject;
         GetComponent<GhostVFX>().Shadower = Shadower;
         if (GetComponent<ZozoControl>() != null) { ZOZO = true; }
         active_timer = 99999;
@@ -98,7 +99,8 @@ public class NPCController : MonoBehaviour
 
     void Start()
     {
-        
+        PlayerWP = GameObject.Find("PlayerWavePoint");
+        ClientWP = GameObject.Find("ClientWavePoint");
         //GD = GameObject.Find("GameController").GetComponent<GameDriver>();
         Player = GameDriver.instance.Player;
         Client = GameDriver.instance.Client;
@@ -119,7 +121,7 @@ public class NPCController : MonoBehaviour
         HIT_COL.GetComponent<SphereCollider>().isTrigger = true;
         HIT_COL.GetComponent<SphereCollider>().enabled = false;
         outline = transform.GetChild(0).GetComponent<Outline>();
-        destination = this.gameObject;
+
         zozoLaser = false;
        
         //Debug.Log("----------------------------------------" + HIT_COL.GetComponent<SphereCollider>().enabled);
@@ -229,7 +231,10 @@ public class NPCController : MonoBehaviour
                     alertLevelPlayer -= 1;
                     if (alertLevelPlayer > alertLevelClient && alertLevelPlayer > unawareness)
                     {
-                        destination = GameDriver.instance.Player;  
+                        if (destination != PlayerWP) {
+                            PlayerWP.transform.position = GameDriver.instance.Player.transform.position;
+                            destination = PlayerWP; 
+                        }
                     }
                 }
                 if (alertLevelClient > alertLevelPlayer && alertLevelClient > unawareness)
@@ -237,14 +242,18 @@ public class NPCController : MonoBehaviour
                     alertLevelClient -= 1;
                     if (alertLevelClient > unawareness)
                     {
-                         destination = GameDriver.instance.Client; 
+                        if (destination != ClientWP)
+                        {
+                            ClientWP.transform.position = GameDriver.instance.Client.transform.position;
+                            destination = ClientWP;
+                        }
                     }
                 }
             }
             
-            if (destination == GameDriver.instance.Client) { alerted = true; navmesh.SetDestination(destination.transform.position); if (Vector3.Distance(transform.position, GameDriver.instance.Client.transform.position) > 1f) { navmesh.isStopped = false; animEnemy.SetBool("Walk", true); } else { navmesh.isStopped = true; animEnemy.SetBool("Walk", false); } }
-            if (destination == GameDriver.instance.Player) { alerted = true; navmesh.SetDestination(destination.transform.position); if (Vector3.Distance(transform.position, GameDriver.instance.Player.transform.position) > 1f ) { navmesh.isStopped = false; animEnemy.SetBool("Walk", true); } else { navmesh.isStopped = true; animEnemy.SetBool("Walk", false); } }
-            
+            if (destination == ClientWP) { alerted = true; navmesh.SetDestination(destination.transform.position); if (Vector3.Distance(transform.position, ClientWP.transform.position) > 1f) { navmesh.isStopped = false; animEnemy.SetBool("Walk", true); } else { alertLevelClient = 0;  } } //navmesh.isStopped = true; animEnemy.SetBool("Walk", false);
+            if (destination == PlayerWP) { alerted = true; navmesh.SetDestination(destination.transform.position); if (Vector3.Distance(transform.position, PlayerWP.transform.position) > 1f ) { navmesh.isStopped = false; animEnemy.SetBool("Walk", true); } else { alertLevelPlayer = 0; } }// navmesh.isStopped = true; animEnemy.SetBool("Walk", false);
+
             if (alertLevelPlayer <= 0 && alertLevelClient<=0 && alerted) { alerted = false; }//DISENGAGE ALERT
 
             //-------------PATROL---------------
@@ -254,7 +263,7 @@ public class NPCController : MonoBehaviour
                     if (wayPoint.Count > curWayPoint)
                     {
 
-                        if (NetworkDriver.instance.HOST) { destination= wayPoint[curWayPoint].gameObject; }
+                        if (NetworkDriver.instance.HOST) { destination= wayPoint[curWayPoint].gameObject; Debug.Log("WALKING TO DESTINATION " + destination.name); }
                         
                         Vector3 destination2D = new Vector3(destination.transform.position.x, transform.position.y, destination.transform.position.z);
                         
@@ -345,12 +354,12 @@ public class NPCController : MonoBehaviour
                 animEnemy.SetBool("Fighting", false);
                 animEnemy.SetBool("Run", true);
                 animEnemy.SetBool("Attack", false);
-                if (animEnemy.GetCurrentAnimatorClipInfo(0)[0].clip != null && animEnemy.GetCurrentAnimatorClipInfo(0)[0].clip.name != "EnemyAttack")
+                if (animEnemy.GetCurrentAnimatorClipInfo(0).Length>0 && animEnemy.GetCurrentAnimatorClipInfo(0)[0].clip.name != "EnemyAttack")
                 {
                     GetComponent<NavMeshAgent>().speed = chaseSpeed;//DOESNT AFFECT THIS
                     if (agro) { GetComponent<NavMeshAgent>().speed = chaseSpeed * 2; }
                 }
-                if (animEnemy.GetCurrentAnimatorClipInfo(0)[0].clip != null && animEnemy.GetCurrentAnimatorClipInfo(0)[0].clip.name == "agro") { GetComponent<NavMeshAgent>().speed = 0; }
+                if (animEnemy.GetCurrentAnimatorClipInfo(0).Length>0 && animEnemy.GetCurrentAnimatorClipInfo(0)[0].clip.name == "agro") { GetComponent<NavMeshAgent>().speed = 0; }
                 //GetComponent<NavMeshAgent>().enabled = true;
                 navmesh.isStopped = false;
 
@@ -374,7 +383,7 @@ public class NPCController : MonoBehaviour
 
         
         //---------------PLAYER DIES
-        if (target != null && Player!=null && Client!=null && NetworkDriver.instance.HOST)
+        if (target!=null && target.gameObject != null && Player!=null && Client!=null && NetworkDriver.instance!=null && NetworkDriver.instance.HOST)
         {
             if (target.gameObject == Player)
             {
@@ -402,10 +411,32 @@ public class NPCController : MonoBehaviour
     {
         if (target == null)
         {
+            //AGRO 
+            if (distance <= range+3)
+            {
+                if (closestPlayer = Player.transform){if (Player.GetComponent<Animator>().GetBool("Running")) { TakeDamage(1, false); } }
+                if (closestPlayer = Client.transform) { if (Client.GetComponent<Animator>().GetBool("Running")) {TakeDamage(1, true); }}
+            }
+            
+            if (distance <= 3)
+            {
+                //-------------ATTENTION----------------------
+                if(closestPlayer = Player.transform)
+                {
+                    if (Player.GetComponent<Animator>().GetFloat("Walk") > 0 || Player.GetComponent<Animator>().GetFloat("Strafe") > 0) { alertLevelPlayer += 4; }
+                    if (Player.GetComponent<Animator>().GetBool("Running")) { alertLevelPlayer = unawareness * 2; } //TakeDamage(1,false);
+                }
+                if (closestPlayer = Client.transform)
+                {
+                    if (Client.GetComponent<Animator>().GetFloat("Walk") > 0 || Client.GetComponent<Animator>().GetFloat("Strafe") > 0) { alertLevelClient += 4; }
+                    if (Client.GetComponent<Animator>().GetBool("Running")) { alertLevelClient = unawareness * 2; } //TakeDamage(1, true);
+                }
+            }
+
             if (distance <= range)
             {
-                if (Player.GetComponent<Animator>().GetBool("Running")){ alertLevelPlayer += 100; }
-                if (Client.GetComponent<Animator>().GetBool("Running")){ alertLevelClient += 100; }
+
+
                 // Debug.Log("TARGET IS " + targetPlayer.gameObject.name + " DISTANCE " + distance);
 
                 Quaternion look = Quaternion.LookRotation(closestPlayer.position - head.position);
@@ -486,8 +517,8 @@ public class NPCController : MonoBehaviour
 
             AudioManager.instance.Play("enemyflinchimpact", audioSource);
             if (damageAmount == 100) { AudioManager.instance.Play("headshot", audioSource); }
-            if (animEnemy.GetCurrentAnimatorClipInfo(0)[0].clip!= null && animEnemy.GetCurrentAnimatorClipInfo(0)[0].clip.name != "agro" && GetComponent<Teleport>().teleport==0) { healthEnemy -= damageAmount; }
-
+            //if (animEnemy.GetCurrentAnimatorClipInfo(0)[0].clip!= null && animEnemy.GetCurrentAnimatorClipInfo(0)[0].clip.name != "agro" && GetComponent<Teleport>().teleport==0) { healthEnemy -= damageAmount; }
+            healthEnemy -= damageAmount;
             //MAKE SUSPECIOUS
             if (!otherPlayer) { transform.LookAt(Player.transform); alertLevelPlayer = unawareness * 2; } else { transform.LookAt(Client.transform); alertLevelClient = unawareness * 2; }
 
@@ -504,8 +535,8 @@ public class NPCController : MonoBehaviour
                         if (!otherPlayer) { target = Player.transform; } else { target = Client.transform; }
                         follow = persist;
                     }
-                    AudioManager.instance.Play("Agro", null); animEnemy.Play("agro"); //animEnemy.CrossFade("agro", 0.25f);
-                    GameObject.Find("PlayerCamera").GetComponent<Camera_Controller>().InvokeShake(2f, 1f);
+                    AudioManager.instance.Play("Agro", null); if (healthEnemy > 0) { animEnemy.Play("agro"); } //animEnemy.CrossFade("agro", 0.25f);
+                    GameObject.Find("PlayerCamera").GetComponent<Camera_Controller>().InvokeShake(1f, 1f);
                     range = 20; agro = true; angleView = 360;
                 }
 

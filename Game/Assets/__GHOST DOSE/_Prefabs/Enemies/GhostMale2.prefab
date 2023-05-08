@@ -835,23 +835,25 @@ MonoBehaviour:
   HIT_COL: {fileID: 2910643322322174258}
   Death: {fileID: 793403660494855008, guid: 53820545ee83f6143b2d2e90e0e3425a, type: 3}
   Shadower: 0
+  ZOZO: 0
   healthEnemy: 150
   range: 3
   startRange: 0
   angleView: 120
   startAngleView: 0
   hitRange: 1.6
-  chaseSpeed: 1
+  chaseSpeed: 2
   spawnTimer: 0
   damage: 50
   force: 500
   retreatThreshold: 0
   unawareness: 200
   xrayvision: 0
-  persist: 200
+  persist: 150
   canRespawn: 1
   teleports: 1
   canFlinch: 1
+  zozoLaser: 0
   startHealth: 0
   canAttack: 1
   agro: 0
@@ -2103,6 +2105,8 @@ MonoBehaviour:
   outlineMode: 0
   outlineColor: {r: 1, g: 0, b: 0, a: 1}
   outlineWidth: 0
+  canFade: 0
+  skipChildren: 0
   precomputeOutline: 0
   bakeKeys: []
   bakeValues: []

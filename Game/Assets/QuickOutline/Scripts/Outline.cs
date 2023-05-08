@@ -311,7 +311,7 @@ public class Outline : MonoBehaviour {
   void UpdateMaterialProperties() {
 
     // Apply properties according to mode
-    outlineFillMaterial.SetColor("_OutlineColor", outlineColor);
+    //outlineFillMaterial.SetColor("_OutlineColor", outlineColor);
 
         switch (outlineMode) {
       case Mode.OutlineAll:
@@ -330,6 +330,7 @@ public class Outline : MonoBehaviour {
                         if (material.name == "OutlineFill (Instance)" || material.name == "OutlineFill")
                         {
                             material.SetFloat("_OutlineWidth", outlineWidth);
+                            material.SetColor("_OutlineColor", outlineColor);
                             material.SetFloat("_ZTest", (float)UnityEngine.Rendering.CompareFunction.Always);
                         }
                     }
@@ -344,6 +345,7 @@ public class Outline : MonoBehaviour {
                         if (material.name == "OutlineFill (Instance)" || material.name == "OutlineFill")
                         {
                             material.SetFloat("_OutlineWidth", outlineWidth);
+                            material.SetColor("_OutlineColor", outlineColor);
                             material.SetFloat("_ZTest", (float)UnityEngine.Rendering.CompareFunction.Always);
                         }
                     }

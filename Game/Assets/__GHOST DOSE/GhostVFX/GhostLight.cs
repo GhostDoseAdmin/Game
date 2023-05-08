@@ -1,6 +1,6 @@
 using UnityEngine;
 using System.Collections;
-
+using InteractionSystem;
 public class GhostLight : MonoBehaviour
 {
     public bool show_Ghost;
@@ -17,12 +17,16 @@ public class GhostLight : MonoBehaviour
     private Light lightComponent; // reference to the Light component
     private float originalSpotAngle; // original spot angle of the light
     private bool defaultFlicker;
+    private AudioSource flickerAudioSource;
 
 
     private void Awake()
     {
         ghost = show_Ghost;
         shadower = !show_Shadowers;
+
+        flickerAudioSource = gameObject.AddComponent<AudioSource>();
+        flickerAudioSource.spatialBlend = 1.0f;
     }
 
     private void Start()
@@ -45,6 +49,7 @@ public class GhostLight : MonoBehaviour
         yield return new WaitForSeconds(flickerDuration);
 
         // restore the original spot angle
+        AudioManager.instance.Play("lightflicker", flickerAudioSource);
         lightComponent.spotAngle = originalSpotAngle;
     }
 

@@ -19,6 +19,7 @@ namespace GameManager
         public bool twoPlayer = false;
         public bool NETWORK_TEST;
         public bool HOSTOVERRIDE;
+        public bool infiniteAmmo;
         private GameObject WESTIN;
         private GameObject TRAVIS;
         //public NetworkDriver ND;
@@ -34,6 +35,10 @@ namespace GameManager
 
         private static utilities util;
 
+        private void Update()
+        {
+            if(infiniteAmmo) { if (Player != null) { Player.GetComponent<ShootingSystem>().camBatteryUI.fillAmount = 1; } }
+        }
         void Awake()
         {
             // Debug.unityLogger.logEnabled = false;

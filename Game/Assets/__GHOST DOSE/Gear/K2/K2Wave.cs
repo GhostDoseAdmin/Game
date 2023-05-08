@@ -72,8 +72,8 @@ public class K2Wave : MonoBehaviour
 
         //Debug.Log("------------------------------------------COLLIDING" + other.name);
         if (!other.gameObject.isStatic) { GetComponent<Shockwave>().NewShockwave(closestPoint, 2); }//2
-
-        if (other.gameObject.tag == "Ghost" || other.gameObject.tag == "Shadower")
+        //GHOSTS
+        if (other.gameObject.GetComponentInParent<GhostVFX>()!=null)
         {
 
             if ((other.gameObject.GetComponentInParent<Teleport>().teleport==0)) {
@@ -81,11 +81,11 @@ public class K2Wave : MonoBehaviour
             }
         }
         //COLD SPOT
-        if (other.gameObject.transform.parent != null)
+        if (other.gameObject.transform.parent != null && !isClient)
         {
             if (other.gameObject.transform.parent.GetComponent<ColdSpot>() != null)
             {
-                other.gameObject.transform.parent.GetComponent<ColdSpot>().Exposed();
+                other.gameObject.transform.parent.GetComponent<ColdSpot>().Exposed(false);
             }
         }
         //MEDKIT

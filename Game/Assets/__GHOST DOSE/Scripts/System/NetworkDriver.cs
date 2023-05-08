@@ -132,7 +132,10 @@ namespace NetworkSystem
                 GameDriver.instance.Player.GetComponent<PlayerController>().emitPos = true;//triggers position emit
                 GameDriver.instance.twoPlayer = true;
                 GameDriver.instance.WriteGuiMsg("Two Player Mode - HOST is " + HOST, 10f);
-                if (HOST) { GameObject.Find("ColdSpotManager").GetComponent<ColdSpotControl>().ChooseColdSpot(); GameObject.Find("OuijaBoardManager").GetComponent<OuijaSessionControl>().OuijaSessions[GameObject.Find("OuijaBoardManager").GetComponent<OuijaSessionControl>().currentSession].GetComponent<VictimControl>().RandomVictim(null); }
+                if (HOST) {
+                    ColdSpot[] coldSpots = FindObjectsOfType<ColdSpot>();
+                    foreach(ColdSpot coldspot in coldSpots){ coldspot.Respawn(null); }
+                    GetComponentInChildren<VictimControl>().RandomVictim(null); }
                 //GameDriver.instance.MSG = "Two Player Mode - HOST " + HOST;
                
 
@@ -197,11 +200,11 @@ namespace NetworkSystem
                                     else { enemy.GetComponent<NPCController>().healthEnemy = 0; enemy.GetComponent<NPCController>().TakeDamage(0, true); }//kill
                                 }
                             }
-                            else//VICTIM
+                            /*else//VICTIM
                             {
                                 Debug.Log("CLIENT CHOSE " + enemy.name);
-                                GameObject.Find("OuijaBoardManager").GetComponent<OuijaSessionControl>().OuijaSessions[GameObject.Find("OuijaBoardManager").GetComponent<OuijaSessionControl>().currentSession].GetComponent<VictimControl>().testAnswer(enemy, true);
-                            }
+                                GetComponentInChildren<VictimControl>().testAnswer(enemy, true);
+                            }*/
                         }
 
 
@@ -238,10 +241,23 @@ namespace NetworkSystem
                 JObject data = JObject.Parse(payload);
                 Dictionary<string, string> dict = data.ToObject<Dictionary<string, string>>();
                 Debug.Log("RECEIVING LASER " + data);
-                GameObject enemy = GameObject.Find(dict["obj"]);
-                enemy.GetComponent<ZozoControl>().ChargeLaser();
+                //GetComponentInChildren<VictimControl>().ZOZO.SetActive(true);
+                //GameObject enemy = GameObject.Find(dict["obj"]);
+                StopCoroutine(waitForZozoActive());
+                StartCoroutine(waitForZozoActive());
+                
             });
-
+            StartCoroutine(waitForZozoActive());
+            IEnumerator waitForZozoActive()
+            {
+                
+                while (!GetComponentInChildren<VictimControl>().ZOZO.activeSelf)
+                {
+                    Debug.Log("WAIT FOR ACTIVE");
+                    yield return new WaitForSeconds(0.2f);
+                }
+                GetComponentInChildren<VictimControl>().ZOZO.GetComponent<ZozoControl>().ChargeLaser(true);
+            }
             //-----------------EVENT  ----------------->
             sioCom.Instance.On("event", (payload) =>
             {
@@ -249,13 +265,16 @@ namespace NetworkSystem
                 JObject data = JObject.Parse(payload);
                 Dictionary<string, string> dict = data.ToObject<Dictionary<string, string>>();
                 GameObject obj = GameObject.Find(dict["obj"]);
+                if (dict["event"] == "setfree") { obj.GetComponent<VictimControl>().SetSpiritsFree(); }
+                if (dict["event"] == "summon") { obj.GetComponent<VictimControl>().SummonZozo(); }
+                if (dict["event"] == "zozo"){obj.GetComponent<VictimControl>().DestroyZozo();}
                 if (dict["event"] == "pickup")
                 {
                     if (obj != null) {
                         if (dict["type"] == "key"){ obj.GetComponent<Key>().DestroyWithSound(true); }
                         if (dict["type"] == "med"){ obj.GetComponent<FirstAidKit>().DestroyWithSound(true); }
                         if (dict["type"] == "bat") { obj.GetComponent<Battery>().DestroyWithSound(true); }
-                        if (dict["type"] == "cand") { obj.GetComponent<Candle>().DestroyWithSound(true); GameObject.Find("OuijaBoardManager").GetComponent<OuijaSessionControl>().CandleCount++; }
+                        if (dict["type"] == "cand") { obj.GetComponent<Candle>().DestroyWithSound(true); GetComponentInChildren<VictimControl>().candleCount++; }
                     }
                     else { if (dict["type"] == "key") { KeyInventory.instance.RemoveKey(dict["pass"]); } }//local player already picked up
                 }
@@ -266,10 +285,12 @@ namespace NetworkSystem
                 }
                 if (dict["event"] == "coldspot")
                 {
-                    GameObject.Find("ColdSpotManager").GetComponent<ColdSpotControl>().ChooseColdSpotNetwork(int.Parse(dict["q1"]), int.Parse(dict["q2"]), int.Parse(dict["q3"]));
+                    if (dict["type"] == "respawn") { obj.GetComponent<ColdSpot>().Respawn(GameObject.Find(dict["loc"])); }
+                    if (dict["type"] == "expose") { obj.GetComponent<ColdSpot>().Exposed(true); }
+                    //GameObject.Find("ColdSpotManager").GetComponent<ColdSpotControl>().ChooseColdSpotNetwork(int.Parse(dict["q1"]), int.Parse(dict["q2"]), int.Parse(dict["q3"]));
                 }
-                if (dict["event"] == "randomvictim"){ Debug.Log(" RECEIVED RANDOM VICTIM  " + obj.name); GameObject.Find("OuijaBoardManager").GetComponent<OuijaSessionControl>().OuijaSessions[GameObject.Find("OuijaBoardManager").GetComponent<OuijaSessionControl>().currentSession].GetComponent<VictimControl>().RandomVictim(obj);}
-                if (dict["event"] == "startcircle") { GameObject.Find("VictimManager").GetComponent<VictimControl>().ActivateCircle(true); }
+                if (dict["event"] == "randomvictim"){ Debug.Log(" RECEIVED RANDOM VICTIM  " + obj.name); GetComponentInChildren<VictimControl>().RandomVictim(obj);}
+                if (dict["event"] == "startcircle") { GetComponentInChildren<VictimControl>().ActivateCircle(true); }
 
             });
             //-----------------TELEPORT  ----------------->
@@ -324,7 +345,7 @@ namespace NetworkSystem
                         {
                             //--------ACTIVE-----------
                             //if (obj.Value["ax"] != null) { enemy.SetActive(bool.Parse(obj.Value["ax"])); }
-                            enemy.SetActive(true);
+                            if (!enemy.activeSelf) { enemy.SetActive(true); }
                             enemy.GetComponent<NPCController>().active_timer = timer_delay*2;//DISABLE IF NO MESSAGES BEYOND 0.6s
                             //--------POSITION---------
                             Vector3 targPos;
@@ -382,6 +403,7 @@ namespace NetworkSystem
         public void UpdateEnemies(bool checkActive)
         {
             Dictionary<string, Dictionary<string, string>> syncObjects = new Dictionary<string, Dictionary<string, string>>();
+            //---------------ADD REGULAR ENEMIES----------------------
             foreach (GameObject obj in GetComponent<DisablerControl>().enemyObjects)
             {
 
@@ -389,12 +411,12 @@ namespace NetworkSystem
                 //if (GetComponent<DisablerControl>().closestPlayerDist<=GetComponent<DisablerControl>().disableDistance)
                 {
                     Dictionary<string, string> propsDict = new Dictionary<string, string>();
-
+                    //Debug.Log("PREPARING UPDATE FOR OBJ" + obj.name);
                     // Add the position values to the dictionary
                     propsDict.Add("x", obj.gameObject.transform.position.x.ToString("F2"));
                     propsDict.Add("y", obj.gameObject.transform.position.y.ToString("F2"));
                     propsDict.Add("z", obj.gameObject.transform.position.z.ToString("F2"));
-                    propsDict.Add("dx", obj.GetComponent<NPCController>().destination.name);
+                    propsDict.Add("dx", obj.GetComponent<NPCController>().destination.name); 
                     if (obj.GetComponent<NPCController>().target != null) { propsDict.Add("tx", obj.GetComponent<NPCController>().target.name); }
                     else { propsDict.Add("tx", ""); }
                     //propsDict.Add("ax", obj.gameObject.activeSelf.ToString());
@@ -403,6 +425,9 @@ namespace NetworkSystem
                     syncObjects.Add(obj.name, propsDict);
                 }
             }
+          
+
+
             if (syncObjects.Count > 0) { sioCom.Instance.Emit("sync", JsonConvert.SerializeObject(syncObjects), false); }
             timer = Time.time;//cooldown
         }
