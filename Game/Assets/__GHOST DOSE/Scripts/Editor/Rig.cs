@@ -26,7 +26,7 @@ public class Rig : EditorWindow
 
         EditorGUILayout.Space();
 
-        originSkeletonRoot = Resources.Load<GameObject>("Prefabs/Rigs/ROOTRIG");
+        originSkeletonRoot = EditorGUILayout.ObjectField("Original Skeleton Root", originSkeletonRoot, typeof(GameObject), true) as GameObject;
         destSkeletonRoot = EditorGUILayout.ObjectField("Destination Skeleton Root", destSkeletonRoot, typeof(GameObject), true) as GameObject;
 
 

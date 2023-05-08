@@ -15,7 +15,7 @@ Shader "Custom/GhostAlphaCutoff" {
         SubShader{
             Tags { "RenderType" = "Opaque"}
             //ZWrite Off
-            //Cull Front
+            //Cull Back
             LOD 200
 
             CGPROGRAM
