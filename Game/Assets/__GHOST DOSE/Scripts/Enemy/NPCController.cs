@@ -41,6 +41,7 @@ public class NPCController : MonoBehaviour
     public int unawareness;
     public bool xrayvision;
     public int persist;
+    private int startPersist;
     public bool canRespawn;
     public bool teleports;
     public bool canFlinch;
@@ -114,6 +115,7 @@ public class NPCController : MonoBehaviour
         startHealth = healthEnemy;
         startAngleView = angleView;
         startRange = range;
+        startPersist = persist;
         hasRetreated = 0;
 
         update = false; //UPDATE POSITIONS\
@@ -195,9 +197,29 @@ public class NPCController : MonoBehaviour
     public void AI()
     {
         if (GetComponent<Teleport>().teleport > 0) {return; }
-        
+
+        //AGRO 
+        if (distance <= 2)
+        {
+            if (closestPlayer = Player.transform) { if (Player.GetComponent<Animator>().GetBool("Running")) { Agro(false); } }
+            if (closestPlayer = Client.transform) { if (Client.GetComponent<Animator>().GetBool("Running")) { Agro(true); } }
+        }
+        //-------------ATTENTION----------------------
+        if (distance <= 3 && target==null)
+        {
+            if (closestPlayer = Player.transform)
+            {
+                 if (Player.GetComponent<Animator>().GetBool("Running")) { target = closestPlayer; AudioManager.instance.Play("EnemyEngage", null); follow = persist; } //TakeDamage(1,false);
+            }
+            if (closestPlayer = Client.transform)
+            {
+
+                if (Client.GetComponent<Animator>().GetBool("Running")) { target = closestPlayer; AudioManager.instance.Play("EnemyEngage", null); follow = persist; } //TakeDamage(1, true);
+            }
+        }
+
         //-----------RETREAT------------------
-        if(hasRetreated == 1 && NetworkDriver.instance.HOST)
+        if (hasRetreated == 1 && NetworkDriver.instance.HOST)
         {
             target = null;
             agro = false;
@@ -331,7 +353,7 @@ public class NPCController : MonoBehaviour
 
         float distance = Vector3.Distance(transform.position, new Vector3(target.position.x, transform.position.y, target.position.z));//measured at same level Yaxis
          //-----------DISENGAGE--------------------
-         if (distance > range){ Disengage(); }
+       //  if (distance > range){ Disengage(); }
 
         //------PUSH PLAYER AWAY
         if (distance < 0.4f)
@@ -411,33 +433,28 @@ public class NPCController : MonoBehaviour
     {
         if (target == null)
         {
-            //AGRO 
-            if (distance <= range+3)
+            angleView = startAngleView;
+            range = startRange;
+            persist = startPersist;
+
+            //ALERTS
+            if (distance <= 5)
             {
-                if (closestPlayer = Player.transform){if (Player.GetComponent<Animator>().GetBool("Running")) { TakeDamage(1, false); } }
-                if (closestPlayer = Client.transform) { if (Client.GetComponent<Animator>().GetBool("Running")) {TakeDamage(1, true); }}
+                if (Player.GetComponent<Animator>().GetFloat("Walk") > 0 || Player.GetComponent<Animator>().GetFloat("Strafe") > 0) { alertLevelPlayer += 2; }
+                if (Client.GetComponent<Animator>().GetFloat("Walk") > 0 || Client.GetComponent<Animator>().GetFloat("Strafe") > 0) { alertLevelClient += 2; }
             }
-            
-            if (distance <= 3)
+            if (distance <= 7)
             {
-                //-------------ATTENTION----------------------
-                if(closestPlayer = Player.transform)
-                {
-                    if (Player.GetComponent<Animator>().GetFloat("Walk") > 0 || Player.GetComponent<Animator>().GetFloat("Strafe") > 0) { alertLevelPlayer += 4; }
-                    if (Player.GetComponent<Animator>().GetBool("Running")) { alertLevelPlayer = unawareness * 2; } //TakeDamage(1,false);
-                }
-                if (closestPlayer = Client.transform)
-                {
-                    if (Client.GetComponent<Animator>().GetFloat("Walk") > 0 || Client.GetComponent<Animator>().GetFloat("Strafe") > 0) { alertLevelClient += 4; }
-                    if (Client.GetComponent<Animator>().GetBool("Running")) { alertLevelClient = unawareness * 2; } //TakeDamage(1, true);
-                }
+
+                if (closestPlayer == Player.transform) { if (Player.GetComponent<Animator>().GetBool("Running")) { range = startRange + 2; persist = startPersist * 2; alertLevelPlayer += 6; } }
+                if (closestPlayer == Client.transform) { if (Client.GetComponent<Animator>().GetBool("Running")) { range = startRange + 2; persist = startPersist * 2; alertLevelPlayer += 6; } }
             }
 
+            //Debug.Log("DISTANCE " + distance + " RANGE " + range);
             if (distance <= range)
             {
 
-
-                // Debug.Log("TARGET IS " + targetPlayer.gameObject.name + " DISTANCE " + distance);
+                 Debug.Log("WITHIN DISTANCE");
 
                 Quaternion look = Quaternion.LookRotation(closestPlayer.position - head.position);
                 float angle = Quaternion.Angle(head.rotation, look);
@@ -445,6 +462,7 @@ public class NPCController : MonoBehaviour
 
                 if (angle <= angleView) // can u see target
                 {
+                    Debug.Log("WITHIN ANGLE");
                     //Debug.Log("----------------------------------CAN SEE TARGET----------------------------------------");
                     RaycastHit hit;
                     Vector3 targPos = closestPlayer.position + Vector3.up * 1.4f;
@@ -453,13 +471,11 @@ public class NPCController : MonoBehaviour
                     if (xrayvision) { mask = (1 << LayerMask.NameToLayer("Player")); }//disregard default layer
                     if (Physics.Linecast(head.position, targPos, out hit, mask.value))
                     {
-                        //Debug.Log("----------TARGET -------------------" + hit.collider.gameObject.name);
-                        if (hit.transform == closestPlayer)
+                       // Debug.Log("----------TARGET -------------------" + hit.collider.gameObject.name);
+                        if (hit.collider.transform == closestPlayer)
                         {
                             //Engage(closestPlayer);
-                            target = closestPlayer;
-                            AudioManager.instance.Play("EnemyEngage", null);
-                            follow = persist;
+                            target = closestPlayer;AudioManager.instance.Play("EnemyEngage", null);follow = persist;
                         }
                     }
                 }
@@ -487,8 +503,7 @@ public class NPCController : MonoBehaviour
     private void Disengage()
     {
         target = null;
-        angleView = startAngleView;
-        range = startRange;
+
     }
 
     public void TriggerHitEnable()
@@ -509,13 +524,28 @@ public class NPCController : MonoBehaviour
             animEnemy.Play("React");
         }
     }
+    private void Agro(bool otherPlayer)
+    {
+        if (!agro)
+        {
+            if (NetworkDriver.instance.HOST)
+            {   //AQUIRE TARGET
+                if (!otherPlayer) { target = Player.transform; } else { target = Client.transform; }
+                follow = persist;
+            }
+            AudioManager.instance.Play("Agro", null); if (healthEnemy > 0) { animEnemy.Play("agro"); } //animEnemy.CrossFade("agro", 0.25f);
+            GameObject.Find("PlayerCamera").GetComponent<Camera_Controller>().InvokeShake(1f, 1f);
+            range = 20; agro = true; angleView = 360;
+        }
+    }
+
     public void TakeDamage(int damageAmount, bool otherPlayer)
     {
         if (!onlyOnceThisFrame)//prevent flash from interrupting
         {
             onlyOnceThisFrame = true;
 
-            AudioManager.instance.Play("enemyflinchimpact", audioSource);
+            if (damageAmount > 5) { AudioManager.instance.Play("enemyflinchimpact", audioSource); }
             if (damageAmount == 100) { AudioManager.instance.Play("headshot", audioSource); }
             //if (animEnemy.GetCurrentAnimatorClipInfo(0)[0].clip!= null && animEnemy.GetCurrentAnimatorClipInfo(0)[0].clip.name != "agro" && GetComponent<Teleport>().teleport==0) { healthEnemy -= damageAmount; }
             healthEnemy -= damageAmount;
@@ -528,17 +558,7 @@ public class NPCController : MonoBehaviour
             if (damageAmount > 0)
             {
                 if (agro) { Flinch(); }
-                if (!agro)
-                {
-                    if (NetworkDriver.instance.HOST)
-                    {   //AQUIRE TARGET
-                        if (!otherPlayer) { target = Player.transform; } else { target = Client.transform; }
-                        follow = persist;
-                    }
-                    AudioManager.instance.Play("Agro", null); if (healthEnemy > 0) { animEnemy.Play("agro"); } //animEnemy.CrossFade("agro", 0.25f);
-                    GameObject.Find("PlayerCamera").GetComponent<Camera_Controller>().InvokeShake(1f, 1f);
-                    range = 20; agro = true; angleView = 360;
-                }
+                Agro(otherPlayer);
 
             }
             //-----------ENEMY DEATH---------------
@@ -563,7 +583,7 @@ public class NPCController : MonoBehaviour
                 this.gameObject.transform.GetChild(0).GetComponent<SkinnedMeshRenderer>().enabled = false;
                 this.gameObject.transform.GetChild(0).GetComponent<Outline>().OutlineWidth = 0;
                 GameObject death = Instantiate(Death, transform.position, transform.rotation);
-                if (Shadower) { death.GetComponent<GhostVFX>().Shadower = true; death.GetComponent<EnemyDeath>().Shadower = true; }
+                if (Shadower) { death.GetComponent<GhostVFX>().Shadower = true;  }
                 HIT_COL.GetComponent<SphereCollider>().enabled = false;
                 if (!canRespawn) { DestroyImmediate(this.gameObject); }
 

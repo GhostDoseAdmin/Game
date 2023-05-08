@@ -105,7 +105,6 @@ GameObject:
   m_Component:
   - component: {fileID: 20667246967390682}
   - component: {fileID: 6244592816937753504}
-  - component: {fileID: 6244592816937753505}
   - component: {fileID: 6244592816937753518}
   m_Layer: 0
   m_Name: Male2Death
@@ -152,27 +151,6 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
---- !u!114 &6244592816937753505
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 793403660494855008}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 79a38cf1a3d5d37438c8a13bfd813e40, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  Shadower: 0
-  PlayerLight: {fileID: 0}
-  ClientLight: {fileID: 0}
-  LightSources: []
-  visible: 0
-  inShadow: 0
-  invisible: 0
-  HEAD: {fileID: 793403660494855008}
-  death: 1
 --- !u!114 &6244592816937753518
 MonoBehaviour:
   m_ObjectHideFlags: 0

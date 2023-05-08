@@ -91,6 +91,7 @@ public class PlayerController : MonoBehaviour
 	private string currPos;
 	private string prevPos;
 	public bool emitPos;
+	private int emitDodge;
 	//private GameObject playerCam;
     private static utilities util;
 
@@ -131,6 +132,7 @@ public class PlayerController : MonoBehaviour
 
 		k2.SetActive(false);
         fireK2 = false;
+		canFlinch = true;
     }
 
 
@@ -156,26 +158,20 @@ public class PlayerController : MonoBehaviour
 		//handWeight = 1f;
 		//gear = 2;
 		if (anim.GetCurrentAnimatorClipInfo(0).Length > 0){ currentAni = anim.GetCurrentAnimatorClipInfo(0)[0].clip.name; }
-		if (currentAni != "React")
+        gearAim = false;
+        anim.SetBool("Pistol", false);
+        if (currentAni != "React" )
 		{
 			Locomotion();
-			Running();
-			ChangeGear(false);
-			Throwing();
-			GearAim();
-			CheckFlashlight();
-
+			if (currentAni != "dodgeRightAni" && currentAni != "dodgeLeftAni")
+			{
+				Running();
+				ChangeGear(false);
+				Throwing();
+				GearAim();
+				CheckFlashlight();
+			}
 		}
-		else //FLINCH
-		{
-			//anim.SetBool("Pistol", true);
-			//anim.SetBool("Pistol", false);
-			//anim.Play("Idle", 0, 0f);
-			//anim.SetBool("Flashlight", true);
-			gearAim = false;
-            anim.SetBool("Pistol", false);
-
-        }
 
 
 
@@ -221,6 +217,13 @@ public class PlayerController : MonoBehaviour
 				if (fireK2){
                 k2String = $",'k2':''";
                 fireK2 = false;
+				}
+				//--------------- DODGE EMIT-----------------
+				string dodgeString = "";
+				if (emitDodge!=0)
+				{
+					dodgeString = $",'dg':'{emitDodge}'";
+					emitDodge = 0;
 				}
 				//--------------- GEAR EMIT-----------------
 				string gearString ="";
@@ -278,7 +281,7 @@ public class PlayerController : MonoBehaviour
 					emitKill = false;
 				}
             //--------------- E M I T   S T R I N G ----------------------
-            string actions = $"{{'flintensity':'{gameObject.GetComponent<FlashlightSystem>().FlashLight.intensity}','ax':'{crosshairPos.x.ToString("F0")}','ay':'{crosshairPos.y.ToString("F0")}','az':'{crosshairPos.z.ToString("F0")}'{flashLightString}{k2String}{gearString}{aimString}{walkString}{strafeString}{runString}{posString}{shotString}{killString}}}";
+            string actions = $"{{'flintensity':'{gameObject.GetComponent<FlashlightSystem>().FlashLight.intensity}','ax':'{crosshairPos.x.ToString("F0")}','ay':'{crosshairPos.y.ToString("F0")}','az':'{crosshairPos.z.ToString("F0")}'{flashLightString}{k2String}{gearString}{aimString}{walkString}{strafeString}{runString}{posString}{shotString}{killString}{dodgeString}}}";
 			//Debug.Log("------------------------------------------SENDING STRING " + actions);
 
 			
@@ -296,12 +299,27 @@ public class PlayerController : MonoBehaviour
 
 
     #region Locomotion
+    public float doubleTapTimeThreshold = 0.3f;
+    private float lastTapTime = -10f;
     void Locomotion()
 	{
 		targetPosVec = targetPos.position;
 
         walk = Input.GetAxis("Vertical");
         strafe =Input.GetAxis("Horizontal");
+
+
+        if (strafe != 0 && Input.GetKeyDown(strafe > 0 ? KeyCode.D : KeyCode.A))
+        {
+            if (Time.time - lastTapTime < doubleTapTimeThreshold)
+            {
+				//anim.Play(strafe > 0 ? "dodgeRightAni" : "dodgeLeftAni");
+				if (strafe > 0) { anim.Play("dodgeRightAni"); emitDodge = 1; }
+				else { anim.Play("dodgeRightAni"); emitDodge = -1; }
+				
+            }
+            lastTapTime = Time.time;
+        }
 
         anim.SetFloat("Strafe", strafe); 
 		anim.SetFloat("Walk", walk);
@@ -353,8 +371,13 @@ public class PlayerController : MonoBehaviour
 	}
 	#endregion
 
+	public bool canFlinch;
+	public void TriggerCanFlinch()
+	{
+		canFlinch = !canFlinch;
+		Debug.Log("-------------------CAN FLINCH-------------------" + canFlinch);
 
-
+	}
 	//--------------------THROWING (REM POD)-----------------------
 	void Throwing()
 	{

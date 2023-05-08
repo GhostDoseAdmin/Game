@@ -25,7 +25,7 @@ public class GhostVFX : MonoBehaviour
     public bool inShadow;
     public bool invisible;
     public GameObject HEAD;
-    public bool death;
+    //public bool death;
     private bool visibilitySet;
     private bool playedSound;
 
@@ -220,9 +220,9 @@ public class GhostVFX : MonoBehaviour
                 }
 
                 //-------------SET TOTAL ALPHA--------------------------------
-                if (death) { visible = true; visibilitySet = true; Fade(true, 0.5f, 1); }
+                //if (death) { visible = true; visibilitySet = true; Fade(true, 5f, 1); }
                 invisible = false;
-                if (!death)
+                //if (!death)
                 {
                     if (visible) { Fade(true, 0.5f, 1); }
                     else { Fade(false, 1f, 1); }//fadeout
@@ -235,12 +235,12 @@ public class GhostVFX : MonoBehaviour
                     {
 
                         skin.GetComponent<SkinnedMeshRenderer>().materials[i].SetFloat("_Alpha", currentMaxAlpha[i]);
-                        if (death) { skin.GetComponent<SkinnedMeshRenderer>().materials[i].SetFloat("_EMFAlpha", 0.6f); }
+                       // if (death) { skin.GetComponent<SkinnedMeshRenderer>().materials[i].SetFloat("_EMFAlpha", 0.6f); }
                     }
                     else if (skin.GetComponent<SkinnedMeshRenderer>().materials[i].shader.name == "Custom/GhostAlphaCutoff")
                     {
                         skin.GetComponent<SkinnedMeshRenderer>().materials[i].SetFloat("_Emission", currentMaxAlpha[i]);
-                        if (death) { skin.GetComponent<SkinnedMeshRenderer>().materials[i].SetFloat("_EMFAlpha", 1f); }
+                       // if (death) { skin.GetComponent<SkinnedMeshRenderer>().materials[i].SetFloat("_EMFAlpha", 1f); }
                     }
                 }
 
