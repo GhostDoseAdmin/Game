@@ -85,6 +85,7 @@ public class NPCController : MonoBehaviour
     public GameObject activeWayPoint;
     public AudioSource audioSource;
     private AudioClip audioClip;
+    private bool hasLooked = true;
     GameObject PlayerWP, ClientWP;
     private void Awake()
     {
@@ -109,7 +110,7 @@ public class NPCController : MonoBehaviour
         animEnemy = GetComponent<Animator>();
         navmesh = GetComponent<NavMeshAgent>();
 
-        closestPlayer = Client.transform;
+        //closestPlayer = Client.transform;
         head = animEnemy.GetBoneTransform(HumanBodyBones.Head).transform;
 
         startHealth = healthEnemy;
@@ -193,44 +194,47 @@ public class NPCController : MonoBehaviour
         GetComponent<NPCController>().activateOutline = false;
     }
 
+    public void ClientUpdateDestination(GameObject newDest)
+    {
+        //ALERTED
+        if (destination != PlayerWP && newDest == PlayerWP){ PlayerWP.transform.position = GameDriver.instance.Client.transform.position; hasLooked = false; }
+        if (destination != ClientWP && newDest == ClientWP) { ClientWP.transform.position = GameDriver.instance.Player.transform.position;  hasLooked = false; }
+        if ((destination == PlayerWP || destination == ClientWP) && newDest != PlayerWP && newDest != ClientWP) {hasLooked = true; alerted = false; }//CANCEL LOOK AROUND
 
+        destination = newDest;
+    }
+
+    public void TriggerHasLooked()
+    {
+        Debug.Log("-------------------------HAS LOOKED");
+        hasLooked = true;
+        alerted = false;
+    }
     public void AI()
     {
         if (GetComponent<Teleport>().teleport > 0) {return; }
 
         //AGRO 
-        if (distance <= 2)
+        /*if (distance <= 2)
         {
-            if (closestPlayer = Player.transform) { if (Player.GetComponent<Animator>().GetBool("Running")) { Agro(false); } }
-            if (closestPlayer = Client.transform) { if (Client.GetComponent<Animator>().GetBool("Running")) { Agro(true); } }
-        }
+            if (closestPlayer == Player.transform) { if (Player.GetComponent<Animator>().GetBool("Running")) { Agro(false); } }
+            if (closestPlayer == Client.transform) { if (Client.GetComponent<Animator>().GetBool("Running")) { Agro(true); } }
+        }*/
         //-------------ATTENTION----------------------
         if (distance <= 3 && target==null)
         {
-            if (closestPlayer = Player.transform)
+            if (closestPlayer == Player.transform)
             {
-                 if (Player.GetComponent<Animator>().GetBool("Running")) { target = closestPlayer; AudioManager.instance.Play("EnemyEngage", null); follow = persist; } //TakeDamage(1,false);
+                 if (Player.GetComponent<Animator>().GetBool("Running")) { Engage(Player.transform);  } //TakeDamage(1,false);
             }
-            if (closestPlayer = Client.transform)
+            if (closestPlayer ==Client.transform)
             {
 
-                if (Client.GetComponent<Animator>().GetBool("Running")) { target = closestPlayer; AudioManager.instance.Play("EnemyEngage", null); follow = persist; } //TakeDamage(1, true);
+                if (Client.GetComponent<Animator>().GetBool("Running")) { Engage(Client.transform); } //TakeDamage(1, true);
             }
         }
 
-        //-----------RETREAT------------------
-        if (hasRetreated == 1 && NetworkDriver.instance.HOST)
-        {
-            target = null;
-            agro = false;
-            range = 0;
-            angleView = 0;
-            navmesh.isStopped = false;
-        }
-        if (target != null)
-        {
-           Attack(); 
-        }
+        if (target != null) { hasLooked = true; Attack();         }
         //-------------------------WAY POINTS ------------------------
         else if (target == null)
         {
@@ -255,7 +259,8 @@ public class NPCController : MonoBehaviour
                     {
                         if (destination != PlayerWP) {
                             PlayerWP.transform.position = GameDriver.instance.Player.transform.position;
-                            destination = PlayerWP; 
+                            destination = PlayerWP;
+                            hasLooked = false;
                         }
                     }
                 }
@@ -268,18 +273,19 @@ public class NPCController : MonoBehaviour
                         {
                             ClientWP.transform.position = GameDriver.instance.Client.transform.position;
                             destination = ClientWP;
+                            hasLooked = false;
                         }
                     }
                 }
             }
+
+            //----HAPPENS ON BOTH LOCALS
+            if(destination == ClientWP || destination == PlayerWP) {if(!hasLooked) { alerted = true; navmesh.SetDestination(destination.transform.position); if (Vector3.Distance(transform.position, destination.transform.position) > 1f) { navmesh.isStopped = false; animEnemy.SetBool("Walk", true); } else { alertLevelPlayer = 0; alertLevelClient = 0; if (animEnemy.GetCurrentAnimatorClipInfo(0).Length > 0 && animEnemy.GetCurrentAnimatorClipInfo(0)[0].clip.name != "lookAroundAni") { animEnemy.Play("lookAroundAni"); } } } }
             
-            if (destination == ClientWP) { alerted = true; navmesh.SetDestination(destination.transform.position); if (Vector3.Distance(transform.position, ClientWP.transform.position) > 1f) { navmesh.isStopped = false; animEnemy.SetBool("Walk", true); } else { alertLevelClient = 0;  } } //navmesh.isStopped = true; animEnemy.SetBool("Walk", false);
-            if (destination == PlayerWP) { alerted = true; navmesh.SetDestination(destination.transform.position); if (Vector3.Distance(transform.position, PlayerWP.transform.position) > 1f ) { navmesh.isStopped = false; animEnemy.SetBool("Walk", true); } else { alertLevelPlayer = 0; } }// navmesh.isStopped = true; animEnemy.SetBool("Walk", false);
-
-            if (alertLevelPlayer <= 0 && alertLevelClient<=0 && alerted) { alerted = false; }//DISENGAGE ALERT
-
+             //if (alertLevelPlayer <= 0 && alertLevelClient<=0) { alerted = false; }//DISENGAGE ALERT
             //-------------PATROL---------------
-            if (!alerted){
+            if (!alerted && hasLooked)
+            {
                 if (wayPoint.Count > 1)
                 {
                     if (wayPoint.Count > curWayPoint)
@@ -353,7 +359,7 @@ public class NPCController : MonoBehaviour
 
         float distance = Vector3.Distance(transform.position, new Vector3(target.position.x, transform.position.y, target.position.z));//measured at same level Yaxis
          //-----------DISENGAGE--------------------
-       //  if (distance > range){ Disengage(); }
+         if (distance > 15){ Disengage(); }
 
         //------PUSH PLAYER AWAY
         if (distance < 0.4f)
@@ -433,6 +439,8 @@ public class NPCController : MonoBehaviour
     {
         if (target == null)
         {
+            Debug.Log("----------------------------------CLOSEST PLAYER---------------------------------------" + closestPlayer);
+
             angleView = startAngleView;
             range = startRange;
             persist = startPersist;
@@ -449,24 +457,24 @@ public class NPCController : MonoBehaviour
                 if (closestPlayer == Player.transform) { if (Player.GetComponent<Animator>().GetBool("Running")) { range = startRange + 2; persist = startPersist * 2; alertLevelPlayer += 6; } }
                 if (closestPlayer == Client.transform) { if (Client.GetComponent<Animator>().GetBool("Running")) { range = startRange + 2; persist = startPersist * 2; alertLevelPlayer += 6; } }
             }
+            if (animEnemy.GetCurrentAnimatorClipInfo(0).Length > 0 && animEnemy.GetCurrentAnimatorClipInfo(0)[0].clip.name == "lookAroundAni") { range = startRange +1 ;angleView = 50; }
 
             //Debug.Log("DISTANCE " + distance + " RANGE " + range);
             if (distance <= range)
             {
 
-                 Debug.Log("WITHIN DISTANCE");
-
+                // Debug.Log("WITHIN DISTANCE");
                 Quaternion look = Quaternion.LookRotation(closestPlayer.position - head.position);
                 float angle = Quaternion.Angle(head.rotation, look);
 
+                //Debug.DrawLine(head.position, closestPlayer.position + Vector3.up * 1.4f, Color.red); //1.6
 
                 if (angle <= angleView) // can u see target
                 {
-                    Debug.Log("WITHIN ANGLE");
-                    //Debug.Log("----------------------------------CAN SEE TARGET----------------------------------------");
+                   // Debug.Log("WITHIN ANGLE");
                     RaycastHit hit;
                     Vector3 targPos = closestPlayer.position + Vector3.up * 1.4f;
-                    Debug.DrawLine(head.position, targPos); //1.6
+                    //Debug.DrawLine(head.position, targPos, Color.red); //1.6
                     LayerMask mask = (1 << LayerMask.NameToLayer("Player")) | (1 << LayerMask.NameToLayer("Default"));
                     if (xrayvision) { mask = (1 << LayerMask.NameToLayer("Player")); }//disregard default layer
                     if (Physics.Linecast(head.position, targPos, out hit, mask.value))
@@ -474,8 +482,8 @@ public class NPCController : MonoBehaviour
                        // Debug.Log("----------TARGET -------------------" + hit.collider.gameObject.name);
                         if (hit.collider.transform == closestPlayer)
                         {
-                            //Engage(closestPlayer);
-                            target = closestPlayer;AudioManager.instance.Play("EnemyEngage", null);follow = persist;
+                            Engage(closestPlayer);
+                           
                         }
                     }
                 }
@@ -498,6 +506,13 @@ public class NPCController : MonoBehaviour
                 else { follow = persist; }
             }
         }
+    }
+    public void Engage(Transform newTarget)
+    {
+        Debug.Log("----------------------------------ENGAGING-----------------------------------------" + newTarget);
+        hasLooked = true;
+        if (newTarget != target) { AudioManager.instance.Play("EnemyEngage", null); follow = persist; animEnemy.Play("Chase"); }
+        target = newTarget; 
     }
 
     private void Disengage()

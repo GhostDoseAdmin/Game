@@ -361,8 +361,8 @@ namespace NetworkSystem
                             if (obj.Value["tx"] != null)
                             {
                                 string target = obj.Value["tx"];
-                                if (target.Contains("Player")) { enemy.GetComponent<NPCController>().target = GameDriver.instance.Client.transform; }
-                                if (target.Contains("Client")) { enemy.GetComponent<NPCController>().target = GameDriver.instance.Player.transform; }
+                                if (target.Contains("Player")) { enemy.GetComponent<NPCController>().Engage(GameDriver.instance.Client.transform); }
+                                if (target.Contains("Client")) { enemy.GetComponent<NPCController>().Engage(GameDriver.instance.Player.transform); }
                                 if (target.Length < 2) { enemy.GetComponent<NPCController>().target = null; }
                             }
                             //--------PATROL-----------
@@ -371,7 +371,7 @@ namespace NetworkSystem
                                 GameObject dest = GameObject.Find(obj.Value["dx"]);
                                 if (dest == GameDriver.instance.Player) { dest = GameDriver.instance.Client; }
                                 else if (dest == GameDriver.instance.Client) { dest = GameDriver.instance.Player; }
-                                enemy.GetComponent<NPCController>().destination = dest;//new Vector3(float.Parse(dict["dx"]), float.Parse(dict["dy"]), float.Parse(dict["dz"]));
+                                enemy.GetComponent<NPCController>().ClientUpdateDestination(dest); //new Vector3(float.Parse(dict["dx"]), float.Parse(dict["dy"]), float.Parse(dict["dz"]));
                                                                                        //enemy.GetComponent<NPCController>().curWayPoint = int.Parse(dict["wp"]);
                             }
                             break;

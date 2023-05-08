@@ -275,7 +275,7 @@ public class GhostVFX : MonoBehaviour
                 else//FADE OUT
                 {
                     if (currentMaxAlpha[i] > 0.01) { currentMaxAlpha[i] = Mathf.Lerp(currentMaxAlpha[i], currentMaxAlpha[i] * 0.5f * fadeOutLimit, Time.deltaTime * speed); }
-                    if (Mathf.Abs(currentMaxAlpha[i] - 0) < 0.1f) //if diff in alpha less than 0.1
+                    if (Mathf.Abs(currentMaxAlpha[i] - 0.05f) < 0.1f) //if diff in alpha less than 0.1
                     {
                         invisible = true; playedSound = false;
                     }
