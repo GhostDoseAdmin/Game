@@ -37,6 +37,7 @@ public class Door : Item
 
     public override void ActivateObject(bool otherPlayer)
     {
+       
         if (this.isNeedKey)
             this.CheckKeyPass();
         else
@@ -48,6 +49,7 @@ public class Door : Item
         var key = KeyInventory.instance.GetKeyWithPath(this.doorPass);
         if (key == this.doorPass)
         {
+            if (this.isNeedKey) { KeyInventory.instance.RemoveKey(KeyInventory.instance.GetKeyWithPath(this.doorPass)); }
             this.OpenClose(false);
         }
         else
@@ -62,12 +64,14 @@ public class Door : Item
     {
         if (this.isOpen)
         {
+           
             this.isOpen = false;
             this.animator.SetBool("Close", true);
             this.animator.SetBool("Open", false);
         }
         else
         {
+            isNeedKey = false;
             this.isOpen = true;
             this.animator.SetBool("Open", true);
             this.animator.SetBool("Close", false);
