@@ -152,14 +152,8 @@ namespace GameManager
 
                 Player = GameObject.Find("Player");
 
-                //SETUP CAMERA
-                GameObject mainCam = GameObject.Find("PlayerCamera");
-                mainCam.transform.SetParent(Player.transform.parent);
-                //mainCam.transform.SetAsFirstSibling();
-                mainCam.GetComponent<Camera_Controller>().player = Player.transform;
-                mainCam.GetComponent<Aiming>().player = Player;
-               //----CLEAR ANIMATOR CACHE---
-               StartCoroutine(util.ReactivateAnimator(Client));
+                //----CLEAR ANIMATOR CACHE---
+                StartCoroutine(util.ReactivateAnimator(Client));
                 StartCoroutine(util.ReactivateAnimator(Player));
 
                 Player.GetComponent<PlayerController>().SetupRig();

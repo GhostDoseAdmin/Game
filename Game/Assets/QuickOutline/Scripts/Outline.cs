@@ -44,9 +44,8 @@ public class Outline : MonoBehaviour {
   public float OutlineWidth {
     get { return outlineWidth; }
     set {
-      float outlineWidthPrev = outlineWidth;
       outlineWidth = value;
-      if (outlineWidth != outlineWidthPrev) { needsUpdate = true; }
+      needsUpdate = true;
     }
   }
 
@@ -90,7 +89,7 @@ public class Outline : MonoBehaviour {
 
     // Cache renderers
     renderers = GetComponentsInChildren<Renderer>();
-    if(this.gameObject.GetComponent<Renderer>() != null ) { renderers[0] = GetComponent<Renderer>(); }//ADD RENDERER FOR CURRENT PARENT OBJECT
+
     // Instantiate outline materials
     outlineMaskMaterial = Instantiate(Resources.Load<Material>(@"Materials/OutlineMask"));
     outlineFillMaterial = Instantiate(Resources.Load<Material>(@"Materials/OutlineFill"));
@@ -109,28 +108,26 @@ public class Outline : MonoBehaviour {
 
             foreach (var renderer in renderers)
             {
-                //if (renderer == null) { continue; }
-                
-                    // Append outline shaders
-                    var materials = renderer.sharedMaterials.ToList();
 
-                    materials.Add(outlineMaskMaterial);
-                    materials.Add(outlineFillMaterial);
+                // Append outline shaders
+                var materials = renderer.sharedMaterials.ToList();
 
-                    renderer.materials = materials.ToArray();
-                    //Debug.Log("GETTING OUTLINE FOR " + renderer.gameObject.name);
-                
+                materials.Add(outlineMaskMaterial);
+                materials.Add(outlineFillMaterial);
 
+                renderer.materials = materials.ToArray();
             }
         }
         else
         {
-            var materials = renderers[0].sharedMaterials.ToList();
+            singleRenderer = GetComponent<Renderer>();
+            // Append outline shaders
+            var materials = singleRenderer.sharedMaterials.ToList();
 
             materials.Add(outlineMaskMaterial);
             materials.Add(outlineFillMaterial);
 
-            renderers[0].materials = materials.ToArray();
+            singleRenderer.materials = materials.ToArray();
         }
 
 
@@ -317,30 +314,43 @@ public class Outline : MonoBehaviour {
     //outlineFillMaterial.SetColor("_OutlineColor", outlineColor);
 
         switch (outlineMode) {
+      case Mode.OutlineAll:
 
-       case Mode.OutlineAll:
-
-         outlineMaskMaterial.SetFloat("_ZTest", (float)UnityEngine.Rendering.CompareFunction.Always);
+        outlineMaskMaterial.SetFloat("_ZTest", (float)UnityEngine.Rendering.CompareFunction.Always);
                 //outlineFillMaterial.SetFloat("_ZTest", (float)UnityEngine.Rendering.CompareFunction.Always);
                 //outlineFillMaterial.SetFloat("_OutlineWidth", outlineWidth);
-                foreach (var renderer in renderers)
+                if (GetComponent<SkinnedMeshRenderer>() != null)
                 {
-                    //Debug.Log("SETTING PROPERTIES FOR OUTLINE FOR OBJECT " + renderer.gameObject.name);
-                    if (renderer == null) { continue; }
-                    Material[] materials = renderer.materials;
+
+                    SkinnedMeshRenderer skinnedMeshRenderer = GetComponent<SkinnedMeshRenderer>();
+                    Material[] materials = skinnedMeshRenderer.materials;
 
                     foreach (Material material in materials)
                     {
-                        if (material.name.Contains("OutlineFill"))
+                        if (material.name == "OutlineFill (Instance)" || material.name == "OutlineFill")
                         {
                             material.SetFloat("_OutlineWidth", outlineWidth);
                             material.SetColor("_OutlineColor", outlineColor);
                             material.SetFloat("_ZTest", (float)UnityEngine.Rendering.CompareFunction.Always);
                         }
                     }
+                    break;
                 }
+                else {
+                    MeshRenderer meshRender = GetComponent<MeshRenderer>();
+                    Material[] materials = meshRender.materials;
 
-                break;
+                    foreach (Material material in materials)
+                    {
+                        if (material.name == "OutlineFill (Instance)" || material.name == "OutlineFill")
+                        {
+                            material.SetFloat("_OutlineWidth", outlineWidth);
+                            material.SetColor("_OutlineColor", outlineColor);
+                            material.SetFloat("_ZTest", (float)UnityEngine.Rendering.CompareFunction.Always);
+                        }
+                    }
+                    break;
+                }
       case Mode.OutlineVisible:
         outlineMaskMaterial.SetFloat("_ZTest", (float)UnityEngine.Rendering.CompareFunction.Always);
         outlineFillMaterial.SetFloat("_ZTest", (float)UnityEngine.Rendering.CompareFunction.LessEqual);

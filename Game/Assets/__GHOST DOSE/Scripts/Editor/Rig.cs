@@ -11,7 +11,6 @@ public class Rig : EditorWindow
 
     [HideInInspector] GameObject currentRig;
     private bool isTravis;
-    private bool isPlayer = true;
     private string prefabName = "";
 
     [MenuItem("Window/Rig Model with BasicRig")]
@@ -23,7 +22,7 @@ public class Rig : EditorWindow
     void OnGUI()
     {
         isTravis = EditorGUILayout.Toggle("Is Travis Rig?", isTravis);
-        isPlayer = EditorGUILayout.Toggle("Player Rig?", isPlayer);
+
 
         EditorGUILayout.Space();
 
@@ -55,41 +54,36 @@ public class Rig : EditorWindow
             }
 
             //--------LOOK FOR EXISTING RIG
-            if (isPlayer)
+            if (isTravis)
             {
-                if (isTravis)
+                if (GameObject.Find("TRAVIS").transform.GetChild(0).childCount > 0)
                 {
-                    if (GameObject.Find("TRAVIS").transform.GetChild(0).childCount > 0)
-                    {
-                        currentRig = GameObject.Find("TRAVIS").transform.GetChild(0).GetChild(0).gameObject;
-                    }
+                    currentRig = GameObject.Find("TRAVIS").transform.GetChild(0).GetChild(0).gameObject;
                 }
-                else
+            }
+            else
+            {
+                if (GameObject.Find("WESTIN").transform.GetChild(0).childCount > 0)
                 {
-                    if (GameObject.Find("WESTIN").transform.GetChild(0).childCount > 0)
-                    {
-                        currentRig = GameObject.Find("WESTIN").transform.GetChild(0).GetChild(0).gameObject;
-                    }
+                    currentRig = GameObject.Find("WESTIN").transform.GetChild(0).GetChild(0).gameObject;
                 }
+            }
+
+            GUILayout.Label("Rig Model", EditorStyles.boldLabel);
 
 
-
-                GUILayout.Label("Rig Model", EditorStyles.boldLabel);
-
-
-                //----CHECK IF CURRRENT RIG EXISTS
-                if (currentRig != null)
+            //----CHECK IF CURRRENT RIG EXISTS
+            if (currentRig != null)
+            {
+                bool deleteObject = EditorUtility.DisplayDialog("Warning", "Do you want to delete the current Rig?", "Delete", "Cancel");
+                if (deleteObject)
                 {
-                    bool deleteObject = EditorUtility.DisplayDialog("Warning", "Do you want to delete the current Rig?", "Delete", "Cancel");
-                    if (deleteObject)
-                    {
-                        DestroyImmediate(currentRig);
-                    }
+                    DestroyImmediate(currentRig);
                 }
-                else
-                {
-                    Debug.Log("No previous rig");
-                }
+            }
+            else
+            {
+                Debug.Log("No previous rig");
             }
             //DEEP COPY
             CopyObjectsOnSkeletonPart(originSkeletonRoot.transform, destSkeletonRoot.transform);
@@ -117,7 +111,7 @@ public class Rig : EditorWindow
                 return;
             }
 
-            
+
             string path;
             if(isTravis) { path = "Assets/Resources/Prefabs/Rigs/Travis/" + prefabName +".prefab"; }
             else { path = "Assets/Resources/Prefabs/Rigs/Westin/" + prefabName + ".prefab"; }

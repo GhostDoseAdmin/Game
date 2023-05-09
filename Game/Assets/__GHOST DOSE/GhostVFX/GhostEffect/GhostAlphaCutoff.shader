@@ -87,7 +87,7 @@ Shader "Custom/GhostAlphaCutoff" {
                         continue; // move on to the next light
                     }
                     float scale = dot(direction, _LightDirections[i]);
-                    float strength = scale - cos((_LightAngles[i]+10) * (3.14 / 360.0));
+                    float strength = scale - cos(_LightAngles[i] * (3.14 / 360.0));
                     _strength[i] = abs(1 - min(max(strength * _StrengthScalarLight[i], 0), 1));
 
                     //SAMPLE SHADOW MAP
@@ -108,7 +108,7 @@ Shader "Custom/GhostAlphaCutoff" {
                 float3 direction1 = normalize(_PlayerLightPosition - IN.worldPos);
                 float distance1 = length(IN.worldPos - _PlayerLightPosition);
                 float scale1 = dot(direction1, _PlayerLightDirection);
-                float strength1 = scale1 - cos((_PlayerLightAngle+10) * (3.14 / 360.0));
+                float strength1 = scale1 - cos(_PlayerLightAngle * (3.14 / 360.0));
                 strength1 = abs(1 - min(max(strength1 * _PlayerStrengthScalarLight, 0), 1));
                 strength1 = 1 - (1 - strength1);
                 if (distance1 > _PlayerLightRange && _Shadower==0) {
@@ -124,7 +124,7 @@ Shader "Custom/GhostAlphaCutoff" {
                 float3 direction2 = normalize(_ClientLightPosition - IN.worldPos);
                 float distance2 = length(IN.worldPos - _ClientLightPosition);
                 float scale2 = dot(direction2, _ClientLightDirection);
-                float strength2 = scale2 - cos((_ClientLightAngle+10) * (3.14 / 360.0));
+                float strength2 = scale2 - cos(_ClientLightAngle * (3.14 / 360.0));
                 strength2 = abs(1 - min(max(strength2 * _ClientStrengthScalarLight, 0), 1));
                 strength2 = 1 - (1 - strength2);
                 if (distance2 > _ClientLightRange && _Shadower == 0) {

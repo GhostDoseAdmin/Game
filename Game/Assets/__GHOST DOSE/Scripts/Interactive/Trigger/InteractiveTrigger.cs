@@ -43,14 +43,16 @@ public class InteractiveTrigger : MonoBehaviour
         {
             Destroy(gameObject);
         }
- 
+
+
+       
+        
     }
 
     private void OnTriggerStay(Collider other)
     {
-        if (other.gameObject.name =="Player")
+        if (other.CompareTag("Player"))
         {
-            Debug.Log("--------------ALLWING INTERACTION OBJECT" + interactiveObject.name);
             allowInteraction = true;
             interact.SetActive(true);
             if (other.gameObject.name == "Player") { interactiveObject.GetComponent<Item>().playerOn = true; }
@@ -60,7 +62,7 @@ public class InteractiveTrigger : MonoBehaviour
 
     private void OnTriggerExit(Collider other)
     {
-        if (other.gameObject.name == "Player")
+        if (other.CompareTag("Player"))
         {
             allowInteraction = false;
             interact.SetActive(false);
