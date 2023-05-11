@@ -158,9 +158,8 @@ public class PlayerController : MonoBehaviour
 		//handWeight = 1f;
 		//gear = 2;
 		if (anim.GetCurrentAnimatorClipInfo(0).Length > 0){ currentAni = anim.GetCurrentAnimatorClipInfo(0)[0].clip.name; }
-        gearAim = false;
-        anim.SetBool("Pistol", false);
-        if (currentAni != "React" )
+
+		if (currentAni != "React")
 		{
 			Locomotion();
 			if (currentAni != "dodgeRightAni" && currentAni != "dodgeLeftAni")
@@ -171,7 +170,17 @@ public class PlayerController : MonoBehaviour
 				GearAim();
 				CheckFlashlight();
 			}
+			else
+            {
+                gearAim = false;
+                anim.SetBool("Pistol", false);
+            }
 		}
+		else
+        {
+            gearAim = false;
+            anim.SetBool("Pistol", false);
+        }
 
 
 
@@ -331,9 +340,10 @@ public class PlayerController : MonoBehaviour
 			transform.LookAt(targetPosVec);
 
             float angleBetween = Mathf.DeltaAngle(transform.eulerAngles.y, rot.y);
-			if ((Mathf.Abs(angleBetween) > luft) || strafe != 0)
+            if ((Mathf.Abs(angleBetween) > luft) || strafe != 0)
 			{
 				isPlayerRot = true;
+				
 			}
 			if (isPlayerRot == true)
 			{
@@ -479,6 +489,7 @@ public class PlayerController : MonoBehaviour
             }
             //if (gear == 1 || gear == 2)
             {
+	
 				if (Input.GetMouseButton(1)) //AIMING
 				{
                     if (!gearAim) { if (gear == 1) { AudioManager.instance.Play("camfocus", audioSource); } }

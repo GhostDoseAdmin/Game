@@ -2,6 +2,9 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using NetworkSystem;
 using System.Collections.Generic;
+using UnityEngine.UI;
+using UnityEngine.Rendering.VirtualTexturing;
+using TMPro;
 
 namespace GameManager
 {
@@ -14,7 +17,7 @@ namespace GameManager
         public GameObject Client;
         public string ROOM;
         public bool ROOM_VALID;//they joined valid room
-        public string MSG = "";
+        
         public bool GAMESTART = false;
         public bool twoPlayer = false;
         public bool NETWORK_TEST;
@@ -22,6 +25,10 @@ namespace GameManager
         public bool infiniteAmmo;
         private GameObject WESTIN;
         private GameObject TRAVIS;
+        public GameObject loginCanvas;
+        public GameObject screenMask;
+
+
         //public NetworkDriver ND;
 
         //GHOST EFFECT LIGHT REFS
@@ -30,8 +37,8 @@ namespace GameManager
         [HideInInspector] public Light ClientWeapLight;
         [HideInInspector] public Light ClientFlashLight;
 
-        public GameObject mySelectedRig;
-        public GameObject theirSelectedRig;
+        [HideInInspector] public GameObject mySelectedRig;
+        [HideInInspector] public GameObject theirSelectedRig;
 
         private static utilities util;
 
@@ -42,8 +49,9 @@ namespace GameManager
         void Awake()
         {
             // Debug.unityLogger.logEnabled = false;
+            
 
-            MSG = "Welcome to GhostDose";
+            //MSG = "Welcome to GhostDose";
             //ROOM = "gttt";//DEFAULT ROOM
 
             util = new utilities();
@@ -54,7 +62,7 @@ namespace GameManager
 
 
             this.gameObject.AddComponent<NetworkDriver>();
-
+            NetworkDriver.instance.NetworkSetup();
 
             //NON LOBBY INSTANCE
             if (SceneManager.GetActiveScene().name != "Lobby" && !GetComponent<LobbyControl>().start)
@@ -62,7 +70,7 @@ namespace GameManager
                 //Debug.Log("PRE EMPTIVE CALL");
                 GetComponent<LobbyControl>().enabled = false;
                 //ND = this.gameObject.AddComponent<NetworkDriver>();
-                NetworkDriver.instance.NetworkSetup();
+                //NetworkDriver.instance.NetworkSetup();
                 SetupScene();
             }
 
@@ -178,18 +186,26 @@ namespace GameManager
             }
         }
 
+
+
+
         //----------------SYSTEM CONSOLE-------------------------
-        void OnGUI()
+        public GameObject loadingIcon;
+        public GameObject systemConsole;
+        /*void OnGUI()
         {
             GUIStyle style = new GUIStyle();
             style.fontSize = 20;
-            style.normal.textColor = Color.white;
+            style.normal.textColor = msgColor;
+
             Vector2 textSize = style.CalcSize(new GUIContent(MSG));
             float posX = Screen.width / 2f;
             float posY = Screen.height / 2f;
             if (SceneManager.GetActiveScene().name == "Lobby")
             {
-                posY += 100;
+                posX = 100 + textSize.x / 2f;
+                posY = Screen.height - 60;
+                //posY += 100;
             }
             else
             {
@@ -197,15 +213,20 @@ namespace GameManager
             }
             Rect labelRect = new Rect(posX - (textSize.x / 2f), posY - (textSize.y / 2f), textSize.x, textSize.y);
             GUI.Label(labelRect, MSG, style);
-        }
 
-        public void WriteGuiMsg(string msg, float timer)
+        }*/
+
+        public void WriteGuiMsg(string msg, float timer, bool loading, Color color)
         {
-            MSG = msg;
+            
+
             CancelInvoke();
             Invoke("StopMSG", timer);
+            loadingIcon.SetActive(loading);
+            systemConsole.GetComponent<TextMeshProUGUI>().text = msg;
+            systemConsole.GetComponent<TextMeshProUGUI>().color = color;
         }
 
-        private void StopMSG() { MSG = ""; }
+        private void StopMSG() { systemConsole.GetComponent<TextMeshProUGUI>().text = ""; loadingIcon.SetActive(false); }
     }
 }

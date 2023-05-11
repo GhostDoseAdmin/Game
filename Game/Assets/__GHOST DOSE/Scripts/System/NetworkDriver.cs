@@ -6,6 +6,7 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using GameManager;
 using static UnityEngine.GraphicsBuffer;
+using UnityEngine.SceneManagement;
 
 namespace NetworkSystem
 {
@@ -16,6 +17,7 @@ namespace NetworkSystem
 
         public SocketIOCommunicator sioCom;
 
+
         //private float sync_timer = 0.0f;
         //private float delay = 15f;//SYNC DELAY
 
@@ -23,13 +25,13 @@ namespace NetworkSystem
         public bool connected = false;
         private float pingTimer = 0.0f;
         private float PING = 0.0f;
-
+        private bool timeout = false;
+        public bool noUserFound = false;
         public void Awake() { instance = this; }
-
+        private void ConnectionTimeout() { if (!connected) { GameDriver.instance.WriteGuiMsg("Trouble reaching servers!", 30f, false, Color.red); timeout = true; } }
         public void NetworkSetup()
         {
             //=================================================================  S E T  U P  ===============================================================
-
             //Debug.Log("SETTING UP NETWORK");
 
             sioCom = gameObject.AddComponent<SocketIOCommunicator>();
@@ -43,16 +45,19 @@ namespace NetworkSystem
                 if (payload != null)
                 {
                     connected = true;
-                    GameDriver.instance.WriteGuiMsg("Checking Room " + GameDriver.instance.ROOM,1f);
+                    GameDriver.instance.WriteGuiMsg("Connected Successfully!", 5f, false, Color.white);
+                    if (SceneManager.GetActiveScene().name == "Lobby") { GetComponent<GameDriver>().loginCanvas.SetActive(true); ; }
+                    //GameDriver.instance.WriteGuiMsg("Checking Room " + GameDriver.instance.ROOM,1f, true);
                     //Debug.Log(payload + " CONNECTING TO ROOM " + PlayerPrefs.GetString("room"));
-                    sioCom.Instance.Emit("join", GameDriver.instance.ROOM, true); //PlayerPrefs.GetString("room")
+                    //sioCom.Instance.Emit("join", GameDriver.instance.ROOM, true); //PlayerPrefs.GetString("room")
                 }
             });
+            Invoke("ConnectionTimeout",10f);
             IEnumerator connectSIO()//--------CONNECT HELPER--------->
             {
-                while (!connected)
+                while (!connected && !timeout)
                 {
-                    GameDriver.instance.WriteGuiMsg("Attempting to connect to Ghost Servers", 5f);
+                    GameDriver.instance.WriteGuiMsg("Attempting to connect to Ghost Servers", 5f, true, Color.white);
                     sioCom.Instance.Close();
                     yield return new WaitForSeconds(1f); //refresh socket
                     //Debug.Log("attempting connection ");
@@ -60,6 +65,26 @@ namespace NetworkSystem
                     yield return new WaitForSeconds(1f);
                 }
             }
+            //-----------------CHECK USERNAME ----------------->
+            sioCom.Instance.On("check_username", (payload) =>
+            {
+                if (payload == "None") {  GameObject.Find("LoginControl").GetComponent<LoginControl>().NoUserFound(); }
+                else { GameObject.Find("LoginControl").GetComponent<LoginControl>().UserFound(); }
+            });
+            //-----------------CONFIRMED SAVED ----------------->
+            sioCom.Instance.On("save_user", (payload) =>
+            {
+                if (payload == "success") { GameObject.Find("LoginControl").GetComponent<LoginControl>().SavingSuccess(); }
+                else {  GameObject.Find("LoginControl").GetComponent<LoginControl>().SavingFailed(); }
+            });
+            //-----------------LOGIN ----------------->
+            sioCom.Instance.On("login", (payload) =>
+            {
+                if (payload == "true") { GameObject.Find("LoginControl").GetComponent<LoginControl>().LoginSuccess(); }
+                else { GameObject.Find("LoginControl").GetComponent<LoginControl>().LoginFail(); }
+            });
+
+
 
             //-----------------JOIN ROOM----------------->
             sioCom.Instance.On("join", (payload) =>
@@ -68,13 +93,14 @@ namespace NetworkSystem
                 Debug.Log(payload);
                 if (payload == "full")
                 {
-                    GameDriver.instance.WriteGuiMsg("Room is full! Can't join Game! ", 10f);
-                    sioCom.Instance.Close();
+                    GameDriver.instance.WriteGuiMsg("Room is full! Can't join Game! ", 10f, false, Color.red);
+                    GameObject.Find("LobbyManager").GetComponent<LobbyControl>().checkingRoom = false;
+                    //sioCom.Instance.Close();
                 }
                 else
                 {
                     GameDriver.instance.ROOM_VALID = true;
-                    GameDriver.instance.WriteGuiMsg("Found Room " + GameDriver.instance.ROOM, 1f);
+                    GameDriver.instance.WriteGuiMsg("Found Room " + GameDriver.instance.ROOM, 1f, false, Color.white);
                     var dict = new Dictionary<string, string> {
                     { "sid", sioCom.Instance.SocketID },
                     { "ping", PING.ToString() }
@@ -89,7 +115,7 @@ namespace NetworkSystem
             //-----------------PING----------------->
             sioCom.Instance.On("pong", (payload) =>
             {
-                GameDriver.instance.WriteGuiMsg("Looking For Players - you may start alone", 10f);
+                GameDriver.instance.WriteGuiMsg("Looking For Players - you may start alone", 10f, false, Color.white);
                 // Debug.Log("PONG RECEIVED " + payload);
                 if (PING == 0) { PING = Time.time - pingTimer; Debug.Log("MY PING IS " + PING); }
                 JObject data = JObject.Parse(payload);
@@ -99,7 +125,7 @@ namespace NetworkSystem
                     //Debug.Log("THEIR PING IS " + dict["ping"]);
                     if (float.Parse(dict["ping"]) == 0) //THEY JUST JOINED
                     {
-                        GameDriver.instance.WriteGuiMsg("Player Joined", 1f);
+                        GameDriver.instance.WriteGuiMsg("Player Joined", 1f, false, Color.white);
                         //Debug.Log("PLAYER JOINED SENDING MY PING SPEED TO OTHER PLAYER");
                         dict = new Dictionary<string, string> {
                         { "sid", sioCom.Instance.SocketID },
@@ -131,7 +157,7 @@ namespace NetworkSystem
                 GameDriver.instance.Player.GetComponent<PlayerController>().emitGear = true;
                 GameDriver.instance.Player.GetComponent<PlayerController>().emitPos = true;//triggers position emit
                 GameDriver.instance.twoPlayer = true;
-                GameDriver.instance.WriteGuiMsg("Two Player Mode - HOST is " + HOST, 10f);
+                GameDriver.instance.WriteGuiMsg("Two Player Mode - HOST is " + HOST, 10f, false, Color.white);
                 if (HOST) {
                     ColdSpot[] coldSpots = FindObjectsOfType<ColdSpot>();
                     foreach(ColdSpot coldspot in coldSpots){ coldspot.Respawn(null); }
@@ -248,7 +274,6 @@ namespace NetworkSystem
                 StartCoroutine(waitForZozoActive());
                 
             });
-            StartCoroutine(waitForZozoActive());
             IEnumerator waitForZozoActive()
             {
                 
