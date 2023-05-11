@@ -11,6 +11,7 @@ public class Rig : EditorWindow
 
     [HideInInspector] GameObject currentRig;
     private bool isTravis;
+    private bool isPlayer = true;
     private string prefabName = "";
 
     [MenuItem("Window/Rig Model with BasicRig")]
@@ -22,11 +23,11 @@ public class Rig : EditorWindow
     void OnGUI()
     {
         isTravis = EditorGUILayout.Toggle("Is Travis Rig?", isTravis);
-
+        isPlayer = EditorGUILayout.Toggle("Player Rig?", isPlayer);
 
         EditorGUILayout.Space();
 
-        originSkeletonRoot = Resources.Load<GameObject>("Prefabs/Rigs/ROOTRIG");
+        originSkeletonRoot = EditorGUILayout.ObjectField("Original Skeleton Root", originSkeletonRoot, typeof(GameObject), true) as GameObject;
         destSkeletonRoot = EditorGUILayout.ObjectField("Destination Skeleton Root", destSkeletonRoot, typeof(GameObject), true) as GameObject;
 
 
@@ -54,36 +55,41 @@ public class Rig : EditorWindow
             }
 
             //--------LOOK FOR EXISTING RIG
-            if (isTravis)
+            if (isPlayer)
             {
-                if (GameObject.Find("TRAVIS").transform.GetChild(0).childCount > 0)
+                if (isTravis)
                 {
-                    currentRig = GameObject.Find("TRAVIS").transform.GetChild(0).GetChild(0).gameObject;
+                    if (GameObject.Find("TRAVIS").transform.GetChild(0).childCount > 0)
+                    {
+                        currentRig = GameObject.Find("TRAVIS").transform.GetChild(0).GetChild(0).gameObject;
+                    }
                 }
-            }
-            else
-            {
-                if (GameObject.Find("WESTIN").transform.GetChild(0).childCount > 0)
+                else
                 {
-                    currentRig = GameObject.Find("WESTIN").transform.GetChild(0).GetChild(0).gameObject;
+                    if (GameObject.Find("WESTIN").transform.GetChild(0).childCount > 0)
+                    {
+                        currentRig = GameObject.Find("WESTIN").transform.GetChild(0).GetChild(0).gameObject;
+                    }
                 }
-            }
-
-            GUILayout.Label("Rig Model", EditorStyles.boldLabel);
 
 
-            //----CHECK IF CURRRENT RIG EXISTS
-            if (currentRig != null)
-            {
-                bool deleteObject = EditorUtility.DisplayDialog("Warning", "Do you want to delete the current Rig?", "Delete", "Cancel");
-                if (deleteObject)
+
+                GUILayout.Label("Rig Model", EditorStyles.boldLabel);
+
+
+                //----CHECK IF CURRRENT RIG EXISTS
+                if (currentRig != null)
                 {
-                    DestroyImmediate(currentRig);
+                    bool deleteObject = EditorUtility.DisplayDialog("Warning", "Do you want to delete the current Rig?", "Delete", "Cancel");
+                    if (deleteObject)
+                    {
+                        DestroyImmediate(currentRig);
+                    }
                 }
-            }
-            else
-            {
-                Debug.Log("No previous rig");
+                else
+                {
+                    Debug.Log("No previous rig");
+                }
             }
             //DEEP COPY
             CopyObjectsOnSkeletonPart(originSkeletonRoot.transform, destSkeletonRoot.transform);
@@ -111,7 +117,7 @@ public class Rig : EditorWindow
                 return;
             }
 
-
+            
             string path;
             if(isTravis) { path = "Assets/Resources/Prefabs/Rigs/Travis/" + prefabName +".prefab"; }
             else { path = "Assets/Resources/Prefabs/Rigs/Westin/" + prefabName + ".prefab"; }

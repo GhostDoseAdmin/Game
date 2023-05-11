@@ -14911,7 +14911,6 @@ GameObject:
   m_Component:
   - component: {fileID: 7954510080946896461}
   - component: {fileID: 7954510080946896460}
-  - component: {fileID: 7954510080946896463}
   - component: {fileID: 7954510080946896462}
   m_Layer: 0
   m_Name: Female1Death
@@ -14958,27 +14957,6 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
---- !u!114 &7954510080946896463
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7954510080946896457}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 79a38cf1a3d5d37438c8a13bfd813e40, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  Shadower: 0
-  PlayerLight: {fileID: 0}
-  ClientLight: {fileID: 0}
-  LightSources: []
-  visible: 0
-  inShadow: 0
-  invisible: 0
-  HEAD: {fileID: 7954510082185059112}
-  death: 1
 --- !u!114 &7954510080946896462
 MonoBehaviour:
   m_ObjectHideFlags: 0

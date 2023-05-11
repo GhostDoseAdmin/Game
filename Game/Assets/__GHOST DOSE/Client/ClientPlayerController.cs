@@ -81,6 +81,7 @@ public class ClientPlayerController : MonoBehaviour
 	public float Float;
 	public Vector3 destination;
 	public float speed;
+    public int dodge;
 	//public bool running;
 	//public Vector3 targetRotation;
 	//public bool toggleFlashlight = false;//command sent from other player to turn on/off flashlight
@@ -110,6 +111,8 @@ public class ClientPlayerController : MonoBehaviour
     public float targStrafe;
     public bool running;
     public AudioSource audioSource;
+    private string currentAni;
+    public bool canFlinch;
     //public bool wlOn, flOn;//weaplight and flashlight
 
 
@@ -120,6 +123,7 @@ public class ClientPlayerController : MonoBehaviour
     {
         audioSource = gameObject.AddComponent<AudioSource>();
         audioSource.spatialBlend = 1.0f;
+        canFlinch = true;
     }
 
     #region Start
@@ -178,10 +182,15 @@ public class ClientPlayerController : MonoBehaviour
                 anim.SetFloat("Walk", walk);
 			    if (speed>=4f) { anim.SetBool("Running", true);  }
 			    else { anim.SetBool("Running", false); }
-            
-		   
+
+        //----------DODGE
+        if (dodge > 0) { anim.Play("dodgeRightAni");  }
+        if (dodge < 0) { anim.Play("dodgeLeftAni");  }
+        dodge = 0;
+
+
         //-------------------MOVEMENT---------------------------
-        if (anim.GetCurrentAnimatorClipInfo(0)[0].clip.name!="React")
+        if (anim.GetCurrentAnimatorClipInfo(0).Length>0 && anim.GetCurrentAnimatorClipInfo(0)[0].clip.name!="React")
         {
             if (Vector3.Distance(transform.position, destination) > 2) { transform.position = new Vector3(destination.x, destination.y, destination.z); }
             float distance = Vector3.Distance(transform.position, destination);
@@ -218,8 +227,18 @@ public class ClientPlayerController : MonoBehaviour
     #region Update
     void Update() 
 	{
-        Flashlight();
-        Attack();
+        if (anim.GetCurrentAnimatorClipInfo(0).Length > 0) { currentAni = anim.GetCurrentAnimatorClipInfo(0)[0].clip.name; }
+        if (currentAni != "dodgeRightAni" && currentAni != "dodgeLeftAni")
+        {
+            Flashlight();
+            Attack();
+        }
+        else
+        {
+            gearAim = false;
+            anim.SetBool("Pistol", false);
+        }
+
         //SET CURRENT LIGHT SOURCE FOR CLIENT
         if (GetComponent<ClientFlashlightSystem>().FlashLight.GetComponent<Light>().enabled) { currLight = GetComponent<ClientFlashlightSystem>().FlashLight.gameObject; }
         else if (GetComponent<ClientFlashlightSystem>().WeaponLight.enabled) { currLight = GetComponent<ClientFlashlightSystem>().WeaponLight.gameObject; }
@@ -229,7 +248,10 @@ public class ClientPlayerController : MonoBehaviour
     }
     #endregion
 
-
+    public void TriggerCanFlinch()
+    {
+        canFlinch = !canFlinch;
+    }
 
     public void ChangeGear(int nextGear)
 	{

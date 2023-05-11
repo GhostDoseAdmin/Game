@@ -22,8 +22,12 @@ public class EnemyDamage : MonoBehaviour
 
             if (other.gameObject.name == "Player")
             {
-            AudioManager.instance.Play("EnemyHit", main.GetComponent<NPCController>().audioSource);
-            other.gameObject.GetComponent<HealthSystem>().HealthDamage(main.GetComponent<NPCController>().damage, oppositeForce);
+                if (other.gameObject.GetComponent<PlayerController>().canFlinch)
+                {
+                    AudioManager.instance.Play("EnemyHit", main.GetComponent<NPCController>().audioSource);
+                    other.gameObject.GetComponent<HealthSystem>().HealthDamage(main.GetComponent<NPCController>().damage, oppositeForce);
+                }
+
             }
             if (other.gameObject.name == "Client")
             {
