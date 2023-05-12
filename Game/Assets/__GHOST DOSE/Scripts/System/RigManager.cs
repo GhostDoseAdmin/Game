@@ -9,6 +9,7 @@ using NetworkSystem;
 using GameManager;
 using TMPro;
 
+
 [System.Serializable]
 public class RigManager : MonoBehaviour
 {
@@ -26,9 +27,9 @@ public class RigManager : MonoBehaviour
     public List<GameObject> wesLevel2RewardRigs;
 
     public GameObject travisProp;//PLAYER GAME OBJECT
-    private GameObject travCurrentRig;
+    public GameObject travCurrentRig;
     public GameObject westinProp;
-    private GameObject wesCurrentRig;
+    public GameObject wesCurrentRig;
     [SerializeField] public int travCurrRig = 0; // INDEX of rig array 
     [SerializeField] public int wesCurrRig = 0;
     [SerializeField] public int travRigCap;
@@ -49,12 +50,24 @@ public class RigManager : MonoBehaviour
         leveldata = new int[5];//NUMBER OF LEVELS, index 0 not used
         util = new utilities();
 
-        UpdatePlayerRig(null, travBasicRig, true);
-        UpdatePlayerRig(null, wesBasicRig, false);
+        UpdatePlayerRig(null, travBasicRig, true, false);
+        UpdatePlayerRig(null, wesBasicRig, false, false);
     }
-
-    // Update is called once per frame
-    public void UpdatePlayerRig(string rigPath, GameObject rig, bool isTravis)
+    public void Update()
+    {
+        //----------------------------------OTHER USERNAME--------------------------------
+        //NetworkDriver.instance.otherUSERNAME = "DEEZ NUTS";
+        //if (NetworkDriver.instance.otherUSERNAME.Length > 0 && Client != null && GeometryUtility.TestPlanesAABB(GeometryUtility.CalculateFrustumPlanes(Camera.main), Client.GetComponentInChildren<SkinnedMeshRenderer>(false).bounds))
+        {
+            //otherUserName.GetComponent<TextMeshProUGUI>().text = NetworkDriver.instance.otherUSERNAME;
+            // Update the name tag position based on the player's position
+            //Vector3 worldPosition = new Vector3(Client.transform.position.x, Client.transform.position.y + 1.5f, Client.transform.position.z);
+            //Vector3 screenPosition = Camera.main.WorldToScreenPoint(worldPosition);
+            //otherUserName.GetComponent<RectTransform>().position = screenPosition;
+        }
+    }
+ 
+    public void UpdatePlayerRig(string rigPath, GameObject rig, bool isTravis, bool otherPlayer)
     {
         GameObject playerProp;
         GameObject currentRig;
@@ -67,11 +80,15 @@ public class RigManager : MonoBehaviour
         playerProp.GetComponentInChildren<K2>().gameObject.SetActive(false);
         StartCoroutine(util.ReactivateAnimator(playerProp));
 
-        currentRigPath = rigPath;
+        //update path for emits and game creation
+        if (rigPath != null) { currentRigPath = rigPath; }
 
-        if (isTravis) { travCurrentRig = currentRig; } else { wesCurrentRig = currentRig; }
+        if (!otherPlayer) { 
+            if (isTravis) { travCurrentRig = currentRig; } else { wesCurrentRig = currentRig; }
+            GetComponent<LobbyControlV2>().skinName.GetComponent<TextMeshPro>().text = rig.name;
+        }
 
-        GetComponent<LobbyControlV2>().skinName.GetComponent<TextMeshPro>().text = rig.name;
+       
     }
 
     public void RetreiveSkins()
@@ -80,15 +97,14 @@ public class RigManager : MonoBehaviour
         hasRetrievedSkins = true;
     }
 
-    void RetreiveLevelData(string data)    {NetworkDriver.instance.sioCom.Instance.Emit("get_level_speed", JsonConvert.SerializeObject(new { username = NetworkDriver.instance.USERNAME, level = data }), false);;    }
+    void RetreiveLevelData(string data)    {NetworkDriver.instance.sioCom.Instance.Emit("get_level_speed", JsonConvert.SerializeObject(new { username = NetworkDriver.instance.USERNAME, level = data }), false); Debug.Log("-------REQUEST DATA-----"); }
 
     //void RetreiveLevel2Data() { NetworkDriver.instance.sioCom.Instance.Emit("get_level2_speed", JsonConvert.SerializeObject(new { username = GameDriver.instance.USERNAME }), false); }
-    public void ReceivedLevelData(int level, int speed) { leveldata[level] = speed; UpdateSkinsList(); }
+    public void ReceivedLevelData(int level, int speed) { leveldata[level] = speed; UpdateSkinsList(); Debug.Log("LEVEL SPEED DATA " + leveldata[1] + " " + leveldata[1]); }
     //public void ReceivedLevel2Data(int data) { level1data = data; UpdateSkinsList(); }//LAST CALL
 
     public void UpdateSkinsList()
     {
-        Debug.Log("--------------UPDATING SKINS LIST");
         //TEST
         //leveldata = new int[3];
         //leveldata[1] = 200;
@@ -150,9 +166,12 @@ public class RigManager : MonoBehaviour
         //CREATE NEW SKINS FOR CANVAS
         foreach (GameObject rig in updatedList)
         {
-            Debug.Log(rig.name);
-           GameObject placeHolderSkin =  Instantiate(skin, SkinsList.transform);
-            placeHolderSkin.transform.GetChild(0).GetComponent<Skin>().rig = rig;//REFERS TO THUMBNAIL
+            //Debug.Log(rig.name);
+            if (skin != null)
+            {
+                GameObject placeHolderSkin = Instantiate(skin, SkinsList.transform);//create skin thumbnail
+                placeHolderSkin.transform.GetChild(0).GetComponent<Skin>().rig = rig;//REFERS TO THUMBNAIL
+            }
         }
 
     }

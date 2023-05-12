@@ -13,37 +13,24 @@ public class Skin : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+
         prefabpath = FindPrefabPath(rig.name);
-        //Debug.Log(prefabpath);
-        // Load the prefab
-        //GameObject prefab = Resources.Load<GameObject>(prefabpath);
-
-        // Get the image asset associated with the prefab
-        //Texture2D imageAsset = AssetPreview.GetAssetPreview(prefab);
-
-
+        GameDriver.instance.WriteGuiMsg(prefabpath, 999f, true, Color.yellow);
         Texture2D texture = GetPrefabTexture(prefabpath);
-
-
         // Create a new sprite from the image asset
-        Sprite sprite = Sprite.Create(texture, new Rect(0, 0, texture.width, texture.height), Vector2.zero);
-
-        // Get reference to the image component on the object
+       //Sprite sprite = Sprite.Create(texture, new Rect(0, 0, texture.width, texture.height), Vector2.zero);
+       /* // Get reference to the image component on the object
         Image imageComponent = this.gameObject.GetComponent<Image>();
-
         // Set the image component's sprite to the loaded sprite
         imageComponent.sprite = sprite;
-
-
-
-        Button btn = transform.parent.GetComponent<Button>();
-        btn.onClick.AddListener(SelectSkin);
+       Button btn = transform.parent.GetComponent<Button>();
+       btn.onClick.AddListener(SelectSkin);*/
     }
 
     void SelectSkin()
     {
         // Find the game object in the room
-        GameObject.Find("LobbyManager").GetComponent<RigManager>().UpdatePlayerRig(prefabpath, rig, NetworkDriver.instance.isTRAVIS) ;
+        GameObject.Find("LobbyManager").GetComponent<RigManager>().UpdatePlayerRig(prefabpath, rig, NetworkDriver.instance.isTRAVIS, false) ;
 
     }
 
@@ -69,12 +56,15 @@ public class Skin : MonoBehaviour
 
     public Texture2D GetPrefabTexture(string prefabpath)
     {
+     
         // Load the prefab from the Resources folder
-        GameObject instance = Instantiate(Resources.Load<GameObject>(prefabpath));
+        //
+        //GameObject instance = Instantiate(Resources.Load<GameObject>(rig.name)); //prefabpath
 
         // Set the position and rotation of the camera to capture the prefab
-        GameObject snapShotCamObj = new GameObject("SnapShot");
-        Camera camera = snapShotCamObj.AddComponent<Camera>();
+        // GameObject snapShotCamObj = new GameObject("SnapShot");
+        /*Camera camera = snapShotCamObj.AddComponent<Camera>();
+
 
         snapShotCamObj.transform.position = instance.transform.position + new Vector3(0, 1.497f, 0.921f);
         snapShotCamObj.transform.rotation = Quaternion.Euler(5.932f, 180f, 0);
@@ -99,8 +89,8 @@ public class Skin : MonoBehaviour
         RenderTexture.active = null;
         DestroyImmediate(snapShotCamObj);
         DestroyImmediate(instance);
-
-        return texture;
+        */
+        return null;// texture;
     }
 
 
