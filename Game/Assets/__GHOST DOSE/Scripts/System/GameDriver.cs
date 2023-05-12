@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using UnityEngine.UI;
 using UnityEngine.Rendering.VirtualTexturing;
 using TMPro;
-
+using InteractionSystem;
 namespace GameManager
 {
     public class GameDriver : MonoBehaviour
@@ -88,7 +88,7 @@ namespace GameManager
                 SetupScene();
             }
             //LOBBY
-            else { mainCam.SetActive(false); playerUI.SetActive(false); }
+            else { mainCam.SetActive(false); playerUI.SetActive(false); AudioManager.instance.Play("lobbymusic", null); }
 
 
         }

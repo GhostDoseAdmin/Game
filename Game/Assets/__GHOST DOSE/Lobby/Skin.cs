@@ -15,7 +15,7 @@ public class Skin : MonoBehaviour
     {
 
         prefabpath = FindPrefabPath(rig.name);
-        GameDriver.instance.WriteGuiMsg(prefabpath, 999f, true, Color.yellow);
+        
         Texture2D texture = GetPrefabTexture(prefabpath);
         // Create a new sprite from the image asset
        //Sprite sprite = Sprite.Create(texture, new Rect(0, 0, texture.width, texture.height), Vector2.zero);
@@ -56,10 +56,12 @@ public class Skin : MonoBehaviour
 
     public Texture2D GetPrefabTexture(string prefabpath)
     {
-     
+
         // Load the prefab from the Resources folder
         //
-        //GameObject instance = Instantiate(Resources.Load<GameObject>(rig.name)); //prefabpath
+        GameObject[] prefabs = Resources.LoadAll<GameObject>("Animations/Test");
+        GameDriver.instance.WriteGuiMsg(rig.name, 999f, true, Color.yellow);
+        GameObject instance = Instantiate(Resources.Load<GameObject>("Assets/Resources/Prefabs/"+rig.name)); //prefabpath
 
         // Set the position and rotation of the camera to capture the prefab
         // GameObject snapShotCamObj = new GameObject("SnapShot");
