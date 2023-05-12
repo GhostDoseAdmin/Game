@@ -212,7 +212,7 @@ public class VictimControl : Item
             {
                 canDestroyZozo = false;
                 if (NetworkDriver.instance.HOST) { Invoke("DestroyZozo", 0.5f);
-                    if (GameDriver.instance.twoPlayer) { NetworkDriver.instance.sioCom.Instance.Emit("event", JsonConvert.SerializeObject($"{{'obj':'{gameObject.name}','type':'destroy','event':'zozo'}}"), false); } 
+                    if (NetworkDriver.instance.TWOPLAYER) { NetworkDriver.instance.sioCom.Instance.Emit("event", JsonConvert.SerializeObject($"{{'obj':'{gameObject.name}','type':'destroy','event':'zozo'}}"), false); } 
                 }
             }
         }
@@ -232,7 +232,7 @@ public class VictimControl : Item
         ChosenVictim = Victims[Random.Range(0, Victims.Count)];
         if(otherPlayerVictim != null) { ChosenVictim = otherPlayerVictim; Debug.Log("RANDOMIZING VICTIM FROM HOST "); } //GameDriver.instance.WriteGuiMsg("RANDOM VICTIM FROM HOST" + otherPlayerVictim.name, 10f);
        // GameDriver.instance.WriteGuiMsg("RANDOM VICTIM " + ChosenVictim.name, 10f, false);
-        if (NetworkDriver.instance.HOST && GameDriver.instance.twoPlayer) { NetworkDriver.instance.sioCom.Instance.Emit("event", JsonConvert.SerializeObject($"{{'obj':'{ChosenVictim.name}','type':'update','event':'randomvictim'}}"), false); }
+        if (NetworkDriver.instance.HOST && NetworkDriver.instance.TWOPLAYER && NetworkDriver.instance.otherPlayerLoaded) { NetworkDriver.instance.sioCom.Instance.Emit("event", JsonConvert.SerializeObject($"{{'obj':'{ChosenVictim.name}','type':'update','event':'randomvictim'}}"), false); }
 
     }
 
@@ -244,7 +244,7 @@ public class VictimControl : Item
 
             if (candleCount >= 6)
             {
-                if ((playerOn && clientOn && GameDriver.instance.twoPlayer) || (!GameDriver.instance.twoPlayer && playerOn))
+                if ((playerOn && clientOn && NetworkDriver.instance.TWOPLAYER) || (!NetworkDriver.instance.TWOPLAYER && playerOn))
                 {
                     ActivateCircle(false);
 
@@ -261,7 +261,7 @@ public class VictimControl : Item
         AudioManager.instance.Play("creepywhisper", null);
         GameDriver.instance.WriteGuiMsg("Beware: Don't summon ZOZO", 5f, false, Color.yellow);
         trigger.SetActive(false);
-        if (GameDriver.instance.twoPlayer && !otherPlayer) { NetworkDriver.instance.sioCom.Instance.Emit("event", JsonConvert.SerializeObject($"{{'obj':'','type':'update','event':'startcircle'}}"), false); }
+        if (NetworkDriver.instance.TWOPLAYER && !otherPlayer) { NetworkDriver.instance.sioCom.Instance.Emit("event", JsonConvert.SerializeObject($"{{'obj':'','type':'update','event':'startcircle'}}"), false); }
     }
 
     public void testAnswer(GameObject victim)
@@ -274,11 +274,11 @@ public class VictimControl : Item
             if (victim == ChosenVictim)
             {
              SetSpiritsFree();// GameDriver.instance.WriteGuiMsg("RIGHT ANWER" + victim.name, 10f, false);
-                if (GameDriver.instance.twoPlayer) { NetworkDriver.instance.sioCom.Instance.Emit("event", JsonConvert.SerializeObject($"{{'obj':'{gameObject.name}','type':'update','event':'setfree'}}"), false); }
+                if (NetworkDriver.instance.TWOPLAYER) { NetworkDriver.instance.sioCom.Instance.Emit("event", JsonConvert.SerializeObject($"{{'obj':'{gameObject.name}','type':'update','event':'setfree'}}"), false); }
             }
             else {
               SummonZozo();// GameDriver.instance.WriteGuiMsg("WRONG ANWER " + victim.name +"SUPPOSED TO BE " + ChosenVictim.name, 10f, false);
-                if (GameDriver.instance.twoPlayer) { NetworkDriver.instance.sioCom.Instance.Emit("event", JsonConvert.SerializeObject($"{{'obj':'{gameObject.name}','type':'update','event':'summon'}}"), false); }
+                if (NetworkDriver.instance.TWOPLAYER) { NetworkDriver.instance.sioCom.Instance.Emit("event", JsonConvert.SerializeObject($"{{'obj':'{gameObject.name}','type':'update','event':'summon'}}"), false); }
             }
         }
     }

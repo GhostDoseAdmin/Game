@@ -144,7 +144,7 @@ public class ZozoControl : MonoBehaviour
         {
             Debug.Log("CHARGING LASER");
             startCharging = true;
-            if (NetworkDriver.instance.HOST && GameDriver.instance.twoPlayer) { NetworkDriver.instance.sioCom.Instance.Emit("laser", JsonConvert.SerializeObject($"{{'obj':'{gameObject.name}'}}"), false); }
+            if (NetworkDriver.instance.HOST && NetworkDriver.instance.TWOPLAYER) { NetworkDriver.instance.sioCom.Instance.Emit("laser", JsonConvert.SerializeObject($"{{'obj':'{gameObject.name}'}}"), false); }
             canLaser = false;
             GetComponent<Animator>().SetLayerWeight(0, 0f);
             GetComponent<Animator>().SetLayerWeight(1, 1f);

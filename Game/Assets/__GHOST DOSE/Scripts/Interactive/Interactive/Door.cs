@@ -77,7 +77,7 @@ public class Door : Item
             this.animator.SetBool("Close", false);
         }
 
-        if (GameDriver.instance.twoPlayer && !otherPlayer) { NetworkDriver.instance.sioCom.Instance.Emit("event", JsonConvert.SerializeObject($"{{'obj':'{gameObject.name}','type':'door','event':'openclose'}}"), false); }
+        if (NetworkDriver.instance.TWOPLAYER && !otherPlayer) { NetworkDriver.instance.sioCom.Instance.Emit("event", JsonConvert.SerializeObject($"{{'obj':'{gameObject.name}','type':'door','event':'openclose'}}"), false); }
 
     }
 
@@ -86,7 +86,7 @@ public class Door : Item
         this.animator.SetTrigger("CantOpen");
         AudioManager.instance.Play(this.doorLockSound, audioSource);
 
-        if (GameDriver.instance.twoPlayer && !otherPlayer) { NetworkDriver.instance.sioCom.Instance.Emit("event", JsonConvert.SerializeObject($"{{'obj':'{gameObject.name}','type':'door','event':'locked'}}"), false); }
+        if (NetworkDriver.instance.TWOPLAYER && !otherPlayer) { NetworkDriver.instance.sioCom.Instance.Emit("event", JsonConvert.SerializeObject($"{{'obj':'{gameObject.name}','type':'door','event':'locked'}}"), false); }
     }
 
     public void OpenSound()

@@ -4,6 +4,7 @@ using UnityEngine.UI;
 using Newtonsoft.Json;
 using UnityEngine.InputSystem.LowLevel;
 using NetworkSystem;
+using GameManager;
 
 public class PlayerController : MonoBehaviour
 {
@@ -124,6 +125,7 @@ public class PlayerController : MonoBehaviour
         SB7 = util.FindChildObject(this.gameObject.transform, "SB7").gameObject;
         SB7.SetActive(false);
         camInventory.SetActive(false);
+        targetPos = GameDriver.instance.targetLook.transform;
 		//playerCam = GameObject.Find("PlayerCamera");
 
         //GetComponent<WeaponParameters>().RigWeapons();

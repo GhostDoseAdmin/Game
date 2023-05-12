@@ -3,6 +3,7 @@ using UnityEngine;
 using GameManager;
 using Unity.VisualScripting;
 using UnityEditor;
+using NetworkSystem;
 
 public class ClientPlayerController : MonoBehaviour
 {
@@ -166,7 +167,7 @@ public class ClientPlayerController : MonoBehaviour
 
         private void FixedUpdate()
         {
-		    if (!GameDriver.instance.twoPlayer){ return; }
+		    if (!NetworkDriver.instance.TWOPLAYER) { return; }
 
             //------------------------------------- M A I N ---------------------------------------------------
             targetPosVec = Vector3.Lerp(targetPosVec, targetPos.position, 0.1f);//0.1

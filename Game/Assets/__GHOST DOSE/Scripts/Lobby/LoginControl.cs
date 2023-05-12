@@ -92,6 +92,12 @@ public class LoginControl : MonoBehaviour
     }
     public void MainMenu()
     {
+        if (PlayerPrefs.GetString("username").Length > 0)
+        {
+            NetworkDriver.instance.USERNAME = PlayerPrefs.GetString("username");
+        }
+        else { NetworkDriver.instance.USERNAME = usernameField.GetComponent<TMP_InputField>().text; }
+
         if (newAccount) { GameDriver.instance.WriteGuiMsg("Account Created Successfully!", 5f, false, Color.yellow); }
         yesButton.SetActive(false);
         noButton.SetActive(false);
@@ -103,11 +109,13 @@ public class LoginControl : MonoBehaviour
     }
     public void YesClicked()    {
         PlayerPrefs.SetInt("login_saved", 1);
+        PlayerPrefs.SetString("username", usernameField.GetComponent<TMP_InputField>().text);
         GameDriver.instance.WriteGuiMsg("Login saved", 5f, false, Color.yellow);
         MainMenu();
     }
     public void NoClicked()    {
         PlayerPrefs.SetInt("login_saved", 0);
+        PlayerPrefs.SetString("username", "");
         GameDriver.instance.WriteGuiMsg("", 0.1f, false, Color.yellow);
         MainMenu();
     }
