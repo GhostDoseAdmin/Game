@@ -25,7 +25,9 @@ namespace NetworkSystem
         public string ROOM;
         public bool TWOPLAYER = false;
         public string USERNAME;
+        public string otherUSERNAME;
         public bool isTRAVIS = true;
+        public bool otherIsTravis = false;
 
         public bool NETWORK_TEST;
         public bool HOSTOVERRIDE;
@@ -47,6 +49,27 @@ namespace NetworkSystem
             NetworkSetup();
         }
         private void ConnectionTimeout() { if (!connected) { GameDriver.instance.WriteGuiMsg("Trouble reaching servers!", 30f, false, Color.red); timeout = true; } }
+       
+        
+        public void Reconnect()
+        {
+            connected = false;
+            sioCom.Instance.Close();
+            StartCoroutine(connectSIO());
+            Invoke("ConnectionTimeout", 10f);
+        }
+        IEnumerator connectSIO()//--------CONNECT HELPER--------->
+        {
+            while (!connected && !timeout)
+            {
+                GameDriver.instance.WriteGuiMsg("Attempting to connect to Ghost Servers", 5f, true, Color.white);
+                sioCom.Instance.Close();
+                yield return new WaitForSeconds(1f); //refresh socket
+                                                     //Debug.Log("attempting connection ");
+                sioCom.Instance.Connect("https://twrecks.io:8080", true);
+                yield return new WaitForSeconds(1f);
+            }
+        }
         public void NetworkSetup()
         {
             //=================================================================  S E T  U P  ===============================================================
@@ -55,7 +78,6 @@ namespace NetworkSystem
             sioCom.secureConnection = true;
 
             //-----------------CONNECT TO SERVER----------------->
-            sioCom = GetComponent<SocketIOCommunicator>();
             StartCoroutine(connectSIO());
             sioCom.Instance.On("connect", (payload) =>
             {
@@ -71,18 +93,6 @@ namespace NetworkSystem
                 }
             });
             Invoke("ConnectionTimeout",10f);
-            IEnumerator connectSIO()//--------CONNECT HELPER--------->
-            {
-                while (!connected && !timeout)
-                {
-                    GameDriver.instance.WriteGuiMsg("Attempting to connect to Ghost Servers", 5f, true, Color.white);
-                    sioCom.Instance.Close();
-                    yield return new WaitForSeconds(1f); //refresh socket
-                    //Debug.Log("attempting connection ");
-                    sioCom.Instance.Connect("https://twrecks.io:8080", true);
-                    yield return new WaitForSeconds(1f);
-                }
-            }
             //-----------------CHECK USERNAME ----------------->
             sioCom.Instance.On("check_username", (payload) =>
             {
@@ -104,7 +114,7 @@ namespace NetworkSystem
             //-----------------LEVEL1 SPEED ----------------->
             sioCom.Instance.On("get_level_speed", (payload) =>
             {
-                Debug.Log(payload);
+                Debug.Log("LEVEL SPEED RECEIVED" + payload);
                 string data = payload;
                 string[] splitData = data.Split(',');
                 string level = splitData[0]; level = level.Replace("level", ""); level = level.Replace("speed", "");
@@ -142,7 +152,7 @@ namespace NetworkSystem
             //-----------------PING----------------->
             sioCom.Instance.On("pong", (payload) =>
             {
-                GameDriver.instance.WriteGuiMsg("Waiting for another player", 10f, false, Color.white);
+                //GameDriver.instance.WriteGuiMsg("Waiting for another player", 10f, false, Color.white);
                 // Debug.Log("PONG RECEIVED " + payload);
                 if (PING == 0) { PING = Time.time - pingTimer; Debug.Log("MY PING IS " + PING); }
                 JObject data = JObject.Parse(payload);
@@ -163,18 +173,24 @@ namespace NetworkSystem
                     else//they were in room first
                     {
                         // COMPARE PING VALUES
-                        if (float.Parse(dict["ping"]) > PING) { sioCom.Instance.Emit("host", sioCom.Instance.SocketID, true); }
-                        else { if (!NETWORK_TEST) { HOST = false; } sioCom.Instance.Emit("host", dict["sid"], true); }
+                        //im host
+                        if (float.Parse(dict["ping"]) > PING) { sioCom.Instance.Emit("host", JsonConvert.SerializeObject(new { host = sioCom.Instance.SocketID, username = USERNAME }), false); }
+                        //they are host
+                        else { if (!NETWORK_TEST) { HOST = false; } sioCom.Instance.Emit("host", JsonConvert.SerializeObject(new { host = dict["sid"], username = USERNAME }), false); }
                     }
                 }
             });
             //-----------------HOST / GAME START / UPDATE GAME STATES----------------->
             sioCom.Instance.On("host", (payload) =>
             {
+                JObject data = JObject.Parse(payload);
+                Dictionary<string, string> dict = data.ToObject<Dictionary<string, string>>();
+
                 TWOPLAYER = true;
-                if (!NETWORK_TEST) { if (payload.ToString() != sioCom.Instance.SocketID) { HOST = false; } }
+                otherUSERNAME = dict["username"];
+                if (!NETWORK_TEST) { if (dict["host"] != sioCom.Instance.SocketID) { HOST = false; } }
                 if (SceneManager.GetActiveScene().name != "Lobby") { UpdateGameState(); }
-                GameDriver.instance.WriteGuiMsg("Two Player Mode - HOST " + payload + "     MY SOCKET    " + sioCom.Instance.SocketID,10f,false,Color.white);
+                //GameDriver.instance.WriteGuiMsg("Two Player Mode - HOST " + payload + "     MY SOCKET    " + sioCom.Instance.SocketID,10f,false,Color.white);
                 //Debug.Log("HOST DETERMINED " + payload);
             });
             //-----------------CHOOSE BRO----------------->
@@ -309,6 +325,11 @@ namespace NetworkSystem
                     JObject data = JObject.Parse(payload);
                     Dictionary<string, string> dict = data.ToObject<Dictionary<string, string>>();
                     GameObject obj = GameObject.Find(dict["obj"]);
+                    //LOBBY
+                     if (dict.ContainsKey("isTRAVIS")) { otherIsTravis = bool.Parse(dict["isTRAVIS"]); }
+                    if (dict.ContainsKey("skin")) { GameObject.Find("LobbyManager").GetComponent<LobbyControlV2>().UpdateOtherRig(dict["skin"]); }
+                    if (dict.ContainsKey("level")) { GameObject.Find("LobbyManager").GetComponent<LobbyControlV2>().UpdateOtherLevel(dict["level"]); }
+
                     if (dict["event"] == "setfree") { obj.GetComponent<VictimControl>().SetSpiritsFree(); }
                     if (dict["event"] == "summon") { obj.GetComponent<VictimControl>().SummonZozo(); }
                     if (dict["event"] == "zozo") { obj.GetComponent<VictimControl>().DestroyZozo(); }
@@ -456,34 +477,37 @@ namespace NetworkSystem
 
         public void UpdateEnemies(bool checkActive)
         {
-            Dictionary<string, Dictionary<string, string>> syncObjects = new Dictionary<string, Dictionary<string, string>>();
-            //---------------ADD REGULAR ENEMIES----------------------
-            foreach (GameObject obj in GameDriver.instance.GetComponent<DisablerControl>().enemyObjects)
+            if (GameDriver.instance.GAMESTART)
             {
-
-                if ((obj.activeSelf == true && checkActive) || (!checkActive))
-                //if (GetComponent<DisablerControl>().closestPlayerDist<=GetComponent<DisablerControl>().disableDistance)
+                Dictionary<string, Dictionary<string, string>> syncObjects = new Dictionary<string, Dictionary<string, string>>();
+                //---------------ADD REGULAR ENEMIES----------------------
+                foreach (GameObject obj in GameDriver.instance.GetComponent<DisablerControl>().enemyObjects)
                 {
-                    Dictionary<string, string> propsDict = new Dictionary<string, string>();
-                    //Debug.Log("PREPARING UPDATE FOR OBJ" + obj.name);
-                    // Add the position values to the dictionary
-                    propsDict.Add("x", obj.gameObject.transform.position.x.ToString("F2"));
-                    propsDict.Add("y", obj.gameObject.transform.position.y.ToString("F2"));
-                    propsDict.Add("z", obj.gameObject.transform.position.z.ToString("F2"));
-                    propsDict.Add("dx", obj.GetComponent<NPCController>().destination.name); 
-                    if (obj.GetComponent<NPCController>().target != null) { propsDict.Add("tx", obj.GetComponent<NPCController>().target.name); }
-                    else { propsDict.Add("tx", ""); }
-                    //propsDict.Add("ax", obj.gameObject.activeSelf.ToString());
-                    //propsDict.Add("tp", obj.GetComponent<NPCController>().teleport);
 
-                    syncObjects.Add(obj.name, propsDict);
+                    if ((obj.activeSelf == true && checkActive) || (!checkActive))
+                    //if (GetComponent<DisablerControl>().closestPlayerDist<=GetComponent<DisablerControl>().disableDistance)
+                    {
+                        Dictionary<string, string> propsDict = new Dictionary<string, string>();
+                        //Debug.Log("PREPARING UPDATE FOR OBJ" + obj.name);
+                        // Add the position values to the dictionary
+                        propsDict.Add("x", obj.gameObject.transform.position.x.ToString("F2"));
+                        propsDict.Add("y", obj.gameObject.transform.position.y.ToString("F2"));
+                        propsDict.Add("z", obj.gameObject.transform.position.z.ToString("F2"));
+                        propsDict.Add("dx", obj.GetComponent<NPCController>().destination.name);
+                        if (obj.GetComponent<NPCController>().target != null) { propsDict.Add("tx", obj.GetComponent<NPCController>().target.name); }
+                        else { propsDict.Add("tx", ""); }
+                        //propsDict.Add("ax", obj.gameObject.activeSelf.ToString());
+                        //propsDict.Add("tp", obj.GetComponent<NPCController>().teleport);
+
+                        syncObjects.Add(obj.name, propsDict);
+                    }
                 }
+
+
+
+                if (syncObjects.Count > 0) { sioCom.Instance.Emit("sync", JsonConvert.SerializeObject(syncObjects), false); }
+                timer = Time.time;//cooldown
             }
-          
-
-
-            if (syncObjects.Count > 0) { sioCom.Instance.Emit("sync", JsonConvert.SerializeObject(syncObjects), false); }
-            timer = Time.time;//cooldown
         }
 
 

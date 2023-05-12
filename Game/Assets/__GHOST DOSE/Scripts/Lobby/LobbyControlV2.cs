@@ -5,11 +5,14 @@ using TMPro;
 using UnityEngine;
 using NetworkSystem;
 using UnityEngine.SceneManagement;
+using Newtonsoft.Json;
+using System.IO;
 
 public class LobbyControlV2 : MonoBehaviour
 {
     public string GAMEMODE;
     public string LEVEL;
+    public string otherLEVEL;
 
     public GameObject levelName;
     public GameObject skinName;
@@ -48,12 +51,23 @@ public class LobbyControlV2 : MonoBehaviour
         {
             screenMask.SetActive(true);
             roomCanvas.SetActive(true);
+            roomNameField.SetActive(true);
+            findRoomButton.SetActive(true);
+            lookingForPlayer = false;
             if (gameMode == "single") { roomNameField.GetComponent<TMP_InputField>().text = NetworkDriver.instance.USERNAME; FindRoom(); }
 
         }
        // else { lobbyMenuCanvas.SetActive(true); }
         
         
+    }
+
+    public void LeaveRoom()
+    {
+        //roomNameField.SetActive(true);
+        //findRoomButton.SetActive(true);
+        foundRoom = false;
+        NetworkDriver.instance.Reconnect();
     }
 
     public void FindRoom()
@@ -64,13 +78,14 @@ public class LobbyControlV2 : MonoBehaviour
             NetworkDriver.instance.sioCom.Instance.Emit("join", roomName, true);
             roomNameField.SetActive(false);
             findRoomButton.SetActive(false);
-            GameDriver.instance.WriteGuiMsg("Joining Room " + roomName, 5f, true, Color.yellow);
+            GameDriver.instance.WriteGuiMsg("Joining Room " + roomName, 999f, true, Color.yellow);
         }
     }
     public void RoomFound()
     {
         screenMask.SetActive(false);
         lobbyMenuCanvas.SetActive(true);
+        foundRoom = true;
     }
 
     public void Ready()
@@ -87,13 +102,38 @@ public class LobbyControlV2 : MonoBehaviour
         }
     }
 
+    public void EmitSkin()
+    {
+        if (NetworkDriver.instance.TWOPLAYER) {
+            //change to dots for json compat
+            string skinPath = GetComponent<RigManager>().currentRigPath;
+            skinPath = skinPath.Replace("/", ".");
+            NetworkDriver.instance.sioCom.Instance.Emit("event", JsonConvert.SerializeObject(new { skin = skinPath }), false); 
+        }
+    }
+    public void EmitLevel()
+    {
+        if (NetworkDriver.instance.TWOPLAYER) { NetworkDriver.instance.sioCom.Instance.Emit("event", JsonConvert.SerializeObject(new { level = LEVEL }), false); }
+    }
+
+    public void UpdateOtherRig(string rigPath)
+    {
+        string path = rigPath;
+        path = path.Replace(".", "/");
+        if (NetworkDriver.instance.isTRAVIS && !NetworkDriver.instance.otherIsTravis) {
+            GetComponent<RigManager>().UpdatePlayerRig(null, Resources.Load<GameObject>(path), false, true);
+                }
+        if (!NetworkDriver.instance.isTRAVIS && NetworkDriver.instance.otherIsTravis)
+        {
+            GetComponent<RigManager>().UpdatePlayerRig(null, Resources.Load<GameObject>(path), false, true);
+        }
+    }
+    public void UpdateOtherLevel(string level)
+    {
+        otherLEVEL = level;
+    }
     public void Update()
     {
-
-
-
-
-
 
         //------------------------SELECT BRO----------------------------
         if(GameObject.Find("SkinsPanel")==null && foundRoom)
@@ -114,6 +154,7 @@ public class LobbyControlV2 : MonoBehaviour
                         {
                             if (clickedObject.name == "TRAVIS") { NetworkDriver.instance.isTRAVIS = true; }
                             else { NetworkDriver.instance.isTRAVIS = false; }
+                            NetworkDriver.instance.sioCom.Instance.Emit("event", JsonConvert.SerializeObject(new { isTRAVIS = NetworkDriver.instance.isTRAVIS = true }), false);
                             StartCoroutine(RotateCarousel());
                         }
 

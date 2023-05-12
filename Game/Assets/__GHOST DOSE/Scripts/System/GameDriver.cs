@@ -26,11 +26,11 @@ namespace GameManager
         private GameObject WESTIN;
         private GameObject TRAVIS;
         //public GameObject loginCanvas;
-        public GameObject screenMask;
         public GameObject mainCam;
         public GameObject playerUI;
-        public GameObject targetLook;
         public GameObject GamePlayManager;
+        public GameObject otherUserName;
+
         Vector3 playerStartPos;
 
         //public NetworkDriver ND;
@@ -55,8 +55,18 @@ namespace GameManager
                 WriteGuiMsg("Waiting for other player...", 1f, false, Color.red);
                 Player.transform.position = playerStartPos;
             }
-
+            //----------------------------------OTHER USERNAME--------------------------------
+            //NetworkDriver.instance.otherUSERNAME = "DEEZ NUTS";
+            if (NetworkDriver.instance.otherUSERNAME.Length > 0 && Client!=null && GeometryUtility.TestPlanesAABB(GeometryUtility.CalculateFrustumPlanes(Camera.main), Client.GetComponentInChildren<SkinnedMeshRenderer>(false).bounds))
+            {
+                otherUserName.GetComponent<TextMeshProUGUI>().text = NetworkDriver.instance.otherUSERNAME;
+                // Update the name tag position based on the player's position
+                Vector3 worldPosition = new Vector3(Client.transform.position.x, Client.transform.position.y+1.5f, Client.transform.position.z);  
+                Vector3 screenPosition = Camera.main.WorldToScreenPoint(worldPosition);
+                otherUserName.GetComponent<RectTransform>().position = screenPosition;
+            } 
         }
+
         void Awake()
         {
            // if (NetworkDriver.instance == null) {  GameObject.Find("NetworkManager").GetComponent<NetworkDriver>().Awake(); Debug.Log("---------------RUNNING AWAKE"); }
