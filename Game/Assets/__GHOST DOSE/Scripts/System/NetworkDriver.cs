@@ -83,23 +83,32 @@ namespace NetworkSystem
                 if (payload == "true") { GameObject.Find("LoginControl").GetComponent<LoginControl>().LoginSuccess(); }
                 else { GameObject.Find("LoginControl").GetComponent<LoginControl>().LoginFail(); }
             });
-
-
+            //-----------------LEVEL1 SPEED ----------------->
+            sioCom.Instance.On("get_level_speed", (payload) =>
+            {
+                Debug.Log(payload);
+                string data = payload;
+                string[] splitData = data.Split(',');
+                string level = splitData[0]; level = level.Replace("level", ""); level = level.Replace("speed", "");
+                string speed = splitData[1];
+                GameObject.Find("LobbyManager").GetComponent<RigManager>().ReceivedLevelData(int.Parse(level), int.Parse(speed));
+            });
 
             //-----------------JOIN ROOM----------------->
             sioCom.Instance.On("join", (payload) =>
             {
-                GameDriver.instance.ROOM_VALID = false;
+                //GameDriver.instance.ROOM_VALID = false;
                 Debug.Log(payload);
                 if (payload == "full")
                 {
                     GameDriver.instance.WriteGuiMsg("Room is full! Can't join Game! ", 10f, false, Color.red);
-                    GameObject.Find("LobbyManager").GetComponent<LobbyControl>().checkingRoom = false;
+                    //GameObject.Find("LobbyManager").GetComponent<LobbyControl>().checkingRoom = false;
                     //sioCom.Instance.Close();
                 }
                 else
                 {
-                    GameDriver.instance.ROOM_VALID = true;
+                    //GameDriver.instance.ROOM_VALID = true;
+                    GameObject.Find("LobbyManager").GetComponent<LobbyControlV2>().RoomFound();
                     GameDriver.instance.WriteGuiMsg("Found Room " + GameDriver.instance.ROOM, 1f, false, Color.white);
                     var dict = new Dictionary<string, string> {
                     { "sid", sioCom.Instance.SocketID },
@@ -115,7 +124,7 @@ namespace NetworkSystem
             //-----------------PING----------------->
             sioCom.Instance.On("pong", (payload) =>
             {
-                GameDriver.instance.WriteGuiMsg("Looking For Players - you may start alone", 10f, false, Color.white);
+                //GameDriver.instance.WriteGuiMsg("Waiting for another player", 10f, false, Color.white);
                 // Debug.Log("PONG RECEIVED " + payload);
                 if (PING == 0) { PING = Time.time - pingTimer; Debug.Log("MY PING IS " + PING); }
                 JObject data = JObject.Parse(payload);
@@ -144,27 +153,11 @@ namespace NetworkSystem
             //-----------------HOST / GAME START / UPDATE GAME STATES----------------->
             sioCom.Instance.On("host", (payload) =>
             {
+                if (!GameDriver.instance.NETWORK_TEST) { if (payload.ToString() != sioCom.Instance.SocketID) { HOST = false; } }
+                if (SceneManager.GetActiveScene().name != "Lobby") { UpdateGameState(); }
+                GameDriver.instance.twoPlayer = true;
                 //GameDriver.instance.MSG = "Two Player Mode - HOST " + payload + "     MY SOCKET    " + sioCom.Instance.SocketID;
                 //Debug.Log("HOST DETERMINED " + payload);
-                if (!GameDriver.instance.NETWORK_TEST)
-                {
-                    if (payload.ToString() != sioCom.Instance.SocketID) { HOST = false; }
-                    else { UpdateEnemies(false); }
-                }
-                else { if (HOST) { UpdateEnemies(false); } }
-                GameDriver.instance.Client.GetComponent<Rigidbody>().constraints = RigidbodyConstraints.None;
-                GameDriver.instance.Player.GetComponent<PlayerController>().emitFlashlight = true;
-                GameDriver.instance.Player.GetComponent<PlayerController>().emitGear = true;
-                GameDriver.instance.Player.GetComponent<PlayerController>().emitPos = true;//triggers position emit
-                GameDriver.instance.twoPlayer = true;
-                GameDriver.instance.WriteGuiMsg("Two Player Mode - HOST is " + HOST, 10f, false, Color.white);
-                if (HOST) {
-                    ColdSpot[] coldSpots = FindObjectsOfType<ColdSpot>();
-                    foreach(ColdSpot coldspot in coldSpots){ coldspot.Respawn(null); }
-                    GetComponentInChildren<VictimControl>().RandomVictim(null); }
-                //GameDriver.instance.MSG = "Two Player Mode - HOST " + HOST;
-               
-
             });
             //-----------------CHOOSE BRO----------------->
             sioCom.Instance.On("bro", (payload) =>
@@ -476,6 +469,23 @@ namespace NetworkSystem
             }
         }
 
+        public void UpdateGameState()
+        {
+            if (HOST) { UpdateEnemies(false); }
+            GameDriver.instance.Client.GetComponent<Rigidbody>().constraints = RigidbodyConstraints.None;
+            GameDriver.instance.Player.GetComponent<PlayerController>().emitFlashlight = true;
+            GameDriver.instance.Player.GetComponent<PlayerController>().emitGear = true;
+            GameDriver.instance.Player.GetComponent<PlayerController>().emitPos = true;//triggers position emit
+            GameDriver.instance.WriteGuiMsg("Two Player Mode - HOST is " + HOST, 10f, false, Color.white);
+            if (HOST)
+            {
+                ColdSpot[] coldSpots = FindObjectsOfType<ColdSpot>();
+                foreach (ColdSpot coldspot in coldSpots) { coldspot.Respawn(null); }
+                GetComponentInChildren<VictimControl>().RandomVictim(null);
+            }
+            //GameDriver.instance.MSG = "Two Player Mode - HOST " + HOST;
+
+        }
 
 
 

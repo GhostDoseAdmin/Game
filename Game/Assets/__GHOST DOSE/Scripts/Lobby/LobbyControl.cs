@@ -10,8 +10,8 @@ using TMPro;
 
 public class LobbyControl : MonoBehaviour
 {
-    private GameObject ChooseRoom;
-    private GameObject ChooseBro;
+    public GameObject ChooseRoom;
+    public GameObject ChooseBro;
     private GameObject WESTIN;
     private GameObject TRAVIS;
     public GameObject roomField;
@@ -39,13 +39,11 @@ public class LobbyControl : MonoBehaviour
         if(SceneManager.GetActiveScene().name == "Lobby")
         {
             util = new utilities();
-            ChooseRoom = GameObject.Find("ChooseRoom");
-            ChooseBro = GameObject.Find("ChooseBro");
             WESTIN = GameObject.Find("WESTIN");
             TRAVIS = GameObject.Find("TRAVIS");
 
-            //ChooseBro.SetActive(false);
-            //ChooseRoom.SetActive(false);
+            ChooseRoom.SetActive(false);
+            ChooseBro.SetActive(false);
             StartCoroutine(randomAnimations());
         }
 
@@ -55,7 +53,7 @@ public class LobbyControl : MonoBehaviour
     public bool checkingRoom = false;
     public void Clicked(string sceneName)
     {
-        Debug.Log("CLICKING");
+       /* Debug.Log("CLICKING");
         //CHOOSING ROOM - go button
         if (!GameDriver.instance.ROOM_VALID)
         {
@@ -86,7 +84,7 @@ public class LobbyControl : MonoBehaviour
             }
 
         }
-
+       */
     }
     void Update()
     {
@@ -98,7 +96,7 @@ public class LobbyControl : MonoBehaviour
             {
                 
                 // GO TO CHOOSE BRO
-                if (GameDriver.instance.GetComponent<GameDriver>().ROOM_VALID)
+               /* if (GameDriver.instance.GetComponent<GameDriver>().ROOM_VALID)
                 {
                     
                     if (!chooseBro)
@@ -107,12 +105,12 @@ public class LobbyControl : MonoBehaviour
                         ChooseBro.SetActive(true);
                         WESTIN.transform.GetChild(0).gameObject.GetComponent<Outline>().enabled = false; 
                         TRAVIS.transform.GetChild(0).gameObject.GetComponent<Outline>().enabled = false;
-                        GameObject.Find("InputField (TMP)").SetActive(false);
+                        roomField.SetActive(false);
                         chooseBro = true;
                     }
 
                 }
-
+               */
                 //------------------------- C H O O S E     A     B R O ----------------------------------------------
                 if (chooseBro)
                 {

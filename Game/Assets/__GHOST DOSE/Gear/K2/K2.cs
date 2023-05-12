@@ -23,13 +23,14 @@ public class K2 : MonoBehaviour
     }
     void Start()
     {
-        closestEnemyDist = 20f;//MAX DISTANCE
-        if (transform.root.name == "CLIENT") { isClient = true; }
-        else if (transform.root.name == "WESTIN" || transform.root.name == "TRAVIS") { isClient = false; }
-        else { DestroyImmediate(this.gameObject); }//DEAD PLAYER
+            closestEnemyDist = 20f;//MAX DISTANCE
+            if (transform.root.name == "CLIENT") { isClient = true; }
+            else if (transform.root.name == "WESTIN" || transform.root.name == "TRAVIS") { isClient = false; }
+            else { DestroyImmediate(this.gameObject); }//DEAD PLAYER
 
-        if (!isClient) { shootPoint = GameDriver.instance.Player.GetComponent<ShootingSystem>().shootPoint; } 
-        else { shootPoint = GameDriver.instance.Client.GetComponent<ClientPlayerController>().shootPoint; }
+            if (!isClient) { shootPoint = GameDriver.instance.Player.GetComponent<ShootingSystem>().shootPoint; }
+            else { shootPoint = GameDriver.instance.Client.GetComponent<ClientPlayerController>().shootPoint; }
+        
     }
 
     // Update is called once per frame

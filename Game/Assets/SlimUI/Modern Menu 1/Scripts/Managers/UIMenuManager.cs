@@ -7,6 +7,12 @@ using UnityEngine.SceneManagement;
 namespace SlimUI.ModernMenu{
 	public class UIMenuManager : MonoBehaviour {
 		private Animator CameraObject;
+		public GameObject LobbyMenu;
+		public GameObject EntryMenu;
+		public GameObject LevelPanel;
+		public GameObject SkinsPanel;
+		public GameObject RigManager;
+
 
 		// campaign button sub menu
         [Header("MENUS")]
@@ -80,7 +86,7 @@ namespace SlimUI.ModernMenu{
         [Tooltip("The GameObject holding the Audio Source component for the SWOOSH SOUND when switching to the Settings Screen")]
         public AudioSource swooshSound;
 
-		void Start(){
+		void OnEnable(){
 			CameraObject = transform.GetComponent<Animator>();
 
 			playMenu.SetActive(false);
@@ -116,8 +122,34 @@ namespace SlimUI.ModernMenu{
 					break;
 			}
 		}
+        public void OpenEntryMenu()
+		{
+            EntryMenu.SetActive(true);
+            LobbyMenu.SetActive(false);
+            //mainMenu.SetActive(false);
+        }
+		public void OpenLobbyMenu(string gameMode)
+		{
+			//LobbyMenu.SetActive(true);
+			GameObject.Find("LobbyManager").GetComponent<LobbyControlV2>().LoadLobbyCanvas(gameMode); 
+            //mainCanvas.SetActive(false);
+           // EntryMenu.SetActive(false);
+		}
 
-		public void PlayCampaign(){
+		public void LevelPanelToggle(bool open)
+		{
+			if (open) { mainMenu.SetActive(false); LevelPanel.SetActive(true); }
+			else { mainMenu.SetActive(true); LevelPanel.SetActive(false); }
+            
+        }
+        public void SkinsPanelToggle(bool open)
+        {
+            if (open) { mainMenu.SetActive(false); SkinsPanel.SetActive(true); RigManager.GetComponent<RigManager>().RetreiveSkins(); }
+            else { mainMenu.SetActive(true); SkinsPanel.SetActive(false); }
+
+        }
+
+        public void PlayCampaign(){
 			exitMenu.SetActive(false);
 			if(extrasMenu) extrasMenu.SetActive(false);
 			playMenu.SetActive(true);

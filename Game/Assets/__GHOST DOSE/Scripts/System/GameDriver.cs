@@ -11,12 +11,13 @@ namespace GameManager
     public class GameDriver : MonoBehaviour
     {
         public static GameDriver instance;
+        public string USERNAME;
 
         public bool isTRAVIS = true;//which character is the player playing
         public GameObject Player;
         public GameObject Client;
         public string ROOM;
-        public bool ROOM_VALID;//they joined valid room
+        //public bool ROOM_VALID;//they joined valid room
         
         public bool GAMESTART = false;
         public bool twoPlayer = false;
@@ -27,7 +28,10 @@ namespace GameManager
         private GameObject TRAVIS;
         public GameObject loginCanvas;
         public GameObject screenMask;
-
+        public GameObject mainCam;
+        public GameObject playerUI;
+        public GameObject targetLook;
+        public GameObject GamePlayManager;
 
         //public NetworkDriver ND;
 
@@ -48,13 +52,7 @@ namespace GameManager
         }
         void Awake()
         {
-            // Debug.unityLogger.logEnabled = false;
-            
-
-            //MSG = "Welcome to GhostDose";
-            //ROOM = "gttt";//DEFAULT ROOM
-
-            util = new utilities();
+             util = new utilities();
 
             //ONLY ONE CAN EXIST
             if (instance == null) { instance = this; DontDestroyOnLoad(gameObject); }
@@ -65,14 +63,13 @@ namespace GameManager
             NetworkDriver.instance.NetworkSetup();
 
             //NON LOBBY INSTANCE
-            if (SceneManager.GetActiveScene().name != "Lobby" && !GetComponent<LobbyControl>().start)
+            if (SceneManager.GetActiveScene().name != "Lobby")
             {
-                //Debug.Log("PRE EMPTIVE CALL");
-                GetComponent<LobbyControl>().enabled = false;
-                //ND = this.gameObject.AddComponent<NetworkDriver>();
-                //NetworkDriver.instance.NetworkSetup();
+                Debug.Log("NON LOBY LOAD");
                 SetupScene();
             }
+            //LOBBY
+            else { mainCam.SetActive(false); playerUI.SetActive(false); }
 
 
         }
@@ -87,7 +84,7 @@ namespace GameManager
         private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
         {
             Debug.Log("OnSceneLoad");
-            GetComponent<LobbyControl>().enabled = false;
+            //GetComponent<LobbyControl>().enabled = false;
             SetupScene();
 
         }
@@ -161,7 +158,8 @@ namespace GameManager
                 Player = GameObject.Find("Player");
 
                 //SETUP CAMERA
-                GameObject mainCam = GameObject.Find("PlayerCamera");
+                playerUI.SetActive(true);
+                mainCam.SetActive(true);
                 mainCam.transform.SetParent(Player.transform.parent);
                 //mainCam.transform.SetAsFirstSibling();
                 mainCam.GetComponent<Camera_Controller>().player = Player.transform;
@@ -182,11 +180,15 @@ namespace GameManager
                 if (!twoPlayer) { NetworkDriver.instance.HOST = true; }
                 if (NETWORK_TEST) { if (HOSTOVERRIDE) { NetworkDriver.instance.HOST = true; } else { NetworkDriver.instance.HOST = false; } }
                 GAMESTART = true;
+                Invoke("UpdateGameState", 5f);
 
             }
         }
 
-
+        void UpdateGameState()
+        {
+            NetworkDriver.instance.UpdateGameState();
+        }
 
 
         //----------------SYSTEM CONSOLE-------------------------

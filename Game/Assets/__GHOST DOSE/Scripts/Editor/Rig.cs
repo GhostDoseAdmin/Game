@@ -126,11 +126,11 @@ public class Rig : EditorWindow
             //get prfab
             GameObject gameControllerPrefab = AssetDatabase.LoadAssetAtPath<GameObject>("Assets/__GHOST DOSE/GameController.prefab");
             // Get the current length of the array
-            int currentLength = gameControllerPrefab.GetComponent<RigManager>().travRigList.Length;
+            //int currentLength = gameControllerPrefab.GetComponent<RigManager>().travRigList.Count;
             //Create extra spot on array
-            Array.Resize(ref gameControllerPrefab.GetComponent<RigManager>().travRigList, gameControllerPrefab.GetComponent<RigManager>().travRigList.Length + 1);
+           // Array.Resize(ref gameControllerPrefab.GetComponent<RigManager>().travRigList, gameControllerPrefab.GetComponent<RigManager>().travRigList.Count + 1);
             // Add the new GameObject at the end of the array
-            gameControllerPrefab.GetComponent<RigManager>().travRigList[currentLength] = myNewPrefabRig;
+            //gameControllerPrefab.GetComponent<RigManager>().travRigList[currentLength] = myNewPrefabRig;
             // Save the changes to the prefab
             AssetDatabase.SaveAssets();
             Debug.Log("Rig Saved!");
