@@ -5,6 +5,7 @@ using UnityEditor;
 using UnityEngine;
 using UnityEngine.UI;
 using GameManager;
+using NetworkSystem;
 public class Skin : MonoBehaviour
 {
     public GameObject rig;
@@ -42,7 +43,7 @@ public class Skin : MonoBehaviour
     void SelectSkin()
     {
         // Find the game object in the room
-        GameObject.Find("LobbyManager").GetComponent<RigManager>().UpdatePlayerRig(prefabpath, rig, GameDriver.instance.isTRAVIS) ;
+        GameObject.Find("LobbyManager").GetComponent<RigManager>().UpdatePlayerRig(prefabpath, rig, NetworkDriver.instance.isTRAVIS) ;
 
     }
 

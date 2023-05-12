@@ -94,9 +94,9 @@ public class LoginControl : MonoBehaviour
     {
         if (PlayerPrefs.GetString("username").Length > 0)
         {
-            GameDriver.instance.USERNAME = PlayerPrefs.GetString("username");
+            NetworkDriver.instance.USERNAME = PlayerPrefs.GetString("username");
         }
-        else { GameDriver.instance.USERNAME = usernameField.GetComponent<TMP_InputField>().text; }
+        else { NetworkDriver.instance.USERNAME = usernameField.GetComponent<TMP_InputField>().text; }
 
         if (newAccount) { GameDriver.instance.WriteGuiMsg("Account Created Successfully!", 5f, false, Color.yellow); }
         yesButton.SetActive(false);

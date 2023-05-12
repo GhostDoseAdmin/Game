@@ -13,6 +13,7 @@ public class LobbyControlV2 : MonoBehaviour
 
     public GameObject levelName;
     public GameObject skinName;
+    public GameObject loginCanvas;
     public GameObject entryMenuCanvas;
     public GameObject lobbyMenuCanvas;
     public GameObject roomCanvas;
@@ -28,7 +29,7 @@ public class LobbyControlV2 : MonoBehaviour
     private bool lookingForPlayer;
     public void Start()
     {
-       GameDriver.instance.isTRAVIS = true;
+        NetworkDriver.instance.isTRAVIS = true;
     }
 
     public void SelectLevel(string level)
@@ -43,24 +44,27 @@ public class LobbyControlV2 : MonoBehaviour
         entryMenuCanvas.SetActive(false);
         GAMEMODE = gameMode;
 
-        if (gameMode == "duo" || gameMode == "duorandom")
+        //if (gameMode == "duo" || gameMode == "duorandom")
         {
             screenMask.SetActive(true);
             roomCanvas.SetActive(true);
+            if (gameMode == "single") { roomNameField.GetComponent<TMP_InputField>().text = NetworkDriver.instance.USERNAME; FindRoom(); }
+
         }
-        else { lobbyMenuCanvas.SetActive(true); }
+       // else { lobbyMenuCanvas.SetActive(true); }
         
         
     }
 
     public void FindRoom()
     {
+        string roomName = roomNameField.GetComponent<TMP_InputField>().text;
         if (!lookingForPlayer) { 
             lookingForPlayer = true; 
-            NetworkDriver.instance.sioCom.Instance.Emit("join", roomNameField.GetComponent<TMP_InputField>().text, true);
+            NetworkDriver.instance.sioCom.Instance.Emit("join", roomName, true);
             roomNameField.SetActive(false);
             findRoomButton.SetActive(false);
-            GameDriver.instance.WriteGuiMsg("Joining Room " + roomNameField.GetComponent<TMP_InputField>().text, 5f, true, Color.yellow);
+            GameDriver.instance.WriteGuiMsg("Joining Room " + roomName, 5f, true, Color.yellow);
         }
     }
     public void RoomFound()
@@ -75,7 +79,7 @@ public class LobbyControlV2 : MonoBehaviour
         if (GAMEMODE == "single") { SceneManager.LoadScene(LEVEL); Debug.Log("READY"); }
         else
         {
-            if (!GameDriver.instance.twoPlayer)
+            if (!NetworkDriver.instance.TWOPLAYER)
             {
                 GameDriver.instance.WriteGuiMsg("Waiting for another Player", 5f, true, Color.yellow);
             }
@@ -108,8 +112,8 @@ public class LobbyControlV2 : MonoBehaviour
                         GameObject clickedObject = hit.collider.gameObject.transform.parent.gameObject;
                         if (clickedObject.name == "TRAVIS" || clickedObject.name == "WESTIN")
                         {
-                            if (clickedObject.name == "TRAVIS") { GameDriver.instance.isTRAVIS = true; }
-                            else { GameDriver.instance.isTRAVIS = false; }
+                            if (clickedObject.name == "TRAVIS") { NetworkDriver.instance.isTRAVIS = true; }
+                            else { NetworkDriver.instance.isTRAVIS = false; }
                             StartCoroutine(RotateCarousel());
                         }
 

@@ -137,7 +137,7 @@ public class LobbyControl : MonoBehaviour
                     READY = false; ChooseBro.SetActive(false);
                     MSG = "CHOOSE A BRO ";
                     //Single Player
-                    if (!GameDriver.instance.GetComponent<GameDriver>().twoPlayer)
+                    if (!NetworkDriver.instance.TWOPLAYER)
                     {
                         if (selectedBro.Length > 1)
                         {
@@ -185,8 +185,8 @@ public class LobbyControl : MonoBehaviour
     public void NextScene()
     {
         StopCoroutine(randomAnimations());
-        if (selectedBro == "TRAVIS") { GameDriver.instance.GetComponent<GameDriver>().isTRAVIS = true;  }
-        if (selectedBro == "WESTIN") { GameDriver.instance.GetComponent<GameDriver>().isTRAVIS = false;  }
+        if (selectedBro == "TRAVIS") { NetworkDriver.instance.isTRAVIS = true;  }
+        if (selectedBro == "WESTIN") { NetworkDriver.instance.isTRAVIS = false;  }
         SceneManager.LoadScene(1);
         
     }

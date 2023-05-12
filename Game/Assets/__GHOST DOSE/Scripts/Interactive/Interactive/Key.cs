@@ -23,7 +23,7 @@ public class Key : Item
     {
         KeyInventory.instance.AddKey(keyPass);
         AudioManager.instance.Play(pickUpKey, audioSource);
-        if (GameDriver.instance.twoPlayer) { NetworkDriver.instance.sioCom.Instance.Emit("event", JsonConvert.SerializeObject($"{{'obj':'{gameObject.name}','type':'key','event':'pickup','pass':'{keyPass}'}}"), false); }
+        if (NetworkDriver.instance.TWOPLAYER) { NetworkDriver.instance.sioCom.Instance.Emit("event", JsonConvert.SerializeObject($"{{'obj':'{gameObject.name}','type':'key','event':'pickup','pass':'{keyPass}'}}"), false); }
 
         DestroyWithSound(false);
     }

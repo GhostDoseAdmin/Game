@@ -80,7 +80,7 @@ public class RigManager : MonoBehaviour
         hasRetrievedSkins = true;
     }
 
-    void RetreiveLevelData(string data)    {NetworkDriver.instance.sioCom.Instance.Emit("get_level_speed", JsonConvert.SerializeObject(new { username = GameDriver.instance.USERNAME, level = data }), false);;    }
+    void RetreiveLevelData(string data)    {NetworkDriver.instance.sioCom.Instance.Emit("get_level_speed", JsonConvert.SerializeObject(new { username = NetworkDriver.instance.USERNAME, level = data }), false);;    }
 
     //void RetreiveLevel2Data() { NetworkDriver.instance.sioCom.Instance.Emit("get_level2_speed", JsonConvert.SerializeObject(new { username = GameDriver.instance.USERNAME }), false); }
     public void ReceivedLevelData(int level, int speed) { leveldata[level] = speed; UpdateSkinsList(); }
@@ -98,7 +98,7 @@ public class RigManager : MonoBehaviour
         List<GameObject> updatedList = new List<GameObject>();
 
         //ADD BASIC RIGS
-        if (GameDriver.instance.isTRAVIS) { updatedList.Add(travBasicRig); }
+        if (NetworkDriver.instance.isTRAVIS) { updatedList.Add(travBasicRig); }
         else { updatedList.Add(wesBasicRig); }
 
 
@@ -106,7 +106,7 @@ public class RigManager : MonoBehaviour
         {
             //LEVEL1
             if (i == 1) {
-                if (GameDriver.instance.isTRAVIS) { thisRewardsList = travLevel1RewardRigs; } 
+                if (NetworkDriver.instance.isTRAVIS) { thisRewardsList = travLevel1RewardRigs; } 
                 else { thisRewardsList = wesLevel1RewardRigs; }
 
                 //CHECK TEIRS
@@ -122,7 +122,7 @@ public class RigManager : MonoBehaviour
             //LEVEL2
             if (i == 2)
             {
-                if (GameDriver.instance.isTRAVIS) {  thisRewardsList = travLevel2RewardRigs; }
+                if (NetworkDriver.instance.isTRAVIS) {  thisRewardsList = travLevel2RewardRigs; }
                 else { thisRewardsList = wesLevel2RewardRigs; }
 
                 //CHECK TEIRS
@@ -138,7 +138,7 @@ public class RigManager : MonoBehaviour
         }
 
         //UPDATE LIST
-        if (GameDriver.instance.isTRAVIS) { travRigList = updatedList; }
+        if (NetworkDriver.instance.isTRAVIS) { travRigList = updatedList; }
         else { wesRigList = updatedList; }
 
 

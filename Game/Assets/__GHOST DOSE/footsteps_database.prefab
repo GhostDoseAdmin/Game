@@ -1,0 +1,127 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1 &3800961975333989340
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 3800961975333989342}
+  - component: {fileID: 3800961975333989341}
+  m_Layer: 0
+  m_Name: footsteps_database
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &3800961975333989342
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3800961975333989340}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0.41073632, y: -2.43, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &3800961975333989341
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3800961975333989340}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: efd771b8daedadc47a1363e28836b08c, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  definedSurfaces:
+  - name: concrete
+    footsteps:
+    - {fileID: 8300000, guid: ecd647025e0a3c04fbd5829fff509e09, type: 3}
+    - {fileID: 8300000, guid: 3bd1b93317b7a3a49b13011cdaa64d0b, type: 3}
+    - {fileID: 8300000, guid: 7b4b6eb734482064c8c1e5fd45d4d76c, type: 3}
+    - {fileID: 8300000, guid: fba95cafa5bba8649a7d269656e7317b, type: 3}
+    - {fileID: 8300000, guid: e924ff5d774024542830602ee674d9a9, type: 3}
+    - {fileID: 8300000, guid: 281c105661e5ee14b8e76523200338bd, type: 3}
+    - {fileID: 8300000, guid: 3069c9f7e833f8e4099228c28f9d65dd, type: 3}
+    - {fileID: 8300000, guid: 82354d1fee336984994fbdcc8154c89c, type: 3}
+    - {fileID: 8300000, guid: 068414160a0ccf34ca0c11b55d43ffc8, type: 3}
+    - {fileID: 8300000, guid: 02d4b2dff380d194fab91c0864b0c386, type: 3}
+  - name: metal
+    footsteps:
+    - {fileID: 8300000, guid: 3e299b9129329f24692bb63f57f33d19, type: 3}
+    - {fileID: 8300000, guid: 38f0c96f5fc9ad54bb7f70129602e268, type: 3}
+    - {fileID: 8300000, guid: 72b37684ac7a413499d259a0a9be50e6, type: 3}
+    - {fileID: 8300000, guid: 5da9a1fac751fd544933656ba7cdb367, type: 3}
+    - {fileID: 8300000, guid: 83e12fcd809c9444192c377fe18a65e5, type: 3}
+    - {fileID: 8300000, guid: 6056a660bb0897e4ea25a31889075437, type: 3}
+    - {fileID: 8300000, guid: af104ebdf73bf7a4ba6013021dd458cb, type: 3}
+    - {fileID: 8300000, guid: e968240fec458e24a862c16541a528c6, type: 3}
+    - {fileID: 8300000, guid: 72854b6a8fde5e54eb8ae2eb10155f45, type: 3}
+    - {fileID: 8300000, guid: 22dffeeb60f8846499a8c08a2c0e6f80, type: 3}
+    - {fileID: 8300000, guid: 642f9eb7b8ea3f14e9fc48dff8f8e34b, type: 3}
+    - {fileID: 8300000, guid: 90754431c63071d48b2bfa8dc2472b9d, type: 3}
+    - {fileID: 8300000, guid: d51df139d4e50794993d2130348b08d9, type: 3}
+    - {fileID: 8300000, guid: 39ca7e88dc461e8458d02a2284708c0d, type: 3}
+    - {fileID: 8300000, guid: d772d1b334ef5f148bf1308d5fb3e4b0, type: 3}
+  - name: wood
+    footsteps:
+    - {fileID: 8300000, guid: 505a015d5525e0442ae4a62d5bac304d, type: 3}
+    - {fileID: 8300000, guid: 7ffe843b3b9c8d14792d912d39646105, type: 3}
+    - {fileID: 8300000, guid: 2802b1a72217c464ea0171ad67e835f7, type: 3}
+    - {fileID: 8300000, guid: 88da42c7018c0fa41870ccf17d13da9c, type: 3}
+    - {fileID: 8300000, guid: 8b4e405a508185e428652ccc26469d53, type: 3}
+    - {fileID: 8300000, guid: cee4ef3ef0fd155409f7b5a5162cece8, type: 3}
+    - {fileID: 8300000, guid: b30822d7e7d412d459397d0749be742a, type: 3}
+    - {fileID: 8300000, guid: 7f31ac62883f78b4ba610e164f57f879, type: 3}
+    - {fileID: 8300000, guid: 2c37f11b2d56b374ebf354853c6ad643, type: 3}
+    - {fileID: 8300000, guid: 75d4e54cf94712d4e8de7ce385abceb2, type: 3}
+  - name: sand
+    footsteps:
+    - {fileID: 8300000, guid: 82b9e7907a6c3154b86a53c1be46ff71, type: 3}
+    - {fileID: 8300000, guid: f43edb311d1c4d74fa9b4b86c9157fa6, type: 3}
+    - {fileID: 8300000, guid: 9fa438d00f348394a8f0f6c053659a36, type: 3}
+    - {fileID: 8300000, guid: 1241db8d81c902d4db1bc5e06ba500b3, type: 3}
+    - {fileID: 8300000, guid: 524ca5d8ba6570f47a403855a9d2cf29, type: 3}
+    - {fileID: 8300000, guid: 6f1fa4fa8b3675843abe9345bbefffdd, type: 3}
+    - {fileID: 8300000, guid: 4abc431d61ba42a4197ca0aba3bad8d3, type: 3}
+    - {fileID: 8300000, guid: db210683cc12f49488148d7e59a51aec, type: 3}
+    - {fileID: 8300000, guid: 4bcc738c9307a9d4784ce4e137f5aefb, type: 3}
+    - {fileID: 8300000, guid: 17a55e09664ccf54392bb53bbf824804, type: 3}
+    - {fileID: 8300000, guid: add3298d47405fd4da3a313bbc049fe2, type: 3}
+    - {fileID: 8300000, guid: 826b5ab8735d6ff4c9e018ef29045829, type: 3}
+    - {fileID: 8300000, guid: 95f5d05b56992b54db766ac6cd05a7d4, type: 3}
+    - {fileID: 8300000, guid: 33d255937ea9cb74dbaf46d7a552672d, type: 3}
+    - {fileID: 8300000, guid: 7ec804530ad09cd4093a5ef030cfc7ec, type: 3}
+    - {fileID: 8300000, guid: 466266db15b02104584d921885bcaa8a, type: 3}
+    - {fileID: 8300000, guid: 64d4d5a88368ecf4e9d81d94341ac235, type: 3}
+    - {fileID: 8300000, guid: c11ecc89dec9e1a428e927466942ba39, type: 3}
+    - {fileID: 8300000, guid: 4ca3f7b75bbc47c45a464277174030a4, type: 3}
+    - {fileID: 8300000, guid: 31ce2f4f55b79d743ae941e2bc3a8dfa, type: 3}
+  - name: dirt
+    footsteps:
+    - {fileID: 8300000, guid: 9e68ea1ebd76aa44c8cfa5beb9850830, type: 3}
+    - {fileID: 8300000, guid: 1deb201b8bf8f89479323a74e421150b, type: 3}
+    - {fileID: 8300000, guid: 7c518e8469a403b4c981664ecb28a79a, type: 3}
+    - {fileID: 8300000, guid: 1f2844efbf7abf647ba3d75d510f823a, type: 3}
+    - {fileID: 8300000, guid: fa95ebee958fb0e41a42a832aab767eb, type: 3}
+    - {fileID: 8300000, guid: 0cfeb72dea261a54cb7672590d2d1656, type: 3}
+    - {fileID: 8300000, guid: 924e3e09c67130946a6d7b666e8b8b68, type: 3}
+    - {fileID: 8300000, guid: 6da235e2573048249bcbe608f984ff48, type: 3}
+    - {fileID: 8300000, guid: fdc05ea2699023143ba7e93533cc5a0b, type: 3}
+    - {fileID: 8300000, guid: f26cf9ded47cf0140957490a16f85acc, type: 3}
+  registeredTextures:
+  - texture: {fileID: 2800000, guid: 1fd8e6e8b0bbf354eab3d4425a201b3e, type: 3}
+    surfaceIndex: 0
+  - texture: {fileID: 2800000, guid: 5809deb9b77dd1140ba6884f7d52a395, type: 3}
+    surfaceIndex: 3

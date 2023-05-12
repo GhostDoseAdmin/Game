@@ -158,7 +158,7 @@ public class HealthSystem : MonoBehaviour
 	{
 
 		Instantiate(death, transform.position, transform.rotation);
-		if (GameDriver.instance.twoPlayer) { NetworkDriver.instance.sioCom.Instance.Emit("death", "death", true); }
+		if (NetworkDriver.instance.TWOPLAYER) { NetworkDriver.instance.sioCom.Instance.Emit("death", "death", true); }
         //NetworkDriver.instance.sioCom.Instance.Emit("death", "death", true);
         dead = true;
 		deadPlayer = true;

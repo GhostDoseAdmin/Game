@@ -67,7 +67,7 @@ public class ColdSpot : Item
             exposed = true;
             effect.SetActive(true);
             Invoke("Decay", SessionTimer);
-            if (GameDriver.instance.twoPlayer && !otherPlayer) { NetworkDriver.instance.sioCom.Instance.Emit("event", JsonConvert.SerializeObject($"{{'obj':'{gameObject.name}','type':'expose','event':'coldspot'}}"), false); }
+            if (NetworkDriver.instance.TWOPLAYER && !otherPlayer) { NetworkDriver.instance.sioCom.Instance.Emit("event", JsonConvert.SerializeObject($"{{'obj':'{gameObject.name}','type':'expose','event':'coldspot'}}"), false); }
         }
        
     }
@@ -98,7 +98,7 @@ public class ColdSpot : Item
         Trigger.transform.localScale = new Vector3(1f, 1f, 1f);
         effect.transform.localScale = new Vector3(effectStartSize, effectStartSize, effectStartSize);
         effect.SetActive(false); decay = false; exposed = false;
-        if (GameDriver.instance.twoPlayer && NetworkDriver.instance.HOST) { NetworkDriver.instance.sioCom.Instance.Emit("event", JsonConvert.SerializeObject($"{{'obj':'{this.gameObject.name}','type':'respawn','event':'coldspot','loc':'{locations[randomSpot].name}'}}"), false); }
+        if (NetworkDriver.instance.TWOPLAYER && NetworkDriver.instance.HOST && NetworkDriver.instance.otherPlayerLoaded) { NetworkDriver.instance.sioCom.Instance.Emit("event", JsonConvert.SerializeObject($"{{'obj':'{this.gameObject.name}','type':'respawn','event':'coldspot','loc':'{locations[randomSpot].name}'}}"), false); }
     }
 
 
