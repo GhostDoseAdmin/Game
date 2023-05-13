@@ -221,7 +221,7 @@ public class NPCController : MonoBehaviour
             if (closestPlayer == Client.transform) { if (Client.GetComponent<Animator>().GetBool("Running")) { Agro(true); } }
         }*/
         //-------------ATTENTION----------------------
-        if (distance <= 3 && target==null)
+        /*if (distance <= 3 && target==null)
         {
             if (closestPlayer == Player.transform)
             {
@@ -232,7 +232,7 @@ public class NPCController : MonoBehaviour
 
                 if (Client.GetComponent<Animator>().GetBool("Running")) { Engage(Client.transform); } //TakeDamage(1, true);
             }
-        }
+        }*/
 
         if (target != null) { hasLooked = true; Attack();         }
         //-------------------------WAY POINTS ------------------------
