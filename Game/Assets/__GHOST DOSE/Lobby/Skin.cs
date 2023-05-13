@@ -9,64 +9,51 @@ using NetworkSystem;
 public class Skin : MonoBehaviour
 {
     public GameObject rig;
-    private string prefabpath;
-    // Start is called before the first frame update
+
+
     void Start()
     {
-
-        prefabpath = FindPrefabPath(rig.name);
-        
-        Texture2D texture = GetPrefabTexture(prefabpath);
+        Texture2D texture = GetPrefabTexture();
         // Create a new sprite from the image asset
-       //Sprite sprite = Sprite.Create(texture, new Rect(0, 0, texture.width, texture.height), Vector2.zero);
-       /* // Get reference to the image component on the object
+       Sprite sprite = Sprite.Create(texture, new Rect(0, 0, texture.width, texture.height), Vector2.zero);
+        // Get reference to the image component on the object
         Image imageComponent = this.gameObject.GetComponent<Image>();
         // Set the image component's sprite to the loaded sprite
         imageComponent.sprite = sprite;
        Button btn = transform.parent.GetComponent<Button>();
-       btn.onClick.AddListener(SelectSkin);*/
+       btn.onClick.AddListener(SelectSkin);
     }
 
     void SelectSkin()
     {
         // Find the game object in the room
-        GameObject.Find("LobbyManager").GetComponent<RigManager>().UpdatePlayerRig(prefabpath, rig, NetworkDriver.instance.isTRAVIS, false) ;
+        GameObject.Find("LobbyManager").GetComponent<RigManager>().UpdatePlayerRig(rig.name, rig, NetworkDriver.instance.isTRAVIS, false) ;
 
     }
 
-
-
-    public static string FindPrefabPath(string prefabName)
-    {
-        string[] files = Directory.GetFiles(Application.dataPath, "*.prefab", SearchOption.AllDirectories);
-        foreach (string file in files)
-        {
-            if (Path.GetFileNameWithoutExtension(file) == prefabName)
-            {
-                string path = "Assets" + file.Substring(Application.dataPath.Length);
-                path = path.Substring(path.IndexOf("Prefabs")).Replace('\\', '/');
-                path = path.Substring(0, path.LastIndexOf("."));
-                return path;
-
-
-            }
-        }
-        return null;
-    }
-
-    public Texture2D GetPrefabTexture(string prefabpath)
+    public Texture2D GetPrefabTexture()
     {
 
         // Load the prefab from the Resources folder
         //
-        //GameObject[] prefabs = Resources.LoadAll<GameObject>("Prefabs/Rigs");
-        
-       // GameObject instance = Instantiate(Resources.Load<GameObject>(prefab)); //prefabpath
+        // Load all prefabs in the "Prefabs/Rigs" folder
+        GameObject[] prefabs = Resources.LoadAll<GameObject>("Prefabs/Rigs");
 
-        GameDriver.instance.WriteGuiMsg(rig.name, 999f, true, Color.yellow);
+        // Find the prefab with the matching name and instantiate it
+        string prefabName = rig.name; // Replace with the name of the prefab you want to instantiate
+        GameObject instance = null;
+        for (int i = 0; i < prefabs.Length; i++)
+        {
+            if (prefabs[i].name == prefabName)
+            {
+                 instance = Instantiate(prefabs[i]);
+                // Do something with the instantiated game object
+                break; // Exit the loop once the prefab is found
+            }
+        }
         // Set the position and rotation of the camera to capture the prefab
-        // GameObject snapShotCamObj = new GameObject("SnapShot");
-        /*Camera camera = snapShotCamObj.AddComponent<Camera>();
+        GameObject snapShotCamObj = new GameObject("SnapShot");
+        Camera camera = snapShotCamObj.AddComponent<Camera>();
 
 
         snapShotCamObj.transform.position = instance.transform.position + new Vector3(0, 1.497f, 0.921f);
@@ -92,8 +79,8 @@ public class Skin : MonoBehaviour
         RenderTexture.active = null;
         DestroyImmediate(snapShotCamObj);
         DestroyImmediate(instance);
-        */
-        return null;// texture;
+
+        return texture;// texture;
     }
 
 

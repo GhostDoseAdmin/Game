@@ -15,6 +15,7 @@ GameObject:
   - component: {fileID: 5677644129695883608}
   - component: {fileID: 5677644129695883591}
   - component: {fileID: 5677644129695883590}
+  - component: {fileID: 239611983354114699}
   m_Layer: 5
   m_Name: Btn_Skin
   m_TagString: Untagged
@@ -64,7 +65,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 0.26606238, g: 1, b: 0, a: 1}
+  m_Color: {r: 0, g: 0.6677432, b: 1, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -223,6 +224,27 @@ MonoBehaviour:
   themeController: {fileID: 11400000, guid: e00c7d2bc58a2424b8dc09ecdafdb067, type: 2}
   hasImage: 1
   isText: 0
+--- !u!95 &239611983354114699
+Animator:
+  serializedVersion: 5
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 5677644129695883588}
+  m_Enabled: 1
+  m_Avatar: {fileID: 9000000, guid: 689159b9bf1ab0b49aaeaeceac1e73c8, type: 3}
+  m_Controller: {fileID: 9100000, guid: b50693f0f84b03240a077ec77b97def5, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorStateOnDisable: 0
+  m_WriteDefaultValuesOnDisable: 0
 --- !u!1 &5677644129972663900
 GameObject:
   m_ObjectHideFlags: 0

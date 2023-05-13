@@ -6,6 +6,8 @@ using UnityEngine.UI;
 using UnityEngine.Rendering.VirtualTexturing;
 using TMPro;
 using InteractionSystem;
+using Newtonsoft.Json;
+
 namespace GameManager
 {
     public class GameDriver : MonoBehaviour
@@ -19,14 +21,13 @@ namespace GameManager
         //public string ROOM;
         //public bool ROOM_VALID;//they joined valid room
         
-        public bool GAMESTART = false;
+        //public bool GAMESTART = false;
         //public bool twoPlayer = false;
 
         public bool infiniteAmmo;
         private GameObject WESTIN;
         private GameObject TRAVIS;
         //public GameObject loginCanvas;
-        public GameObject mainCam;
         public GameObject playerUI;
         public GameObject GamePlayManager;
         public GameObject otherUserName;
@@ -51,10 +52,11 @@ namespace GameManager
             if(infiniteAmmo) { if (Player != null) { Player.GetComponent<ShootingSystem>().camBatteryUI.fillAmount = 1; } }
 
             //---------------------------------WAITING FOR OTHER PLAYER----------------------------------
-            /*if (Player!=null && NetworkDriver.instance.TWOPLAYER && GAMESTART && !NetworkDriver.instance.otherPlayerLoaded){
+            if (Player!=null && NetworkDriver.instance.TWOPLAYER && !NetworkDriver.instance.OTHERS_SCENE_READY)
+            {
                 WriteGuiMsg("Waiting for other player...", 1f, false, Color.red);
                 Player.transform.position = playerStartPos;
-            }*/
+            }
             //----------------------------------OTHER USERNAME--------------------------------
             //NetworkDriver.instance.otherUSERNAME = "DEEZ NUTS";
             if (NetworkDriver.instance.otherUSERNAME.Length > 0 && Client!=null && GeometryUtility.TestPlanesAABB(GeometryUtility.CalculateFrustumPlanes(Camera.main), Client.GetComponentInChildren<SkinnedMeshRenderer>(false).bounds))
@@ -69,7 +71,7 @@ namespace GameManager
 
         void Awake()
         {
-           // if (NetworkDriver.instance == null) {  GameObject.Find("NetworkManager").GetComponent<NetworkDriver>().Awake(); Debug.Log("---------------RUNNING AWAKE"); }
+            // if (NetworkDriver.instance == null) {  GameObject.Find("NetworkManager").GetComponent<NetworkDriver>().Awake(); Debug.Log("---------------RUNNING AWAKE"); }
 
             util = new utilities();
 
@@ -88,7 +90,7 @@ namespace GameManager
                 SetupScene();
             }
             //LOBBY
-            else { mainCam.SetActive(false); playerUI.SetActive(false); AudioManager.instance.Play("lobbymusic", null); }
+            else {  playerUI.SetActive(false); AudioManager.instance.Play("lobbymusic", null); }
 
 
         }
@@ -161,6 +163,7 @@ namespace GameManager
                 playerStartPos = Player.transform.position;
                 //SETUP CAMERA
                 playerUI.SetActive(true);
+                GameObject mainCam = GameObject.Find("PlayerCamera");
                 mainCam.SetActive(true);
                 mainCam.transform.SetParent(Player.transform.parent);
                 //mainCam.transform.SetAsFirstSibling();
@@ -179,7 +182,10 @@ namespace GameManager
                 ClientWeapLight = Client.GetComponent<ClientFlashlightSystem>().WeaponLight;
                 ClientFlashLight = Client.GetComponent<ClientFlashlightSystem>().FlashLight;
 
-                GAMESTART = true;
+                Debug.Log("I AM READY");
+                NetworkDriver.instance.SCENE_READY = true;
+                NetworkDriver.instance.sioCom.Instance.Emit("event", JsonConvert.SerializeObject(new { otherssceneready = true }), false);
+
 
             }
         }

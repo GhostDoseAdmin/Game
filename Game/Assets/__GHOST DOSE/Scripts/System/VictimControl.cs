@@ -233,7 +233,7 @@ public class VictimControl : Item
         ChosenVictim = Victims[Random.Range(0, Victims.Count)];
         if(otherPlayerVictim != null) { ChosenVictim = otherPlayerVictim; Debug.Log("RANDOMIZING VICTIM FROM HOST "); } //GameDriver.instance.WriteGuiMsg("RANDOM VICTIM FROM HOST" + otherPlayerVictim.name, 10f);
        // GameDriver.instance.WriteGuiMsg("RANDOM VICTIM " + ChosenVictim.name, 10f, false);
-        if (NetworkDriver.instance.HOST && NetworkDriver.instance.TWOPLAYER && NetworkDriver.instance.otherPlayerLoaded) { NetworkDriver.instance.sioCom.Instance.Emit("event", JsonConvert.SerializeObject($"{{'obj':'{ChosenVictim.name}','type':'update','event':'randomvictim'}}"), false); }
+        if (NetworkDriver.instance.HOST && NetworkDriver.instance.TWOPLAYER && NetworkDriver.instance.OTHERS_SCENE_READY) { NetworkDriver.instance.sioCom.Instance.Emit("event", JsonConvert.SerializeObject($"{{'obj':'{ChosenVictim.name}','type':'update','event':'randomvictim'}}"), false); }
 
     }
 

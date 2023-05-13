@@ -50,12 +50,13 @@ public class InteractiveTrigger : MonoBehaviour
     {
         if (other.gameObject.name =="Player")
         {
-            Debug.Log("--------------ALLWING INTERACTION OBJECT" + interactiveObject.name);
+            //Debug.Log("--------------ALLWING INTERACTION OBJECT" + interactiveObject.name);
             allowInteraction = true;
             interact.SetActive(true);
-            if (other.gameObject.name == "Player") { interactiveObject.GetComponent<Item>().playerOn = true; }
-            if (other.gameObject.name == "Client") { interactiveObject.GetComponent<Item>().clientOn = true; }
+            interactiveObject.GetComponent<Item>().playerOn = true;
         }
+
+        if (other.gameObject.name == "Client") { interactiveObject.GetComponent<Item>().clientOn = true; }
     }
 
     private void OnTriggerExit(Collider other)
@@ -64,12 +65,10 @@ public class InteractiveTrigger : MonoBehaviour
         {
             allowInteraction = false;
             interact.SetActive(false);
+            interactiveObject.GetComponent<Item>().playerOn = false;
             if (GameDriver.instance.Player.GetComponent<PlayerController>().sb7) { GameDriver.instance.Player.GetComponent<PlayerController>().ChangeGear(true); }
-            
-            if (other.gameObject.name == "Player") { interactiveObject.GetComponent<Item>().playerOn = false; }
-            if (other.gameObject.name == "Client") { interactiveObject.GetComponent<Item>().clientOn = false; }
-
         }
+        if (other.gameObject.name == "Client") { interactiveObject.GetComponent<Item>().clientOn = false; }
     }
 
 

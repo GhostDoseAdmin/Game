@@ -23,6 +23,7 @@ public class LobbyControlV2 : MonoBehaviour
     public GameObject roomNameField;
     public GameObject findRoomButton;
     public GameObject screenMask;
+    public GameObject otherUserName;
 
     public GameObject Carousel;
     
@@ -83,6 +84,7 @@ public class LobbyControlV2 : MonoBehaviour
     }
     public void RoomFound()
     {
+        roomCanvas.SetActive(false);
         screenMask.SetActive(false);
         lobbyMenuCanvas.SetActive(true);
         foundRoom = true;
@@ -116,16 +118,16 @@ public class LobbyControlV2 : MonoBehaviour
         if (NetworkDriver.instance.TWOPLAYER) { NetworkDriver.instance.sioCom.Instance.Emit("event", JsonConvert.SerializeObject(new { level = LEVEL }), false); }
     }
 
-    public void UpdateOtherRig(string rigPath)
+    public void UpdateOtherRig(string rigName)
     {
-        string path = rigPath;
-        path = path.Replace(".", "/");
+        //string path = rigPath;
+        //path = path.Replace(".", "/");
         if (NetworkDriver.instance.isTRAVIS && !NetworkDriver.instance.otherIsTravis) {
-            GetComponent<RigManager>().UpdatePlayerRig(null, Resources.Load<GameObject>(path), false, true);
+            GetComponent<RigManager>().UpdatePlayerRig(null, Resources.Load<GameObject>(rigName), false, true);
                 }
         if (!NetworkDriver.instance.isTRAVIS && NetworkDriver.instance.otherIsTravis)
         {
-            GetComponent<RigManager>().UpdatePlayerRig(null, Resources.Load<GameObject>(path), false, true);
+            GetComponent<RigManager>().UpdatePlayerRig(null, Resources.Load<GameObject>(rigName), false, true);
         }
     }
     public void UpdateOtherLevel(string level)
@@ -135,8 +137,19 @@ public class LobbyControlV2 : MonoBehaviour
     public void Update()
     {
 
+        //--------------NAMETAG-----------------
+        if (NetworkDriver.instance.otherUSERNAME.Length > 0)
+        {
+            GameObject otherPlayer = null;
+            if (NetworkDriver.instance.otherIsTravis) { otherPlayer = GetComponent<RigManager>().travisProp; } else { otherPlayer = GetComponent<RigManager>().westinProp; }
+            otherUserName.GetComponent<TextMeshPro>().text =  NetworkDriver.instance.otherUSERNAME;
+            Vector3 worldPosition = new Vector3(otherPlayer.transform.position.x, otherPlayer.transform.position.y + 13f, otherPlayer.transform.position.z);
+            otherUserName.GetComponent<RectTransform>().position = worldPosition;
+        }
+
+
         //------------------------SELECT BRO----------------------------
-        if(GameObject.Find("SkinsPanel")==null && foundRoom)
+        if (GameObject.Find("SkinsPanel")==null && foundRoom)
         {
             if (Time.time > timer + rotDuration)
             {
@@ -154,7 +167,7 @@ public class LobbyControlV2 : MonoBehaviour
                         {
                             if (clickedObject.name == "TRAVIS") { NetworkDriver.instance.isTRAVIS = true; }
                             else { NetworkDriver.instance.isTRAVIS = false; }
-                            NetworkDriver.instance.sioCom.Instance.Emit("event", JsonConvert.SerializeObject(new { isTRAVIS = NetworkDriver.instance.isTRAVIS = true }), false);
+                            NetworkDriver.instance.sioCom.Instance.Emit("event", JsonConvert.SerializeObject(new { isTRAVIS = NetworkDriver.instance.isTRAVIS }), false);
                             StartCoroutine(RotateCarousel());
                         }
 

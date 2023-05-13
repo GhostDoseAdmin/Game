@@ -98,7 +98,7 @@ public class ColdSpot : Item
         Trigger.transform.localScale = new Vector3(1f, 1f, 1f);
         effect.transform.localScale = new Vector3(effectStartSize, effectStartSize, effectStartSize);
         effect.SetActive(false); decay = false; exposed = false;
-        if (NetworkDriver.instance.TWOPLAYER && NetworkDriver.instance.HOST && NetworkDriver.instance.otherPlayerLoaded) { NetworkDriver.instance.sioCom.Instance.Emit("event", JsonConvert.SerializeObject($"{{'obj':'{this.gameObject.name}','type':'respawn','event':'coldspot','loc':'{locations[randomSpot].name}'}}"), false); }
+        if (NetworkDriver.instance.TWOPLAYER && NetworkDriver.instance.HOST && NetworkDriver.instance.OTHERS_SCENE_READY) { NetworkDriver.instance.sioCom.Instance.Emit("event", JsonConvert.SerializeObject($"{{'obj':'{this.gameObject.name}','type':'respawn','event':'coldspot','loc':'{locations[randomSpot].name}'}}"), false); }
     }
 
 
