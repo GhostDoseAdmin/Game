@@ -419,7 +419,7 @@ namespace NetworkSystem
                             {
                                 //--------ACTIVE-----------
                                 //if (obj.Value["ax"] != null) { enemy.SetActive(bool.Parse(obj.Value["ax"])); }
-                                if (!enemy.activeSelf) { enemy.SetActive(true); }
+                                if (!enemy.activeSelf) { if (!enemy.tag.Contains("ZOZO")){ enemy.SetActive(true); } }
                                 enemy.GetComponent<NPCController>().active_timer = timer_delay * 2;//DISABLE IF NO MESSAGES BEYOND 0.6s
                                                                                                    //--------POSITION---------
                                 Vector3 targPos;
