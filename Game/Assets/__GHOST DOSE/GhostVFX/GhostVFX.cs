@@ -76,7 +76,7 @@ public class GhostVFX : MonoBehaviour
                     if (light != null)
                     {
                         lights.Add(light);
-                        Debug.Log(light.gameObject.name);
+                        //Debug.Log(light.gameObject.name);
                     }
                 }
             }

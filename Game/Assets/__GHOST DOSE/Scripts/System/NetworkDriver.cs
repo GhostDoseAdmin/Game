@@ -153,7 +153,7 @@ namespace NetworkSystem
             sioCom.Instance.On("pong", (payload) =>
             {
                 //GameDriver.instance.WriteGuiMsg("Waiting for another player", 10f, false, Color.white);
-                // Debug.Log("PONG RECEIVED " + payload);
+                 Debug.Log("PONG RECEIVED " + payload);
                 if (PING == 0) { PING = Time.time - pingTimer; Debug.Log("MY PING IS " + PING); }
                 JObject data = JObject.Parse(payload);
                 Dictionary<string, string> dict = data.ToObject<Dictionary<string, string>>();
@@ -163,7 +163,7 @@ namespace NetworkSystem
                     if (float.Parse(dict["ping"]) == 0) //THEY JUST JOINED
                     {
                         GameDriver.instance.WriteGuiMsg("Player Joined", 1f, false, Color.white);
-                        //Debug.Log("PLAYER JOINED SENDING MY PING SPEED TO OTHER PLAYER");
+                        Debug.Log("PLAYER JOINED SENDING MY PING SPEED TO OTHER PLAYER");
                         dict = new Dictionary<string, string> {
                         { "sid", sioCom.Instance.SocketID },
                         { "ping", PING.ToString() }
@@ -174,9 +174,25 @@ namespace NetworkSystem
                     {
                         // COMPARE PING VALUES
                         //im host
-                        if (float.Parse(dict["ping"]) > PING) { sioCom.Instance.Emit("host", JsonConvert.SerializeObject(new { host = sioCom.Instance.SocketID, username = USERNAME }), false); }
+                        if (float.Parse(dict["ping"]) > PING) {
+                            dict = new Dictionary<string, string> {
+                        { "host", sioCom.Instance.SocketID },
+                        { "username", USERNAME }
+                        };
+                            sioCom.Instance.Emit("ping", JsonConvert.SerializeObject(dict), false);//MAKE OTHER TEST PINGS
+                            //sioCom.Instance.Emit("host", JsonConvert.SerializeObject(new { host = sioCom.Instance.SocketID, username = USERNAME }), false); 
+                        
+                        }
                         //they are host
-                        else { if (!NETWORK_TEST) { HOST = false; } sioCom.Instance.Emit("host", JsonConvert.SerializeObject(new { host = dict["sid"], username = USERNAME }), false); }
+                        else { if (!NETWORK_TEST) { HOST = false; }
+                            dict = new Dictionary<string, string> {
+                        { "host", dict["sid"] },
+                        { "username", USERNAME }
+                        };
+                            sioCom.Instance.Emit("ping", JsonConvert.SerializeObject(dict), false);//MAKE OTHER TEST PINGS
+                            //sioCom.Instance.Emit("host", JsonConvert.SerializeObject(new { host = dict["sid"], username = USERNAME }), false); 
+                        
+                        }
                     }
                 }
             });
@@ -227,7 +243,7 @@ namespace NetworkSystem
                 {
                     if (!otherPlayerLoaded) { otherPlayerLoaded = true; UpdateGameState(); }
                     JObject data = JObject.Parse(payload);
-                    Debug.Log("PLAYER ACTION" + payload);
+                   // Debug.Log("PLAYER ACTION" + payload);
                     Dictionary<string, string> dict = data.ToObject<Dictionary<string, string>>();
                     GameDriver.instance.Client.GetComponent<ClientPlayerController>().targetPos.position = new Vector3(float.Parse(dict["ax"]), float.Parse(dict["ay"]), float.Parse(dict["az"]));
                     if (dict.ContainsKey("x")) { GameDriver.instance.Client.GetComponent<ClientPlayerController>().destination = new Vector3(float.Parse(dict["x"]), float.Parse(dict["y"]), float.Parse(dict["z"])); }
