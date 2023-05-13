@@ -231,8 +231,8 @@ namespace NetworkSystem
             //-----------------PLAYER ACTION ----------------->
             sioCom.Instance.On("player_action", (payload) =>
             {
-                Debug.Log("PLAYER ACTION" + payload);
-                GameDriver.instance.WriteGuiMsg("OTHER PLAYER LOADED - GAME START" + GameDriver.instance.GAMESTART + " opl " + otherPlayerLoaded, 999f, false, Color.white);
+                //Debug.Log("PLAYER ACTION" + payload);
+                //GameDriver.instance.WriteGuiMsg("OTHER PLAYER LOADED - GAME START" + GameDriver.instance.GAMESTART + " opl " + otherPlayerLoaded, 999f, false, Color.white);
                 if (GameDriver.instance.GAMESTART)
                 {
                     if (!otherPlayerLoaded) { otherPlayerLoaded = true; UpdateGameState(); }
