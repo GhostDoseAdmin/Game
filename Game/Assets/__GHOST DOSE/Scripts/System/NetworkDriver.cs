@@ -175,22 +175,14 @@ namespace NetworkSystem
                         // COMPARE PING VALUES
                         //im host
                         if (float.Parse(dict["ping"]) > PING) {
-                            dict = new Dictionary<string, string> {
-                        { "host", sioCom.Instance.SocketID },
-                        { "username", USERNAME }
-                        };
-                            sioCom.Instance.Emit("ping", JsonConvert.SerializeObject(dict), false);//MAKE OTHER TEST PINGS
-                            //sioCom.Instance.Emit("host", JsonConvert.SerializeObject(new { host = sioCom.Instance.SocketID, username = USERNAME }), false); 
+                            Debug.Log("SENDING PING");
+                            sioCom.Instance.Emit("host", JsonConvert.SerializeObject(new { host = sioCom.Instance.SocketID, username = USERNAME }), false); 
                         
                         }
                         //they are host
                         else { if (!NETWORK_TEST) { HOST = false; }
-                            dict = new Dictionary<string, string> {
-                        { "host", dict["sid"] },
-                        { "username", USERNAME }
-                        };
-                            sioCom.Instance.Emit("ping", JsonConvert.SerializeObject(dict), false);//MAKE OTHER TEST PINGS
-                            //sioCom.Instance.Emit("host", JsonConvert.SerializeObject(new { host = dict["sid"], username = USERNAME }), false); 
+                            Debug.Log("SENDING PING");
+                            sioCom.Instance.Emit("host", JsonConvert.SerializeObject(new { host = dict["sid"], username = USERNAME }), false); 
                         
                         }
                     }
