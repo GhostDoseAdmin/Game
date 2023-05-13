@@ -295,8 +295,7 @@ namespace NetworkSystem
                     Dictionary<string, string> dict = data.ToObject<Dictionary<string, string>>();
                     GameObject enemy = GameObject.Find(dict["name"]);
 
-                    GameDriver.instance.Client.GetComponent<ClientPlayerController>().triggerShoot = true;//shoot ani
-                    if (enemy != null) { enemy.GetComponent<NPCController>().TakeDamage(int.Parse(dict["damage"]), true); } //do flinch
+
                 }
 
             });
@@ -343,22 +342,34 @@ namespace NetworkSystem
                 if (dict.ContainsKey("isTRAVIS")) { otherIsTravis = bool.Parse(dict["isTRAVIS"]); }
                 if (dict.ContainsKey("skin")) { GameObject.Find("LobbyManager").GetComponent<LobbyControlV2>().UpdateOtherRig(dict["skin"]); }
                 if (dict.ContainsKey("level")) { GameObject.Find("LobbyManager").GetComponent<LobbyControlV2>().UpdateOtherLevel(dict["level"]); }
-
+                //LOADS GAME SCENE
                 if (dict.ContainsKey("otherssceneready")) { 
                     Debug.Log("---YOUR SCENE IS READY"); 
                         OTHERS_SCENE_READY = true;
                         if (SceneManager.GetActiveScene().name != "Lobby") { UpdateGameState();  } 
-                        //sioCom.Instance.Emit("event", JsonConvert.SerializeObject(new { otherssceneready = true }), false); 
                     } 
+
                 if (OTHERS_SCENE_READY && SCENE_READY)
                 {
+                    GameObject obj = null;
+                    if (dict.ContainsKey("obj")) { obj = GameObject.Find(dict["obj"]); }
+                    //PLAYER
+                    if (dict.ContainsKey("shoot")) {
+                        if (int.Parse(dict["dmg"]) != -1)
+                        {
+                            GameDriver.instance.Client.GetComponent<ClientPlayerController>().triggerShoot = true;//shoot ani
+                            if (obj != null) { obj.GetComponent<NPCController>().TakeDamage(int.Parse(dict["dmg"]), true); } //do flinch
+                        }
+                        else { GameDriver.instance.GetComponentInChildren<VictimControl>().testAnswer(obj); }
+                    }
+
 
                     if (dict.ContainsKey("event"))
                     {
-                        GameObject obj = GameObject.Find(dict["obj"]);
                         if (dict["event"] == "setfree") { obj.GetComponent<VictimControl>().SetSpiritsFree(); }
                         if (dict["event"] == "summon") { obj.GetComponent<VictimControl>().SummonZozo(); }
                         if (dict["event"] == "zozo") { obj.GetComponent<VictimControl>().DestroyZozo(); }
+                        
                         if (dict["event"] == "pickup")
                         {
                             if (obj != null)
@@ -399,30 +410,6 @@ namespace NetworkSystem
                     {
                         enemy.GetComponent<Teleport>().teleport = float.Parse(dict["tp"]);
                         enemy.transform.position = new Vector3(float.Parse(dict["x"]), float.Parse(dict["y"]), float.Parse(dict["z"]));
-                    }
-                }
-            });
-
-            //-----------------DISABLE  ----------------->
-            sioCom.Instance.On("disable", (payload) =>
-            {
-                if(OTHERS_SCENE_READY && SCENE_READY)
-                {
-                    JObject data = JObject.Parse(payload);
-                    Debug.Log("RECEIVED DISABLE " + data);
-                    Dictionary<string, Dictionary<string, string>> dict = data.ToObject<Dictionary<string, Dictionary<string, string>>>();
-                    // Log the object positions to the console
-                    foreach (KeyValuePair<string, Dictionary<string, string>> obj in dict)
-                    {
-                        //search list of enemies for corresopnding obj
-                        foreach (GameObject enemyObject in GetComponent<DisablerControl>().enemyObjects)
-                        {
-                            if (enemyObject.name == obj.Key)
-                            {
-                                enemyObject.SetActive(bool.Parse(obj.Value["active"]));
-                                break;
-                            }
-                        }
                     }
                 }
             });

@@ -262,7 +262,7 @@ public class VictimControl : Item
         AudioManager.instance.Play("creepywhisper", null);
         GameDriver.instance.WriteGuiMsg("Beware: Don't summon ZOZO", 5f, false, Color.yellow);
         trigger.SetActive(false);
-        if (NetworkDriver.instance.TWOPLAYER && !otherPlayer) { NetworkDriver.instance.sioCom.Instance.Emit("event", JsonConvert.SerializeObject($"{{'obj':'','type':'update','event':'startcircle'}}"), false); }
+        if (NetworkDriver.instance.TWOPLAYER && !otherPlayer) { NetworkDriver.instance.sioCom.Instance.Emit("event", JsonConvert.SerializeObject($"{{'obj':'{gameObject.name}','type':'update','event':'startcircle'}}"), false); }
     }
 
     public void testAnswer(GameObject victim)

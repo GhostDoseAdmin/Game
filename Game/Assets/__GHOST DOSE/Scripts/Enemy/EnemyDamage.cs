@@ -16,7 +16,7 @@ public class EnemyDamage : MonoBehaviour
     }
     private void OnTriggerEnter(Collider other)
     {
-
+        /*
         Vector3 oppositeForce = main.GetComponent<NPCController>().transform.forward * main.GetComponent<NPCController>().force;
         oppositeForce.y = 0f; // Set the y component to 0
 
@@ -34,7 +34,7 @@ public class EnemyDamage : MonoBehaviour
             AudioManager.instance.Play("EnemyHit", main.GetComponent<NPCController>().audioSource);
             other.gameObject.GetComponent<ClientPlayerController>().Flinch(oppositeForce);
             }
-
+        */
     }
 
 }

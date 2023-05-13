@@ -166,30 +166,25 @@ public class ShootingSystem : MonoBehaviour
                     muzzleFlash.Play();
                     Shell.Play();
                     int damage = 0;
-                    GetComponent<PlayerController>().emitShoot = true;
-                    //if (target.tag == "Victim") { GetComponent<PlayerController>().emitShoot = false; }
                     //DO DAMAGE
-                        if (target != null)
-                        {
-                        if ((target.GetComponent<GhostVFX>()!=null) && isVisible && target.GetComponent<Teleport>().teleport == 0)
-                        {
-                            damage = 40;
-                            if (target.GetComponent<NPCController>().animEnemy.GetCurrentAnimatorClipInfo(0)[0].clip != null && target.GetComponent<NPCController>().animEnemy.GetCurrentAnimatorClipInfo(0)[0].clip.name != "agro") { damage = 20; }
-                            if (isHeadshot) { damage = 100; }
-                            if (damage >= target.GetComponent<NPCController>().healthEnemy) { GetComponent<PlayerController>().emitKill = true; }
-                            target.GetComponent<NPCController>().TakeDamage(damage, false);
-                            GetComponent<PlayerController>().shotName = target.name;
-                            GetComponent<PlayerController>().shotDmg = damage;
-                        }
-                        if (target.tag == "Victim")
-                        {
-                            victimManager.GetComponent<VictimControl>().testAnswer(target);
-                            //used to emit answer
-                            damage = -1;
-                            GetComponent<PlayerController>().shotName = target.name;
-                            GetComponent<PlayerController>().shotDmg = damage;
-                        }
+                    if (target != null)
+                    {
+                            if ((target.GetComponent<GhostVFX>()!=null) && isVisible && target.GetComponent<Teleport>().teleport == 0)
+                            {
+                                damage = 40;
+                                if (target.GetComponent<NPCController>().animEnemy.GetCurrentAnimatorClipInfo(0)[0].clip != null && target.GetComponent<NPCController>().animEnemy.GetCurrentAnimatorClipInfo(0)[0].clip.name != "agro") { damage = 20; }
+                                if (isHeadshot) { damage = 100; }
+                                target.GetComponent<NPCController>().TakeDamage(damage, false);
+                            }
+                            if (target.tag == "Victim")
+                            {
+                                victimManager.GetComponent<VictimControl>().testAnswer(target);
+                                //used to emit answer
+                                damage = -1;
+                            }
                     }
+
+                    if (NetworkDriver.instance.TWOPLAYER) { NetworkDriver.instance.sioCom.Instance.Emit("event", JsonConvert.SerializeObject(new { shoot = true, obj = target.name, dmg = damage }), false); }
 
                     //--------------FLASH-----------------
                     GameObject newFlash = Instantiate(camFlash);

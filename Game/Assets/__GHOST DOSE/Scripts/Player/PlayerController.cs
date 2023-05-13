@@ -53,9 +53,9 @@ public class PlayerController : MonoBehaviour
     public bool changingGear;
 	public bool throwing = false;
 	public bool emitGear;
-	public float shotDmg;
-	public string shotName="";
-	public bool emitShoot;
+	//public float shotDmg;
+	//public string shotName="";
+	//public bool emitShoot;
     [Space(10)]
 
 	[Header("STAMINA UI")]
@@ -87,7 +87,7 @@ public class PlayerController : MonoBehaviour
 	public string currentAni="";
 	public bool fireK2;
 	public bool emitFlashlight;
-	public bool emitKill;
+	//public bool emitKill;
 	public bool sb7;
 	private string currPos;
 	private string prevPos;
@@ -204,17 +204,16 @@ public class PlayerController : MonoBehaviour
         }
 
 		//----------------------------------  E M I T          P L A Y E R             A C T I O N S -----------------------------------------------
-        Ray ray = GameObject.Find("PlayerCamera").GetComponent<Camera>().ViewportPointToRay(new Vector3(0.5f, 0.5f, 0f));
-        Vector3 crosshairPos = ray.origin + ray.direction * 10f;///USE TO EMIT targPos
-
-        if (Time.time > emit_timer + emit_delay)
+        if (NetworkDriver.instance.TWOPLAYER && Time.time > emit_timer + emit_delay)
             {
-				//--------------- DAMAGE EMIT-----------------
-				/*string dmgString = "";
-				if (emitDamage){
-					dmgString = $",'dmg':'{emitDamage}','fx':'{damageForce.x.ToString("F2")}','fy':'{damageForce.y.ToString("F2")}','fz':'{damageForce.z.ToString("F2")}'";
-					emitDamage = false;
-				}*/
+            Ray ray = GameObject.Find("PlayerCamera").GetComponent<Camera>().ViewportPointToRay(new Vector3(0.5f, 0.5f, 0f));
+            Vector3 crosshairPos = ray.origin + ray.direction * 10f;///USE TO EMIT targPos
+            //--------------- DAMAGE EMIT-----------------
+            /*string dmgString = "";
+            if (emitDamage){
+                dmgString = $",'dmg':'{emitDamage}','fx':'{damageForce.x.ToString("F2")}','fy':'{damageForce.y.ToString("F2")}','fz':'{damageForce.z.ToString("F2")}'";
+                emitDamage = false;
+            }*/
 				//--------------- FLASHLIGHT EMIT-----------------
 				string flashLightString = "";
 				if (emitFlashlight){
@@ -262,7 +261,7 @@ public class PlayerController : MonoBehaviour
 				if (Input.GetKey(InputManager.instance.running)){
 					runString = $",'r':''";
 				}
-            //--------------- POSITION EMIT-----------------
+				//--------------- POSITION EMIT-----------------
 				string posString = "";
 				currPos = transform.position.x.ToString("F2") + transform.position.z.ToString("F2");
 				if (currPos != prevPos || emitPos) { posString = $",'x':'{transform.position.x.ToString("F2")}','y':'{transform.position.y.ToString("F2")}','z':'{transform.position.z.ToString("F2")}'"; }
@@ -273,8 +272,8 @@ public class PlayerController : MonoBehaviour
 				emitPos = false;
                 }*/
 
-            //--------------- CAMSHOT EMIT-----------------
-                string shotString = "";
+				//--------------- CAMSHOT EMIT-----------------
+                /*string shotString = "";
 				if (emitShoot)
 				{
 					shotString = $",'shoot':'{shotName}'";
@@ -283,16 +282,16 @@ public class PlayerController : MonoBehaviour
 					}
 					shotName = "";
 					emitShoot = false;
-				}
+				}*/
 
 				//--------------- KILL EMIT-----------------
-				string killString = "";
+				/*string killString = "";
 				if (emitKill){
 					killString = $",'kill':''";
 					emitKill = false;
-				}
+				}*/
             //--------------- E M I T   S T R I N G ----------------------
-            string actions = $"{{'flintensity':'{gameObject.GetComponent<FlashlightSystem>().FlashLight.intensity}','ax':'{crosshairPos.x.ToString("F0")}','ay':'{crosshairPos.y.ToString("F0")}','az':'{crosshairPos.z.ToString("F0")}'{flashLightString}{k2String}{gearString}{aimString}{walkString}{strafeString}{runString}{posString}{shotString}{killString}{dodgeString}}}";
+            string actions = $"{{'flintensity':'{gameObject.GetComponent<FlashlightSystem>().FlashLight.intensity}','ax':'{crosshairPos.x.ToString("F0")}','ay':'{crosshairPos.y.ToString("F0")}','az':'{crosshairPos.z.ToString("F0")}'{flashLightString}{k2String}{gearString}{aimString}{walkString}{strafeString}{runString}{posString}{dodgeString}}}";
             //Debug.Log("------------------------------------------SENDING STRING " + actions);
 
             //Debug.Log("emitting data " + actions);
