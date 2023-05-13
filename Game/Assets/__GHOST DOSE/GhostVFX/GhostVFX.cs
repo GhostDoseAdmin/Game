@@ -76,6 +76,7 @@ public class GhostVFX : MonoBehaviour
                     if (light != null)
                     {
                         lights.Add(light);
+                        Debug.Log(light.gameObject.name);
                     }
                 }
             }
@@ -104,17 +105,20 @@ public class GhostVFX : MonoBehaviour
                 ScalarStrengths[i] = lightSource.GetComponent<GhostLight>().strength;//50
                 lightRanges[i] = lightSource.range;//30
             }
+
+            foreach (Material material in skin.GetComponent<SkinnedMeshRenderer>().materials)
+            {
+                Debug.Log("---------------------LIGHT POSITIONS " + lightPositions[0] + " " + material.name);
+                material.SetInt("_EnvLightCount", envLightCount);
+                material.SetVectorArray("_LightPositions", lightPositions);
+                material.SetVectorArray("_LightDirections", lightDirections);
+                //material.SetFloatArray("_LightAngles", lightAngles);
+                material.SetFloatArray("_StrengthScalarLight", ScalarStrengths);
+                material.SetFloatArray("_LightRanges", lightRanges);
+                //Debug.Log("--LIGHTS--" + "count " + envLightCount + "pos " + lightPositions[0] + "dir " + lightDirections[0] + "angle " + lightAngles[0] + "strength " + ScalarStrengths[0] + "range " + lightRanges[0]);
+            }
         }
-        foreach (Material material in skin.GetComponent<SkinnedMeshRenderer>().materials)
-        {
-            material.SetInt("_EnvLightCount", envLightCount);
-            material.SetVectorArray("_LightPositions", lightPositions);
-            material.SetVectorArray("_LightDirections", lightDirections);
-            //material.SetFloatArray("_LightAngles", lightAngles);
-            material.SetFloatArray("_StrengthScalarLight", ScalarStrengths);
-            material.SetFloatArray("_LightRanges", lightRanges);
-            //Debug.Log("--LIGHTS--" + "count " + envLightCount + "pos " + lightPositions[0] + "dir " + lightDirections[0] + "angle " + lightAngles[0] + "strength " + ScalarStrengths[0] + "range " + lightRanges[0]);
-        }
+
         //Debug.Log("--------------------------------------------- LIGHT COUNT " + envLightCount);
     }
 
