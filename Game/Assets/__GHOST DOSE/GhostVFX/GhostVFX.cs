@@ -108,7 +108,7 @@ public class GhostVFX : MonoBehaviour
 
             foreach (Material material in skin.GetComponent<SkinnedMeshRenderer>().materials)
             {
-                Debug.Log("---------------------LIGHT POSITIONS " + lightPositions[0] + " " + material.name);
+                Debug.Log("---------------------LIGHT POSITIONS " + lightPositions[0] + " " + material.name +" "+ envLights.Length);
                 material.SetInt("_EnvLightCount", envLightCount);
                 material.SetVectorArray("_LightPositions", lightPositions);
                 material.SetVectorArray("_LightDirections", lightDirections);

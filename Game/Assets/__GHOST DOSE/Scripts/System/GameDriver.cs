@@ -51,10 +51,10 @@ namespace GameManager
             if(infiniteAmmo) { if (Player != null) { Player.GetComponent<ShootingSystem>().camBatteryUI.fillAmount = 1; } }
 
             //---------------------------------WAITING FOR OTHER PLAYER----------------------------------
-            if (Player!=null && NetworkDriver.instance.TWOPLAYER && GAMESTART && !NetworkDriver.instance.otherPlayerLoaded){
+            /*if (Player!=null && NetworkDriver.instance.TWOPLAYER && GAMESTART && !NetworkDriver.instance.otherPlayerLoaded){
                 WriteGuiMsg("Waiting for other player...", 1f, false, Color.red);
                 Player.transform.position = playerStartPos;
-            }
+            }*/
             //----------------------------------OTHER USERNAME--------------------------------
             //NetworkDriver.instance.otherUSERNAME = "DEEZ NUTS";
             if (NetworkDriver.instance.otherUSERNAME.Length > 0 && Client!=null && GeometryUtility.TestPlanesAABB(GeometryUtility.CalculateFrustumPlanes(Camera.main), Client.GetComponentInChildren<SkinnedMeshRenderer>(false).bounds))

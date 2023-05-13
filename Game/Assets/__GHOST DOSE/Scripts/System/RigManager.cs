@@ -50,8 +50,8 @@ public class RigManager : MonoBehaviour
         leveldata = new int[5];//NUMBER OF LEVELS, index 0 not used
         util = new utilities();
 
-        UpdatePlayerRig(null, travBasicRig, true, false);
-        UpdatePlayerRig(null, wesBasicRig, false, false);
+        //UpdatePlayerRig(null, travBasicRig, true, false);
+        //UpdatePlayerRig(null, wesBasicRig, false, false);
     }
     public void Update()
     {

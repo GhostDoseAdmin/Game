@@ -293,10 +293,10 @@ public class PlayerController : MonoBehaviour
 				}
             //--------------- E M I T   S T R I N G ----------------------
             string actions = $"{{'flintensity':'{gameObject.GetComponent<FlashlightSystem>().FlashLight.intensity}','ax':'{crosshairPos.x.ToString("F0")}','ay':'{crosshairPos.y.ToString("F0")}','az':'{crosshairPos.z.ToString("F0")}'{flashLightString}{k2String}{gearString}{aimString}{walkString}{strafeString}{runString}{posString}{shotString}{killString}{dodgeString}}}";
-			//Debug.Log("------------------------------------------SENDING STRING " + actions);
+            //Debug.Log("------------------------------------------SENDING STRING " + actions);
 
-			
-			if (actions != prevEmit) { NetworkDriver.instance.sioCom.Instance.Emit("player_action", JsonConvert.SerializeObject(actions), false); prevEmit = actions; }
+            //Debug.Log("emitting data " + actions);
+            if (actions != prevEmit) {  NetworkDriver.instance.sioCom.Instance.Emit("player_action", JsonConvert.SerializeObject(actions), false); prevEmit = actions; }
 			
 			
 			emit_timer = Time.time;//cooldown

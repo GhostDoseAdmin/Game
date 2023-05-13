@@ -191,6 +191,7 @@ namespace NetworkSystem
             //-----------------HOST / GAME START / UPDATE GAME STATES----------------->
             sioCom.Instance.On("host", (payload) =>
             {
+                Debug.Log("HOST DETERMINED " + payload);
                 JObject data = JObject.Parse(payload);
                 Dictionary<string, string> dict = data.ToObject<Dictionary<string, string>>();
 
@@ -198,7 +199,7 @@ namespace NetworkSystem
                 otherUSERNAME = dict["username"];
                 if (!NETWORK_TEST) { if (dict["host"] != sioCom.Instance.SocketID) { HOST = false; } }
                 if (SceneManager.GetActiveScene().name != "Lobby") { UpdateGameState(); }
-                //GameDriver.instance.WriteGuiMsg("Two Player Mode - HOST " + payload + "     MY SOCKET    " + sioCom.Instance.SocketID,10f,false,Color.white);
+                //GameDriver.instance.WriteGuiMsg("Two Player Mode - HOST " + payload + "     MY SOCKET    " + sioCom.Instance.SocketID,999f,false,Color.white);
                 //Debug.Log("HOST DETERMINED " + payload);
             });
             //-----------------CHOOSE BRO----------------->
@@ -230,12 +231,14 @@ namespace NetworkSystem
             //-----------------PLAYER ACTION ----------------->
             sioCom.Instance.On("player_action", (payload) =>
             {
-                
+                Debug.Log("PLAYER ACTION" + payload);
+                GameDriver.instance.WriteGuiMsg("OTHER PLAYER LOADED - GAME START" + GameDriver.instance.GAMESTART + " opl " + otherPlayerLoaded, 999f, false, Color.white);
                 if (GameDriver.instance.GAMESTART)
                 {
                     if (!otherPlayerLoaded) { otherPlayerLoaded = true; UpdateGameState(); }
+                    
                     JObject data = JObject.Parse(payload);
-                   // Debug.Log("PLAYER ACTION" + payload);
+                   
                     Dictionary<string, string> dict = data.ToObject<Dictionary<string, string>>();
                     GameDriver.instance.Client.GetComponent<ClientPlayerController>().targetPos.position = new Vector3(float.Parse(dict["ax"]), float.Parse(dict["ay"]), float.Parse(dict["az"]));
                     if (dict.ContainsKey("x")) { GameDriver.instance.Client.GetComponent<ClientPlayerController>().destination = new Vector3(float.Parse(dict["x"]), float.Parse(dict["y"]), float.Parse(dict["z"])); }
@@ -427,7 +430,7 @@ namespace NetworkSystem
                             {
                                 //--------ACTIVE-----------
                                 //if (obj.Value["ax"] != null) { enemy.SetActive(bool.Parse(obj.Value["ax"])); }
-                                if (!enemy.activeSelf) { if (!enemy.tag.Contains("ZOZO")){ enemy.SetActive(true); } }
+                                if (!enemy.activeSelf) {  enemy.SetActive(true); } //if (!enemy.tag.Contains("ZOZO")){
                                 enemy.GetComponent<NPCController>().active_timer = timer_delay * 2;//DISABLE IF NO MESSAGES BEYOND 0.6s
                                                                                                    //--------POSITION---------
                                 Vector3 targPos;

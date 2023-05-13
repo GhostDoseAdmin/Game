@@ -1,0 +1,110 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1 &3999312800491724413
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 3999312800491724408}
+  - component: {fileID: 3999312800491724409}
+  - component: {fileID: 3999312800491724411}
+  m_Layer: 9
+  m_Name: ShadowCaster
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &3999312800491724408
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3999312800491724413}
+  m_LocalRotation: {x: -0.4999869, y: -0.5000132, z: 0.5000132, w: -0.4999869}
+  m_LocalPosition: {x: 14, y: 22.1, z: 129}
+  m_LocalScale: {x: 0.72380716, y: 0.032596376, z: 0.630383}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 90, y: -106.44, z: 163.557}
+--- !u!20 &3999312800491724409
+Camera:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3999312800491724413}
+  m_Enabled: 1
+  serializedVersion: 2
+  m_ClearFlags: 3
+  m_BackGroundColor: {r: 0, g: 0, b: 0, a: 0}
+  m_projectionMatrixMode: 1
+  m_GateFitMode: 2
+  m_FOVAxisMode: 0
+  m_SensorSize: {x: 36, y: 24}
+  m_LensShift: {x: 0, y: 0}
+  m_FocalLength: 50
+  m_NormalizedViewPortRect:
+    serializedVersion: 2
+    x: 0
+    y: 0
+    width: 3.69
+    height: 1
+  near clip plane: 0.3
+  far clip plane: 34
+  field of view: 60
+  orthographic: 1
+  orthographic size: 139.3
+  m_Depth: -1000
+  m_CullingMask:
+    serializedVersion: 2
+    m_Bits: 10743
+  m_RenderingPath: -1
+  m_TargetTexture: {fileID: 0}
+  m_TargetDisplay: 0
+  m_TargetEye: 3
+  m_HDR: 0
+  m_AllowMSAA: 0
+  m_AllowDynamicResolution: 0
+  m_ForceIntoRT: 0
+  m_OcclusionCulling: 0
+  m_StereoConvergence: 10
+  m_StereoSeparation: 0.022
+--- !u!114 &3999312800491724411
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3999312800491724413}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ad9a3df856836f943b08259766e37963, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  targetSize: 512
+  shadowBias: 0.005
+  depthTarget: {fileID: 0}
+  MTX:
+    e00: -0.00000018912601
+    e01: 0
+    e02: -0.0035893759
+    e03: 0.9630321
+    e10: 0.0035893759
+    e11: -4.278869e-10
+    e12: -0.00000018869812
+    e13: 0.4497731
+    e20: 0
+    e21: -0.029673593
+    e22: -0.0000000035373675
+    e23: 0.6468848
+    e30: 0
+    e31: 0
+    e32: 0
+    e33: 1
