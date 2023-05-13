@@ -48,6 +48,7 @@ public class VictimControl : Item
     private float zozoMusicVol;
     private bool fadeMusicOut;
     public bool canTest;
+    public float zozoTimer;
     // Start is called before the first frame update
     void Start()
     {
@@ -347,7 +348,7 @@ public class VictimControl : Item
        zozoDummy.SetActive(false);
         zozoEnd = true;
         zozoFXendOn = false;
-        Invoke("CanDestroyZozo", 30f);//-------------HOW LONG ZOZO ALIVE
+        Invoke("CanDestroyZozo", zozoTimer);//-------------HOW LONG ZOZO ALIVE
 
     }
     public void CanDestroyZozo()
