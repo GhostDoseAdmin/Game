@@ -291,8 +291,8 @@ public class NPCController : MonoBehaviour
                     if (wayPoint.Count > curWayPoint)
                     {
 
-                        if (NetworkDriver.instance.HOST) { destination= wayPoint[curWayPoint].gameObject; Debug.Log("WALKING TO DESTINATION " + destination.name); }
-                        
+                        if (NetworkDriver.instance.HOST) { destination= wayPoint[curWayPoint].gameObject; } //Debug.Log("WALKING TO DESTINATION " + destination.name);
+
                         Vector3 destination2D = new Vector3(destination.transform.position.x, transform.position.y, destination.transform.position.z);
                         
                         navmesh.SetDestination(destination2D);
@@ -439,7 +439,7 @@ public class NPCController : MonoBehaviour
     {
         if (target == null)
         {
-            Debug.Log("----------------------------------CLOSEST PLAYER---------------------------------------" + closestPlayer);
+            //Debug.Log("----------------------------------CLOSEST PLAYER---------------------------------------" + closestPlayer);
 
             angleView = startAngleView;
             range = startRange;

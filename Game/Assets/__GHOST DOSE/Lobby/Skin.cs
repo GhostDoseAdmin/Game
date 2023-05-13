@@ -59,10 +59,11 @@ public class Skin : MonoBehaviour
 
         // Load the prefab from the Resources folder
         //
-        GameObject[] prefabs = Resources.LoadAll<GameObject>("Animations/Test");
-        GameDriver.instance.WriteGuiMsg(rig.name, 999f, true, Color.yellow);
-        GameObject instance = Instantiate(Resources.Load<GameObject>("Assets/Resources/Prefabs/"+rig.name)); //prefabpath
+        //GameObject[] prefabs = Resources.LoadAll<GameObject>("Prefabs/Rigs");
+        
+       // GameObject instance = Instantiate(Resources.Load<GameObject>(prefab)); //prefabpath
 
+        GameDriver.instance.WriteGuiMsg(rig.name, 999f, true, Color.yellow);
         // Set the position and rotation of the camera to capture the prefab
         // GameObject snapShotCamObj = new GameObject("SnapShot");
         /*Camera camera = snapShotCamObj.AddComponent<Camera>();
