@@ -10,6 +10,13 @@ public class Battery : Item
     [Header("BATTERIES COUNT")]
     [Space(10)]
     [SerializeField] private int count;
+    Vector3 startPos;
+    public float respawnTime;
+
+    private void Start()
+    {
+        startPos = transform.position;
+    }
 
 
     public override void ActivateObject(bool otherPlayer)
@@ -27,6 +34,12 @@ public class Battery : Item
         if (!otherPlayer) { AudioManager.instance.Play("PickUp", null); }
         //if (!otherPlayer) { AudioManager.instance.Play("PickUp", GameObject.Find("Player").GetComponent<PlayerController>().audioSource); }
         //else { AudioManager.instance.Play("PickUp", GameObject.Find("Client").GetComponent<ClientPlayerController>().audioSource); }
-        Destroy(gameObject);
+        transform.position = new Vector3(transform.position.x, -9999, transform.position.y);//MIMIC DESTROY
+        Invoke("Respawn", respawnTime);
+    }
+
+    void Respawn()
+    {
+        transform.position = startPos;
     }
 }

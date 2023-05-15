@@ -9,6 +9,7 @@ public class Candle : Item
 {
     [SerializeField] private int count;
     Vector3 startPos;
+    public float respawnTime;
 
     private void Start()
     {
@@ -31,7 +32,7 @@ public class Candle : Item
         /*if (!otherPlayer) { AudioManager.instance.Play("PickUp", GameObject.Find("Player").GetComponent<PlayerController>().audioSource); }
         else { AudioManager.instance.Play("PickUp", GameObject.Find("Client").GetComponent<ClientPlayerController>().audioSource); }*/
         transform.position = new Vector3(transform.position.x, -9999, transform.position.y);//MIMIC DESTROY
-        Invoke("Respawn", 10f);
+        Invoke("Respawn", respawnTime);
         //Destroy(gameObject);
     }
 

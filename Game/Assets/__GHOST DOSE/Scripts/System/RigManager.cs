@@ -30,10 +30,10 @@ public class RigManager : MonoBehaviour
     public GameObject travCurrentRig;
     public GameObject westinProp;
     public GameObject wesCurrentRig;
-    [SerializeField] public int travCurrRig = 0; // INDEX of rig array 
-    [SerializeField] public int wesCurrRig = 0;
-    [SerializeField] public int travRigCap;
-    [SerializeField] public int wesRigCap;
+    public GameObject myRig;
+    public GameObject otherPlayerProp;
+    public GameObject otherPlayerRig;
+
     private bool hasRetrievedSkins = false;
     private static utilities util;
 
@@ -41,52 +41,60 @@ public class RigManager : MonoBehaviour
     public GameObject skin;
 
     public int[] leveldata;
-    public string currentRigPath;
+    public string currentRigName, otherPlayerRigName;
 
-   
+  
     // Start is called before the first frame update
     void Start()
     {
         leveldata = new int[5];//NUMBER OF LEVELS, index 0 not used
         util = new utilities();
 
-        UpdatePlayerRig(null, travBasicRig, true, false);
-        UpdatePlayerRig(null, wesBasicRig, false, false);
-    }
-    public void Update()
-    {
-        //----------------------------------OTHER USERNAME--------------------------------
-        //NetworkDriver.instance.otherUSERNAME = "DEEZ NUTS";
-        //if (NetworkDriver.instance.otherUSERNAME.Length > 0 && Client != null && GeometryUtility.TestPlanesAABB(GeometryUtility.CalculateFrustumPlanes(Camera.main), Client.GetComponentInChildren<SkinnedMeshRenderer>(false).bounds))
-        {
-            //otherUserName.GetComponent<TextMeshProUGUI>().text = NetworkDriver.instance.otherUSERNAME;
-            // Update the name tag position based on the player's position
-            //Vector3 worldPosition = new Vector3(Client.transform.position.x, Client.transform.position.y + 1.5f, Client.transform.position.z);
-            //Vector3 screenPosition = Camera.main.WorldToScreenPoint(worldPosition);
-            //otherUserName.GetComponent<RectTransform>().position = screenPosition;
-        }
+        //create initial rigs
+        UpdatePlayerRig(wesBasicRig.name, false, false);
+        UpdatePlayerRig(travBasicRig.name, true, false);
+        
+
     }
  
-    public void UpdatePlayerRig(string rigPath, GameObject rig, bool isTravis, bool otherPlayer)
+    public void UpdatePlayerRig(string rigName, bool isTravis, bool otherPlayer)
     {
+        Debug.Log("-----------------UPDATING RIG with name" + rigName);
+
         GameObject playerProp;
         GameObject currentRig;
 
+
         if (isTravis) { playerProp = travisProp; currentRig = travCurrentRig; } else { playerProp = westinProp; currentRig = wesCurrentRig; }
+        if (otherPlayer) { playerProp = otherPlayerProp; currentRig = otherPlayerRig; }
         DestroyImmediate(currentRig); 
 
-        currentRig = Instantiate(rig, playerProp.transform);
+        GameObject[] prefabs = Resources.LoadAll<GameObject>("Prefabs/Rigs");
+        for (int i = 0; i < prefabs.Length; i++)
+        {
+            if (prefabs[i].name == rigName)
+            {
+                currentRig = Instantiate(prefabs[i], playerProp.transform);
+                break;
+            }
+        }
+
         currentRig.transform.SetParent(playerProp.transform);
         playerProp.GetComponentInChildren<K2>().gameObject.SetActive(false);
         StartCoroutine(util.ReactivateAnimator(playerProp));
 
-        //update path for emits and game creation
-        if (rigPath != null) { currentRigPath = rigPath; }
+       
 
         if (!otherPlayer) { 
-            if (isTravis) { travCurrentRig = currentRig; } else { wesCurrentRig = currentRig; }
-            GetComponent<LobbyControlV2>().skinName.GetComponent<TextMeshPro>().text = rig.name;
-        }
+            currentRigName = rigName;
+            if (isTravis) { travCurrentRig = currentRig; } 
+            else { wesCurrentRig = currentRig; }
+        } 
+        else { otherPlayerRigName = rigName; otherPlayerRig = currentRig; }
+
+        GetComponent<LobbyControlV2>().skinName.GetComponent<TextMeshPro>().text = rigName;
+        
+
 
        
     }

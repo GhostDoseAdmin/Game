@@ -27,6 +27,8 @@ public class VictimControl : Item
     public GameObject zozoEffectMid;
     public GameObject zozoDummy;
     public GameObject heaventVFX;
+    public GameObject Pentagram;
+    public GameObject pentagramLight;
     Vector3 domeStartSize;
     Vector3 zozoSpawnStartPos;
     Vector3 zozoSpawnStartSize;
@@ -143,6 +145,7 @@ public class VictimControl : Item
             //ARISE
             if (zozoDummy.transform.position.y < zozoDummyStartPos.y + 8)
             {
+                zozoDummy.transform.GetChild(0).GetComponent<SkinnedMeshRenderer>().materials[0].SetFloat("_Alpha", 0.2f);
                 Vector3 currPos = zozoDummy.transform.position;                currPos.y += 0.007f;                zozoDummy.transform.position = currPos;                zozoAlpha = 0.2f;
                 currPos = main.transform.position; currPos.y += 0.005f; main.transform.position = currPos;
                 main.transform.Rotate(0f, 5f * Time.deltaTime, 0f);
@@ -165,9 +168,9 @@ public class VictimControl : Item
         if(zozoEnd)
         {
 
-            if (zozoMusicVol < 0.8) { zozoMusicVol += 0.001f; AudioManager.instance.UpdateVolume("zozomusicloop", null, zozoMusicVol); }
+            if (zozoMusicVol < 0.6) { zozoMusicVol += 0.001f; AudioManager.instance.UpdateVolume("zozomusicloop", null, zozoMusicVol); }
 
-            effectDome.transform.localScale = Vector3.Lerp(effectDome.transform.localScale, effectDome.transform.localScale * 0.6f, Time.deltaTime * 1);
+            //effectDome.transform.localScale = Vector3.Lerp(effectDome.transform.localScale, effectDome.transform.localScale * 0.6f, Time.deltaTime * 1);
             zozoSpawn.transform.localScale = Vector3.Lerp(zozoSpawn.transform.localScale, zozoSpawn.transform.localScale * 0.6f, Time.deltaTime * 1);
             zozoEffectMid.transform.localScale = Vector3.Lerp(zozoEffectMid.transform.localScale, zozoEffectMid.transform.localScale * 0.6f, Time.deltaTime * 1);
             zozoEffectEnd.transform.localScale = Vector3.Lerp(zozoEffectEnd.transform.localScale, zozoEffectEnd.transform.localScale * 0.7f, Time.deltaTime * 1);
@@ -205,6 +208,15 @@ public class VictimControl : Item
             }
             effectInner.SetActive(false);
         }
+        //ZOZO FIGHT
+        if(ZOZO.activeSelf == true)
+        {
+            //KEEP IN DOME
+            Vector3 ZOZOpos2d = new Vector3(ZOZO.transform.position.x, GameDriver.instance.Player.transform.position.y, ZOZO.transform.position.z);
+            if (Vector3.Distance(GameDriver.instance.Player.transform.position, ZOZO.transform.position) > 12) { GameDriver.instance.Player.transform.position = Vector3.Lerp(GameDriver.instance.Player.transform.position, ZOZOpos2d, 0.02f); }
+            effectDome.transform.position = ZOZO.transform.position;
+        }
+        if (!zozo){if (effectDome.transform.localScale.x > 0.01) { effectDome.transform.localScale = Vector3.Lerp(effectDome.transform.localScale, effectDome.transform.localScale * 0.0007f, Time.deltaTime * 1); }        }
 
         //DESTROY ZOZO
         if (canDestroyZozo)
@@ -286,6 +298,8 @@ public class VictimControl : Item
 
     public void SetSpiritsFree()
     {
+        Pentagram.GetComponent<MeshRenderer>().materials[0].SetColor("_Color", Color.blue);
+        pentagramLight.GetComponent<Light>().color = Color.blue;
         AudioManager.instance.StopPlaying("creepywhisper", null);
         AudioManager.instance.Play("heavenmusic", null);
         heaventVFX.SetActive(true);

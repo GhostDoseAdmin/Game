@@ -76,9 +76,8 @@ public class NPCController : MonoBehaviour
     [HideInInspector] public bool update;
     private Outline outline;
     [HideInInspector] public bool activateOutline;
-    [HideInInspector] Vector3 lookAtVec;
     public bool dead;
-
+    private bool engageSound;
     //private float minDist = 0.03f; //debug enemy rotation when ontop of player
     private float distance, p1_dist,p2_dist;
     private bool onlyOnceThisFrame;
@@ -95,12 +94,14 @@ public class NPCController : MonoBehaviour
         active_timer = 99999;
         audioSource = gameObject.AddComponent<AudioSource>();
         audioSource.spatialBlend = 1.0f;
-        if (wayPoint == null)        {            wayPoint.Add(transform);        }
+       
     }
 
 
     void Start()
     {
+        if (wayPoint.Count == 0)        {            wayPoint = new List<Transform>(); wayPoint.Add(transform);        }
+
         PlayerWP = GameObject.Find("PlayerWavePoint");
         ClientWP = GameObject.Find("ClientWavePoint");
         //GD = GameObject.Find("GameController").GetComponent<GameDriver>();
@@ -159,7 +160,7 @@ public class NPCController : MonoBehaviour
 
         //ALWAYS CHOOSE CLOSEST TARGET
         if (p1_dist < p2_dist) { distance = p1_dist; closestPlayer = Player.transform; } else { distance = p2_dist; closestPlayer = Client.transform; }
-        if (ZOZO) { if (closestPlayer != null) { target = closestPlayer; } }
+        //if (ZOZO) { if (closestPlayer != null) { target = closestPlayer; } }
 
         float teleport = GetComponent<Teleport>().teleport;
 
@@ -437,8 +438,10 @@ public class NPCController : MonoBehaviour
 
     public void FindTargetRayCast()
     {
-        if (target == null)
+        //if (target == null)
+        if(!agro)
         {
+
             //Debug.Log("----------------------------------CLOSEST PLAYER---------------------------------------" + closestPlayer);
 
             angleView = startAngleView;
@@ -482,14 +485,15 @@ public class NPCController : MonoBehaviour
                        // Debug.Log("----------TARGET -------------------" + hit.collider.gameObject.name);
                         if (hit.collider.transform == closestPlayer)
                         {
-                            Engage(closestPlayer);
+                             Engage(closestPlayer); 
                            
                         }
                     }
                 }
             }
         }
-        else //DISENGAGE WHEN OUT OF SIGHT
+        if (target != null)
+        //else //DISENGAGE WHEN OUT OF SIGHT
         {
             RaycastHit hit;
             Vector3 targPos = target.position + Vector3.up * 1.4f;
@@ -509,12 +513,17 @@ public class NPCController : MonoBehaviour
     }
     public void Engage(Transform newTarget)
     {
-        Debug.Log("----------------------------------ENGAGING-----------------------------------------" + newTarget);
         hasLooked = true;
-        if (newTarget != target) { AudioManager.instance.Play("EnemyEngage", null); follow = persist; animEnemy.Play("Chase"); }
+        //NEW TARGET
+        if (newTarget != target) {
+            Debug.Log("----------------------------------ENGAGING-----------------------------------------" + newTarget);
+            GetComponent<Teleport>().coolDown = Time.time;
+            if (!engageSound) { if (ZOZO) { AudioManager.instance.Play("zozoEngage", null); } else { AudioManager.instance.Play("EnemyEngage", null); } engageSound = true; Invoke("resetEngageSound",10f); } 
+            follow = persist; animEnemy.Play("Chase"); 
+        }
         target = newTarget; 
     }
-
+    void resetEngageSound() { engageSound = false; }
     private void Disengage()
     {
         target = null;
@@ -533,9 +542,9 @@ public class NPCController : MonoBehaviour
 
     private void Flinch()
     {
-        if (animEnemy.GetCurrentAnimatorClipInfo(0)[0].clip.name != "agro" && distance>=hitRange+0.5f && canFlinch) // && !animEnemy.GetCurrentAnimatorStateInfo(0).IsName("Attack")
+        if (animEnemy.GetCurrentAnimatorClipInfo(0).Length>0 && animEnemy.GetCurrentAnimatorClipInfo(0)[0].clip.name != "agro" && distance>=hitRange+0.5f && canFlinch) // && !animEnemy.GetCurrentAnimatorStateInfo(0).IsName("Attack")
         {
-            Debug.Log("-----------------------------FLINCH");
+            //Debug.Log("-----------------------------FLINCH");
             animEnemy.Play("React");
         }
     }
@@ -548,12 +557,20 @@ public class NPCController : MonoBehaviour
                 if (!otherPlayer) { target = Player.transform; } else { target = Client.transform; }
                 follow = persist;
             }
-            AudioManager.instance.Play("Agro", null); if (healthEnemy > 0) { animEnemy.Play("agro"); } //animEnemy.CrossFade("agro", 0.25f);
+            if (!ZOZO) { AudioManager.instance.Play("Agro", null); }
+            else { AudioManager.instance.Play("zozoAgro", null); }
+            if (healthEnemy > 0) { animEnemy.Play("agro"); } 
             GameObject.Find("PlayerCamera").GetComponent<Camera_Controller>().InvokeShake(1f, 1f);
             range = 20; agro = true; angleView = 360;
+            Invoke("AgroTimeout", 20f);
         }
     }
-
+    private void AgroTimeout()
+    {
+        agro = false;
+        range = startRange;
+        angleView = startAngleView;
+    }
     public void TakeDamage(int damageAmount, bool otherPlayer)
     {
         if (!onlyOnceThisFrame)//prevent flash from interrupting

@@ -17,6 +17,8 @@ namespace NetworkSystem
 
         public SocketIOCommunicator sioCom;
 
+        public GameObject myRig;
+        public GameObject theirRig;
 
         //private float sync_timer = 0.0f;
         //private float delay = 15f;//SYNC DELAY
@@ -182,13 +184,13 @@ namespace NetworkSystem
                         //im host
                         if (float.Parse(dict["ping"]) > PING) {
                             Debug.Log("SENDING PING");
-                            sioCom.Instance.Emit("host", JsonConvert.SerializeObject(new { host = sioCom.Instance.SocketID, username = USERNAME }), false); 
+                            sioCom.Instance.Emit("host", JsonConvert.SerializeObject(new { host = sioCom.Instance.SocketID }), false); 
                         
                         }
                         //they are host
                         else { if (!NETWORK_TEST) { HOST = false; }
                             Debug.Log("SENDING PING");
-                            sioCom.Instance.Emit("host", JsonConvert.SerializeObject(new { host = dict["sid"], username = USERNAME }), false); 
+                            sioCom.Instance.Emit("host", JsonConvert.SerializeObject(new { host = dict["sid"] }), false); 
                         
                         }
                     }
@@ -202,32 +204,13 @@ namespace NetworkSystem
                 Dictionary<string, string> dict = data.ToObject<Dictionary<string, string>>();
 
                 TWOPLAYER = true;
-                otherUSERNAME = dict["username"];
                 if (!NETWORK_TEST) { if (dict["host"] != sioCom.Instance.SocketID) { HOST = false; } }
                 if (SceneManager.GetActiveScene().name != "Lobby") { UpdateGameState(); OTHERS_SCENE_READY = true; SCENE_READY = true; }
+                sioCom.Instance.Emit("event", JsonConvert.SerializeObject(new { username = USERNAME }), false);
+                if (SceneManager.GetActiveScene().name == "Lobby") { GameObject.Find("LobbyManager").GetComponent<LobbyControlV2>().EmitSkin(); }
                 //GameDriver.instance.WriteGuiMsg("Two Player Mode - HOST " + payload + "     MY SOCKET    " + sioCom.Instance.SocketID,999f,false,Color.white);
                 //Debug.Log("HOST DETERMINED " + payload);
             });
-            //-----------------CHOOSE BRO----------------->
-            sioCom.Instance.On("bro", (payload) =>
-            {
-                // Debug.Log(" RECEIVED BRO " + payload);
-                JObject data = JObject.Parse(payload);
-                Dictionary<string, string> dict = data.ToObject<Dictionary<string, string>>();
-                GetComponent<LobbyControl>().otherBro = dict["bro"];
-                // GameDriver.instance.otherBroRig = dict["rig"];
-                GetComponent<LobbyControl>().otherSelects = true;
-                GetComponent<LobbyControl>().otherIndex = int.Parse(dict["index"]);
-                GetComponent<LobbyControl>().BroSelector();
-            });
-            //-----------------READY----------------->
-            sioCom.Instance.On("start", (payload) =>
-            {
-                Debug.Log(" RECEIVED start " + payload);
-                GetComponent<LobbyControl>().startOther = bool.Parse(payload.ToString());
-                //GetComponent<LobbyControl>().BroSelector();
-            });
-
             //=================================================================E N D   S E T   U P ===============================================================
 
 
@@ -258,30 +241,6 @@ namespace NetworkSystem
                     if (dict.ContainsKey("gear")) { if (GameDriver.instance.Client.GetComponent<ClientPlayerController>().gear != int.Parse(dict["gear"])) { GameDriver.instance.Client.GetComponent<ClientPlayerController>().ChangeGear(int.Parse(dict["gear"])); } }//gear changes
                     if (dict.ContainsKey("dmg")) { if (bool.Parse(dict["dmg"])) { GameDriver.instance.Client.GetComponent<ClientPlayerController>().Flinch(new Vector3(float.Parse(dict["fx"]), float.Parse(dict["fy"]), float.Parse(dict["fz"]))); } }
                     if (dict.ContainsKey("dg")) { GameDriver.instance.Client.GetComponent<ClientPlayerController>().dodge = int.Parse(dict["dg"]); }
-                    if (dict.ContainsKey("shoot"))
-                    {
-                        GameDriver.instance.Client.GetComponent<ClientPlayerController>().triggerShoot = true;
-                        GameObject enemy = GameObject.Find(dict["shoot"]);
-                        //DAMAGE AND KILL
-                        if (dict.ContainsKey("sdmg"))
-                        {
-                            if (int.Parse(dict["sdmg"]) != -1)//victim kill
-                            {
-                                if (enemy != null)
-                                {
-                                    if (!dict.ContainsKey("kill")) { enemy.GetComponent<NPCController>().TakeDamage(int.Parse(dict["sdmg"]), true); }//hurt
-                                    else { enemy.GetComponent<NPCController>().healthEnemy = 0; enemy.GetComponent<NPCController>().TakeDamage(0, true); }//kill
-                                }
-                            }
-                            /*else//VICTIM
-                            {
-                                Debug.Log("CLIENT CHOSE " + enemy.name);
-                                GetComponentInChildren<VictimControl>().testAnswer(enemy, true);
-                            }*/
-                        }
-
-
-                    }
                 }
 
             });
@@ -339,9 +298,10 @@ namespace NetworkSystem
                 JObject data = JObject.Parse(payload);
                 Dictionary<string, string> dict = data.ToObject<Dictionary<string, string>>();
                 //LOBBY
-                if (dict.ContainsKey("isTRAVIS")) { otherIsTravis = bool.Parse(dict["isTRAVIS"]); }
-                if (dict.ContainsKey("skin")) { GameObject.Find("LobbyManager").GetComponent<LobbyControlV2>().UpdateOtherRig(dict["skin"]); }
+                if (dict.ContainsKey("username")) { otherUSERNAME = dict["username"]; }
+                if (dict.ContainsKey("skin")) { GameObject.Find("LobbyManager").GetComponent<LobbyControlV2>().UpdateOtherRig(dict["skin"]); otherIsTravis = bool.Parse(dict["isTRAVIS"]); }
                 if (dict.ContainsKey("level")) { GameObject.Find("LobbyManager").GetComponent<LobbyControlV2>().UpdateOtherLevel(dict["level"]); }
+                if (dict.ContainsKey("ready")) { GameObject.Find("LobbyManager").GetComponent<LobbyControlV2>().OtherReady();}
                 //LOADS GAME SCENE
                 if (dict.ContainsKey("otherssceneready")) { 
                     Debug.Log("---YOUR SCENE IS READY"); 
@@ -362,7 +322,6 @@ namespace NetworkSystem
                         }
                         else { GameDriver.instance.GetComponentInChildren<VictimControl>().testAnswer(obj); }
                     }
-
 
                     if (dict.ContainsKey("event"))
                     {

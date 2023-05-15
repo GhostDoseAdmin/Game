@@ -177,19 +177,24 @@ public class ZozoControl : MonoBehaviour
 
     public void TriggerFootstepRight()
     {
-        audioSource1.clip = footSteps[Random.Range(0, footSteps.Length)].clip;
-        audioSource1.volume = 2f;
-        audioSource1.Play();
-        FootStep();
+        if (GetComponent<Animator>().GetCurrentAnimatorClipInfo(0).Length > 0 && GetComponent<Animator>().GetCurrentAnimatorClipInfo(0)[0].clip.name == "WalkZozo")
+        {
+            audioSource1.clip = footSteps[Random.Range(0, footSteps.Length)].clip;
+            audioSource1.volume = 2f;
+            audioSource1.Play();
+            FootStep();
+        }
 
     }
     public void TriggerFootstepLeft()
     {
-        audioSource2.clip = footSteps[Random.Range(0, footSteps.Length)].clip;
-        audioSource2.volume = 2f;
-        audioSource2.Play();
-        FootStep();
-
+        if (GetComponent<Animator>().GetCurrentAnimatorClipInfo(0).Length > 0 && GetComponent<Animator>().GetCurrentAnimatorClipInfo(0)[0].clip.name == "WalkZozo")
+        {
+            audioSource2.clip = footSteps[Random.Range(0, footSteps.Length)].clip;
+            audioSource2.volume = 2f;
+            audioSource2.Play();
+            FootStep();
+        }
     }
 
     private void FootStep()

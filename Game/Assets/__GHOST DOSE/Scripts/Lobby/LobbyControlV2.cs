@@ -24,13 +24,15 @@ public class LobbyControlV2 : MonoBehaviour
     public GameObject findRoomButton;
     public GameObject screenMask;
     public GameObject otherUserName;
-
+    public GameObject lobbyMenu;
     public GameObject Carousel;
     
     private float timer = 0f;
     private float rotDuration = 1f;
     private bool foundRoom = false;
     private bool lookingForPlayer;
+    public bool READY = false;
+    public bool otherREADY = false;
     public void Start()
     {
         NetworkDriver.instance.isTRAVIS = true;
@@ -68,19 +70,26 @@ public class LobbyControlV2 : MonoBehaviour
         //roomNameField.SetActive(true);
         //findRoomButton.SetActive(true);
         foundRoom = false;
+        GetComponent<RigManager>().otherPlayerProp.SetActive(false);
         NetworkDriver.instance.Reconnect();
+        NetworkDriver.instance.otherUSERNAME = "";
     }
 
     public void FindRoom()
     {
         string roomName = roomNameField.GetComponent<TMP_InputField>().text;
-        if (!lookingForPlayer) { 
-            lookingForPlayer = true; 
-            NetworkDriver.instance.sioCom.Instance.Emit("join", roomName, true);
-            roomNameField.SetActive(false);
-            findRoomButton.SetActive(false);
-            GameDriver.instance.WriteGuiMsg("Joining Room " + roomName, 999f, true, Color.yellow);
+        if (roomName.Length > 0)
+        {
+            if (!lookingForPlayer)
+            {
+                lookingForPlayer = true;
+                NetworkDriver.instance.sioCom.Instance.Emit("join", roomName, true);
+                roomNameField.SetActive(false);
+                findRoomButton.SetActive(false);
+                GameDriver.instance.WriteGuiMsg("Joining Room " + roomName, 999f, true, Color.yellow);
+            }
         }
+        else { GameDriver.instance.WriteGuiMsg("Must Specify Room!" + roomName, 999f, true, Color.red); }
     }
     public void RoomFound()
     {
@@ -92,63 +101,98 @@ public class LobbyControlV2 : MonoBehaviour
 
     public void Ready()
     {
-
-        if (GAMEMODE == "single") { SceneManager.LoadScene(LEVEL); Debug.Log("READY"); }
-        else
+        if (!READY)
         {
-            if (!NetworkDriver.instance.TWOPLAYER)
+            if (LEVEL.Length > 0)
             {
-                GameDriver.instance.WriteGuiMsg("Waiting for another Player", 5f, true, Color.yellow);
+                if (GAMEMODE == "single") { SceneManager.LoadScene(LEVEL); Debug.Log("READY"); }
+                //----TWO PLAYER
+                else
+                {
+                    if (!NetworkDriver.instance.TWOPLAYER)
+                    {
+                        GameDriver.instance.WriteGuiMsg("Waiting for another Player", 5f, true, Color.yellow);
+                    }
+                    else {
+                        //------same bros
+                        if (NetworkDriver.instance.isTRAVIS == NetworkDriver.instance.otherIsTravis)
+                        {
+                            GameDriver.instance.WriteGuiMsg("Can't be the same bro!", 5f, false, Color.red);
+                        }
+                        else
+                        {
+                            //----diff levels
+                            if (LEVEL == otherLEVEL)
+                            {
+                                //UPDATE RIG INFO FOR GAMEMANAGER
+                                if (NetworkDriver.instance.isTRAVIS) { NetworkDriver.instance.myRig = GetComponent<RigManager>().travCurrentRig; }
+                                else { NetworkDriver.instance.myRig = GetComponent<RigManager>().wesCurrentRig; }
+
+                                NetworkDriver.instance.theirRig = GetComponent<RigManager>().otherPlayerRig;
+
+                                READY = true; lobbyMenu.SetActive(false); NetworkDriver.instance.sioCom.Instance.Emit("event", JsonConvert.SerializeObject(new { ready = true }), false); GameDriver.instance.WriteGuiMsg("Waiting for other player...", 999f, true, Color.white);
+                            }
+                            else { GameDriver.instance.WriteGuiMsg("Need same level!", 5f, true, Color.red); }
+                        }
+                            
+                        
+                       
+
+                    } 
+                }
             }
-            else { SceneManager.LoadScene(LEVEL); Debug.Log("READY"); }
+            else { GameDriver.instance.WriteGuiMsg("Must Select a Level", 5f, false, Color.yellow); }
         }
     }
-
+    public void OtherReady()
+    {
+        GameDriver.instance.WriteGuiMsg("Other player is ready!", 5f, false, Color.green);
+        otherREADY = true;
+    }
     public void EmitSkin()
     {
         if (NetworkDriver.instance.TWOPLAYER) {
             //change to dots for json compat
-            string skinPath = GetComponent<RigManager>().currentRigPath;
-            skinPath = skinPath.Replace("/", ".");
-            NetworkDriver.instance.sioCom.Instance.Emit("event", JsonConvert.SerializeObject(new { skin = skinPath }), false); 
+            string rigName = GetComponent<RigManager>().currentRigName;
+            //skinPath = skinPath.Replace("/", ".");
+            NetworkDriver.instance.sioCom.Instance.Emit("event", JsonConvert.SerializeObject(new { skin = rigName, NetworkDriver.instance.isTRAVIS }), false); 
         }
     }
     public void EmitLevel()
     {
-        if (NetworkDriver.instance.TWOPLAYER) { NetworkDriver.instance.sioCom.Instance.Emit("event", JsonConvert.SerializeObject(new { level = LEVEL }), false); }
+        if (NetworkDriver.instance.TWOPLAYER && LEVEL.Length>0) { NetworkDriver.instance.sioCom.Instance.Emit("event", JsonConvert.SerializeObject(new { level = LEVEL }), false); }
     }
 
     public void UpdateOtherRig(string rigName)
     {
-        //string path = rigPath;
-        //path = path.Replace(".", "/");
-        if (NetworkDriver.instance.isTRAVIS && !NetworkDriver.instance.otherIsTravis) {
-            GetComponent<RigManager>().UpdatePlayerRig(null, Resources.Load<GameObject>(rigName), false, true);
-                }
-        if (!NetworkDriver.instance.isTRAVIS && NetworkDriver.instance.otherIsTravis)
-        {
-            GetComponent<RigManager>().UpdatePlayerRig(null, Resources.Load<GameObject>(rigName), false, true);
-        }
+        GetComponent<RigManager>().UpdatePlayerRig(rigName, NetworkDriver.instance.otherIsTravis, true);
     }
     public void UpdateOtherLevel(string level)
     {
         otherLEVEL = level;
+        GameDriver.instance.WriteGuiMsg(NetworkDriver.instance.otherUSERNAME + " selected level " + otherLEVEL, 5f, false, Color.yellow);
     }
     public void Update()
     {
+        //--------------NEXT SCENE-------------------
+        if(READY && otherREADY) { SceneManager.LoadScene(LEVEL); Debug.Log("READY"); }
 
-        //--------------NAMETAG-----------------
-        if (NetworkDriver.instance.otherUSERNAME.Length > 0)
+        //--------------OTHER PLAYER-----------------
+        if (foundRoom)
         {
-            GameObject otherPlayer = null;
-            if (NetworkDriver.instance.otherIsTravis) { otherPlayer = GetComponent<RigManager>().travisProp; } else { otherPlayer = GetComponent<RigManager>().westinProp; }
-            otherUserName.GetComponent<TextMeshPro>().text =  NetworkDriver.instance.otherUSERNAME;
-            Vector3 worldPosition = new Vector3(otherPlayer.transform.position.x, otherPlayer.transform.position.y + 13f, otherPlayer.transform.position.z);
-            otherUserName.GetComponent<RectTransform>().position = worldPosition;
+            if (NetworkDriver.instance.otherUSERNAME.Length > 0)
+            {
+                GetComponent<RigManager>().otherPlayerProp.SetActive(true);
+                GameObject otherPlayer = null;
+                otherPlayer = GetComponent<RigManager>().otherPlayerProp; 
+                otherUserName.GetComponent<TextMeshPro>().text = NetworkDriver.instance.otherUSERNAME;
+                Vector3 worldPosition = new Vector3(otherPlayer.transform.position.x, otherPlayer.transform.position.y + 13f, otherPlayer.transform.position.z);
+                otherUserName.GetComponent<RectTransform>().position = worldPosition;
+            }
         }
 
 
-        //------------------------SELECT BRO----------------------------
+        //------------------------UPDATE SELECTED BRO----------------------------
         if (GameObject.Find("SkinsPanel")==null && foundRoom)
         {
             if (Time.time > timer + rotDuration)
@@ -165,9 +209,17 @@ public class LobbyControlV2 : MonoBehaviour
                         GameObject clickedObject = hit.collider.gameObject.transform.parent.gameObject;
                         if (clickedObject.name == "TRAVIS" || clickedObject.name == "WESTIN")
                         {
-                            if (clickedObject.name == "TRAVIS") { NetworkDriver.instance.isTRAVIS = true; }
-                            else { NetworkDriver.instance.isTRAVIS = false; }
-                            NetworkDriver.instance.sioCom.Instance.Emit("event", JsonConvert.SerializeObject(new { isTRAVIS = NetworkDriver.instance.isTRAVIS }), false);
+                            //if (clickedObject.name == "TRAVIS") { NetworkDriver.instance.isTRAVIS = true; }
+                            //else { NetworkDriver.instance.isTRAVIS = false; }
+                            NetworkDriver.instance.isTRAVIS = !NetworkDriver.instance.isTRAVIS;
+                            if (NetworkDriver.instance.TWOPLAYER)
+                            {
+                                //NetworkDriver.instance.sioCom.Instance.Emit("event", JsonConvert.SerializeObject(new { isTRAVIS = NetworkDriver.instance.isTRAVIS }), false);
+                                if (NetworkDriver.instance.isTRAVIS) { GetComponent<RigManager>().currentRigName = GetComponent<RigManager>().travCurrentRig.name; }
+                                else { GetComponent<RigManager>().currentRigName = GetComponent<RigManager>().wesCurrentRig.name; }
+                                GetComponent<RigManager>().currentRigName = GetComponent<RigManager>().currentRigName.Replace("(Clone)", "");
+                                EmitSkin();
+                            }
                             StartCoroutine(RotateCarousel());
                         }
 

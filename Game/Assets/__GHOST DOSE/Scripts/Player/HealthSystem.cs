@@ -123,7 +123,7 @@ public class HealthSystem : MonoBehaviour
          GetComponent<PlayerController>().damageForce = force;
         GetComponent<Rigidbody>().AddForce(force, ForceMode.Impulse);
         GetComponent<Animator>().Play("Flinch", 0, 0f); //-1
-
+       GameObject.Find("PlayerCamera").GetComponent<Camera_Controller>().InvokeShake(1f, 2f); 
         Health -= damage;
 		//healthLevel.fillAmount -= damage * 0.01f;
 		UpdateHealth();
@@ -141,7 +141,10 @@ public class HealthSystem : MonoBehaviour
 			Health -= (reducedHealth) * Time.deltaTime;
 			//healthLevel.fillAmount -= ((reducedHealth / 100) * Time.deltaTime);
 			UpdateHealth();
-		}
+            healthLevel.color = Color.red;
+            CancelInvoke("changeHealthUIColor");
+            Invoke("changeHealthUIColor", 0.5f);
+        }
 	}
 
 	private void OnTriggerEnter(Collider other)
@@ -151,7 +154,10 @@ public class HealthSystem : MonoBehaviour
 			Health -= reducedHealth;
 			//healthLevel.fillAmount -= (reducedHealth / 100);
 			UpdateHealth();
-		}
+            healthLevel.color = Color.red;
+			CancelInvoke("changeHealthUIColor");
+            Invoke("changeHealthUIColor", 0.5f);
+        }
 	}
 
 	public void Death()

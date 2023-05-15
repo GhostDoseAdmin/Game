@@ -32,6 +32,9 @@ namespace GameManager
         public GameObject GamePlayManager;
         public GameObject otherUserName;
 
+        public GameObject travisBasic;
+        public GameObject westinBasic;
+
         Vector3 playerStartPos;
 
         //public NetworkDriver ND;
@@ -42,8 +45,8 @@ namespace GameManager
         [HideInInspector] public Light ClientWeapLight;
         [HideInInspector] public Light ClientFlashLight;
 
-        [HideInInspector] public GameObject mySelectedRig;
-        [HideInInspector] public GameObject theirSelectedRig;
+        //[HideInInspector] public GameObject mySelectedRig;
+        //[HideInInspector] public GameObject theirSelectedRig;
 
         private static utilities util;
 
@@ -71,7 +74,6 @@ namespace GameManager
 
         void Awake()
         {
-            // if (NetworkDriver.instance == null) {  GameObject.Find("NetworkManager").GetComponent<NetworkDriver>().Awake(); Debug.Log("---------------RUNNING AWAKE"); }
 
             util = new utilities();
 
@@ -105,42 +107,42 @@ namespace GameManager
                 Client = GameObject.Find("Client");
 
                 //-----------------------------------CUSTOM RIGS---------------------------------
-                if (mySelectedRig)
+                if (NetworkDriver.instance.myRig)
                 {
                     //MY TRAVIS RIGS
                     if (NetworkDriver.instance.isTRAVIS)
                     {
                         if (TRAVIS.transform.GetChild(0).childCount > 0) { Debug.Log("Destroying Travis Rig "); DestroyImmediate(TRAVIS.transform.GetChild(0).GetChild(0).gameObject); }
-                        Instantiate(mySelectedRig, TRAVIS.transform.GetChild(0).transform);
+                        Instantiate(NetworkDriver.instance.myRig, TRAVIS.transform.GetChild(0).transform);
 
                         //THEIR WESTIN RIGS
                         if (NetworkDriver.instance.TWOPLAYER)
                         {
                             if (WESTIN.transform.GetChild(0).childCount > 0) { Debug.Log("Destroying Westin Rig "); DestroyImmediate(WESTIN.transform.GetChild(0).GetChild(0).gameObject); }
-                            Instantiate(theirSelectedRig, WESTIN.transform.GetChild(0).transform);
+                            Instantiate(NetworkDriver.instance.theirRig, WESTIN.transform.GetChild(0).transform);
                         }
                     }
                     //MY WESTIN RIGS
                     else
                     {
                         if (WESTIN.transform.GetChild(0).childCount > 0) { Debug.Log("Destroying Westin Rig "); DestroyImmediate(WESTIN.transform.GetChild(0).GetChild(0).gameObject); }
-                        Instantiate(mySelectedRig, WESTIN.transform.GetChild(0).transform);
+                        Instantiate(NetworkDriver.instance.myRig, WESTIN.transform.GetChild(0).transform);
 
                         //THEIR TRAVIS RIGS
                         if (NetworkDriver.instance.TWOPLAYER)
                         {
                             if (TRAVIS.transform.GetChild(0).childCount > 0) { Debug.Log("Destroying Travis Rig "); DestroyImmediate(TRAVIS.transform.GetChild(0).GetChild(0).gameObject); }
-                            Instantiate(theirSelectedRig, TRAVIS.transform.GetChild(0).transform);
+                            Instantiate(NetworkDriver.instance.theirRig, TRAVIS.transform.GetChild(0).transform);
                         }
                     }
                 }
 
-                if (mySelectedRig == null) { if (NetworkDriver.instance.isTRAVIS) { mySelectedRig = GetComponent<RigManager>().travRigList[0]; } else { mySelectedRig = GetComponent<RigManager>().wesRigList[0]; } }
-                if (theirSelectedRig == null) { if (NetworkDriver.instance.isTRAVIS) { theirSelectedRig = GetComponent<RigManager>().wesRigList[0];  } else { theirSelectedRig = GetComponent<RigManager>().travRigList[0]; } }
+                if (NetworkDriver.instance.myRig == null) { if (NetworkDriver.instance.isTRAVIS) { NetworkDriver.instance.myRig = travisBasic; } else { NetworkDriver.instance.myRig = westinBasic; } }
+                if (NetworkDriver.instance.theirRig == null) { if (NetworkDriver.instance.isTRAVIS) { NetworkDriver.instance.theirRig = westinBasic;  } else { NetworkDriver.instance.theirRig = travisBasic; } }
 
                 //------------CHECK FOR MISSING A RIG------------    
-                if (TRAVIS.transform.GetChild(0).childCount <= 0) {Instantiate(GetComponent<RigManager>().travRigList[0], TRAVIS.transform.GetChild(0).transform); }
-                if (WESTIN.transform.GetChild(0).childCount <= 0) { Instantiate(GetComponent<RigManager>().wesRigList[0], WESTIN.transform.GetChild(0).transform); }
+                if (TRAVIS.transform.GetChild(0).childCount <= 0) {Instantiate(travisBasic, TRAVIS.transform.GetChild(0).transform); }
+                if (WESTIN.transform.GetChild(0).childCount <= 0) { Instantiate(westinBasic, WESTIN.transform.GetChild(0).transform); }
 
 
 

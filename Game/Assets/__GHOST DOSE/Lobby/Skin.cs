@@ -27,7 +27,7 @@ public class Skin : MonoBehaviour
     void SelectSkin()
     {
         // Find the game object in the room
-        GameObject.Find("LobbyManager").GetComponent<RigManager>().UpdatePlayerRig(rig.name, rig, NetworkDriver.instance.isTRAVIS, false) ;
+        GameObject.Find("LobbyManager").GetComponent<RigManager>().UpdatePlayerRig(rig.name, NetworkDriver.instance.isTRAVIS, false) ;
 
     }
 

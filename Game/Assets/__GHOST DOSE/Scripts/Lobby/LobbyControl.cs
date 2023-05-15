@@ -10,6 +10,7 @@ using TMPro;
 
 public class LobbyControl : MonoBehaviour
 {
+    
     public GameObject ChooseRoom;
     public GameObject ChooseBro;
     private GameObject WESTIN;
@@ -163,8 +164,8 @@ public class LobbyControl : MonoBehaviour
                             }
                         }
                         //PREVENT USING OTHER PLAYER SKIN
-                        if (GameDriver.instance.GetComponent<RigManager>().travCurrRig >= GameDriver.instance.GetComponent<RigManager>().travRigCap && selectedBro.ToString() == "TRAVIS") { READY = false; ChooseBro.SetActive(false); MSG = "SKIN NOT AVAILABLE TO YOU "; if (startOther) { MSG = "BRO TAKEN "; } }
-                        if (GameDriver.instance.GetComponent<RigManager>().wesCurrRig >= GameDriver.instance.GetComponent<RigManager>().wesRigCap && selectedBro.ToString() == "WESTIN") { READY = false; ChooseBro.SetActive(false); MSG = "SKIN NOT AVAILABLE TO YOU "; if (startOther) { MSG = "BRO TAKEN "; } }
+                        //if (GameDriver.instance.GetComponent<RigManager>().travCurrRig >= GameDriver.instance.GetComponent<RigManager>().travRigCap && selectedBro.ToString() == "TRAVIS") { READY = false; ChooseBro.SetActive(false); MSG = "SKIN NOT AVAILABLE TO YOU "; if (startOther) { MSG = "BRO TAKEN "; } }
+                       // if (GameDriver.instance.GetComponent<RigManager>().wesCurrRig >= GameDriver.instance.GetComponent<RigManager>().wesRigCap && selectedBro.ToString() == "WESTIN") { READY = false; ChooseBro.SetActive(false); MSG = "SKIN NOT AVAILABLE TO YOU "; if (startOther) { MSG = "BRO TAKEN "; } }
                     }
                 }
             }
@@ -217,12 +218,12 @@ public class LobbyControl : MonoBehaviour
             {
                 if (startOther && otherBro.ToString() == "TRAVIS") { return; }//already took bro, can no longer change
                 //CYCLE THROUGH RIGS ARRAY
-                GameDriver.instance.GetComponent<RigManager>().travCurrRig = (GameDriver.instance.GetComponent<RigManager>().travCurrRig + 1) % GameDriver.instance.GetComponent<RigManager>().travRigCap;
+               // GameDriver.instance.GetComponent<RigManager>().travCurrRig = (GameDriver.instance.GetComponent<RigManager>().travCurrRig + 1) % GameDriver.instance.GetComponent<RigManager>().travRigCap;
                 //DESTROY CURRENT RIG 
                 Destroy(GameObject.Find("TRAVIS").transform.GetChild(0).gameObject.transform.GetChild(0).gameObject);
                 //CREATE RIG BASED ON INDEX OF RIGS ARRAY
                 if (otherSelects) {Instantiate(GameDriver.instance.GetComponent<RigManager>().travRigList[otherIndex], GameObject.Find("TRAVIS").transform.GetChild(0).transform); }
-                else {Instantiate(GameDriver.instance.GetComponent<RigManager>().travRigList[GameDriver.instance.GetComponent<RigManager>().travCurrRig], GameObject.Find("TRAVIS").transform.GetChild(0).transform); }
+                //else {Instantiate(GameDriver.instance.GetComponent<RigManager>().travRigList[GameDriver.instance.GetComponent<RigManager>().travCurrRig], GameObject.Find("TRAVIS").transform.GetChild(0).transform); }
                 //DESTROY OUTLINE 
                 DestroyImmediate(GameObject.Find("TRAVIS").transform.GetChild(0).gameObject.GetComponent<Outline>());
                 //REFRESH ANIMATOR 
@@ -232,21 +233,21 @@ public class LobbyControl : MonoBehaviour
                 GameObject.Find("TRAVIS").transform.GetChild(0).gameObject.GetComponent<Outline>().OutlineColor = Color.green;
                 GameObject.Find("TRAVIS").transform.GetChild(0).gameObject.GetComponent<Outline>().OutlineWidth = 10f;
 
-                emitThisRig = GameDriver.instance.GetComponent<RigManager>().travCurrRig;
-                if (!otherSelects) { GameDriver.instance.GetComponent<GameDriver>().mySelectedRig = GameDriver.instance.GetComponent<RigManager>().travRigList[GameDriver.instance.GetComponent<RigManager>().travCurrRig]; }
-                else { GameDriver.instance.GetComponent<RigManager>().travCurrRig = otherIndex; GameDriver.instance.GetComponent<GameDriver>().theirSelectedRig = GameDriver.instance.GetComponent<RigManager>().travRigList[GameDriver.instance.GetComponent<RigManager>().travCurrRig]; }
+                //emitThisRig = GameDriver.instance.GetComponent<RigManager>().travCurrRig;
+               // if (!otherSelects) { GameDriver.instance.GetComponent<GameDriver>().mySelectedRig = GameDriver.instance.GetComponent<RigManager>().travRigList[GameDriver.instance.GetComponent<RigManager>().travCurrRig]; }
+               // else { GameDriver.instance.GetComponent<RigManager>().travCurrRig = otherIndex; GameDriver.instance.GetComponent<GameDriver>().theirSelectedRig = GameDriver.instance.GetComponent<RigManager>().travRigList[GameDriver.instance.GetComponent<RigManager>().travCurrRig]; }
 
             }
             if ((selectedBro.ToString() == "WESTIN" && !otherSelects) || (otherBro.ToString() == "WESTIN") && otherSelects)
             {
                 if (startOther && otherBro.ToString() == "WESTIN") { return; }//already took bro, can no longer change
                 //CYCLE THROUGH RIGS ARRAY
-                GameDriver.instance.GetComponent<RigManager>().wesCurrRig = (GameDriver.instance.GetComponent<RigManager>().wesCurrRig + 1) % GameDriver.instance.GetComponent<RigManager>().travRigCap;
+               // GameDriver.instance.GetComponent<RigManager>().wesCurrRig = (GameDriver.instance.GetComponent<RigManager>().wesCurrRig + 1) % GameDriver.instance.GetComponent<RigManager>().travRigCap;
                 //DESTROY CURRENT RIG 
                 Destroy(GameObject.Find("WESTIN").transform.GetChild(0).gameObject.transform.GetChild(0).gameObject);
                 //CREATE RIG BASED ON INDEX OF RIGS ARRAY
                 if (otherSelects) { Instantiate(GameDriver.instance.GetComponent<RigManager>().wesRigList[otherIndex], GameObject.Find("WESTIN").transform.GetChild(0).transform); }
-                else { Instantiate(GameDriver.instance.GetComponent<RigManager>().wesRigList[GameDriver.instance.GetComponent<RigManager>().wesCurrRig], GameObject.Find("WESTIN").transform.GetChild(0).transform); }
+               // else { Instantiate(GameDriver.instance.GetComponent<RigManager>().wesRigList[GameDriver.instance.GetComponent<RigManager>().wesCurrRig], GameObject.Find("WESTIN").transform.GetChild(0).transform); }
                 //DESTROY OUTLINE 
                 DestroyImmediate(GameObject.Find("WESTIN").transform.GetChild(0).gameObject.GetComponent<Outline>());
                 //REFRESH ANIMATOR 
@@ -256,9 +257,9 @@ public class LobbyControl : MonoBehaviour
                 GameObject.Find("WESTIN").transform.GetChild(0).gameObject.GetComponent<Outline>().OutlineColor = Color.red;
                 GameObject.Find("WESTIN").transform.GetChild(0).gameObject.GetComponent<Outline>().OutlineWidth = 10f;
 
-                emitThisRig = GameDriver.instance.GetComponent<RigManager>().wesCurrRig;
-                if (!otherSelects) { GameDriver.instance.GetComponent<GameDriver>().mySelectedRig = GameDriver.instance.GetComponent<RigManager>().wesRigList[GameDriver.instance.GetComponent<RigManager>().wesCurrRig]; }
-                else { GameDriver.instance.GetComponent<RigManager>().wesCurrRig = otherIndex; GameDriver.instance.GetComponent<GameDriver>().theirSelectedRig = GameDriver.instance.GetComponent<RigManager>().wesRigList[GameDriver.instance.GetComponent<RigManager>().wesCurrRig]; }
+               // emitThisRig = GameDriver.instance.GetComponent<RigManager>().wesCurrRig;
+               // if (!otherSelects) { GameDriver.instance.GetComponent<GameDriver>().mySelectedRig = GameDriver.instance.GetComponent<RigManager>().wesRigList[GameDriver.instance.GetComponent<RigManager>().wesCurrRig]; }
+               // else { GameDriver.instance.GetComponent<RigManager>().wesCurrRig = otherIndex; GameDriver.instance.GetComponent<GameDriver>().theirSelectedRig = GameDriver.instance.GetComponent<RigManager>().wesRigList[GameDriver.instance.GetComponent<RigManager>().wesCurrRig]; }
             }
 
             //EMIT BRO CHOICE
@@ -307,5 +308,6 @@ public class LobbyControl : MonoBehaviour
         }
         return gameObject.transform.parent.name;
     }
+
 }
 

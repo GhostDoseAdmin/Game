@@ -1836,7 +1836,6 @@ MonoBehaviour:
   inShadow: 0
   invisible: 1
   HEAD: {fileID: 8512744334795482246}
-  death: 0
 --- !u!114 &6519723579489555298
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1850,6 +1849,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   teleport: 0
+  teleportVFX: {fileID: 1535281443880992985, guid: a2ebc7984ac2d494e8ecdba383610a69, type: 3}
   realNotVisible: 0
   target: {fileID: 0}
   minRadius: 2
