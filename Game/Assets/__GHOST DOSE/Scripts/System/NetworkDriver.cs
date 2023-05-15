@@ -127,6 +127,7 @@ namespace NetworkSystem
                 string[] splitData = data.Split(',');
                 string level = splitData[0]; level = level.Replace("level", ""); level = level.Replace("speed", "");
                 string speed = splitData[1];
+                if (speed.Contains("None")) { speed = "-1"; }
                 GameObject.Find("LobbyManager").GetComponent<RigManager>().ReceivedLevelData(int.Parse(level), int.Parse(speed));
             });
 
@@ -443,7 +444,7 @@ namespace NetworkSystem
             //--------------DISCONNECT-----------------
             sioCom.Instance.On("disconnect", (payload) => { Debug.LogWarning("Disconnected: " + payload); });
             //--------------PLAYER DISCONNECT-----------------
-            sioCom.Instance.On("player_disconnect", (payload) => { Debug.LogWarning("GAME ENDING PLAYER DISCONNECTED "); PlayerPrefs.SetString("message", "PLAYER DISCONNECTED"); HOST = true; }); // sioCom.Instance.Close(); SceneManager.LoadScene("Lobby");
+            sioCom.Instance.On("player_disconnect", (payload) => { GameDriver.instance.WriteGuiMsg("Other Player Disconnected! ", 10f, false, Color.red); HOST = true; }); // sioCom.Instance.Close(); SceneManager.LoadScene("Lobby");
         }
 
 
@@ -467,8 +468,7 @@ namespace NetworkSystem
                         propsDict.Add("y", obj.gameObject.transform.position.y.ToString("F2"));
                         propsDict.Add("z", obj.gameObject.transform.position.z.ToString("F2"));
                         propsDict.Add("dx", obj.GetComponent<NPCController>().destination.name);
-                        if (obj.GetComponent<NPCController>().target != null) { propsDict.Add("tx", obj.GetComponent<NPCController>().target.name); }
-                        else { propsDict.Add("tx", ""); }
+                        if (obj.GetComponent<NPCController>().target != null) { propsDict.Add("tx", obj.GetComponent<NPCController>().target.name); }else { propsDict.Add("tx", ""); }
                         //propsDict.Add("ax", obj.gameObject.activeSelf.ToString());
                         //propsDict.Add("tp", obj.GetComponent<NPCController>().teleport);
 

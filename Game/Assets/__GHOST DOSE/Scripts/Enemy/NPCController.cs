@@ -306,7 +306,7 @@ public class NPCController : MonoBehaviour
                         }
                         else //waypoint reached
                         {
-                            if (NetworkDriver.instance.HOST) { if (teleports) { GetComponent<Teleport>().CheckTeleport(true, false); } }
+                            if (NetworkDriver.instance.HOST) { if (teleports && Random.value<0.3f) { GetComponent<Teleport>().CheckTeleport(true, false); } }
                             curWayPoint++;
                             if (hasRetreated==1) { hasRetreated = 2; range = startRange; angleView = startAngleView; }
                         }
