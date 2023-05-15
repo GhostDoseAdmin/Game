@@ -14,8 +14,8 @@ public class PlayerDeath : MonoBehaviour
     void Start()
     {
         util = new utilities();
-        if (!otherPlayer) { death = Instantiate(NetworkDriver.instance.myRig, transform.position, transform.rotation); }
-        else { death = Instantiate(NetworkDriver.instance.theirRig, transform.position, transform.rotation); }
+        if (!otherPlayer) { death = Instantiate(GameDriver.instance.myRig, transform.position, transform.rotation); }
+        else { death = Instantiate(GameDriver.instance.theirRig, transform.position, transform.rotation); }
         death.transform.SetParent(deathAnimator.transform);
         StartCoroutine(util.ReactivateAnimator(deathAnimator));
     }

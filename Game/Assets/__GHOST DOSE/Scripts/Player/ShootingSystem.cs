@@ -182,9 +182,11 @@ public class ShootingSystem : MonoBehaviour
                                 //used to emit answer
                                 damage = -1;
                             }
+
+                        if (NetworkDriver.instance.TWOPLAYER) { NetworkDriver.instance.sioCom.Instance.Emit("event", JsonConvert.SerializeObject(new { shoot = true, obj = target.name, dmg = damage }), false); }
                     }
 
-                    if (NetworkDriver.instance.TWOPLAYER) { NetworkDriver.instance.sioCom.Instance.Emit("event", JsonConvert.SerializeObject(new { shoot = true, obj = target.name, dmg = damage }), false); }
+                   
 
                     //--------------FLASH-----------------
                     GameObject newFlash = Instantiate(camFlash);

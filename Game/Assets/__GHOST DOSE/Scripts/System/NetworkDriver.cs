@@ -17,8 +17,8 @@ namespace NetworkSystem
 
         public SocketIOCommunicator sioCom;
 
-        public GameObject myRig;
-        public GameObject theirRig;
+        public string myRig;
+        public string theirRig;
 
         //private float sync_timer = 0.0f;
         //private float delay = 15f;//SYNC DELAY
@@ -506,6 +506,7 @@ namespace NetworkSystem
 
         public void UpdateGameState()
         {
+
             Debug.Log("-----------------UPDATING GAME STATES");
             GameDriver.instance.Client.GetComponent<Rigidbody>().constraints = RigidbodyConstraints.None;
             GameDriver.instance.Player.GetComponent<PlayerController>().emitFlashlight = true;
@@ -514,13 +515,13 @@ namespace NetworkSystem
             
             if (HOST)
             {
-                UpdateEnemies(false);
+                //UpdateEnemies(false);
                 ColdSpot[] coldSpots = FindObjectsOfType<ColdSpot>();
                 foreach (ColdSpot coldspot in coldSpots) { coldspot.Respawn(null); }
                 GameDriver.instance.GetComponentInChildren<VictimControl>().RandomVictim(null);
             }
 
-           // sioCom.Instance.Emit("event", JsonConvert.SerializeObject(new { setup = true }), false);
+
         }
 
 

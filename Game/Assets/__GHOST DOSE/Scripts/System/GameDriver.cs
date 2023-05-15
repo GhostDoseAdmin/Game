@@ -7,6 +7,7 @@ using UnityEngine.Rendering.VirtualTexturing;
 using TMPro;
 using InteractionSystem;
 using Newtonsoft.Json;
+using UnityEngine.LowLevel;
 
 namespace GameManager
 {
@@ -34,6 +35,9 @@ namespace GameManager
 
         public GameObject travisBasic;
         public GameObject westinBasic;
+
+        public GameObject myRig;
+        public GameObject theirRig;
 
         Vector3 playerStartPos;
 
@@ -74,6 +78,31 @@ namespace GameManager
 
         void Awake()
         {
+            //CREATE RIG FROM LOBYS
+            if (NetworkDriver.instance)
+            {
+                GameObject[] prefabs = Resources.LoadAll<GameObject>("Prefabs/Rigs");
+                //MY RIG
+                string rigName = NetworkDriver.instance.myRig.Replace("(Clone)", "");
+                for (int i = 0; i < prefabs.Length; i++)
+                {
+                    if (prefabs[i].name == rigName)
+                    {
+                        myRig = prefabs[i];
+                        break;
+                    }
+                }
+                //THEIR RIG
+                rigName = NetworkDriver.instance.theirRig.Replace("(Clone)", "");
+                for (int i = 0; i < prefabs.Length; i++)
+                {
+                    if (prefabs[i].name == rigName)
+                    {
+                        theirRig = prefabs[i];
+                        break;
+                    }
+                }
+            }
 
             util = new utilities();
 
@@ -106,45 +135,47 @@ namespace GameManager
 
                 Client = GameObject.Find("Client");
 
+                Debug.Log("-----------------CREATING RIG  " + NetworkDriver.instance.myRig);
+
                 //-----------------------------------CUSTOM RIGS---------------------------------
-                if (NetworkDriver.instance.myRig)
+                if (myRig)
                 {
                     //MY TRAVIS RIGS
                     if (NetworkDriver.instance.isTRAVIS)
                     {
                         if (TRAVIS.transform.GetChild(0).childCount > 0) { Debug.Log("Destroying Travis Rig "); DestroyImmediate(TRAVIS.transform.GetChild(0).GetChild(0).gameObject); }
-                        Instantiate(NetworkDriver.instance.myRig, TRAVIS.transform.GetChild(0).transform);
+                        Instantiate(myRig, TRAVIS.transform.GetChild(0).transform);
 
                         //THEIR WESTIN RIGS
                         if (NetworkDriver.instance.TWOPLAYER)
                         {
                             if (WESTIN.transform.GetChild(0).childCount > 0) { Debug.Log("Destroying Westin Rig "); DestroyImmediate(WESTIN.transform.GetChild(0).GetChild(0).gameObject); }
-                            Instantiate(NetworkDriver.instance.theirRig, WESTIN.transform.GetChild(0).transform);
+                            Instantiate(theirRig, WESTIN.transform.GetChild(0).transform);
                         }
                     }
                     //MY WESTIN RIGS
                     else
                     {
                         if (WESTIN.transform.GetChild(0).childCount > 0) { Debug.Log("Destroying Westin Rig "); DestroyImmediate(WESTIN.transform.GetChild(0).GetChild(0).gameObject); }
-                        Instantiate(NetworkDriver.instance.myRig, WESTIN.transform.GetChild(0).transform);
+                        Instantiate(myRig, WESTIN.transform.GetChild(0).transform);
 
                         //THEIR TRAVIS RIGS
                         if (NetworkDriver.instance.TWOPLAYER)
                         {
                             if (TRAVIS.transform.GetChild(0).childCount > 0) { Debug.Log("Destroying Travis Rig "); DestroyImmediate(TRAVIS.transform.GetChild(0).GetChild(0).gameObject); }
-                            Instantiate(NetworkDriver.instance.theirRig, TRAVIS.transform.GetChild(0).transform);
+                            Instantiate(theirRig, TRAVIS.transform.GetChild(0).transform);
                         }
                     }
                 }
 
-                if (NetworkDriver.instance.myRig == null) { if (NetworkDriver.instance.isTRAVIS) { NetworkDriver.instance.myRig = travisBasic; } else { NetworkDriver.instance.myRig = westinBasic; } }
-                if (NetworkDriver.instance.theirRig == null) { if (NetworkDriver.instance.isTRAVIS) { NetworkDriver.instance.theirRig = westinBasic;  } else { NetworkDriver.instance.theirRig = travisBasic; } }
+                if (NetworkDriver.instance.myRig == null) { if (NetworkDriver.instance.isTRAVIS) { myRig = travisBasic; } else { myRig = westinBasic; } }
+                if (NetworkDriver.instance.theirRig == null) { if (NetworkDriver.instance.isTRAVIS) { theirRig = westinBasic;  } else { theirRig = travisBasic; } }
 
                 //------------CHECK FOR MISSING A RIG------------    
                 if (TRAVIS.transform.GetChild(0).childCount <= 0) {Instantiate(travisBasic, TRAVIS.transform.GetChild(0).transform); }
                 if (WESTIN.transform.GetChild(0).childCount <= 0) { Instantiate(westinBasic, WESTIN.transform.GetChild(0).transform); }
 
-
+                
 
                 //---------DISABLE UNUSED PLAYER------------
                 if (!NetworkDriver.instance.isTRAVIS)
