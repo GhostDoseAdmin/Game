@@ -7,6 +7,7 @@ using NetworkSystem;
 using UnityEngine.SceneManagement;
 using Newtonsoft.Json;
 using System.IO;
+using SlimUI.ModernMenu;
 
 public class LobbyControlV2 : MonoBehaviour
 {
@@ -47,6 +48,7 @@ public class LobbyControlV2 : MonoBehaviour
 
     public void LoadLobbyCanvas(string gameMode)
     {
+        //lobbyMenuCanvas.GetComponentInChildren<UIMenuManager>().SetThemeColors();
         entryMenuCanvas.SetActive(false);
         GAMEMODE = gameMode;
 
@@ -105,7 +107,16 @@ public class LobbyControlV2 : MonoBehaviour
         {
             if (LEVEL.Length > 0)
             {
-                if (GAMEMODE == "single") { SceneManager.LoadScene(LEVEL); Debug.Log("READY"); }
+                if (GAMEMODE == "single") {
+                    //UPDATE RIG INFO FOR
+
+                    if (NetworkDriver.instance.isTRAVIS) { NetworkDriver.instance.myRig = GetComponent<RigManager>().travCurrentRig.name; }
+                    else { NetworkDriver.instance.myRig = GetComponent<RigManager>().wesCurrentRig.name; }
+
+                    NetworkDriver.instance.theirRig = GetComponent<RigManager>().otherPlayerRig.name;
+
+                    SceneManager.LoadScene(LEVEL); Debug.Log("READY"); 
+                }
                 //----TWO PLAYER
                 else
                 {
@@ -125,10 +136,10 @@ public class LobbyControlV2 : MonoBehaviour
                             if (LEVEL == otherLEVEL)
                             {
                                 //UPDATE RIG INFO FOR GAMEMANAGER
-                                if (NetworkDriver.instance.isTRAVIS) { NetworkDriver.instance.myRig = GetComponent<RigManager>().travCurrentRig; }
-                                else { NetworkDriver.instance.myRig = GetComponent<RigManager>().wesCurrentRig; }
+                                if (NetworkDriver.instance.isTRAVIS) { NetworkDriver.instance.myRig = GetComponent<RigManager>().travCurrentRig.name; }
+                                else { NetworkDriver.instance.myRig = GetComponent<RigManager>().wesCurrentRig.name; }
 
-                                NetworkDriver.instance.theirRig = GetComponent<RigManager>().otherPlayerRig;
+                                NetworkDriver.instance.theirRig = GetComponent<RigManager>().otherPlayerRig.name;
 
                                 READY = true; lobbyMenu.SetActive(false); NetworkDriver.instance.sioCom.Instance.Emit("event", JsonConvert.SerializeObject(new { ready = true }), false); GameDriver.instance.WriteGuiMsg("Waiting for other player...", 999f, true, Color.white);
                             }

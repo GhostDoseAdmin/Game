@@ -7177,7 +7177,7 @@ MonoBehaviour:
   playMenu: {fileID: 0}
   exitMenu: {fileID: 1147491529}
   extrasMenu: {fileID: 889527471}
-  theme: 2
+  theme: 0
   themeController: {fileID: 11400000, guid: e00c7d2bc58a2424b8dc09ecdafdb067, type: 2}
   mainCanvas: {fileID: 116675723}
   PanelControls: {fileID: 0}
@@ -13443,6 +13443,7 @@ MonoBehaviour:
   travCurrentRig: {fileID: 0}
   westinProp: {fileID: 5398469344788947032}
   wesCurrentRig: {fileID: 0}
+  myRig: {fileID: 0}
   otherPlayerProp: {fileID: 692362292}
   otherPlayerRig: {fileID: 1999965207}
   SkinsList: {fileID: 1512205289}
@@ -55513,12 +55514,14 @@ MonoBehaviour:
   playerUI: {fileID: 4347751126184553571}
   GamePlayManager: {fileID: 0}
   otherUserName: {fileID: 0}
+  travisBasic: {fileID: 0}
+  westinBasic: {fileID: 0}
+  myRig: {fileID: 0}
+  theirRig: {fileID: 0}
   PlayerWeapLight: {fileID: 0}
   PlayerFlashLight: {fileID: 0}
   ClientWeapLight: {fileID: 0}
   ClientFlashLight: {fileID: 0}
-  mySelectedRig: {fileID: 0}
-  theirSelectedRig: {fileID: 0}
   loadingIcon: {fileID: 8284366207522097302}
   systemConsole: {fileID: 2012727466595077775}
 --- !u!1 &5398469344788947032

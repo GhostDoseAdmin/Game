@@ -89,7 +89,7 @@ namespace SlimUI.ModernMenu{
 		void OnEnable(){
 			CameraObject = transform.GetComponent<Animator>();
 
-			playMenu.SetActive(false);
+			if (playMenu != null) { playMenu.SetActive(false); }
 			exitMenu.SetActive(false);
 			if(extrasMenu) extrasMenu.SetActive(false);
 			firstMenu.SetActive(true);
@@ -98,7 +98,7 @@ namespace SlimUI.ModernMenu{
 			SetThemeColors();
 		}
 
-		void SetThemeColors()
+		public void SetThemeColors()
 		{
 			switch (theme)
 			{
