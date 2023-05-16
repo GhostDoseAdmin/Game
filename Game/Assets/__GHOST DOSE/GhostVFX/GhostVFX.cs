@@ -102,7 +102,8 @@ public class GhostVFX : MonoBehaviour
                 lightPositions[i] = lightSource.transform.position;
                 lightDirections[i] = -lightSource.transform.forward;
                 lightAngles[i] = lightSource.spotAngle + 5;
-                ScalarStrengths[i] = lightSource.GetComponent<GhostLight>().strength;//50
+                if (!GetComponent<NPCController>().ZOZO) { ScalarStrengths[i] = lightSource.GetComponent<GhostLight>().strength; }//50
+                else { ScalarStrengths[i] = 5; }
                 lightRanges[i] = lightSource.range;//30
             }
 
@@ -191,7 +192,8 @@ public class GhostVFX : MonoBehaviour
                     material.SetVector("_PlayerLightPosition", lightSource.transform.position);
                     material.SetVector("_PlayerLightDirection", -lightSource.transform.forward);
                     material.SetFloat("_PlayerLightAngle", spotAngle);
-                    material.SetFloat("_PlayerStrengthScalarLight", 20);
+                    if (!GetComponent<NPCController>().ZOZO) { material.SetFloat("_PlayerStrengthScalarLight", 20); }
+                    else { material.SetFloat("_PlayerStrengthScalarLight", 5); }
                     material.SetFloat("_PlayerLightRange", lightSource.range);
                 }
                 //ADD IN CLIENT LIGHT
@@ -213,7 +215,8 @@ public class GhostVFX : MonoBehaviour
                     material.SetVector("_ClientLightPosition", lightSource.transform.position);
                     material.SetVector("_ClientLightDirection", -lightSource.transform.forward);
                     material.SetFloat("_ClientLightAngle", spotAngle);
-                    material.SetFloat("_ClientStrengthScalarLight", 20);
+                    if (!GetComponent<NPCController>().ZOZO) { material.SetFloat("_ClientStrengthScalarLight", 20); }
+                    else { material.SetFloat("_ClientStrengthScalarLight", 5); }
                     material.SetFloat("_ClientLightRange", lightSource.range);
                 }
 
@@ -226,10 +229,9 @@ public class GhostVFX : MonoBehaviour
                 //-------------SET TOTAL ALPHA--------------------------------
                 //if (death) { visible = true; visibilitySet = true; Fade(true, 5f, 1); }
                 invisible = false;
-                //if (!death)
                 {
-                    if (visible) { Fade(true, 0.5f, 1); }
-                    else { Fade(false, 1f, 1); }//fadeout
+                    if (visible) { if (!GetComponent<NPCController>().ZOZO) { Fade(true, 0.5f, 1); } else { Fade(true, 2f, 1); } }
+                    else { if (!GetComponent<NPCController>().ZOZO) { Fade(false, 1f, 1); } else { Fade(false, 0.2f, 1); } }//fadeout
                 }// DEATH FADE
                  //else { Fade(false, 10f, 0); }
                 for (int i = 0; i < skin.GetComponent<SkinnedMeshRenderer>().materials.Length; i++)
@@ -279,7 +281,7 @@ public class GhostVFX : MonoBehaviour
                 else//FADE OUT
                 {
                     if (currentMaxAlpha[i] > 0.01) { currentMaxAlpha[i] = Mathf.Lerp(currentMaxAlpha[i], currentMaxAlpha[i] * 0.5f * fadeOutLimit, Time.deltaTime * speed); }
-                    if (currentMaxAlpha[i] < 0.1f) //if diff in alpha less than 0.1
+                    if (currentMaxAlpha[i] < 0.1f || (GetComponent<ZozoControl>()!=null && currentMaxAlpha[i] < 0.2f)) //if diff in alpha less than 0.1
                     {
                         invisible = true; playedSound = false;
                     }

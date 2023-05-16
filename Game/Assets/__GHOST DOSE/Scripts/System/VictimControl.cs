@@ -145,8 +145,9 @@ public class VictimControl : Item
             //ARISE
             if (zozoDummy.transform.position.y < zozoDummyStartPos.y + 8)
             {
-                zozoDummy.transform.GetChild(0).GetComponent<SkinnedMeshRenderer>().materials[0].SetFloat("_Alpha", 0.2f);
-                Vector3 currPos = zozoDummy.transform.position;                currPos.y += 0.007f;                zozoDummy.transform.position = currPos;                zozoAlpha = 0.2f;
+                zozoDummy.transform.GetChild(0).GetComponent<SkinnedMeshRenderer>().materials[0].SetFloat("_EMFAlpha", 0.2f); zozoAlpha = 0.2f;
+                zozoDummy.transform.GetChild(0).GetComponent<SkinnedMeshRenderer>().materials[0].SetFloat("_Alpha", 0);
+                Vector3 currPos = zozoDummy.transform.position;                currPos.y += 0.007f;                zozoDummy.transform.position = currPos;                
                 currPos = main.transform.position; currPos.y += 0.005f; main.transform.position = currPos;
                 main.transform.Rotate(0f, 5f * Time.deltaTime, 0f);
 
@@ -209,7 +210,7 @@ public class VictimControl : Item
             effectInner.SetActive(false);
         }
         //ZOZO FIGHT
-        if(ZOZO.activeSelf == true)
+        if(ZOZO.activeSelf == true && zozo)
         {
             //KEEP IN DOME
             Vector3 ZOZOpos2d = new Vector3(ZOZO.transform.position.x, GameDriver.instance.Player.transform.position.y, ZOZO.transform.position.z);
@@ -362,6 +363,7 @@ public class VictimControl : Item
        zozoDummy.SetActive(false);
         zozoEnd = true;
         zozoFXendOn = false;
+        GameDriver.instance.WriteGuiMsg("Keep ZOZO in the light!", 10f, false, Color.yellow);
         Invoke("CanDestroyZozo", zozoTimer);//-------------HOW LONG ZOZO ALIVE
 
     }

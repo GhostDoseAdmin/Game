@@ -31,7 +31,7 @@ public class Candle : Item
         if (!otherPlayer) { AudioManager.instance.Play("PickUp", null); }
         /*if (!otherPlayer) { AudioManager.instance.Play("PickUp", GameObject.Find("Player").GetComponent<PlayerController>().audioSource); }
         else { AudioManager.instance.Play("PickUp", GameObject.Find("Client").GetComponent<ClientPlayerController>().audioSource); }*/
-        transform.position = new Vector3(transform.position.x, -9999, transform.position.y);//MIMIC DESTROY
+        transform.position = new Vector3(transform.position.x, -9999, transform.position.z);//MIMIC DESTROY
         Invoke("Respawn", respawnTime);
         //Destroy(gameObject);
     }

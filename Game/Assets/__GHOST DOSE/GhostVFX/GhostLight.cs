@@ -42,6 +42,7 @@ public class GhostLight : MonoBehaviour
 
     private IEnumerator Flicker()
     {
+        flicker = false;
         // flicker the light
         lightComponent.spotAngle = 0;
 

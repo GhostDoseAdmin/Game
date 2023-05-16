@@ -276,10 +276,12 @@ namespace NetworkSystem
                 JObject data = JObject.Parse(payload);
                 Dictionary<string, string> dict = data.ToObject<Dictionary<string, string>>();
                 Debug.Log("RECEIVING LASER " + data);
-                //GetComponentInChildren<VictimControl>().ZOZO.SetActive(true);
-                //GameObject enemy = GameObject.Find(dict["obj"]);
-                StopCoroutine(waitForZozoActive());
-                StartCoroutine(waitForZozoActive());
+                //if (bool.Parse(dict["on"]))
+                {
+                    StopCoroutine(waitForZozoActive());
+                    StartCoroutine(waitForZozoActive());
+                }
+               // else { GameDriver.instance.GetComponentInChildren<VictimControl>().ZOZO.GetComponent<ZozoControl>().blocked = true; GameDriver.instance.GetComponentInChildren<VictimControl>().ZOZO.GetComponent<ZozoControl>().StopLaser(); }
                 
             });
             IEnumerator waitForZozoActive()
@@ -405,7 +407,7 @@ namespace NetworkSystem
                                     if (dict.ContainsKey("tele")) { enemy.transform.position = targPos; }
                                 }
                                 //--------TARGET-----------
-                                if (obj.Value["tx"] != null)
+                                if (obj.Value.ContainsKey("tx"))
                                 {
                                     string target = obj.Value["tx"];
                                     if (target.Contains("Player")) { enemy.GetComponent<NPCController>().Engage(GameDriver.instance.Client.transform); }
@@ -413,7 +415,7 @@ namespace NetworkSystem
                                     if (target.Length < 2) { enemy.GetComponent<NPCController>().target = null; }
                                 }
                                 //--------PATROL-----------
-                                if (obj.Value["dx"] != null)
+                                if (obj.Value.ContainsKey("dx"))
                                 {
                                     GameObject dest = GameObject.Find(obj.Value["dx"]);
                                     if (dest == GameDriver.instance.Player) { dest = GameDriver.instance.Client; }
@@ -467,8 +469,12 @@ namespace NetworkSystem
                         propsDict.Add("x", obj.gameObject.transform.position.x.ToString("F2"));
                         propsDict.Add("y", obj.gameObject.transform.position.y.ToString("F2"));
                         propsDict.Add("z", obj.gameObject.transform.position.z.ToString("F2"));
-                        propsDict.Add("dx", obj.GetComponent<NPCController>().destination.name);
-                        if (obj.GetComponent<NPCController>().target != null) { propsDict.Add("tx", obj.GetComponent<NPCController>().target.name); }else { propsDict.Add("tx", ""); }
+                        if (obj.GetComponent<NPCController>().prev_dest != obj.GetComponent<NPCController>().destination) { propsDict.Add("dx", obj.GetComponent<NPCController>().destination.name); }
+                        obj.GetComponent<NPCController>().prev_dest = obj.GetComponent<NPCController>().destination;
+                        if (obj.GetComponent<NPCController>().prev_targ != obj.GetComponent<NPCController>().target) { if (obj.GetComponent<NPCController>().target != null) { propsDict.Add("tx", obj.GetComponent<NPCController>().target.name); } else { propsDict.Add("tx", ""); } }
+                        obj.GetComponent<NPCController>().prev_targ = obj.GetComponent<NPCController>().target;
+                        //obj.Value.ContainsKey("dx")
+                       
                         //propsDict.Add("ax", obj.gameObject.activeSelf.ToString());
                         //propsDict.Add("tp", obj.GetComponent<NPCController>().teleport);
 

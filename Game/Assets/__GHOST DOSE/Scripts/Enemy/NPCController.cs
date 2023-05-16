@@ -86,6 +86,8 @@ public class NPCController : MonoBehaviour
     private AudioClip audioClip;
     private bool hasLooked = true;
     GameObject PlayerWP, ClientWP;
+    public GameObject prev_dest;
+    public Transform prev_targ;
     private void Awake()
     {
         destination = this.gameObject;
@@ -351,6 +353,7 @@ public class NPCController : MonoBehaviour
 
     public void Attack()
     {
+        Debug.Log("target " + target);
         //MOVE TOWARDS TARGET
         navmesh.SetDestination(target.position);
         destination = target.gameObject;
@@ -360,7 +363,7 @@ public class NPCController : MonoBehaviour
 
         float distance = Vector3.Distance(transform.position, new Vector3(target.position.x, transform.position.y, target.position.z));//measured at same level Yaxis
          //-----------DISENGAGE--------------------
-         if (distance > 15){ Disengage(); }
+         if (distance > 15 && !ZOZO){ Disengage(); }
 
         //------PUSH PLAYER AWAY
         if (distance < 0.4f)
@@ -410,10 +413,13 @@ public class NPCController : MonoBehaviour
             }
         }
 
-        
+        //PLAYER DIES
+        if (!target.gameObject.activeSelf) { target = null; }
         //---------------PLAYER DIES
-        if (target!=null && target.gameObject != null && Player!=null && Client!=null && NetworkDriver.instance!=null && NetworkDriver.instance.HOST)
+        //if (target!=null && target.gameObject != null && Player!=null && Client!=null && NetworkDriver.instance!=null && NetworkDriver.instance.HOST)
+        //if (NetworkDriver.instance != null && NetworkDriver.instance.HOST)
         {
+            /*
             if (target.gameObject == Player)
             {
                 if (target.gameObject.GetComponent<HealthSystem>().Health <= 0 || !Player.activeSelf)
@@ -431,7 +437,7 @@ public class NPCController : MonoBehaviour
                     navmesh.isStopped = false;
                     agro = false;
                 }
-            }
+            }*/
         }
         //if (zozo) { GetComponent<NavMeshAgent>().speed = 0; }
     }

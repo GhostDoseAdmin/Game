@@ -30,7 +30,8 @@ public class ZozoControl : MonoBehaviour
     public float laserCoolDown;
     private bool charging;
     private bool startCharging;
-
+    //private int laserBlocked;
+    //public bool blocked = false;
     private void Awake()
     {
         audioSource1 = gameObject.AddComponent<AudioSource>();
@@ -64,8 +65,8 @@ public class ZozoControl : MonoBehaviour
         }*/
 
 
-            //INITIATE LASER
-            if (Time.time > canLaserTimer + laserCoolDown && GetComponent<NPCController>().target!=null)
+        //INITIATE LASER
+        if (Time.time > canLaserTimer + laserCoolDown && GetComponent<NPCController>().target!=null && NetworkDriver.instance.HOST)
         {
             RaycastHit hit;
             Vector3 targPos = GetComponent<NPCController>().target.position + Vector3.up * 1.4f;
@@ -80,14 +81,11 @@ public class ZozoControl : MonoBehaviour
                         && Vector3.Distance(transform.position, new Vector3(GetComponent<NPCController>().target.position.x, transform.position.y, GetComponent<NPCController>().target.position.z)) >= laserDistanceMin
                         )
                     {
-                        if (NetworkDriver.instance.HOST) { 
                             ChargeLaser(false); 
-                        }
+                        
                     }
                 }
             }
-
-
         }
         if(GetComponent<NPCController>().zozoLaser)
         {
@@ -105,7 +103,8 @@ public class ZozoControl : MonoBehaviour
                 if(charging)
                 {
                     audioSource1.volume = 10f;
-                    AudioManager.instance.Play("laserorigin", audioSource1); 
+                    AudioManager.instance.Play("laserorigin", audioSource1);
+                   // Invoke("HasTriedLaser", 1f);
                 }
                 charging = false;
                 chargeLight.SetActive(false);
@@ -116,6 +115,30 @@ public class ZozoControl : MonoBehaviour
                 //shake
                 if (GameObject.Find("Hit") != null) { GameObject.Find("PlayerCamera").GetComponent<Camera_Controller>().InvokeShake(0.5f, Mathf.InverseLerp(20f, 0f, Vector3.Distance(GameDriver.instance.Player.transform.position, GameObject.Find("Hit").transform.position))); }
                 GameObject.Find("PlayerCamera").GetComponent<Camera_Controller>().InvokeShake(0.5f, Mathf.InverseLerp(20f, 0f, Vector3.Distance(GameDriver.instance.Player.transform.position, transform.position))); ;
+
+                transform.rotation = Quaternion.RotateTowards(transform.rotation, Quaternion.LookRotation(GetComponent<NPCController>().target.transform.position - transform.position), 50f * Time.deltaTime);
+                //LASER BLOCKED
+                /*if (NetworkDriver.instance.HOST && hasTriedLaser)
+                {
+                    RaycastHit hit;
+                    Vector3 targPos = GetComponent<NPCController>().target.position + Vector3.up * 1.4f;
+                    Debug.DrawLine(Head.transform.position, targPos); //1.6
+                    LayerMask mask = (1 << LayerMask.NameToLayer("Player")) | (1 << LayerMask.NameToLayer("Default"));
+                    if (Physics.Linecast(Head.transform.position, targPos, out hit, mask.value))
+                    {
+                        //Debug.Log("----------TARGET -------------------" + hit.collider.gameObject.name);
+                        if (hit.transform != GetComponent<NPCController>().target)
+                        {
+                            laserBlocked++;
+                            if (laserBlocked > 150)
+                            {
+                                blocked = true;
+                                StopLaser();
+                                if (NetworkDriver.instance.TWOPLAYER) { NetworkDriver.instance.sioCom.Instance.Emit("laser", JsonConvert.SerializeObject($"{{'obj':'{gameObject.name}','on':'false'}}"), false); }
+                            }
+                        }
+                    }
+                }*/
             }
             //CHARGING
             if (startCharging && GetComponent<Animator>().GetCurrentAnimatorClipInfo(1)[0].clip.name != "zozoLaserStart")
@@ -131,11 +154,19 @@ public class ZozoControl : MonoBehaviour
 
 
     }
+   /* bool hasTriedLaser;
+    void HasTriedLaser()
+    {
+        hasTriedLaser = true;
+    }*/
     public void TriggerCharge()//FROM ANIMATION, FOR EFFECTS
     {
         charging = true;
         chargeLight.SetActive(true);
         laserChargeVFX.SetActive(true);
+        //laserBlocked = 0;
+       // blocked = false;
+       // hasTriedLaser = false;
     }
 
     public void ChargeLaser(bool otherPlayer)
@@ -144,7 +175,7 @@ public class ZozoControl : MonoBehaviour
         {
             Debug.Log("CHARGING LASER");
             startCharging = true;
-            if (NetworkDriver.instance.HOST && NetworkDriver.instance.TWOPLAYER) { NetworkDriver.instance.sioCom.Instance.Emit("laser", JsonConvert.SerializeObject($"{{'obj':'{gameObject.name}'}}"), false); }
+            if (NetworkDriver.instance.HOST && NetworkDriver.instance.TWOPLAYER) { NetworkDriver.instance.sioCom.Instance.Emit("laser", JsonConvert.SerializeObject($"{{'obj':'{gameObject.name}','on':'true'}}"), false); }
             canLaser = false;
             GetComponent<Animator>().SetLayerWeight(0, 0f);
             GetComponent<Animator>().SetLayerWeight(1, 1f);
@@ -162,17 +193,19 @@ public class ZozoControl : MonoBehaviour
         AudioManager.instance.Play("zozolaugh", null);
     }
 
-    private void StopLaser()
+    public void StopLaser()
     {
         GetComponent<Animator>().SetLayerWeight(0, 1f);
         GetComponent<Animator>().SetLayerWeight(1, 0f);
         GetComponent<NPCController>().zozoLaser = false;
+        AudioManager.instance.Play("zozoLaserStop", null);
         canLaser = true;
         laserActive = false;
         laserLights.SetActive(false);
         GetComponent<Animator>().SetBool("laser", false);
         laserChargeVFX.transform.localScale = laserChargeVFXstartScale; 
         canLaserTimer = Time.time;//cooldown
+       // if (blocked) { canLaserTimer =0; AudioManager.instance.Play("zozoLaserStop", null); }//reset cooldown
     }
 
     public void TriggerFootstepRight()

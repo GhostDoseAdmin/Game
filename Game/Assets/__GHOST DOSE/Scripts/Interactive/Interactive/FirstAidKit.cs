@@ -33,7 +33,7 @@ public class FirstAidKit : Item
         if (!otherPlayer) { AudioManager.instance.Play("GetFrom", null); }
         //if (!otherPlayer) { AudioManager.instance.Play("GetFrom", GameObject.Find("Player").GetComponent<PlayerController>().audioSource); }
         //else { AudioManager.instance.Play("GetFrom", GameObject.Find("Client").GetComponent<ClientPlayerController>().audioSource); }
-        transform.position = new Vector3(transform.position.x, -9999, transform.position.y);//MIMIC DESTROY
+        transform.position = new Vector3(transform.position.x, -9999, transform.position.z);//MIMIC DESTROY
         Invoke("Respawn", respawnTime);
     }
 

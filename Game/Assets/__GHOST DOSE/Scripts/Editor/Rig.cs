@@ -92,15 +92,22 @@ public class Rig : EditorWindow
                 }
             }
             //DEEP COPY
+            if (PrefabUtility.GetPrefabAssetType(originSkeletonRoot) != PrefabAssetType.NotAPrefab) { PrefabUtility.UnpackPrefabInstance(originSkeletonRoot.transform.root.gameObject, PrefabUnpackMode.Completely, InteractionMode.AutomatedAction); }
+            if (PrefabUtility.GetPrefabAssetType(destSkeletonRoot) != PrefabAssetType.NotAPrefab) { PrefabUtility.UnpackPrefabInstance(destSkeletonRoot.transform.root.gameObject, PrefabUnpackMode.Completely, InteractionMode.AutomatedAction); }
             CopyObjectsOnSkeletonPart(originSkeletonRoot.transform, destSkeletonRoot.transform);
-            //CHANGE PARENT to CORRECT PLAYER
-            if (isTravis) {
-                myModel.transform.position = GameObject.Find("TRAVIS").transform.GetChild(0).transform.position;
-                myModel.transform.SetParent(GameObject.Find("TRAVIS").transform.GetChild(0)); 
-            }
-            else {
-                myModel.transform.position = GameObject.Find("WESTIN").transform.GetChild(0).transform.position;
-                myModel.transform.SetParent(GameObject.Find("WESTIN").transform.GetChild(0));
+            if (isPlayer)
+            {
+                //CHANGE PARENT to CORRECT PLAYER
+                if (isTravis)
+                {
+                    myModel.transform.position = GameObject.Find("TRAVIS").transform.GetChild(0).transform.position;
+                    myModel.transform.SetParent(GameObject.Find("TRAVIS").transform.GetChild(0));
+                }
+                else
+                {
+                    myModel.transform.position = GameObject.Find("WESTIN").transform.GetChild(0).transform.position;
+                    myModel.transform.SetParent(GameObject.Find("WESTIN").transform.GetChild(0));
+                }
             }
             destSkeletonRoot = null;
             Debug.Log("Copy Completed");
@@ -145,9 +152,45 @@ public class Rig : EditorWindow
     {
         for (int i = 0; i < originSkeletonPart.childCount; i++)
         {
-            Transform originChild = originSkeletonPart.GetChild(i);
-            Transform destChild = destSkeletonPart.Find(originChild.name);
 
+            //COPY HIPS
+            if(originSkeletonPart.gameObject.name== "mixamorig:Hips")
+            {
+                destSkeletonPart.transform.position = originSkeletonPart.position;
+                destSkeletonPart.transform.rotation = originSkeletonPart.rotation;
+
+                destSkeletonPart.gameObject.layer = originSkeletonPart.gameObject.layer;
+                foreach (Component originComponent in originSkeletonPart.GetComponents<Component>())
+                {
+                    if (originComponent is Transform) continue; // Skip the transform component
+
+                    Component destComponent = destSkeletonPart.GetComponent(originComponent.GetType());
+
+                    if (destComponent == null)
+                    {
+                        UnityEditorInternal.ComponentUtility.CopyComponent(originComponent);
+
+                        if (originComponent is ParticleSystem)
+                        {
+                            ParticleSystem newParticleSystem = destSkeletonPart.gameObject.AddComponent<ParticleSystem>();
+                            UnityEditorInternal.ComponentUtility.PasteComponentValues(newParticleSystem);
+                        }
+                        else
+                        {
+                            UnityEditorInternal.ComponentUtility.PasteComponentAsNew(destSkeletonPart.gameObject);
+                        }
+                    }
+                }
+            }
+
+            Transform originChild; 
+            Transform destChild;
+
+
+            originChild = originSkeletonPart.GetChild(i);
+            destChild = destSkeletonPart.Find(originChild.name);
+
+            //CREATE MATCHING OBJECT
             if (destChild == null)
             {
                 // Create a new object in the destination hierarchy
@@ -156,7 +199,7 @@ public class Rig : EditorWindow
                 newObject.transform.localPosition = originChild.localPosition;
                 newObject.transform.localRotation = originChild.localRotation;
                 newObject.transform.localScale = originChild.localScale;
-
+               
                 // Copy components from the origin object to the new object
                 foreach (Component component in originChild.GetComponents<Component>())
                 {
@@ -176,6 +219,7 @@ public class Rig : EditorWindow
                 }
 
                 // Recursively copy the objects on the child's hierarchy
+                newObject.gameObject.layer = originChild.gameObject.layer;
                 CopyObjectsOnSkeletonPart(originChild, newObject.transform);
             }
             else
@@ -203,9 +247,11 @@ public class Rig : EditorWindow
                         }
                     }
                 }
-
-                // Recursively copy the objects on the child's hierarchy
+                destChild.gameObject.layer = originChild.gameObject.layer;
                 CopyObjectsOnSkeletonPart(originChild, destChild);
+                
+                // Recursively copy the objects on the child's hierarchy
+                
             }
         }
     }
