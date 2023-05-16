@@ -49,6 +49,7 @@ public class NPCController : MonoBehaviour
     public bool canFlinch;
     public bool zozoLaser;
     public bool zapActive;
+    public int zapRange;
 
     [HideInInspector] public int startHealth;
 
@@ -355,7 +356,8 @@ public class NPCController : MonoBehaviour
             }
         }
     }
-
+    public void TriggerZapOn() { zapActive = true; }
+    public void TriggerZapOff() { zapActive = false; }
     public void Attack()
     {
         Debug.Log("target " + target);
@@ -370,6 +372,8 @@ public class NPCController : MonoBehaviour
          //-----------DISENGAGE--------------------
          if (distance > 15 && !ZOZO){ Disengage(); }
 
+
+
         //------PUSH PLAYER AWAY
         if (distance < 0.4f)
         {
@@ -382,8 +386,13 @@ public class NPCController : MonoBehaviour
             target.transform.position = Vector3.Lerp(target.transform.position, targetPosition, speed * Time.deltaTime);
         }
 
+        //ZAP
+        if (distance <= zapRange && distance > hitRange)
+        {
+            animEnemy.Play("agro");
+        }
 
-        if(!zozoLaser)
+        if (!zozoLaser)
         {
             //RUN TO TARGET
             if (distance > hitRange)
@@ -420,31 +429,7 @@ public class NPCController : MonoBehaviour
 
         //PLAYER DIES
         if (!target.gameObject.activeSelf) { target = null; }
-        //---------------PLAYER DIES
-        //if (target!=null && target.gameObject != null && Player!=null && Client!=null && NetworkDriver.instance!=null && NetworkDriver.instance.HOST)
-        //if (NetworkDriver.instance != null && NetworkDriver.instance.HOST)
-        {
-            /*
-            if (target.gameObject == Player)
-            {
-                if (target.gameObject.GetComponent<HealthSystem>().Health <= 0 || !Player.activeSelf)
-                {
-                    target = null;
-                    navmesh.isStopped = false;
-                    agro = false;
-                }
-            }
-            if (target.gameObject == Client)
-            {
-                if (target.gameObject.GetComponent<ClientPlayerController>().hp <= 0 || !Client.activeSelf)
-                {
-                    target = null;
-                    navmesh.isStopped = false;
-                    agro = false;
-                }
-            }*/
-        }
-        //if (zozo) { GetComponent<NavMeshAgent>().speed = 0; }
+
     }
 
     public void FindTargetRayCast()

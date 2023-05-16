@@ -4442,6 +4442,7 @@ MonoBehaviour:
   ammoCountUI: {fileID: 0}
   "ammo\xD1lipCountUI": {fileID: 0}
   crosshairs: {fileID: 0}
+  planchette: {fileID: 0}
   K2: {fileID: 0}
   camBatteryUI: {fileID: 0}
   pickUp: PickUp
@@ -4450,6 +4451,7 @@ MonoBehaviour:
   noAmmo: EmptyGun
   muzzleFlash: {fileID: 0}
   Shell: {fileID: 0}
+  aiming: {fileID: 0}
 --- !u!114 &692362297
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4567,6 +4569,7 @@ MonoBehaviour:
   is_FlashlightAim: 0
   gear: 1
   gearAim: 0
+  camera: {fileID: 0}
   changingGear: 0
   throwing: 0
   emitGear: 0
@@ -13434,8 +13437,8 @@ MonoBehaviour:
   - {fileID: 8626390113503649595, guid: 84e4811d67cd6974ebd8b52970d13a59, type: 3}
   - {fileID: 8626390113503649595, guid: 88720bb08cd264349adc74089f3d8443, type: 3}
   wesLevel1RewardRigs:
-  - {fileID: 3042350477353588769, guid: ea024d97eabe4d64dac94d96c4b08d43, type: 3}
-  - {fileID: 3042350477353588769, guid: d38f7731b397115498836221b6b772c5, type: 3}
+  - {fileID: 8554559486713902765, guid: 5bf5ef596ba630546b31d9ced6bd006f, type: 3}
+  - {fileID: 8554559486713902765, guid: 5bf5ef596ba630546b31d9ced6bd006f, type: 3}
   wesLevel2RewardRigs:
   - {fileID: 3042350477353588769, guid: cb1d4d16cfb4da94d93c0e128da9ed61, type: 3}
   - {fileID: 3042350477353588769, guid: 47e6ee8b658c4da4683c0010b1e940f3, type: 3}
@@ -48985,11 +48988,13 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   zoom: 35
+  startZoom: 0
   height: 40
   width: 40
   crosshair: {fileID: 0}
   K2: {fileID: 0}
   gear: 0
+  isOuija: 0
   normal: 60
   player: {fileID: 5398469344788947032}
 --- !u!124 &2223322646375490426
@@ -54742,6 +54747,7 @@ MonoBehaviour:
   ammoCountUI: {fileID: 0}
   "ammo\xD1lipCountUI": {fileID: 0}
   crosshairs: {fileID: 0}
+  planchette: {fileID: 0}
   K2: {fileID: 0}
   camBatteryUI: {fileID: 0}
   pickUp: PickUp
@@ -54750,6 +54756,7 @@ MonoBehaviour:
   noAmmo: EmptyGun
   muzzleFlash: {fileID: 0}
   Shell: {fileID: 0}
+  aiming: {fileID: 0}
 --- !u!114 &5055496213087247194
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -54913,6 +54920,7 @@ MonoBehaviour:
   is_FlashlightAim: 0
   gear: 1
   gearAim: 0
+  camera: {fileID: 0}
   changingGear: 0
   throwing: 0
   emitGear: 0
@@ -55214,11 +55222,13 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   zoom: 35
+  startZoom: 0
   height: 40
   width: 40
   crosshair: {fileID: 0}
   K2: {fileID: 0}
   gear: 0
+  isOuija: 0
   normal: 60
   player: {fileID: 5055496213087247204}
 --- !u!114 &5055957529509440845
@@ -55252,6 +55262,7 @@ MonoBehaviour:
   is_FlashlightAim: 0
   gear: 1
   gearAim: 0
+  camera: {fileID: 0}
   changingGear: 0
   throwing: 0
   emitGear: 0
@@ -56337,6 +56348,7 @@ MonoBehaviour:
   ammoCountUI: {fileID: 0}
   "ammo\xD1lipCountUI": {fileID: 0}
   crosshairs: {fileID: 0}
+  planchette: {fileID: 0}
   K2: {fileID: 0}
   camBatteryUI: {fileID: 0}
   pickUp: PickUp
@@ -56345,6 +56357,7 @@ MonoBehaviour:
   noAmmo: EmptyGun
   muzzleFlash: {fileID: 0}
   Shell: {fileID: 0}
+  aiming: {fileID: 0}
 --- !u!54 &8185797812273735707
 Rigidbody:
   m_ObjectHideFlags: 0
