@@ -40,6 +40,8 @@ public class NPCController : MonoBehaviour
     public float retreatThreshold;
     public int unawareness;
     public bool xrayvision;
+    public int laserForce;
+    public int laserDamage;
     public int persist;
     private int startPersist;
     public bool canRespawn;

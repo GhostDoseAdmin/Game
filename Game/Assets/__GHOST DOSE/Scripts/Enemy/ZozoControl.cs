@@ -25,8 +25,6 @@ public class ZozoControl : MonoBehaviour
     public float laserDuration;
     public float laserDistanceMin, laserDistanceMax;
     [HideInInspector] public bool laserActive;
-    public float laserForce;
-    public int laserDamage;
     public float laserCoolDown;
     private bool charging;
     private bool startCharging;
