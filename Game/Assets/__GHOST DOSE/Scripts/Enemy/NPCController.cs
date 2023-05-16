@@ -105,7 +105,7 @@ public class NPCController : MonoBehaviour
 
     void Start()
     {
-        zapActive = true;
+        //zapActive = true;
 
         if (wayPoint.Count == 0)        {            wayPoint = new List<Transform>(); wayPoint.Add(transform);        }
 
