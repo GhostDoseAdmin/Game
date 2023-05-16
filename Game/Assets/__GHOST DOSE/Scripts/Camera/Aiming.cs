@@ -7,6 +7,7 @@ public class Aiming : MonoBehaviour {
 
 	[Range(10,60)]
 	public int zoom = 20;
+	public int startZoom;
 	[Header("Sight size in height")]
 	public int height = 40;
 	[Header("Sight size in width")]
@@ -14,6 +15,7 @@ public class Aiming : MonoBehaviour {
 	public GameObject crosshair;
     public GameObject K2;
 	public int gear;
+	public bool isOuija;
 
     private int smoothZoom = 5;//10
 	public int normal = 60;//field of view
@@ -24,7 +26,10 @@ public class Aiming : MonoBehaviour {
 
 	void Start()
     {
-		crosshair.SetActive(false);
+		isOuija = false;
+        startZoom = zoom;
+
+        crosshair.SetActive(false);
         K2.SetActive(false);
 
     }
@@ -33,6 +38,8 @@ public class Aiming : MonoBehaviour {
 	{
 		if(gear==1) { zoom = 35; }
 		if(gear==2) { zoom = 50;}
+		if(isOuija) { zoom = 20; }
+
 
 		if (player.GetComponent<PlayerController>().gearAim == true)
         {
