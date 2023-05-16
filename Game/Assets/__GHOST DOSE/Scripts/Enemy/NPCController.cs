@@ -46,6 +46,7 @@ public class NPCController : MonoBehaviour
     public bool teleports;
     public bool canFlinch;
     public bool zozoLaser;
+    public bool zapActive;
 
     [HideInInspector] public int startHealth;
 
@@ -102,6 +103,8 @@ public class NPCController : MonoBehaviour
 
     void Start()
     {
+        zapActive = true;
+
         if (wayPoint.Count == 0)        {            wayPoint = new List<Transform>(); wayPoint.Add(transform);        }
 
         PlayerWP = GameObject.Find("PlayerWavePoint");
