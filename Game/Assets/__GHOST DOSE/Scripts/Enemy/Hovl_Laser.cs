@@ -89,12 +89,12 @@ public class Hovl_Laser : MonoBehaviour
                 //hit.collider.SendMessage("SomeMethod"); // example
                 if (hit.collider.gameObject.name == "Player" && Time.time > collideTimer + collideDelay)
                 {
-                    Vector3 oppositeForce = GetComponentInParent<NPCController>().transform.forward * GetComponentInParent<ZozoControl>().laserForce;
+                    Vector3 oppositeForce = GetComponentInParent<NPCController>().transform.forward * GetComponentInParent<NPCController>().laserForce;
                     oppositeForce.y = 0f; // Set the y component to 0
 
                     if (hit.collider.gameObject.name == "Player")
                     {
-                        hit.collider.gameObject.GetComponent<HealthSystem>().HealthDamage(GetComponentInParent<ZozoControl>().laserDamage, oppositeForce);
+                        hit.collider.gameObject.GetComponent<HealthSystem>().HealthDamage(GetComponentInParent<NPCController>().laserDamage, oppositeForce);
                     }
                     if (hit.collider.gameObject.name == "Client")
                     {
