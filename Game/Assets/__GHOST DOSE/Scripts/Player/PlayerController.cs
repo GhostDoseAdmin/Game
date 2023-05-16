@@ -46,10 +46,11 @@ public class PlayerController : MonoBehaviour
     public int gear = 1; //0 = cam 1=ks 2=rem
     public bool gearAim;
 	private GameObject k2;
-	private GameObject camera;
+	public GameObject camera;
     private GameObject camInventory;
     private GameObject k2Inventory;
 	private GameObject SB7;
+	private GameObject ouija;
     public bool changingGear;
 	public bool throwing = false;
 	public bool emitGear;
@@ -123,7 +124,10 @@ public class PlayerController : MonoBehaviour
         camInventory = util.FindChildObject(this.gameObject.transform, "CamInventory").gameObject;
         k2Inventory = util.FindChildObject(this.gameObject.transform, "K2Inventory").gameObject;
         SB7 = util.FindChildObject(this.gameObject.transform, "SB7").gameObject;
+        ouija = util.FindChildObject(this.gameObject.transform, "Ouija").gameObject;
+        ouija.SetActive(false);
         SB7.SetActive(false);
+        
         camInventory.SetActive(false);
         //targetPos = GameDriver.instance.targetLook.transform;
 		//playerCam = GameObject.Find("PlayerCamera");
@@ -155,16 +159,14 @@ public class PlayerController : MonoBehaviour
 
     void Update() 
 	{
-		//gearAim = true;
-		//anim.SetBool("Pistol", true);
-		//handWeight = 1f;
-		//gear = 2;
-		if (anim.GetCurrentAnimatorClipInfo(0).Length > 0){ currentAni = anim.GetCurrentAnimatorClipInfo(0)[0].clip.name; }
+        if (anim.GetBool("ouija")) { handWeight = 0f; anim.SetBool("Pistol", true); gear = 1; }
+
+        if (anim.GetCurrentAnimatorClipInfo(0).Length > 0){ currentAni = anim.GetCurrentAnimatorClipInfo(0)[0].clip.name; }
 
 		if (currentAni != "React")
 		{
 			Locomotion();
-			if (currentAni != "dodgeRightAni" && currentAni != "dodgeLeftAni")
+			if (currentAni != "dodgeRightAni" && currentAni != "dodgeLeftAni" )
 			{
 				Running();
 				ChangeGear(false);
@@ -437,7 +439,7 @@ public class PlayerController : MonoBehaviour
 						{ //TAKE OUT sb7
 							sb7 = true;
 							gear = 0;
-							camera.SetActive(false); k2.SetActive(false); camInventory.SetActive(false); k2Inventory.SetActive(false); SB7.SetActive(true);
+							camera.SetActive(false); k2.SetActive(false); camInventory.SetActive(true); k2Inventory.SetActive(true); SB7.SetActive(true);
 						}
 					}
 					//------Q
@@ -518,7 +520,8 @@ public class PlayerController : MonoBehaviour
 					anim.SetBool("Pistol", true);
 					newHandWeight = 1f;
 
-					GetComponent<ShootingSystem>().Aiming(gear);
+                   // if (anim.GetBool("ouija")) { newHandWeight = 0f; anim.SetBool("Pistol", true); gearAim = false; }
+                    GetComponent<ShootingSystem>().Aiming(gear);
 
 					//-------------------------------SHOOTING -----------------------------------
 					if (Input.GetMouseButtonDown(0))
@@ -551,7 +554,9 @@ public class PlayerController : MonoBehaviour
 					}
 				}
 				handWeight = Mathf.Lerp(handWeight, newHandWeight, Time.deltaTime * handSpeed);
-			}
+				//OUIJA
+				if (anim.GetBool("ouija")) { handWeight = 0f; anim.SetBool("Pistol", true); gear = 1; ouija.SetActive(true); camera.SetActive(false); k2.SetActive(false); camInventory.SetActive(true); k2Inventory.SetActive(true); } else { ouija.SetActive(false); }
+            }
 		}
 	}
 
@@ -583,7 +588,7 @@ public class PlayerController : MonoBehaviour
 
 	void OnAnimatorIK()
 	{
-		if (is_FlashlightAim || gearAim)
+		if ((is_FlashlightAim || gearAim) && !anim.GetBool("ouija"))
 		{
 			anim.SetLookAtWeight(lookIKWeight, bodyWeight);
 			anim.SetLookAtPosition(targetPosVec);

@@ -11,12 +11,6 @@ public class ZozoLaser : MonoBehaviour
     public float MaxLength;
     public GameObject[] Prefabs;
 
-    private Vector3 target;
-
-    [Header("GUI")]
-    private float windowDpi;
-
-    private int Prefab;
     private GameObject Instance;
     private Hovl_Laser LaserScript;
     private Hovl_Laser2 LaserScript2;

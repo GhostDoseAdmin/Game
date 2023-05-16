@@ -66,7 +66,21 @@ public class VictimControl : Item
         ZOZOstartPos = ZOZO.transform.position;
         ZOZOstartRot = ZOZO.transform.rotation;
     }
-
+    private void LateUpdate()
+    {
+        /*
+        if (startCircle)
+        {
+            //OUJIA ANIMATIONS
+            GameDriver.instance.Player.GetComponent<Animator>().SetBool("ouija", true);
+            if (NetworkDriver.instance.TWOPLAYER) { GameDriver.instance.Client.GetComponent<Animator>().SetBool("ouija", true); }
+        }
+        else { 
+            GameDriver.instance.Player.GetComponent<Animator>().SetBool("ouija", false);
+            if (NetworkDriver.instance.TWOPLAYER) { GameDriver.instance.Client.GetComponent<Animator>().SetBool("ouija", false); }
+        }
+        */
+    }
     // Update is called once per frame
     void Update()
     {
@@ -85,6 +99,7 @@ public class VictimControl : Item
 
         if (startCircle)
         {
+
             if (GameDriver.instance.Player != null) { GameDriver.instance.Player.GetComponent<ShootingSystem>().camBatteryUI.fillAmount = 1; }
 
             main.transform.Rotate(0f, 5f * Time.deltaTime, 0f);
@@ -276,6 +291,8 @@ public class VictimControl : Item
         GameDriver.instance.WriteGuiMsg("Beware: Don't summon ZOZO", 5f, false, Color.yellow);
         trigger.SetActive(false);
         if (NetworkDriver.instance.TWOPLAYER && !otherPlayer) { NetworkDriver.instance.sioCom.Instance.Emit("event", JsonConvert.SerializeObject($"{{'obj':'{gameObject.name}','type':'update','event':'startcircle'}}"), false); }
+        GameDriver.instance.Player.GetComponent<Animator>().SetBool("ouija", true);
+        if (NetworkDriver.instance.TWOPLAYER) { GameDriver.instance.Client.GetComponent<Animator>().SetBool("ouija", true); }
     }
 
     public void testAnswer(GameObject victim)
@@ -289,6 +306,7 @@ public class VictimControl : Item
             {
              SetSpiritsFree();// GameDriver.instance.WriteGuiMsg("RIGHT ANWER" + victim.name, 10f, false);
                 if (NetworkDriver.instance.TWOPLAYER) { NetworkDriver.instance.sioCom.Instance.Emit("event", JsonConvert.SerializeObject($"{{'obj':'{gameObject.name}','type':'update','event':'setfree'}}"), false); }
+
             }
             else {
               SummonZozo();// GameDriver.instance.WriteGuiMsg("WRONG ANWER " + victim.name +"SUPPOSED TO BE " + ChosenVictim.name, 10f, false);
@@ -296,9 +314,16 @@ public class VictimControl : Item
             }
         }
     }
+    public void revertGear()
+    {
+        GameDriver.instance.Player.GetComponent<Animator>().SetBool("ouija", false);
+        GameDriver.instance.Player.GetComponent<PlayerController>().camera.SetActive(true);
+        if (NetworkDriver.instance.TWOPLAYER) { GameDriver.instance.Client.GetComponent<Animator>().SetBool("ouija", false); GameDriver.instance.Client.GetComponent<ClientPlayerController>().camera.SetActive(true); }
+    }
 
     public void SetSpiritsFree()
     {
+        revertGear();
         Pentagram.GetComponent<MeshRenderer>().materials[0].SetColor("_Color", Color.blue);
         pentagramLight.GetComponent<Light>().color = Color.blue;
         AudioManager.instance.StopPlaying("creepywhisper", null);
@@ -318,6 +343,7 @@ public class VictimControl : Item
     }
     public void SummonZozo()
     {
+        revertGear();
         zozoDummy.transform.GetChild(0).GetComponent<SkinnedMeshRenderer>().materials[0].SetFloat("_Alpha", 0f);
         zozoDummy.transform.GetChild(0).GetComponent<SkinnedMeshRenderer>().materials[0].SetFloat("_EMFAlpha", 0.3f);
         for (int i = 0; i < candles.Count; i++) { candles[i].SetActive(false); }

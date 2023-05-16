@@ -69,9 +69,10 @@ public class ClientPlayerController : MonoBehaviour
     public int gear = 1; //0 = cam 1=ks 2=rem
     public bool gearAim;
     public GameObject k2;
-    private GameObject camera;
+    public GameObject camera;
     private GameObject camInventory;
     private GameObject k2Inventory;
+    private GameObject ouija;
     public bool changingGear;
     public bool throwing = false;
 
@@ -147,6 +148,8 @@ public class ClientPlayerController : MonoBehaviour
         camera = util.FindChildObject(this.gameObject.transform, "camera").gameObject;
         camInventory = util.FindChildObject(this.gameObject.transform, "CamInventory").gameObject;
         k2Inventory = util.FindChildObject(this.gameObject.transform, "K2Inventory").gameObject;
+        ouija = util.FindChildObject(this.gameObject.transform, "Ouija").gameObject;
+        ouija.SetActive(false);
         SB7 = util.FindChildObject(this.gameObject.transform, "SB7").gameObject;
         SB7.SetActive(false);
         camInventory.SetActive(false);
@@ -263,7 +266,7 @@ public class ClientPlayerController : MonoBehaviour
         anim.SetBool("GetGear", true);
         if (gear == 1){camera.SetActive(true); k2.SetActive(false); camInventory.SetActive(false); k2Inventory.SetActive(true); SB7.SetActive(false); }
 		if (gear == 2){camera.SetActive(false); k2.SetActive(true); camInventory.SetActive(true); k2Inventory.SetActive(false); SB7.SetActive(false); }
-        if (gear == 0) { camera.SetActive(false); k2.SetActive(false); camInventory.SetActive(false); k2Inventory.SetActive(false); SB7.SetActive(true); }
+        if (gear == 0) { camera.SetActive(false); k2.SetActive(false); camInventory.SetActive(true); k2Inventory.SetActive(true); SB7.SetActive(true); }
 
             gearAim = false;
 			throwing = false;
@@ -335,8 +338,10 @@ public class ClientPlayerController : MonoBehaviour
 
 			}
 			handWeight = Mathf.Lerp(handWeight, newHandWeight, Time.deltaTime * handSpeed);
-		
-	}
+        if (anim.GetBool("ouija")) { handWeight = 0f; anim.SetBool("Pistol", true); gear = 1; ouija.SetActive(true); camera.SetActive(false); k2.SetActive(false); camInventory.SetActive(true); k2Inventory.SetActive(true); } else { ouija.SetActive(false); }
+
+
+    }
 
 
     public void Flinch(Vector3 force)
