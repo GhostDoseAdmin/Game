@@ -30,6 +30,7 @@ public class ShootingSystem : MonoBehaviour
     [SerializeField] private Text ammoCountUI = null;
     [SerializeField] private Text ammo—lipCountUI = null;
     public GameObject crosshairs;
+    public GameObject planchette;
     public GameObject K2;
     private Image enemyIndicatorUI;
     private Image headShotIndicatorUI;
@@ -61,7 +62,7 @@ public class ShootingSystem : MonoBehaviour
     private bool isVisible;
     private bool isHeadshot;
     private Camera camera;
-    private Aiming aiming;
+    public Aiming aiming;
     private GameObject target;
 
     public static ShootingSystem instance;
@@ -75,6 +76,7 @@ public class ShootingSystem : MonoBehaviour
         muzzleFlash = util.FindChildObject(this.gameObject.transform, "MuzzleFlashEffect").GetComponent<ParticleSystem>();
         Shell = util.FindChildObject(this.gameObject.transform, "Puff").GetComponent<ParticleSystem>();
         crosshairs = GameObject.Find("Crosshairs");
+        planchette = GameObject.Find("planchette");
         K2 = GameObject.Find("K2Hud");
         enemyIndicatorUI = GameObject.Find("Vector-5-Image").GetComponent<Image>();
         headShotIndicatorUI = GameObject.Find("Dot").GetComponent<Image>();
@@ -82,6 +84,8 @@ public class ShootingSystem : MonoBehaviour
         focusIndicatorUI = GameObject.Find("Vector-4-Image").GetComponent<Image>();
         camera = transform.parent.Find("PlayerCamera").GetComponent<Camera>();
         aiming = transform.parent.Find("PlayerCamera").GetComponent<Aiming>();
+        planchette.SetActive(false);
+
     }
 
 
@@ -96,6 +100,12 @@ public class ShootingSystem : MonoBehaviour
     {
         //CheckShoot();
         ReloadAmmo();
+        if (GetComponent<Animator>().GetBool("ouija"))
+        {
+            aiming.isOuija = true;
+            crosshairs.SetActive(false);
+        }
+        else { aiming.isOuija = false; }
        
     }
 

@@ -292,6 +292,8 @@ public class VictimControl : Item
         trigger.SetActive(false);
         if (NetworkDriver.instance.TWOPLAYER && !otherPlayer) { NetworkDriver.instance.sioCom.Instance.Emit("event", JsonConvert.SerializeObject($"{{'obj':'{gameObject.name}','type':'update','event':'startcircle'}}"), false); }
         GameDriver.instance.Player.GetComponent<Animator>().SetBool("ouija", true);
+        GameDriver.instance.Player.GetComponent<ShootingSystem>().planchette.SetActive(true);
+        GameDriver.instance.Player.GetComponent<ShootingSystem>().crosshairs.SetActive(false);
         if (NetworkDriver.instance.TWOPLAYER) { GameDriver.instance.Client.GetComponent<Animator>().SetBool("ouija", true); }
     }
 
@@ -316,6 +318,9 @@ public class VictimControl : Item
     }
     public void revertGear()
     {
+        //GameDriver.instance.Player.GetComponent<ShootingSystem>().aiming.zoom = GameDriver.instance.Player.GetComponent<ShootingSystem>().aiming.startZoom;
+        GameDriver.instance.Player.GetComponent<ShootingSystem>().planchette.SetActive(false);
+        //GameDriver.instance.Player.GetComponent<ShootingSystem>().crosshairs.SetActive(true);
         GameDriver.instance.Player.GetComponent<Animator>().SetBool("ouija", false);
         GameDriver.instance.Player.GetComponent<PlayerController>().camera.SetActive(true);
         if (NetworkDriver.instance.TWOPLAYER) { GameDriver.instance.Client.GetComponent<Animator>().SetBool("ouija", false); GameDriver.instance.Client.GetComponent<ClientPlayerController>().camera.SetActive(true); }
