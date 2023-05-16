@@ -136,6 +136,7 @@ public class SurfaceManager : MonoBehaviour {
 
 		int materialIndex = -1;
 		Mesh m = mc.sharedMesh;
+		if(!m.isReadable) { return null; }
 		int triangleIdx = hit.triangleIndex;
 		int lookupIdx1 = m.triangles[triangleIdx * 3];
 		int lookupIdx2 = m.triangles[triangleIdx * 3 + 1];

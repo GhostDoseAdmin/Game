@@ -113,6 +113,7 @@ public class RigManager : MonoBehaviour
 
     public void UpdateSkinsList()
     {
+        Debug.Log("LEVEL SPEED DATA " + leveldata[1] + " " + leveldata[2]);
         //TEST
         //leveldata = new int[3];
         //leveldata[1] = 200;
@@ -125,11 +126,11 @@ public class RigManager : MonoBehaviour
         if (NetworkDriver.instance.isTRAVIS) { updatedList.Add(travBasicRig); }
         else { updatedList.Add(wesBasicRig); }
 
-
+ 
         for (int i = 1; i<leveldata.Length; i++)
         {
             //LEVEL1
-            if (i == 1) {
+            if (i == 1 &&  leveldata[1] > 0) {
                 if (NetworkDriver.instance.isTRAVIS) { thisRewardsList = travLevel1RewardRigs; } 
                 else { thisRewardsList = wesLevel1RewardRigs; }
 
@@ -144,7 +145,7 @@ public class RigManager : MonoBehaviour
                 }
             }
             //LEVEL2
-            if (i == 2)
+            if (i == 2 &&  leveldata[2] > 0)
             {
                 if (NetworkDriver.instance.isTRAVIS) {  thisRewardsList = travLevel2RewardRigs; }
                 else { thisRewardsList = wesLevel2RewardRigs; }

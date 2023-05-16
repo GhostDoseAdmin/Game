@@ -168,8 +168,8 @@ namespace GameManager
                     }
                 }
 
-                if (NetworkDriver.instance.myRig == null) { if (NetworkDriver.instance.isTRAVIS) { myRig = travisBasic; } else { myRig = westinBasic; } }
-                if (NetworkDriver.instance.theirRig == null) { if (NetworkDriver.instance.isTRAVIS) { theirRig = westinBasic;  } else { theirRig = travisBasic; } }
+                if (myRig == null) { if (NetworkDriver.instance.isTRAVIS) { myRig = travisBasic; } else { myRig = westinBasic; } }
+                if (theirRig == null) { if (NetworkDriver.instance.isTRAVIS) { theirRig = westinBasic;  } else { theirRig = travisBasic; } }
 
                 //------------CHECK FOR MISSING A RIG------------    
                 if (TRAVIS.transform.GetChild(0).childCount <= 0) {Instantiate(travisBasic, TRAVIS.transform.GetChild(0).transform); }
