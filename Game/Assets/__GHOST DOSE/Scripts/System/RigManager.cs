@@ -81,9 +81,12 @@ public class RigManager : MonoBehaviour
         }
         
         currentRig.transform.SetParent(playerProp.transform);
-        Debug.Log("-----------------PROP NAME" + playerProp.name);
-        playerProp.GetComponentInChildren<K2>().gameObject.SetActive(false);
-        playerProp.transform.Find("Ouija").gameObject.SetActive(false);
+
+
+
+        //Debug.Log("-----------------PROP NAME" + playerProp.transform.Find("mixamorig:Spine2").gameObject.name);
+        util.FindChildObject(playerProp.transform, "K2").SetActive(false);
+        util.FindChildObject(playerProp.transform, "Ouija").SetActive(false);
         StartCoroutine(util.ReactivateAnimator(playerProp));
 
        
