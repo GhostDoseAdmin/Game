@@ -48,8 +48,12 @@ public class NPCController : MonoBehaviour
     public bool teleports;
     public bool canFlinch;
     public bool zozoLaser;
+
+    //zap
     public bool zapActive;
+    private bool canZap;
     public int zapRange;
+    private bool zaps;
 
     [HideInInspector] public int startHealth;
 
@@ -107,7 +111,7 @@ public class NPCController : MonoBehaviour
     void Start()
     {
         //zapActive = true;
-
+        
         if (wayPoint.Count == 0)        {            wayPoint = new List<Transform>(); wayPoint.Add(transform);        }
 
         PlayerWP = GameObject.Find("PlayerWavePoint");
@@ -135,7 +139,7 @@ public class NPCController : MonoBehaviour
         outline = transform.GetChild(0).GetComponent<Outline>();
 
         zozoLaser = false;
-       
+        if (Shadower) { zaps = true; canZap = true; }
         //Debug.Log("----------------------------------------" + HIT_COL.GetComponent<SphereCollider>().enabled);
 
 
@@ -223,25 +227,6 @@ public class NPCController : MonoBehaviour
     {
         if (GetComponent<Teleport>().teleport > 0) {return; }
 
-        //AGRO 
-        /*if (distance <= 2)
-        {
-            if (closestPlayer == Player.transform) { if (Player.GetComponent<Animator>().GetBool("Running")) { Agro(false); } }
-            if (closestPlayer == Client.transform) { if (Client.GetComponent<Animator>().GetBool("Running")) { Agro(true); } }
-        }*/
-        //-------------ATTENTION----------------------
-        /*if (distance <= 3 && target==null)
-        {
-            if (closestPlayer == Player.transform)
-            {
-                 if (Player.GetComponent<Animator>().GetBool("Running")) { Engage(Player.transform);  } //TakeDamage(1,false);
-            }
-            if (closestPlayer ==Client.transform)
-            {
-
-                if (Client.GetComponent<Animator>().GetBool("Running")) { Engage(Client.transform); } //TakeDamage(1, true);
-            }
-        }*/
 
         if (target != null) { hasLooked = true; Attack();         }
         //-------------------------WAY POINTS ------------------------
@@ -316,7 +301,6 @@ public class NPCController : MonoBehaviour
                         {
                             if (NetworkDriver.instance.HOST) { if (teleports && Random.value<0.3f) { GetComponent<Teleport>().CheckTeleport(true, false); } }
                             curWayPoint++;
-                            if (hasRetreated==1) { hasRetreated = 2; range = startRange; angleView = startAngleView; }
                         }
                     }
                     else if (wayPoint.Count == curWayPoint)
@@ -358,6 +342,7 @@ public class NPCController : MonoBehaviour
     }
     public void TriggerZapOn() { zapActive = true; }
     public void TriggerZapOff() { zapActive = false; }
+    public void ZapReset() { canZap = true; }
     public void Attack()
     {
         Debug.Log("target " + target);
@@ -387,12 +372,12 @@ public class NPCController : MonoBehaviour
         }
 
         //ZAP
-        if (distance <= zapRange && distance > hitRange)
+        if (distance <= zapRange && distance > range && canZap && zaps)
         {
-            animEnemy.Play("agro");
+            if (canZap) { animEnemy.Play("zapAni"); canZap = false; Invoke("ZapReset",5f); }
         }
 
-        if (!zozoLaser)
+        if (!zozoLaser && !zapActive)
         {
             //RUN TO TARGET
             if (distance > hitRange)
@@ -437,12 +422,14 @@ public class NPCController : MonoBehaviour
         //if (target == null)
         if(!agro)
         {
+            //CHANGE RANGE IF CAN ZAP
 
-            //Debug.Log("----------------------------------CLOSEST PLAYER---------------------------------------" + closestPlayer);
 
             angleView = startAngleView;
             range = startRange;
             persist = startPersist;
+
+            if (canZap && zaps) { range = zapRange; }
 
             //ALERTS
             if (distance <= 5)
