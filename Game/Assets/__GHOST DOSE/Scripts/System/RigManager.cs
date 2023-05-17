@@ -8,6 +8,7 @@ using UnityEngine.UI;
 using NetworkSystem;
 using GameManager;
 using TMPro;
+using UnityEngine.LowLevel;
 
 
 [System.Serializable]
@@ -67,7 +68,7 @@ public class RigManager : MonoBehaviour
 
         if (isTravis) { playerProp = travisProp; currentRig = travCurrentRig; } else { playerProp = westinProp; currentRig = wesCurrentRig; }
         if (otherPlayer) { playerProp = otherPlayerProp; currentRig = otherPlayerRig; }
-        DestroyImmediate(currentRig); 
+        if (currentRig) { DestroyImmediate(currentRig); }
 
         GameObject[] prefabs = Resources.LoadAll<GameObject>("Prefabs/Rigs");
         for (int i = 0; i < prefabs.Length; i++)
@@ -78,10 +79,11 @@ public class RigManager : MonoBehaviour
                 break;
             }
         }
-
+        
         currentRig.transform.SetParent(playerProp.transform);
+        Debug.Log("-----------------PROP NAME" + playerProp.name);
         playerProp.GetComponentInChildren<K2>().gameObject.SetActive(false);
-        playerProp.transform.Find("Ouija").gameObject.SetActive(false); ;
+        playerProp.transform.Find("Ouija").gameObject.SetActive(false);
         StartCoroutine(util.ReactivateAnimator(playerProp));
 
        
@@ -94,11 +96,10 @@ public class RigManager : MonoBehaviour
         else { otherPlayerRigName = rigName; otherPlayerRig = currentRig; }
 
         GetComponent<LobbyControlV2>().skinName.GetComponent<TextMeshPro>().text = rigName;
-        
 
-
-       
     }
+
+
 
     public void RetreiveSkins()
     {
