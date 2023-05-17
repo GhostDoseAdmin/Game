@@ -129,6 +129,8 @@ public class Rig : EditorWindow
             if(isTravis) { path = "Assets/Resources/Prefabs/Rigs/Travis/" + prefabName +".prefab"; }
             else { path = "Assets/Resources/Prefabs/Rigs/Westin/" + prefabName + ".prefab"; }
             //Store new object as prefab
+            Vector3 currPos = myModel.transform.position;
+            myModel.transform.position = new Vector3(0f,0f,0f);
             GameObject myNewPrefabRig = PrefabUtility.SaveAsPrefabAssetAndConnect(myModel, path, InteractionMode.UserAction);
             //get prfab
             GameObject gameControllerPrefab = AssetDatabase.LoadAssetAtPath<GameObject>("Assets/__GHOST DOSE/GameController.prefab");
@@ -141,10 +143,11 @@ public class Rig : EditorWindow
             // Save the changes to the prefab
             AssetDatabase.SaveAssets();
             Debug.Log("Rig Saved!");
-            // Unload the prefab from memory
-            //PrefabUtility.UnloadPrefabContents(gameControllerPrefab);
+            myModel.transform.position = currPos;
+           // Unload the prefab from memory
+           //PrefabUtility.UnloadPrefabContents(gameControllerPrefab);
 
-            Debug.Log("Object saved successfully.");
+           Debug.Log("Object saved successfully.");
         }
     }
 
