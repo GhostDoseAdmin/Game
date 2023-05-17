@@ -77,4 +77,9 @@ public class GhostLight : MonoBehaviour
             if (flicker) { StartCoroutine(Flicker()); }
         }
     }
+
+    private void OnDisable()
+    {
+        flicker = defaultFlicker;
+    }
 }
