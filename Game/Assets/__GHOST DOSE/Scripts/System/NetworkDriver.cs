@@ -325,7 +325,9 @@ namespace NetworkSystem
                         }
                         else { GameDriver.instance.GetComponentInChildren<VictimControl>().testAnswer(obj); }
                     }
-
+                    //ENEMY
+                    if (dict.ContainsKey("zap")) { obj.GetComponent<NPCController>().Zap();  }
+                    
                     if (dict.ContainsKey("event"))
                     {
                         if (dict["event"] == "setfree") { obj.GetComponent<VictimControl>().SetSpiritsFree(); }

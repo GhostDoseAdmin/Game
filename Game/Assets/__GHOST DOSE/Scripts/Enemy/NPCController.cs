@@ -257,7 +257,8 @@ public class NPCController : MonoBehaviour
                             hasLooked = false;
                         }
                     }
-                }
+                }if (alertLevelPlayer > unawareness * 2) { alertLevelPlayer = unawareness * 2; }
+
                 if (alertLevelClient > alertLevelPlayer && alertLevelClient > unawareness)
                 {
                     alertLevelClient -= 1;
@@ -270,6 +271,7 @@ public class NPCController : MonoBehaviour
                             hasLooked = false;
                         }
                     }
+                    if (alertLevelClient > unawareness * 2) { alertLevelClient = unawareness * 2; }
                 }
             }
 
@@ -343,6 +345,11 @@ public class NPCController : MonoBehaviour
     public void TriggerZapOn() { zapActive = true; }
     public void TriggerZapOff() { zapActive = false; }
     public void ZapReset() { canZap = true; }
+    public void Zap()
+    {
+        animEnemy.Play("zapAni"); canZap = false; Invoke("ZapReset", 8f);
+        if (NetworkDriver.instance.HOST && NetworkDriver.instance.TWOPLAYER) { NetworkDriver.instance.sioCom.Instance.Emit("event", JsonConvert.SerializeObject(new { obj = this.gameObject.name, zap = true }), false); }
+    }
     public void Attack()
     {
         Debug.Log("target " + target);
@@ -372,11 +379,16 @@ public class NPCController : MonoBehaviour
         }
 
         //ZAP
-        if (distance <= zapRange && distance > range && canZap && zaps)
+        if (NetworkDriver.instance.HOST)
         {
-            if (canZap) { animEnemy.Play("zapAni"); canZap = false; Invoke("ZapReset",5f); }
+            if (distance <= zapRange && distance > range && canZap && zaps)
+            {
+                if (canZap)
+                {
+                    Zap();
+                }
+            }
         }
-
         if (!zozoLaser && !zapActive)
         {
             //RUN TO TARGET
@@ -413,7 +425,7 @@ public class NPCController : MonoBehaviour
         }
 
         //PLAYER DIES
-        if (!target.gameObject.activeSelf) { target = null; }
+        if (target) { if (!target.gameObject.activeSelf) { target = null; } }
 
     }
 
@@ -443,7 +455,7 @@ public class NPCController : MonoBehaviour
                 if (closestPlayer == Player.transform) { if (Player.GetComponent<Animator>().GetBool("Running")) { range = startRange + 2; persist = startPersist * 2; alertLevelPlayer += 6; } }
                 if (closestPlayer == Client.transform) { if (Client.GetComponent<Animator>().GetBool("Running")) { range = startRange + 2; persist = startPersist * 2; alertLevelPlayer += 6; } }
             }
-            if (animEnemy.GetCurrentAnimatorClipInfo(0).Length > 0 && animEnemy.GetCurrentAnimatorClipInfo(0)[0].clip.name == "lookAroundAni") { range = startRange +1 ;angleView = 50; }
+            if (animEnemy.GetCurrentAnimatorClipInfo(0).Length > 0 && animEnemy.GetCurrentAnimatorClipInfo(0)[0].clip.name == "lookAroundAni") { range = 6 ;angleView = 50; } // range = startRange +1 ;angleView = 50;
 
             //Debug.Log("DISTANCE " + distance + " RANGE " + range);
             if (distance <= range)
@@ -496,6 +508,7 @@ public class NPCController : MonoBehaviour
     }
     public void Engage(Transform newTarget)
     {
+        canZap = true;
         hasLooked = true;
         //NEW TARGET
         if (newTarget != target) {
@@ -509,6 +522,7 @@ public class NPCController : MonoBehaviour
     void resetEngageSound() { engageSound = false; }
     private void Disengage()
     {
+        alertLevelPlayer = 0; alertLevelClient = 0;
         target = null;
 
     }
