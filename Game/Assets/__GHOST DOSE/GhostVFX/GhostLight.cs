@@ -17,6 +17,7 @@ public class GhostLight : MonoBehaviour
     private Light lightComponent; // reference to the Light component
     private float originalSpotAngle; // original spot angle of the light
     private bool defaultFlicker;
+    public bool isPlayerLight;
     private AudioSource flickerAudioSource;
 
 
@@ -42,7 +43,7 @@ public class GhostLight : MonoBehaviour
 
     private IEnumerator Flicker()
     {
-        flicker = false;
+       // flicker = false;
         // flicker the light
         lightComponent.spotAngle = 0;
 

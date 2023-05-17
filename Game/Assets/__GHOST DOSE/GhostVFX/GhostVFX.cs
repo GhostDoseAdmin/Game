@@ -70,7 +70,7 @@ public class GhostVFX : MonoBehaviour
         {
             if(Vector3.Distance(ghostLight.gameObject.transform.position, this.gameObject.transform.position)<100)
             {
-                if (ghostLight.ghost || ghostLight.shadower)
+                if ((ghostLight.ghost || ghostLight.shadower) && (ghostLight.gameObject.name!="WeaponLight" && ghostLight.gameObject.name != "FlashLight"))
                 {
                     Light light = ghostLight.GetComponent<Light>();
                     if (light != null)
@@ -149,6 +149,7 @@ public class GhostVFX : MonoBehaviour
                 {
                     for (int i = 0; i < envLightCount; i++)
                     {
+                        //Debug.Log(envLights[i].gameObject.name);
                         lightSource = envLights[i].GetComponent<Light>();
                         lightAngles[i] = lightSource.spotAngle + 5;
                     }
@@ -196,6 +197,8 @@ public class GhostVFX : MonoBehaviour
                     else { material.SetFloat("_PlayerStrengthScalarLight", 5); }
                     material.SetFloat("_PlayerLightRange", lightSource.range);
                 }
+                //FLICKER
+                if (GetComponent<Animator>().GetCurrentAnimatorClipInfo(0).Length > 0 && GetComponent<Animator>().GetCurrentAnimatorClipInfo(0)[0].clip.name == "agro" && PlayerLight.GetComponent<GhostLight>() != null) { PlayerLight.GetComponent<GhostLight>().InvokeFlicker(1f); }
                 //ADD IN CLIENT LIGHT
                 lightSource = ClientLight.GetComponent<Light>();
                 spotAngle = lightSource.spotAngle;
@@ -219,6 +222,8 @@ public class GhostVFX : MonoBehaviour
                     else { material.SetFloat("_ClientStrengthScalarLight", 5); }
                     material.SetFloat("_ClientLightRange", lightSource.range);
                 }
+                //FLICKER
+                if (GetComponent<Animator>().GetCurrentAnimatorClipInfo(0).Length > 0 && GetComponent<Animator>().GetCurrentAnimatorClipInfo(0)[0].clip.name == "agro" && ClientLight.GetComponent<GhostLight>() != null) { ClientLight.GetComponent<GhostLight>().InvokeFlicker(1f); }
 
                 //--------------VISIBLE IF CLOSE ----------------
                 if (Vector3.Distance(PlayerLight.gameObject.transform.position, this.transform.position) < 2 || Vector3.Distance(ClientLight.gameObject.transform.position, this.transform.position) < 2)

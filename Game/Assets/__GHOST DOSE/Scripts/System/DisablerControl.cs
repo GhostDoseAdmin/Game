@@ -59,7 +59,7 @@ public class DisablerControl : MonoBehaviour
                     //-------------DEACTIVATE----------------------
                     if (closestPlayerDist > disableDistance && enemy.GetComponent<NPCController>().target == null && enemy.activeSelf && enemy.GetComponent<Teleport>().teleport==0)
                     {
-                         Debug.Log("DISABLING"); 
+                        // Debug.Log("DISABLING"); 
                         emitDisableObjects.Add(enemy);
                     }
                     //-------------REACTIVATE------------------
