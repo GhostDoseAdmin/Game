@@ -352,7 +352,7 @@ public class NPCController : MonoBehaviour
     }
     public void Attack()
     {
-        Debug.Log("target " + target);
+        //Debug.Log("target " + target);
         //MOVE TOWARDS TARGET
         navmesh.SetDestination(target.position);
         destination = target.gameObject;
