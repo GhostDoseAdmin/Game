@@ -81,6 +81,7 @@ public class RigManager : MonoBehaviour
 
         currentRig.transform.SetParent(playerProp.transform);
         playerProp.GetComponentInChildren<K2>().gameObject.SetActive(false);
+        playerProp.transform.Find("Ouija").gameObject.SetActive(false); ;
         StartCoroutine(util.ReactivateAnimator(playerProp));
 
        

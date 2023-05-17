@@ -246,7 +246,7 @@ public class ShootingSystem : MonoBehaviour
                     {
                         if (!ghost.GetComponent<GhostVFX>().Shadower) { isVisible = !ghost.GetComponent<GhostVFX>().invisible; }
                         else { isVisible = ghost.GetComponent<GhostVFX>().visible; }
-                        if (!isVisible) { Debug.Log("INVISISHOT"); }
+                        //if (!isVisible) { Debug.Log("INVISISHOT"); }
                         if (hit.collider.gameObject.name == "mixamorig:Head") { isHeadshot = true; }
                     }
                     //VICTIMS

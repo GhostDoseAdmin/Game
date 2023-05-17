@@ -41,7 +41,7 @@ public class GhostVFX : MonoBehaviour
 
     public void Awake()
     {
-
+        Shadower = GetComponent<NPCController>().Shadower;
         // GD = GameObject.Find("GameController").GetComponent<GameDriver>();
         skin = gameObject.transform.GetChild(0).gameObject;
 
