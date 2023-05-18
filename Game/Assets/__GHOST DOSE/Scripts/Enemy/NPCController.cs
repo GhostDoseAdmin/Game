@@ -362,7 +362,7 @@ public class NPCController : MonoBehaviour
 
         float distance = Vector3.Distance(transform.position, new Vector3(target.position.x, transform.position.y, target.position.z));//measured at same level Yaxis
          //-----------DISENGAGE--------------------
-         if (distance > 15 && !ZOZO){ Disengage(); }
+         if (distance > 15 && !ZOZO && !agro){ Disengage(); }
 
 
 
