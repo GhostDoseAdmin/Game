@@ -45,7 +45,7 @@ public class PlayerController : MonoBehaviour
     private float gear_timer = 0.0f;//USED FOR EMITS
     public int gear = 1; //0 = cam 1=ks 2=rem
     public bool gearAim;
-	private GameObject k2;
+	public GameObject k2;
 	public GameObject camera;
     private GameObject camInventory;
     private GameObject k2Inventory;
@@ -106,6 +106,7 @@ public class PlayerController : MonoBehaviour
     {
         audioSource = gameObject.AddComponent<AudioSource>();
         audioSource.spatialBlend = 1.0f;
+
     }
     public void SetupRig()
     {

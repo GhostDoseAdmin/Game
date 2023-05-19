@@ -7,6 +7,7 @@ using Newtonsoft.Json.Linq;
 using GameManager;
 using static UnityEngine.GraphicsBuffer;
 using UnityEngine.SceneManagement;
+using System.Threading;
 
 namespace NetworkSystem
 {
@@ -42,7 +43,11 @@ namespace NetworkSystem
         public bool OTHERS_SCENE_READY = false;
         public bool SCENE_READY = false;
 
-        //public bool otherSCENESETUP = false;
+        public float startTime = 0f;
+        public float timeElapsed;
+        public bool GAMESTARTED;
+        public int LEVELINDEX;
+        public float SPEEDSCORE;
         public void Awake()
         {
             //ONLY ONE CAN EXIST
@@ -510,6 +515,14 @@ namespace NetworkSystem
             if (NETWORK_TEST) { if (HOSTOVERRIDE) { HOST = true; } else { HOST = false; } }
            // GameDriver.instance.WriteGuiMsg("HOST " + HOST, 10f, false, Color.red);
 
+            //-------------------------------------GAME TIMER---------------------------------------------------
+            if(!GAMESTARTED)
+            {
+                if (!TWOPLAYER && SCENE_READY) { startTime = Time.time; GAMESTARTED = true; }
+                if (TWOPLAYER && SCENE_READY && OTHERS_SCENE_READY) { startTime = Time.time; GAMESTARTED = true; }
+            }
+
+
         }
 
         public void UpdateGameState()
@@ -532,8 +545,37 @@ namespace NetworkSystem
 
         }
 
+        // BEAT LEVEL
+        public void EndGame()
+        {
+            SCENE_READY = false; OTHERS_SCENE_READY = false;
+            timeElapsed = Time.time -startTime;
+            GameObject.Find("PlayerCamera").transform.SetParent(GameDriver.instance.gameObject.transform);
 
+            SceneManager.LoadScene("EndGame");
 
+            //PLAYER PERSIST
+            GameObject Player = GameDriver.instance.Player;
+            Player.GetComponent<PlayerController>().k2.gameObject.SetActive(false);
+            Player.GetComponent<PlayerController>().enabled = false;
+            Player.GetComponent<FlashlightSystem>().enabled = false;
+            Player.GetComponent<HealthSystem>().enabled = false;
+            Player.GetComponent<ShootingSystem>().enabled = false;
+            Player.transform.root.position = new Vector3(0, 0, 0);
+            Player.transform.position = new Vector3(0,-0.94f,1.41f);
+            Player.transform.rotation = Quaternion.Euler(0f, -180f, 0f);
+            Player.GetComponent<Animator>().Rebind();
+            Destroy(Player.GetComponent<Rigidbody>());
+            DontDestroyOnLoad(Player.transform.root.gameObject);
+
+        }
+
+        public void ResetGame()
+        {
+            DestroyImmediate(GameObject.Find("Player").transform.parent.gameObject);
+            SceneManager.LoadScene("Lobby");
+            Destroy(gameObject);
+        }
 
     }
 }

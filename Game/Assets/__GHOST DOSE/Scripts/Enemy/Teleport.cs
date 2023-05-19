@@ -138,6 +138,8 @@ public class Teleport : MonoBehaviour
                     // Get a random index from the list
                     int randomWP = Random.Range(0, GetComponent<NPCController>().wayPoint.Count);
                     transform.position = GetComponent<NPCController>().wayPoint[randomWP].transform.position;
+                    if (Vector3.Distance(GetComponent<NPCController>().closestPlayer.transform.position, transform.position) < 7f) { relocate--; }//choose new location if too close
+                    
                 }
 
 

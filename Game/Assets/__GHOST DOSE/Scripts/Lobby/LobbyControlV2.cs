@@ -99,8 +99,17 @@ public class LobbyControlV2 : MonoBehaviour
         screenMask.SetActive(false);
         lobbyMenuCanvas.SetActive(true);
         foundRoom = true;
+        GetComponent<RigManager>().RetreiveLevelSpeeds();
     }
 
+    public void LoadScene()
+    {
+        
+         if (LEVEL == "GoldCamp" || LEVEL == "Experiment") { NetworkDriver.instance.LEVELINDEX = 1; }
+         NetworkDriver.instance.SPEEDSCORE = GetComponent<RigManager>().leveldata[NetworkDriver.instance.LEVELINDEX];
+        Debug.Log("-----------------------SPEED SCORE IS " + NetworkDriver.instance.SPEEDSCORE);
+          SceneManager.LoadScene(LEVEL);
+    }
     public void Ready()
     {
         if (!READY)
@@ -114,8 +123,8 @@ public class LobbyControlV2 : MonoBehaviour
                     else { NetworkDriver.instance.myRig = GetComponent<RigManager>().wesCurrentRig.name; }
 
                     NetworkDriver.instance.theirRig = GetComponent<RigManager>().otherPlayerRig.name;
-
-                    SceneManager.LoadScene(LEVEL); Debug.Log("READY"); 
+                    LoadScene();
+                    
                 }
                 //----TWO PLAYER
                 else
@@ -186,7 +195,7 @@ public class LobbyControlV2 : MonoBehaviour
     public void Update()
     {
         //--------------NEXT SCENE-------------------
-        if(READY && otherREADY) { SceneManager.LoadScene(LEVEL); Debug.Log("READY"); }
+        if(READY && otherREADY) { LoadScene(); }
 
         //--------------OTHER PLAYER-----------------
         if (foundRoom)

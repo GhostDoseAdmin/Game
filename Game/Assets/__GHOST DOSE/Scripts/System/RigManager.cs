@@ -104,7 +104,7 @@ public class RigManager : MonoBehaviour
 
 
 
-    public void RetreiveSkins()
+    public void RetreiveLevelSpeeds()
     {
         if(!hasRetrievedSkins) { RetreiveLevelData("level1speed"); RetreiveLevelData("level2speed"); }
         hasRetrievedSkins = true;
