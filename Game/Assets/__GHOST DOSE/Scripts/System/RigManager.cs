@@ -9,6 +9,7 @@ using NetworkSystem;
 using GameManager;
 using TMPro;
 using UnityEngine.LowLevel;
+using UnityEngine.SceneManagement;
 
 
 [System.Serializable]
@@ -50,12 +51,13 @@ public class RigManager : MonoBehaviour
     {
         leveldata = new int[5];//NUMBER OF LEVELS, index 0 not used
         util = new utilities();
-
-        //create initial rigs
-        UpdatePlayerRig(wesBasicRig.name, false, false);
-        UpdatePlayerRig(travBasicRig.name, true, false);
         
-
+        if (SceneManager.GetActiveScene().name == "Lobby")
+        {
+           //create initial rigs
+            UpdatePlayerRig(wesBasicRig.name, false, false);
+            UpdatePlayerRig(travBasicRig.name, true, false);
+        }
     }
  
     public void UpdatePlayerRig(string rigName, bool isTravis, bool otherPlayer)
@@ -82,12 +84,20 @@ public class RigManager : MonoBehaviour
         
         currentRig.transform.SetParent(playerProp.transform);
 
+        //Debug.Log("-----------------PROP NAME" + playerProp.name);
+        //if (util != null)
+        {
+            GameObject k2 = util.FindChildObject(playerProp.transform, "K2");
+            if (k2 != null) { k2.SetActive(false); }
+            GameObject ouija = util.FindChildObject(playerProp.transform, "Ouija");
+            if (ouija != null) { ouija.SetActive(false); }
+            GameObject sb7 = util.FindChildObject(playerProp.transform, "SB7");
+            if (sb7 != null) { sb7.SetActive(false); }
 
+            StartCoroutine(util.ReactivateAnimator(playerProp));
+        }
 
-        //Debug.Log("-----------------PROP NAME" + playerProp.transform.Find("mixamorig:Spine2").gameObject.name);
-        util.FindChildObject(playerProp.transform, "K2").SetActive(false);
-        util.FindChildObject(playerProp.transform, "Ouija").SetActive(false);
-        StartCoroutine(util.ReactivateAnimator(playerProp));
+        
 
        
 
@@ -98,7 +108,7 @@ public class RigManager : MonoBehaviour
         } 
         else { otherPlayerRigName = rigName; otherPlayerRig = currentRig; }
 
-        GetComponent<LobbyControlV2>().skinName.GetComponent<TextMeshPro>().text = rigName;
+        if (SceneManager.GetActiveScene().name == "Lobby") { GameObject.Find("LobbyManager").GetComponent<LobbyControlV2>().skinName.GetComponent<TextMeshPro>().text = rigName; }
 
     }
 
@@ -118,7 +128,7 @@ public class RigManager : MonoBehaviour
 
     public void UpdateSkinsList()
     {
-        Debug.Log("LEVEL SPEED DATA " + leveldata[1] + " " + leveldata[2]);
+        Debug.Log("UPDATING SKINS LIST ----------------------------------------------------------- " + leveldata[1] + " " + leveldata[2]);
         //TEST
         //leveldata = new int[3];
         //leveldata[1] = 200;
@@ -190,5 +200,52 @@ public class RigManager : MonoBehaviour
 
     }
 
+    public bool UnlockSkins(GameObject unlockedSkinsPanel, float prevSpeed, float speed)
+    {
+        List<GameObject> updatedList = new List<GameObject>();
+
+
+        int levelIndex = NetworkDriver.instance.LEVELINDEX;
+
+            //LEVEL1
+            if (levelIndex==1)
+            {
+                //CHECK TEIRS
+                for (int j = 0; j < lvl1SpeedTeirs.Length; j++)
+                {
+                    if (speed <= lvl1SpeedTeirs[j] &&  prevSpeed > lvl1SpeedTeirs[j])
+                    {
+                    updatedList.Add(travLevel1RewardRigs[j]);
+                    updatedList.Add(wesLevel1RewardRigs[j]);
+                    }
+                }
+            }
+            //LEVEL2
+            if (levelIndex == 2)
+            {
+                //CHECK TEIRS
+                for (int j = 0; j < lvl2SpeedTeirs.Length; j++)
+                {
+                    if (speed <= lvl2SpeedTeirs[j] && prevSpeed > lvl2SpeedTeirs[j])
+                {
+                        updatedList.Add(travLevel2RewardRigs[j]);
+                        updatedList.Add(wesLevel2RewardRigs[j]);
+                    }
+                }
+            }
+
+        //CREATE NEW SKINS FOR CANVAS
+        foreach (GameObject rig in updatedList)
+        {
+            //Debug.Log(rig.name);
+            if (skin != null)
+            {
+                GameObject placeHolderSkin = Instantiate(skin, unlockedSkinsPanel.transform);//create skin thumbnail
+                placeHolderSkin.transform.GetChild(0).GetComponent<Skin>().rig = rig;//REFERS TO THUMBNAIL
+            }
+        }
+
+        if (updatedList.Count > 0) { return true; } else { return false; }
+    }
 
 }

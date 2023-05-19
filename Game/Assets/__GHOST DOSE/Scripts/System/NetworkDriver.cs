@@ -125,15 +125,21 @@ namespace NetworkSystem
                 else { GameObject.Find("LoginControl").GetComponent<LoginControl>().LoginFail(); }
             });
             //-----------------LEVEL1 SPEED ----------------->
+            //socket removed from own room SID, so need to receive it like and parse like so
             sioCom.Instance.On("get_level_speed", (payload) =>
             {
                 Debug.Log("LEVEL SPEED RECEIVED" + payload);
                 string data = payload;
-                string[] splitData = data.Split(',');
-                string level = splitData[0]; level = level.Replace("level", ""); level = level.Replace("speed", "");
-                string speed = splitData[1];
-                if (speed.Contains("None")) { speed = "-1"; }
-                GameObject.Find("LobbyManager").GetComponent<RigManager>().ReceivedLevelData(int.Parse(level), int.Parse(speed));
+                string[] splitSID = data.Split(';');
+                if (splitSID[1] == sioCom.Instance.SocketID)
+                {
+                    string[] splitData = splitSID[0].Split(',');
+                    string level = splitData[0]; level = level.Replace("level", ""); level = level.Replace("speed", "");
+                    string speed = splitData[1];
+                    if (speed.Contains("None")) { speed = "-1"; }
+                    GetComponent<RigManager>().ReceivedLevelData(int.Parse(level), int.Parse(speed));
+                }
+
             });
 
             //-----------------JOIN ROOM----------------->
@@ -556,13 +562,17 @@ namespace NetworkSystem
 
             //PLAYER PERSIST
             GameObject Player = GameDriver.instance.Player;
+            GetComponent<RigManager>().travisProp = Player;
+            GetComponent<RigManager>().travCurrentRig = Player.transform.GetChild(0).gameObject;
+            GetComponent<RigManager>().westinProp = Player;
+            GetComponent<RigManager>().wesCurrentRig = Player.transform.GetChild(0).gameObject;
             Player.GetComponent<PlayerController>().k2.gameObject.SetActive(false);
             Player.GetComponent<PlayerController>().enabled = false;
             Player.GetComponent<FlashlightSystem>().enabled = false;
             Player.GetComponent<HealthSystem>().enabled = false;
             Player.GetComponent<ShootingSystem>().enabled = false;
             Player.transform.root.position = new Vector3(0, 0, 0);
-            Player.transform.position = new Vector3(0,-0.94f,1.41f);
+            Player.transform.position = new Vector3(-1.03f,-1.34f,2.67f);
             Player.transform.rotation = Quaternion.Euler(0f, -180f, 0f);
             Player.GetComponent<Animator>().Rebind();
             Destroy(Player.GetComponent<Rigidbody>());

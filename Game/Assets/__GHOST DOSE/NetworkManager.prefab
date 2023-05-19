@@ -1,6 +1,6 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
---- !u!1 &5449131226260296004
+--- !u!1 &4600351335788548321
 GameObject:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -8,8 +8,9 @@ GameObject:
   m_PrefabAsset: {fileID: 0}
   serializedVersion: 6
   m_Component:
-  - component: {fileID: 5449131226260296005}
-  - component: {fileID: 5449131226260296006}
+  - component: {fileID: 4600351335788548320}
+  - component: {fileID: 4600351335788548323}
+  - component: {fileID: 4600351335788548322}
   m_Layer: 0
   m_Name: NetworkManager
   m_TagString: Untagged
@@ -17,13 +18,13 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!4 &5449131226260296005
+--- !u!4 &4600351335788548320
 Transform:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5449131226260296004}
+  m_GameObject: {fileID: 4600351335788548321}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 1084.598, y: 33.342957, z: 207.57669}
   m_LocalScale: {x: 1, y: 1, z: 1}
@@ -32,19 +33,79 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &5449131226260296006
+--- !u!114 &4600351335788548323
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5449131226260296004}
+  m_GameObject: {fileID: 4600351335788548321}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 22c1a5e9797e05b48a1bed2d59f74837, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   sioCom: {fileID: 0}
+  myRig: 
+  theirRig: 
   HOST: 1
+  ROOM: 
+  TWOPLAYER: 0
+  USERNAME: 
+  otherUSERNAME: 
+  isTRAVIS: 1
+  otherIsTravis: 0
+  NETWORK_TEST: 0
+  HOSTOVERRIDE: 0
   connected: 0
-  noUserFound: 0
+  OTHERS_SCENE_READY: 0
+  SCENE_READY: 0
+  startTime: 0
+  timeElapsed: 0
+  GAMESTARTED: 0
+  LEVELINDEX: 0
+  SPEEDSCORE: 0
+--- !u!114 &4600351335788548322
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4600351335788548321}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c3d08af550f6dc14bab12ad9efe3fcec, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  travRigList:
+  - {fileID: 8626390113503649595, guid: c3299049e1a33544eb34519a9a0017c2, type: 3}
+  wesRigList:
+  - {fileID: 3042350477353588769, guid: e17bb9b9f7143154fb9e423c829c7a76, type: 3}
+  travBasicRig: {fileID: 6708319227998833940, guid: 60eb775953e594c498d6409475a1ab19, type: 3}
+  wesBasicRig: {fileID: 8151563964905370413, guid: 61b6f16660dbc604eab8b69b06736b98, type: 3}
+  lvl1SpeedTeirs: 6400000032000000
+  lvl2SpeedTeirs: 6400000032000000
+  travLevel1RewardRigs:
+  - {fileID: 6490843786806333899, guid: 340e13f59effc4740b3a5a2915172e82, type: 3}
+  - {fileID: 7415703549766267294, guid: 79b30898ab0347b42b8ba69bcecc70ac, type: 3}
+  travLevel2RewardRigs:
+  - {fileID: 8626390113503649595, guid: 84e4811d67cd6974ebd8b52970d13a59, type: 3}
+  - {fileID: 8626390113503649595, guid: 88720bb08cd264349adc74089f3d8443, type: 3}
+  wesLevel1RewardRigs:
+  - {fileID: 7347555061995802383, guid: a176eaa3bc8fa9d45b139f23601a5c04, type: 3}
+  - {fileID: 5652841667845952168, guid: 36ef72d6dd7b6ac4ca3291f7551255dc, type: 3}
+  wesLevel2RewardRigs:
+  - {fileID: 3042350477353588769, guid: cb1d4d16cfb4da94d93c0e128da9ed61, type: 3}
+  - {fileID: 3042350477353588769, guid: 47e6ee8b658c4da4683c0010b1e940f3, type: 3}
+  travisProp: {fileID: 0}
+  travCurrentRig: {fileID: 0}
+  westinProp: {fileID: 0}
+  wesCurrentRig: {fileID: 0}
+  myRig: {fileID: 0}
+  otherPlayerProp: {fileID: 0}
+  otherPlayerRig: {fileID: 0}
+  SkinsList: {fileID: 0}
+  skin: {fileID: 5677644129695883588, guid: b4d27a4137c63d743a9e795c10e93d35, type: 3}
+  leveldata: 
+  currentRigName: 
+  otherPlayerRigName: 
