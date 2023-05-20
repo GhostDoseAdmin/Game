@@ -42,6 +42,7 @@ public class DisablerControl : MonoBehaviour
     void LateUpdate()
     {
 
+        //CLIENT DISABLES ON NPC CONTROLLER
 
         if (NetworkDriver.instance.HOST)
         {

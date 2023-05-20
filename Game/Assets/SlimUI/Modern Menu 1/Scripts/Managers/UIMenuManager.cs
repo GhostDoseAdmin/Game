@@ -144,7 +144,7 @@ namespace SlimUI.ModernMenu{
         }
         public void SkinsPanelToggle(bool open)
         {
-            if (open) { mainMenu.SetActive(false); SkinsPanel.SetActive(true); RigManager.GetComponent<RigManager>().RetreiveSkins(); }
+            if (open) { mainMenu.SetActive(false); SkinsPanel.SetActive(true);  }
             else { mainMenu.SetActive(true); SkinsPanel.SetActive(false); }
 
         }

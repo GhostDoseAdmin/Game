@@ -78,6 +78,8 @@ namespace GameManager
 
         void Awake()
         {
+
+
             //CREATE RIG FROM LOBYS
             if (NetworkDriver.instance)
             {

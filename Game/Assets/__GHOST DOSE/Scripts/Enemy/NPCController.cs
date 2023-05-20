@@ -455,7 +455,7 @@ public class NPCController : MonoBehaviour
                 if (closestPlayer == Player.transform) { if (Player.GetComponent<Animator>().GetBool("Running")) { range = startRange + 2; persist = startPersist * 2; alertLevelPlayer += 6; } }
                 if (closestPlayer == Client.transform) { if (Client.GetComponent<Animator>().GetBool("Running")) { range = startRange + 2; persist = startPersist * 2; alertLevelPlayer += 6; } }
             }
-            if (animEnemy.GetCurrentAnimatorClipInfo(0).Length > 0 && animEnemy.GetCurrentAnimatorClipInfo(0)[0].clip.name == "lookAroundAni") { range = 6 ;angleView = 50; } // range = startRange +1 ;angleView = 50;
+            if (animEnemy.GetCurrentAnimatorClipInfo(0).Length > 0 && animEnemy.GetCurrentAnimatorClipInfo(0)[0].clip.name == "lookAroundAni") { range = 8 ;angleView = 50; } // range = startRange +1 ;angleView = 50;
 
             //Debug.Log("DISTANCE " + distance + " RANGE " + range);
             if (distance <= range)

@@ -72,7 +72,7 @@ public class LobbyControlV2 : MonoBehaviour
         //roomNameField.SetActive(true);
         //findRoomButton.SetActive(true);
         foundRoom = false;
-        GetComponent<RigManager>().otherPlayerProp.SetActive(false);
+        NetworkDriver.instance.GetComponent<RigManager>().otherPlayerProp.SetActive(false);
         NetworkDriver.instance.Reconnect();
         NetworkDriver.instance.otherUSERNAME = "";
     }
@@ -99,8 +99,17 @@ public class LobbyControlV2 : MonoBehaviour
         screenMask.SetActive(false);
         lobbyMenuCanvas.SetActive(true);
         foundRoom = true;
+        NetworkDriver.instance.GetComponent<RigManager>().RetreiveLevelSpeeds();
     }
 
+    public void LoadScene()
+    {
+        
+         if (LEVEL == "GoldCamp" || LEVEL == "Experiment") { NetworkDriver.instance.LEVELINDEX = 1; }
+         NetworkDriver.instance.SPEEDSCORE = NetworkDriver.instance.GetComponent<RigManager>().leveldata[NetworkDriver.instance.LEVELINDEX];
+        Debug.Log("-----------------------SPEED SCORE IS " + NetworkDriver.instance.SPEEDSCORE);
+          SceneManager.LoadScene(LEVEL);
+    }
     public void Ready()
     {
         if (!READY)
@@ -110,12 +119,12 @@ public class LobbyControlV2 : MonoBehaviour
                 if (GAMEMODE == "single") {
                     //UPDATE RIG INFO FOR
 
-                    if (NetworkDriver.instance.isTRAVIS) { NetworkDriver.instance.myRig = GetComponent<RigManager>().travCurrentRig.name; }
-                    else { NetworkDriver.instance.myRig = GetComponent<RigManager>().wesCurrentRig.name; }
+                    if (NetworkDriver.instance.isTRAVIS) { NetworkDriver.instance.myRig = NetworkDriver.instance.GetComponent<RigManager>().travCurrentRig.name; }
+                    else { NetworkDriver.instance.myRig = NetworkDriver.instance.GetComponent<RigManager>().wesCurrentRig.name; }
 
-                    NetworkDriver.instance.theirRig = GetComponent<RigManager>().otherPlayerRig.name;
-
-                    SceneManager.LoadScene(LEVEL); Debug.Log("READY"); 
+                    NetworkDriver.instance.theirRig = NetworkDriver.instance.GetComponent<RigManager>().otherPlayerRig.name;
+                    LoadScene();
+                    
                 }
                 //----TWO PLAYER
                 else
@@ -136,10 +145,10 @@ public class LobbyControlV2 : MonoBehaviour
                             if (LEVEL == otherLEVEL)
                             {
                                 //UPDATE RIG INFO FOR GAMEMANAGER
-                                if (NetworkDriver.instance.isTRAVIS) { NetworkDriver.instance.myRig = GetComponent<RigManager>().travCurrentRig.name; }
-                                else { NetworkDriver.instance.myRig = GetComponent<RigManager>().wesCurrentRig.name; }
+                                if (NetworkDriver.instance.isTRAVIS) { NetworkDriver.instance.myRig = NetworkDriver.instance.GetComponent<RigManager>().travCurrentRig.name; }
+                                else { NetworkDriver.instance.myRig = NetworkDriver.instance.GetComponent<RigManager>().wesCurrentRig.name; }
 
-                                NetworkDriver.instance.theirRig = GetComponent<RigManager>().otherPlayerRig.name;
+                                NetworkDriver.instance.theirRig = NetworkDriver.instance.GetComponent<RigManager>().otherPlayerRig.name;
 
                                 READY = true; lobbyMenu.SetActive(false); NetworkDriver.instance.sioCom.Instance.Emit("event", JsonConvert.SerializeObject(new { ready = true }), false); GameDriver.instance.WriteGuiMsg("Waiting for other player...", 999f, true, Color.white);
                             }
@@ -164,7 +173,7 @@ public class LobbyControlV2 : MonoBehaviour
     {
         if (NetworkDriver.instance.TWOPLAYER) {
             //change to dots for json compat
-            string rigName = GetComponent<RigManager>().currentRigName;
+            string rigName = NetworkDriver.instance.GetComponent<RigManager>().currentRigName;
             //skinPath = skinPath.Replace("/", ".");
             NetworkDriver.instance.sioCom.Instance.Emit("event", JsonConvert.SerializeObject(new { skin = rigName, NetworkDriver.instance.isTRAVIS }), false); 
         }
@@ -176,7 +185,7 @@ public class LobbyControlV2 : MonoBehaviour
 
     public void UpdateOtherRig(string rigName)
     {
-        GetComponent<RigManager>().UpdatePlayerRig(rigName, NetworkDriver.instance.otherIsTravis, true);
+        NetworkDriver.instance.GetComponent<RigManager>().UpdatePlayerRig(rigName, NetworkDriver.instance.otherIsTravis, true);
     }
     public void UpdateOtherLevel(string level)
     {
@@ -186,16 +195,16 @@ public class LobbyControlV2 : MonoBehaviour
     public void Update()
     {
         //--------------NEXT SCENE-------------------
-        if(READY && otherREADY) { SceneManager.LoadScene(LEVEL); Debug.Log("READY"); }
+        if(READY && otherREADY) { LoadScene(); }
 
         //--------------OTHER PLAYER-----------------
         if (foundRoom)
         {
             if (NetworkDriver.instance.otherUSERNAME.Length > 0)
             {
-                GetComponent<RigManager>().otherPlayerProp.SetActive(true);
+                NetworkDriver.instance.GetComponent<RigManager>().otherPlayerProp.SetActive(true);
                 GameObject otherPlayer = null;
-                otherPlayer = GetComponent<RigManager>().otherPlayerProp; 
+                otherPlayer = NetworkDriver.instance.GetComponent<RigManager>().otherPlayerProp; 
                 otherUserName.GetComponent<TextMeshPro>().text = NetworkDriver.instance.otherUSERNAME;
                 Vector3 worldPosition = new Vector3(otherPlayer.transform.position.x, otherPlayer.transform.position.y + 13f, otherPlayer.transform.position.z);
                 otherUserName.GetComponent<RectTransform>().position = worldPosition;
@@ -226,12 +235,13 @@ public class LobbyControlV2 : MonoBehaviour
                             if (NetworkDriver.instance.TWOPLAYER)
                             {
                                 //NetworkDriver.instance.sioCom.Instance.Emit("event", JsonConvert.SerializeObject(new { isTRAVIS = NetworkDriver.instance.isTRAVIS }), false);
-                                if (NetworkDriver.instance.isTRAVIS) { GetComponent<RigManager>().currentRigName = GetComponent<RigManager>().travCurrentRig.name; }
-                                else { GetComponent<RigManager>().currentRigName = GetComponent<RigManager>().wesCurrentRig.name; }
-                                GetComponent<RigManager>().currentRigName = GetComponent<RigManager>().currentRigName.Replace("(Clone)", "");
+                                if (NetworkDriver.instance.isTRAVIS) { NetworkDriver.instance.GetComponent<RigManager>().currentRigName = NetworkDriver.instance.GetComponent<RigManager>().travCurrentRig.name; }
+                                else { NetworkDriver.instance.GetComponent<RigManager>().currentRigName = NetworkDriver.instance.GetComponent<RigManager>().wesCurrentRig.name; }
+                                NetworkDriver.instance.GetComponent<RigManager>().currentRigName = NetworkDriver.instance.GetComponent<RigManager>().currentRigName.Replace("(Clone)", "");
                                 EmitSkin();
                             }
-                            StartCoroutine(RotateCarousel());
+                            NetworkDriver.instance.GetComponent<RigManager>().UpdateSkinsList();
+                           StartCoroutine(RotateCarousel());
                         }
 
 
@@ -245,7 +255,7 @@ public class LobbyControlV2 : MonoBehaviour
             {
                 Quaternion startRotation = Carousel.transform.rotation;
                 Quaternion endRotation = startRotation * Quaternion.Euler(0f, 180f, 0f);
-                Quaternion propRotations = GetComponent<RigManager>().travisProp.transform.rotation;
+                Quaternion propRotations = NetworkDriver.instance.GetComponent<RigManager>().travisProp.transform.rotation;
 
                 float elapsedTime = 0f;
 
@@ -254,8 +264,8 @@ public class LobbyControlV2 : MonoBehaviour
                     Carousel.transform.rotation = Quaternion.Lerp(startRotation, endRotation, elapsedTime / rotDuration);
                     elapsedTime += Time.deltaTime;
 
-                    GetComponent<RigManager>().travisProp.transform.rotation = propRotations;
-                    GetComponent<RigManager>().westinProp.transform.rotation = propRotations;
+                    NetworkDriver.instance.GetComponent<RigManager>().travisProp.transform.rotation = propRotations;
+                    NetworkDriver.instance.GetComponent<RigManager>().westinProp.transform.rotation = propRotations;
                     yield return null;
                 }
 
