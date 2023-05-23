@@ -105,9 +105,8 @@ public class LobbyControlV2 : MonoBehaviour
     public void LoadScene()
     {
         
-         if (LEVEL == "GoldCamp" || LEVEL == "Experiment") { NetworkDriver.instance.LEVELINDEX = 1; }
-         NetworkDriver.instance.SPEEDSCORE = NetworkDriver.instance.GetComponent<RigManager>().leveldata[NetworkDriver.instance.LEVELINDEX];
-        Debug.Log("-----------------------SPEED SCORE IS " + NetworkDriver.instance.SPEEDSCORE);
+         //NetworkDriver.instance.SPEEDSCORE = NetworkDriver.instance.GetComponent<RigManager>().leveldata[NetworkDriver.instance.LEVELINDEX];
+        //Debug.Log("-----------------------SPEED SCORE IS " + NetworkDriver.instance.SPEEDSCORE);
           SceneManager.LoadScene(LEVEL);
     }
     public void Ready()
