@@ -274,7 +274,7 @@ GameObject:
   m_Component:
   - component: {fileID: 6217532859802960656}
   - component: {fileID: 2994098457383849621}
-  m_Layer: 0
+  m_Layer: 13
   m_Name: avaturn_hair_0
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -572,7 +572,7 @@ GameObject:
   m_Component:
   - component: {fileID: 6832957763247394412}
   - component: {fileID: 4708732869553775708}
-  m_Layer: 0
+  m_Layer: 13
   m_Name: avaturn_body
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -5797,7 +5797,7 @@ GameObject:
   m_Component:
   - component: {fileID: 7323338380920351578}
   - component: {fileID: 8792499105090123688}
-  m_Layer: 0
+  m_Layer: 13
   m_Name: avaturn_look_0
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -6031,7 +6031,7 @@ GameObject:
   m_Component:
   - component: {fileID: 329355059612548147}
   - component: {fileID: 1150845547664933015}
-  m_Layer: 0
+  m_Layer: 13
   m_Name: avaturn_shoes_0
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -6251,7 +6251,7 @@ GameObject:
   m_Component:
   - component: {fileID: 119373879204281454}
   - component: {fileID: 745961741432527181}
-  m_Layer: 0
+  m_Layer: 13
   m_Name: avaturn_hair_1
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -6711,6 +6711,7 @@ MonoBehaviour:
   shadower: 0
   flicker: 0
   strength: 0
+  isPlayerLight: 0
 --- !u!1 &4331457302002403029
 GameObject:
   m_ObjectHideFlags: 0
@@ -12150,6 +12151,7 @@ MonoBehaviour:
   shadower: 0
   flicker: 0
   strength: 0
+  isPlayerLight: 0
 --- !u!1 &5226117722000095775
 GameObject:
   m_ObjectHideFlags: 0
@@ -19060,7 +19062,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
+  - {fileID: 2180264, guid: 2e498d1c8094910479dc3e1b768306a4, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -19172,7 +19174,7 @@ MonoBehaviour:
   _SortingLayerID: 0
   _SortingOrder: 0
   m_hasFontAssetChanged: 0
-  m_renderer: {fileID: 0}
+  m_renderer: {fileID: 2987704571908759150}
   m_maskType: 0
 --- !u!1 &9086905440269778331
 GameObject:

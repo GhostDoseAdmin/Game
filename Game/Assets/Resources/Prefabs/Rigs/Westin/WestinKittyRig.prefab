@@ -135,7 +135,7 @@ GameObject:
   m_Component:
   - component: {fileID: 3039144716566290889}
   - component: {fileID: 2440704354244625642}
-  m_Layer: 0
+  m_Layer: 13
   m_Name: avaturn_hair_1
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -5339,7 +5339,7 @@ GameObject:
   m_Component:
   - component: {fileID: 3393239406791942548}
   - component: {fileID: 2629451272464801072}
-  m_Layer: 0
+  m_Layer: 13
   m_Name: avaturn_shoes_0
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -5755,7 +5755,7 @@ GameObject:
   m_Component:
   - component: {fileID: 8455126837247726539}
   - component: {fileID: 7700566528917993979}
-  m_Layer: 0
+  m_Layer: 13
   m_Name: avaturn_body
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -6163,7 +6163,7 @@ GameObject:
   m_Component:
   - component: {fileID: 9064676070686580407}
   - component: {fileID: 146370575738524466}
-  m_Layer: 0
+  m_Layer: 13
   m_Name: avaturn_hair_0
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -6281,7 +6281,7 @@ GameObject:
   m_Component:
   - component: {fileID: 5630791019305105149}
   - component: {fileID: 5872716678831811087}
-  m_Layer: 0
+  m_Layer: 13
   m_Name: avaturn_look_0
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -7139,7 +7139,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
+  - {fileID: 2180264, guid: 2e498d1c8094910479dc3e1b768306a4, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -7251,7 +7251,7 @@ MonoBehaviour:
   _SortingLayerID: 0
   _SortingOrder: 0
   m_hasFontAssetChanged: 0
-  m_renderer: {fileID: 0}
+  m_renderer: {fileID: 461445601395233991}
   m_maskType: 0
 --- !u!1 &4797197042531754240
 GameObject:
@@ -18193,6 +18193,7 @@ MonoBehaviour:
   shadower: 0
   flicker: 0
   strength: 0
+  isPlayerLight: 0
 --- !u!1 &7560995542054579705
 GameObject:
   m_ObjectHideFlags: 0
@@ -19062,6 +19063,7 @@ MonoBehaviour:
   shadower: 0
   flicker: 0
   strength: 0
+  isPlayerLight: 0
 --- !u!1 &8454662547791223425
 GameObject:
   m_ObjectHideFlags: 0
