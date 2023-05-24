@@ -64,7 +64,7 @@ MonoBehaviour:
   timeElapsed: 0
   GAMESTARTED: 0
   LEVELINDEX: 0
-  SPEEDSCORE: 0
+  PlayerScores: {fileID: 6344161776480561759, guid: ebdee34ddb6d6cb44bf79bb084aed7bd, type: 3}
 --- !u!114 &4600351335788548322
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -106,6 +106,6 @@ MonoBehaviour:
   otherPlayerRig: {fileID: 0}
   SkinsList: {fileID: 0}
   skin: {fileID: 5677644129695883588, guid: b4d27a4137c63d743a9e795c10e93d35, type: 3}
-  leveldata: 
+  leveldata: []
   currentRigName: 
   otherPlayerRigName: 

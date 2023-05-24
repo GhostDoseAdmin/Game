@@ -42,14 +42,14 @@ public class RigManager : MonoBehaviour
     public GameObject SkinsList;
     public GameObject skin;
 
-    public int[] leveldata;
+    public float[] leveldata;
     public string currentRigName, otherPlayerRigName;
 
   
     // Start is called before the first frame update
     void Start()
     {
-        leveldata = new int[5];//NUMBER OF LEVELS, index 0 not used
+        leveldata = new float[5];//NUMBER OF LEVELS, index 0 not used
         util = new utilities();
         
         if (SceneManager.GetActiveScene().name == "Lobby")
@@ -123,7 +123,7 @@ public class RigManager : MonoBehaviour
     void RetreiveLevelData(string data)    {NetworkDriver.instance.sioCom.Instance.Emit("get_level_speed", JsonConvert.SerializeObject(new { username = NetworkDriver.instance.USERNAME, level = data }), false); Debug.Log("-------REQUEST DATA-----"); }
 
     //void RetreiveLevel2Data() { NetworkDriver.instance.sioCom.Instance.Emit("get_level2_speed", JsonConvert.SerializeObject(new { username = GameDriver.instance.USERNAME }), false); }
-    public void ReceivedLevelData(int level, int speed) { leveldata[level] = speed; UpdateSkinsList(); Debug.Log("LEVEL SPEED DATA " + leveldata[1] + " " + leveldata[1]); }
+    public void ReceivedLevelData(int levelIndex, float speed) { leveldata[levelIndex] = speed; UpdateSkinsList(); Debug.Log("LEVEL SPEED DATA " + leveldata[1] + " " + leveldata[1]); }
     //public void ReceivedLevel2Data(int data) { level1data = data; UpdateSkinsList(); }//LAST CALL
 
     public void UpdateSkinsList()

@@ -5,9 +5,8 @@ using UnityEngine;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using GameManager;
-using static UnityEngine.GraphicsBuffer;
 using UnityEngine.SceneManagement;
-using System.Threading;
+using TMPro;
 
 namespace NetworkSystem
 {
@@ -47,7 +46,8 @@ namespace NetworkSystem
         public float timeElapsed;
         public bool GAMESTARTED;
         public int LEVELINDEX;
-        public float SPEEDSCORE;
+        // public float SPEEDSCORE;
+        public GameObject PlayerScores;
         public void Awake()
         {
             //ONLY ONE CAN EXIST
@@ -137,11 +137,28 @@ namespace NetworkSystem
                     string level = splitData[0]; level = level.Replace("level", ""); level = level.Replace("speed", "");
                     string speed = splitData[1];
                     if (speed.Contains("None")) { speed = "-1"; }
-                    GetComponent<RigManager>().ReceivedLevelData(int.Parse(level), int.Parse(speed));
+                    GetComponent<RigManager>().ReceivedLevelData(int.Parse(level), float.Parse(speed));
                 }
 
             });
+            //-----------------GET LEADERBOARD ----------------->
+            sioCom.Instance.On("get_leaderboard", (payload) =>
+            {
+                GameObject list = GameObject.Find("PlayerScoreList");
+                Debug.Log("RECEIVING LEADERBOARD " + payload);
+                JArray jsonArray = JArray.Parse(payload);
+                // DATA FORMAT AS -->> array of dicts -->>[{"username":"user1","leveldata":2.12},{"username":"tt","leveldata":2.853588}] 
+                int place = 1;
+                foreach (JObject obj in jsonArray)
+                {
+                    Dictionary<string, string> dict = obj.ToObject<Dictionary<string, string>>();
+                    GameObject playerScoresItem = Instantiate(PlayerScores, list.transform);
+                    playerScoresItem.transform.GetChild(0).GetComponent<TextMeshPro>().text = place.ToString() +") " + dict["username"] + " : " + dict["leveldata"] + " seconds";
+                    place++;
 
+                }
+
+            });
             //-----------------JOIN ROOM----------------->
             sioCom.Instance.On("join", (payload) =>
             {
@@ -558,6 +575,7 @@ namespace NetworkSystem
             timeElapsed = Time.time -startTime;
             GameObject.Find("PlayerCamera").transform.SetParent(GameDriver.instance.gameObject.transform);
 
+            if (SceneManager.GetActiveScene().name == "GoldCamp" || SceneManager.GetActiveScene().name == "Experiment") { NetworkDriver.instance.LEVELINDEX = 1; }
             SceneManager.LoadScene("EndGame");
 
             //PLAYER PERSIST
