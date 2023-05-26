@@ -94,6 +94,7 @@ public class Teleport : MonoBehaviour
             if (GetComponent<NPCController>().healthEnemy > 0 && !isWaypoint) { AudioManager.instance.Play("haunting", null); }
             //GetComponent<NPCController>().SKEL_ROOT.GetComponent<CapsuleCollider>().isTrigger = true;
             //GetComponent<NPCController>().HIT_COL.GetComponent<SphereCollider>().isTrigger = true;
+            Debug.Log("-------------TELEPORTING");
             teleport = 1.5f;
 
         }
