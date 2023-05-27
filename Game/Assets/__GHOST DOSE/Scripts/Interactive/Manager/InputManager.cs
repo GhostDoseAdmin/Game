@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 
 namespace InteractionSystem
 {
@@ -16,7 +17,7 @@ namespace InteractionSystem
 
         [Header("FLASHLIGHT BUTTON")]
         [Space(10)]
-        public KeyCode flashlightSwitch;
+        public KeyCode flashlightSwitchV2;
         public KeyCode reloadBattery;
 
         [Header("GEAR BUTTON")]
@@ -42,7 +43,8 @@ namespace InteractionSystem
 
 
         public static InputManager instance;
-
+        public Button flashLightButton;
+        private bool canUnclick;
         private void Awake()
         {
             if (instance != null) 
@@ -53,6 +55,27 @@ namespace InteractionSystem
             { 
                 instance = this; 
             }
+
+            flashLightButton.onClick.AddListener(FlashLightButton);
+        }
+        private void Start()
+        {
+            flashLightButton.onClick.AddListener(FlashLightButton);
+        }
+        public bool GetFLkeyDown;
+        void FlashLightButton()
+        {
+            GetFLkeyDown = true;
+            canUnclick = false;
+        }
+        private void Update()
+        {
+            if (canUnclick) { GetFLkeyDown = false; }
+        }
+
+        private void LateUpdate()
+        {
+            canUnclick = true;
         }
     }
 }

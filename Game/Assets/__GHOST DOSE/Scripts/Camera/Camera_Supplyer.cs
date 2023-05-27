@@ -1,6 +1,7 @@
 ﻿using InteractionSystem;
 using System.Collections.Generic;
 using UnityEngine;
+using NetworkSystem;
 
 [RequireComponent(typeof(Camera_Controller))]
 public class Camera_Supplyer : MonoBehaviour
@@ -53,8 +54,11 @@ public class Camera_Supplyer : MonoBehaviour
     public void Start()
     {
         cameraController = GetComponent<Camera_Controller>();
-        
-        x = 0;
+
+
+        if (NetworkDriver.instance.isMobile) { yAngleLimitMin = 110f; }
+
+            x = 0;
         y = 0;
 
         smartPivotInit = true;

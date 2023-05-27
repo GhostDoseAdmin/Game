@@ -94,11 +94,13 @@ public class PlayerController : MonoBehaviour
 	private string prevPos;
 	public bool emitPos;
 	private int emitDodge;
+	private bool runningMobile, mobileGearAim;
 	//private GameObject playerCam;
     private static utilities util;
 
 	public GameObject currLight;
 	public AudioSource audioSource;
+
     #region Start
 
 
@@ -140,6 +142,7 @@ public class PlayerController : MonoBehaviour
 		k2.SetActive(false);
         fireK2 = false;
 		canFlinch = true;
+
     }
 
 
@@ -148,9 +151,6 @@ public class PlayerController : MonoBehaviour
 	{
        
         //GetComponent<WeaponParameters>().EnableInventoryPistol();
-
-		Cursor.lockState = CursorLockMode.Locked;
-		Cursor.visible = false;
 
         anim = GetComponent<Animator>();
     }
@@ -166,7 +166,9 @@ public class PlayerController : MonoBehaviour
 
 		if (currentAni != "React")
 		{
-			Locomotion();
+            MobileControls();
+            Locomotion();
+
 			if (currentAni != "dodgeRightAni" && currentAni != "dodgeLeftAni" )
 			{
 				Running();
@@ -187,24 +189,6 @@ public class PlayerController : MonoBehaviour
             anim.SetBool("Pistol", false);
         }
 
-
-
-        if (Input.GetKeyUp(KeyCode.Escape))
-        {
-			if (!Cursor.visible)
-			{
-                Cursor.visible = true;
-                Cursor.lockState = CursorLockMode.None;
-            }
-			else
-            {
-                Cursor.lockState = CursorLockMode.Locked;
-                Cursor.visible = false;
-            }
-
-
-
-        }
 
 		//----------------------------------  E M I T          P L A Y E R             A C T I O N S -----------------------------------------------
         if (NetworkDriver.instance.TWOPLAYER && Time.time > emit_timer + emit_delay)
@@ -314,14 +298,70 @@ public class PlayerController : MonoBehaviour
     #region Locomotion
     public float doubleTapTimeThreshold = 0.3f;
     private float lastTapTime = -10f;
+
+	void MobileControls()
+	{
+        //------------MOBILE CONTROLS----------
+        if (NetworkDriver.instance.isMobile)
+        {
+            float minDist = 1; //minimum distance to move
+            if (Input.GetMouseButton(0))//finger on screen
+            {
+                walk = Mathf.Lerp(walk, 1f, 0.8f);
+                runningMobile = false;
+				mobileGearAim = false;
+                //LayerMask mask = 1 << LayerMask.NameToLayer("Environment");
+                Vector3 mouse = Input.mousePosition;
+                Ray ray = Camera.main.ScreenPointToRay(mouse);
+                RaycastHit[] hits;
+                hits = Physics.RaycastAll(ray, Mathf.Infinity);
+                foreach (RaycastHit hit in hits)
+                {
+                    Vector3 newPos = new Vector3(hit.point.x, hit.point.y + 0.7f, hit.point.z);
+                    //MOVEMENT
+                    if (hit.normal.y > 0.5f && hit.collider.gameObject.layer == LayerMask.NameToLayer("Environment"))// check to ensure its a ground point  && hit.point.y < transform.position.y + 0.5f
+                    {
+                        
+                        float distance = Vector3.Distance(newPos, new Vector3(transform.position.x, newPos.y, transform.position.z));
+                       
+                        if (distance < minDist)//keep targPos at distance
+                        {
+                            Vector3 directionToTarget = (newPos - new Vector3(transform.position.x, newPos.y, transform.position.z)).normalized;
+                            targetPos.transform.position = newPos + directionToTarget * minDist;
+							walk = 0;
+                        }
+                        else
+                        {
+                            targetPos.transform.position = newPos;
+                            if (Vector3.Distance(transform.position, hit.point) > 3) { runningMobile = true; }
+                        }
+                        //break;
+                    }
+                    //DETECT ENEMY
+                    if (hit.collider.gameObject.layer == LayerMask.NameToLayer("Enemy"))
+                    {
+                        targetPos.transform.position = hit.point;
+                        //transform.LookAt(hit.collider.gameObject.transform.position);
+                        //Quaternion targetRotation = Quaternion.LookRotation(newPos);
+                        //transform.rotation = Quaternion.Euler(0f, targetRotation.eulerAngles.y, 0f);
+                        mobileGearAim = true;
+                        walk = 0;
+						break;
+                    }
+
+                }
+            }
+            else { walk = 0; }
+        }
+    }
+
     void Locomotion()
 	{
 		targetPosVec = targetPos.position;
 
-        walk = Input.GetAxis("Vertical");
-        strafe =Input.GetAxis("Horizontal");
+        if (!NetworkDriver.instance.isMobile) { walk = Input.GetAxis("Vertical"); strafe = Input.GetAxis("Horizontal"); }
 
-
+        //-------DODGE
         if (strafe != 0 && Input.GetKeyDown(strafe > 0 ? KeyCode.D : KeyCode.A))
         {
             if (Time.time - lastTapTime < doubleTapTimeThreshold)
@@ -338,17 +378,14 @@ public class PlayerController : MonoBehaviour
 		anim.SetFloat("Walk", walk);
         //Debug.Log("SPEED---------------------------------------------------" + strafe + walk);
 
-        if (walk != 0 || strafe != 0 || is_FlashlightAim == true || gearAim == true || CameraType.FPS == cameraController.cameraType)
+
+        if (walk != 0 || strafe != 0 || is_FlashlightAim == true || gearAim || mobileGearAim || CameraType.FPS == cameraController.cameraType)
         {
 			Vector3 rot = transform.eulerAngles;
 			transform.LookAt(targetPosVec);
 
             float angleBetween = Mathf.DeltaAngle(transform.eulerAngles.y, rot.y);
-            if ((Mathf.Abs(angleBetween) > luft) || strafe != 0)
-			{
-				isPlayerRot = true;
-				
-			}
+            if ((Mathf.Abs(angleBetween) > luft) || strafe != 0){isPlayerRot = true;}
 			if (isPlayerRot == true)
 			{
 				float bodyY = Mathf.LerpAngle(rot.y, transform.eulerAngles.y, Time.deltaTime * angularSpeed);
@@ -378,9 +415,16 @@ public class PlayerController : MonoBehaviour
 
 	private void Running()
 	{
-		if (Input.GetKey(InputManager.instance.running) && walk != 0)        {			anim.SetBool("Running", true);        }		
-		else if (Input.GetKeyUp(InputManager.instance.running))		{			anim.SetBool("Running", false);        }
-
+		//PC
+        if (!NetworkDriver.instance.isMobile)
+		{
+            if (Input.GetKey(InputManager.instance.running) && walk != 0) { anim.SetBool("Running", true); }
+            else if (Input.GetKeyUp(InputManager.instance.running)) { anim.SetBool("Running", false); }
+		}
+		else//MOBILE
+		{
+            if (runningMobile && walk != 0) { anim.SetBool("Running", true); } else { anim.SetBool("Running", false); }
+        }
 		if (gearAim == true)        {			anim.SetBool("Running", false);        }
 	}
 	#endregion
@@ -491,11 +535,23 @@ public class PlayerController : MonoBehaviour
                 anim.SetBool("Pistol", true);
 				newHandWeight = 1f;
             }
-            //if (gear == 1 || gear == 2)
-            {
-	
-				if (Input.GetMouseButton(1)) //AIMING
+			
+               /* if (NetworkDriver.instance.isMobile)
 				{
+					mobileGearAim = false;
+					NPCController[] enemies = FindObjectsOfType<NPCController>();
+					NPCController closestEnemy = null;
+					float closestDistance = 99999;
+                    foreach (NPCController enemy in enemies)
+                    {
+						float enemyDist = Vector3.Distance(enemy.gameObject.transform.position, new Vector3(targetPos.transform.position.x, enemy.gameObject.transform.position.y, targetPos.transform.position.x));
+						if (enemyDist < closestDistance && enemyDist < 1) { closestDistance = enemyDist; closestEnemy = enemy; }
+                    }
+					if(closestEnemy != null) { mobileGearAim = true; }
+                }*/
+
+                if ( (Input.GetMouseButton(1) && !NetworkDriver.instance.isMobile) || (mobileGearAim && NetworkDriver.instance.isMobile) )//AIMING
+                {
                     if (!gearAim) { if (gear == 1) { AudioManager.instance.Play("camfocus", audioSource); } }
 
                     if (is_FlashlightAim)
@@ -537,8 +593,8 @@ public class PlayerController : MonoBehaviour
                         //anim.SetBool("Throw", false);
                     }
 				}
-				else if (Input.GetMouseButtonUp(1))
-				{
+				else if ((Input.GetMouseButtonUp(1) && !NetworkDriver.instance.isMobile) || (!mobileGearAim && NetworkDriver.instance.isMobile))
+                {
 					gearAim = false;
 					anim.SetBool("Pistol", false);
 					anim.SetBool("Shoot", false);
@@ -557,7 +613,7 @@ public class PlayerController : MonoBehaviour
 				handWeight = Mathf.Lerp(handWeight, newHandWeight, Time.deltaTime * handSpeed);
 				//OUIJA
 				if (anim.GetBool("ouija")) { handWeight = 0f; anim.SetBool("Pistol", true); gear = 1; ouija.SetActive(true); camera.SetActive(false); k2.SetActive(false); camInventory.SetActive(true); k2Inventory.SetActive(true); } else { ouija.SetActive(false); }
-            }
+            
 		}
 	}
 
@@ -565,7 +621,7 @@ public class PlayerController : MonoBehaviour
 	#region Flashlight
 	private void CheckFlashlight()
     {
-		if (Input.GetKeyDown(InputManager.instance.flashlightSwitch) && is_FlashlightAim == false)
+		if ((Input.GetKeyDown(InputManager.instance.flashlightSwitchV2) || InputManager.instance.GetFLkeyDown) && is_FlashlightAim == false)
 		{
 			//if (gameObject.GetComponent<FlashlightSystem>().hasFlashlight == true)
             {
@@ -575,7 +631,7 @@ public class PlayerController : MonoBehaviour
                 
             }
 		}
-		else if (Input.GetKeyDown(InputManager.instance.flashlightSwitch) && is_FlashlightAim == true)
+		else if ((Input.GetKeyDown(InputManager.instance.flashlightSwitchV2) || InputManager.instance.GetFLkeyDown) && is_FlashlightAim == true)
 		{
 			is_Flashlight = false;
 			is_FlashlightAim = false;

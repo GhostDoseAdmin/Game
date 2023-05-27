@@ -113,7 +113,7 @@ public class FlashlightSystem : MonoBehaviour
         if (hasFlashlight)
         {
             //---------TOGGLE FLASHLGITH ON AND OFF---------------------------------
-            if (Input.GetKeyDown(InputManager.instance.flashlightSwitch) && !showOnce)
+            if ((Input.GetKeyDown(InputManager.instance.flashlightSwitchV2) || InputManager.instance.GetFLkeyDown)  && !showOnce)
             {
                 if (FlashLight.enabled == false)
                 {

@@ -48,8 +48,11 @@ namespace NetworkSystem
         public int LEVELINDEX;
         // public float SPEEDSCORE;
         public GameObject PlayerScores;
+        public bool isMobile = false;
         public void Awake()
         {
+            if (Application.isMobilePlatform) { isMobile = true; }
+            isMobile = true;
             //ONLY ONE CAN EXIST
             if (instance == null) { instance = this;  DontDestroyOnLoad(gameObject); }
             else { DestroyImmediate(gameObject); }

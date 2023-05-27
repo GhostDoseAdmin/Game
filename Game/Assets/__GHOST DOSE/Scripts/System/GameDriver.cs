@@ -1,9 +1,6 @@
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using NetworkSystem;
-using System.Collections.Generic;
-using UnityEngine.UI;
-using UnityEngine.Rendering.VirtualTexturing;
 using TMPro;
 using InteractionSystem;
 using Newtonsoft.Json;
@@ -25,7 +22,7 @@ namespace GameManager
         //public bool GAMESTART = false;
         //public bool twoPlayer = false;
 
-        public bool infiniteAmmo;
+        public bool infiniteAmmo, infiniteHealth;
         private GameObject WESTIN;
         private GameObject TRAVIS;
         //public GameObject loginCanvas;
@@ -198,17 +195,29 @@ namespace GameManager
                 playerStartPos = Player.transform.position;
                 //SETUP CAMERA
                 playerUI.SetActive(true);
-                GameObject mainCam = GameObject.Find("PlayerCamera");
-                mainCam.SetActive(true);
-                mainCam.transform.SetParent(Player.transform.parent);
-                //mainCam.transform.SetAsFirstSibling();
+                GameObject mainCam = null;
+
+                mainCam = GameObject.Find("PlayerCamera"); 
                 mainCam.GetComponent<Camera_Controller>().player = Player.transform;
                 mainCam.GetComponent<Aiming>().player = Player;
+
+                /*if (!NetworkDriver.instance.isMobile) { 
+                    mainCam = GameObject.Find("PlayerCamera"); GameObject.Find("PlayerCameraMobile").SetActive(false);
+                    mainCam.GetComponent<Camera_Controller>().player = Player.transform;
+                    mainCam.GetComponent<Aiming>().player = Player;
+                }
+                else { 
+                    mainCam = GameObject.Find("PlayerCameraMobile"); GameObject.Find("PlayerCamera").SetActive(false);
+                    mainCam.GetComponent<MobileCam>().player = Player.transform;
+                }*/
+
+                mainCam.transform.SetParent(Player.transform.parent);
                //----CLEAR ANIMATOR CACHE---
                StartCoroutine(util.ReactivateAnimator(Client));
                 StartCoroutine(util.ReactivateAnimator(Player));
 
                 Player.GetComponent<PlayerController>().SetupRig();
+                if (infiniteHealth) { Player.GetComponent<HealthSystem>().maxHealth = 99999; Player.GetComponent<HealthSystem>().Health = 99999; }
                 Client.GetComponent<ClientPlayerController>().SetupRig();
 
                 //RIG GHOST VFX

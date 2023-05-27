@@ -3,6 +3,7 @@ using System;
 using UnityEngine;
 using System.Collections.Generic;
 using UnityEngine.UIElements;
+using NetworkSystem;
 
 [RequireComponent(typeof(Camera))]
 public class Camera_Controller : MonoBehaviour
@@ -124,6 +125,23 @@ public class Camera_Controller : MonoBehaviour
         thicknessEnds = new Dictionary<string, RaycastHit>();
 
         InitFromTarget();
+
+    }
+
+    private void Start()
+    {
+        if(!NetworkDriver.instance.isMobile)
+        {
+            UnityEngine.Cursor.lockState = CursorLockMode.Locked;
+            UnityEngine.Cursor.visible = false;
+        }
+        else
+        {
+            offsetVector = new Vector3(0.12f, 2.28f, 0);
+            cameraOffsetVector = new Vector3(0.31f, -0.42f, -4.37f);
+            zoomOutStepValue = 0.01f;
+            zoomOutStepValuePerFrame = 0.01f;
+        }
     }
 
     public void InvokeShake(float duration, float magnitude)
@@ -182,6 +200,22 @@ public class Camera_Controller : MonoBehaviour
                 cameraType = CameraType.FPS;
         }
 
+
+        if (Input.GetKeyUp(KeyCode.Escape) && !NetworkDriver.instance.isMobile)
+        {
+            if (!UnityEngine.Cursor.visible)
+            {
+                UnityEngine.Cursor.visible = true;
+                UnityEngine.Cursor.lockState = CursorLockMode.None;
+            }
+            else
+            {
+                UnityEngine.Cursor.lockState = CursorLockMode.Locked;
+                UnityEngine.Cursor.visible = false;
+            }
+
+        }
+
         //----------FIX Z AXIS AFTER FLINCH-----
         if (player.GetComponent<PlayerController>().currentAni != null)
         {
@@ -202,7 +236,6 @@ public class Camera_Controller : MonoBehaviour
                 zAxisFixTimer -= Time.deltaTime;
             }
         }
-
 
     }
 
@@ -450,7 +483,27 @@ public class Camera_Controller : MonoBehaviour
         prevPosition = transform.position;
 
 
-       
+
+
+        //--------------MOBILE CAMERA-------------------------
+        /*if (NetworkDriver.instance.isMobile)
+        {
+            Vector3 offset = new Vector3(-8, 4, 0f);
+
+            // Calculate the desired camera position based on the player position and offset
+            Vector3 desiredPosition = player.position + offset;
+
+            // Smoothly move the camera towards the desired position
+            Vector3 smoothedPosition = Vector3.Lerp(transform.position, desiredPosition, 0.5f);
+
+            // Update the camera position
+            transform.position = smoothedPosition;
+
+            // Make the camera look at the player
+            transform.LookAt(player.position);
+        }*/
+
+
     }
     
 
