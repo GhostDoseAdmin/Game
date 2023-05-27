@@ -109,8 +109,9 @@ GameObject:
   m_Component:
   - component: {fileID: 4361264748035806200}
   - component: {fileID: 4361264748035806199}
+  - component: {fileID: 6586284813631026981}
   m_Layer: 0
-  m_Name: 1FlareLight
+  m_Name: GhostLight
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -193,3 +194,22 @@ Light:
   m_UseViewFrustumForShadowCasterCull: 1
   m_ShadowRadius: 0
   m_ShadowAngle: 0
+--- !u!114 &6586284813631026981
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4361264748035806198}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c1455729a3006134faabce5afd1443a7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  show_Ghost: 1
+  show_Shadowers: 1
+  ghost: 0
+  shadower: 0
+  flicker: 0
+  strength: 50
+  isPlayerLight: 0
