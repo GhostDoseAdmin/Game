@@ -174,7 +174,6 @@ public class ClientPlayerController : MonoBehaviour
 
             //------------------------------------- M A I N ---------------------------------------------------
             targetPosVec = Vector3.Lerp(targetPosVec, targetPos.position, 0.1f);//0.1
-		    
        
             if (running) { speed = 4f; } else { speed = 2f; }
             if (strafe == 0 && walk == 0) { speed = 0f; }
@@ -184,6 +183,7 @@ public class ClientPlayerController : MonoBehaviour
 
                 anim.SetFloat("Strafe", strafe);
                 anim.SetFloat("Walk", walk);
+                if (NetworkDriver.instance.isMobile) { anim.SetFloat("Strafe", 0); anim.SetFloat("Walk", Mathf.Max(Mathf.Abs(walk), Mathf.Abs(strafe))); }
 			    if (speed>=4f) { anim.SetBool("Running", true);  }
 			    else { anim.SetBool("Running", false); }
 
@@ -199,12 +199,15 @@ public class ClientPlayerController : MonoBehaviour
             if (Vector3.Distance(transform.position, destination) > 2) { transform.position = new Vector3(destination.x, destination.y, destination.z); }
             float distance = Vector3.Distance(transform.position, destination);
             float timeToTravel = distance / (speed + 0.00001f);
-            transform.position = Vector3.Lerp(transform.position, destination, Time.deltaTime / timeToTravel);
+            if (!NetworkDriver.instance.isMobile) { transform.position = Vector3.Lerp(transform.position, destination, Time.deltaTime / timeToTravel); }
+            else { transform.position = Vector3.Lerp(transform.position, destination, 0.1f); }
         }
 
 
         //--------------------ROTATION--------------------------------------
-        if (walk != 0 || strafe != 0 || is_FlashlightAim == true || gearAim == true)
+        if (!NetworkDriver.instance.isMobile)
+        {
+            if (walk != 0 || strafe != 0 || is_FlashlightAim == true || gearAim == true)
             {
                 Vector3 rot = transform.eulerAngles;
                 transform.LookAt(targetPosVec);
@@ -225,6 +228,8 @@ public class ClientPlayerController : MonoBehaviour
                 }
             }
             transform.eulerAngles = new Vector3(0f, transform.eulerAngles.y, 0f);
+        }
+        else { transform.rotation = Quaternion.Euler(0f, Quaternion.LookRotation(targetPosVec - transform.position).eulerAngles.y, 0f); }
     }
 
 

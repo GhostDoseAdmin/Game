@@ -193,8 +193,17 @@ public class PlayerController : MonoBehaviour
 		//----------------------------------  E M I T          P L A Y E R             A C T I O N S -----------------------------------------------
         if (NetworkDriver.instance.TWOPLAYER && Time.time > emit_timer + emit_delay)
             {
-            Ray ray = GameObject.Find("PlayerCamera").GetComponent<Camera>().ViewportPointToRay(new Vector3(0.5f, 0.5f, 0f));
-            Vector3 crosshairPos = ray.origin + ray.direction * 10f;///USE TO EMIT targPos
+			Vector3 crosshairPos;
+
+            if (!NetworkDriver.instance.isMobile)
+			{
+				Ray ray = GameObject.Find("PlayerCamera").GetComponent<Camera>().ViewportPointToRay(new Vector3(0.5f, 0.5f, 0f));
+				crosshairPos = ray.origin + ray.direction * 10f;///USE TO EMIT targPos
+			}
+			else
+			{
+				crosshairPos = targetPos.position ;
+            }
             //--------------- DAMAGE EMIT-----------------
             /*string dmgString = "";
             if (emitDamage){
@@ -245,7 +254,8 @@ public class PlayerController : MonoBehaviour
 				}
 				//--------------- RUN EMIT-----------------
 				string runString ="";
-				if (Input.GetKey(InputManager.instance.running)){
+				if (currentAni == "Running" || anim.GetBool("Running"))
+				{
 					runString = $",'r':''";
 				}
 				//--------------- POSITION EMIT-----------------
@@ -298,11 +308,11 @@ public class PlayerController : MonoBehaviour
     #region Locomotion
     public float doubleTapTimeThreshold = 0.3f;
     private float lastTapTime = -10f;
-
-	void MobileControls()
+    public VariableJoystick joystick;
+    void MobileControls()
 	{
         //------------MOBILE CONTROLS----------
-        if (NetworkDriver.instance.isMobile)
+        /*if (NetworkDriver.instance.isMobile)
         {
             float minDist = 1; //minimum distance to move
             if (Input.GetMouseButton(0))//finger on screen
@@ -352,17 +362,30 @@ public class PlayerController : MonoBehaviour
                 }
             }
             else { walk = 0; }
-        }
+        }*/
     }
 
     void Locomotion()
 	{
 		targetPosVec = targetPos.position;
 
-        if (!NetworkDriver.instance.isMobile) { walk = Input.GetAxis("Vertical"); strafe = Input.GetAxis("Horizontal"); }
+       walk = Input.GetAxis("Vertical"); strafe = Input.GetAxis("Horizontal");
 
-        //-------DODGE
-        if (strafe != 0 && Input.GetKeyDown(strafe > 0 ? KeyCode.D : KeyCode.A))
+		//-------------------J O Y S T I C K ----------------------------------
+		//float dirMagnitude = 0;
+		if (NetworkDriver.instance.isMobile) {
+			walk = joystick.Vertical; strafe = joystick.Horizontal;
+			//dirMagnitude = (Mathf.Abs(walk) + Mathf.Abs(strafe)) / 2; Debug.Log("SPEED------------------------" + dirMagnitude); //Mathf.Max(Mathf.Abs(walk), Mathf.Abs(strafe));
+            Vector3 aimPos = transform.position + (Camera.main.transform.forward * walk + Camera.main.transform.right * strafe).normalized * 5f;
+            if (walk!=0 || strafe!=0)
+			{
+                aimPos.y = transform.position.y + 1f;
+                targetPos.position = aimPos;
+            }
+        }
+       
+		//-------DODGE
+         if (strafe != 0 && Input.GetKeyDown(strafe > 0 ? KeyCode.D : KeyCode.A))
         {
             if (Time.time - lastTapTime < doubleTapTimeThreshold)
             {
@@ -373,58 +396,65 @@ public class PlayerController : MonoBehaviour
             }
             lastTapTime = Time.time;
         }
-
-        anim.SetFloat("Strafe", strafe); 
-		anim.SetFloat("Walk", walk);
+		//---------------------A N I M A T I O N --------------------------
+        if (NetworkDriver.instance.isMobile) { 
+            anim.SetFloat("Walk", Mathf.Max(Mathf.Abs(walk), Mathf.Abs(strafe)));
+            if ((Mathf.Abs(walk) + Mathf.Abs(strafe)) / 2 > 0.52f) {  anim.SetBool("Running", true); } else { anim.SetBool("Running", false); }
+		}
+		else
+		{
+            anim.SetFloat("Strafe", strafe);
+            anim.SetFloat("Walk", walk);
+        }
         //Debug.Log("SPEED---------------------------------------------------" + strafe + walk);
 
-
-        if (walk != 0 || strafe != 0 || is_FlashlightAim == true || gearAim || mobileGearAim || CameraType.FPS == cameraController.cameraType)
-        {
-			Vector3 rot = transform.eulerAngles;
-			transform.LookAt(targetPosVec);
-
-            float angleBetween = Mathf.DeltaAngle(transform.eulerAngles.y, rot.y);
-            if ((Mathf.Abs(angleBetween) > luft) || strafe != 0){isPlayerRot = true;}
-			if (isPlayerRot == true)
-			{
-				float bodyY = Mathf.LerpAngle(rot.y, transform.eulerAngles.y, Time.deltaTime * angularSpeed);
-				transform.eulerAngles = new Vector3(0, bodyY, 0);
-			}
-			else
-			{
-				transform.eulerAngles = new Vector3(0f, rot.y, 0f);
-			}
-		}
-
-		transform.eulerAngles = new Vector3(0f, transform.eulerAngles.y, 0f);
-
-		//------------------S P E E D -------------------------
-		//if (currentAni != "React")
+        //------------------  R O T A T E --------------------------------
+        if (!NetworkDriver.instance.isMobile)
 		{
-			if (currentAni == "Idle" || currentAni == "Idle_Flashlight" || currentAni == "Idle_Pistol") { speed = 0; }
-			else if (currentAni == "Running") { speed = 4f; }
-			else { speed = 2f; }//walk
+			if (walk != 0 || strafe != 0 || is_FlashlightAim == true || gearAim || mobileGearAim || CameraType.FPS == cameraController.cameraType)
+			{
+				Vector3 rot = transform.eulerAngles;
+				transform.LookAt(targetPosVec);
 
+				float angleBetween = Mathf.DeltaAngle(transform.eulerAngles.y, rot.y);
+				if ((Mathf.Abs(angleBetween) > luft) || strafe != 0) { isPlayerRot = true; }
+				if (isPlayerRot == true)
+				{
+					float bodyY = Mathf.LerpAngle(rot.y, transform.eulerAngles.y, Time.deltaTime * angularSpeed);
+					transform.eulerAngles = new Vector3(0, bodyY, 0);
+				}
+				else
+				{
+					transform.eulerAngles = new Vector3(0f, rot.y, 0f);
+				}
+			}
+         transform.eulerAngles = new Vector3(0f, transform.eulerAngles.y, 0f);
+        }
+		else{ transform.rotation = Quaternion.Euler(0f, Quaternion.LookRotation(targetPos.transform.position - transform.position).eulerAngles.y, 0f); }
+
+
+        //------------------ T R A N S L A T E -------------------------
+        if (currentAni == "Idle" || currentAni == "Idle_Flashlight" || currentAni == "Idle_Pistol") { speed = 0; }
+            if (walk != 0 || strafe != 0) { speed = 2f; }
+            if (currentAni == "Running" || anim.GetBool("Running")) { speed = 4f; }
 
 			Vector3 movement = new Vector3(strafe, 0.0f, walk);
-			movement = movement.normalized;
-			transform.Translate(movement * speed * Time.deltaTime);
-		}
+			if (NetworkDriver.instance.isMobile) { transform.position = Vector3.MoveTowards(transform.position, targetPos.transform.position, Mathf.Max(Mathf.Abs(walk), Mathf.Abs(strafe)) * speed * Time.deltaTime); } //transform.position = Vector3.MoveTowards(transform.position, targetPos.transform.position, speed * Time.deltaTime); 
+			else { transform.Translate(movement * speed * Time.deltaTime); }
+            //movement = movement.normalized;
+            //if (speed > 0) { Debug.Log("SPEED " + speed); }
+            
+            
     }
 
 	private void Running()
 	{
 		//PC
-        if (!NetworkDriver.instance.isMobile)
+		if (!NetworkDriver.instance.isMobile)
 		{
-            if (Input.GetKey(InputManager.instance.running) && walk != 0) { anim.SetBool("Running", true); }
-            else if (Input.GetKeyUp(InputManager.instance.running)) { anim.SetBool("Running", false); }
+			if (Input.GetKey(InputManager.instance.running) && walk != 0) { anim.SetBool("Running", true); }
+			else if (Input.GetKeyUp(InputManager.instance.running)) { anim.SetBool("Running", false); }
 		}
-		else//MOBILE
-		{
-            if (runningMobile && walk != 0) { anim.SetBool("Running", true); } else { anim.SetBool("Running", false); }
-        }
 		if (gearAim == true)        {			anim.SetBool("Running", false);        }
 	}
 	#endregion
