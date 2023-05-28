@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using NetworkSystem;
+using GameManager;
 
 [RequireComponent(typeof(Camera_Controller))]
 public class Camera_Supplyer : MonoBehaviour
@@ -50,6 +51,7 @@ public class Camera_Supplyer : MonoBehaviour
     public bool forceCharacterDirection = false;
 
     private Camera_Controller cameraController;
+    //public VariableJoystick joystick;
 
     public void Start()
     {
@@ -100,7 +102,9 @@ public class Camera_Supplyer : MonoBehaviour
         {
 
             x = Input.GetAxis("Mouse X") * mouseSensitivity.x;
-            y = Input.GetAxis("Mouse Y") * mouseSensitivity.y;                   
+            y = Input.GetAxis("Mouse Y") * mouseSensitivity.y;
+
+            //Debug.Log(x.ToString() + " AND " + y.ToString());
 
             if (mouseInvertY)
                 y *= -1.0f;
@@ -151,7 +155,8 @@ public class Camera_Supplyer : MonoBehaviour
             
             Vector3 offsetVectorTransformed = cameraController.player.transform.rotation * cameraController.offsetVector;
 
-            transform.RotateAround(cameraController.player.position + offsetVectorTransformed, cameraController.player.up, smoothX);
+            transform.RotateAround(cameraController.player.position + offsetVectorTransformed, cameraController.player.up, smoothX); 
+            //else { transform.LookAt(GameDriver.instance.Player.GetComponent<PlayerController>().targetPos); }
 
             yAngle = -smoothY;
             angle = Vector3.Angle(transform.forward, upVector);
