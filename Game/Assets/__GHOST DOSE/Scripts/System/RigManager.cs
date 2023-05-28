@@ -15,8 +15,8 @@ using UnityEngine.SceneManagement;
 [System.Serializable]
 public class RigManager : MonoBehaviour
 {
-    public List<GameObject> travRigList;
-    public List<GameObject> wesRigList;
+    [HideInInspector] public List<GameObject> travRigList;
+    [HideInInspector] public List<GameObject> wesRigList;
      
     public GameObject[] travBasicRigs;
     public GameObject[] wesBasicRigs;
@@ -28,22 +28,22 @@ public class RigManager : MonoBehaviour
     public List<GameObject> wesLevel1RewardRigs;
     public List<GameObject> wesLevel2RewardRigs;
 
-    public GameObject travisProp;//PLAYER GAME OBJECT
-    public GameObject travCurrentRig;
-    public GameObject westinProp;
-    public GameObject wesCurrentRig;
-    public GameObject myRig;
-    public GameObject otherPlayerProp;
-    public GameObject otherPlayerRig;
+    [HideInInspector] public GameObject travisProp;//PLAYER GAME OBJECT
+    [HideInInspector] public GameObject travCurrentRig;
+    [HideInInspector] public GameObject westinProp;
+    [HideInInspector] public GameObject wesCurrentRig;
+    [HideInInspector] public GameObject myRig;
+    [HideInInspector] public GameObject otherPlayerProp;
+    [HideInInspector] public GameObject otherPlayerRig;
 
     private bool hasRetrievedSkins = false;
     private static utilities util;
 
-    public GameObject SkinsList;
-    public GameObject skin;
+    [HideInInspector] public GameObject SkinsList;
+    [HideInInspector] public GameObject skin;
 
-    public float[] leveldata;
-    public string currentRigName, otherPlayerRigName;
+    [HideInInspector] public float[] leveldata;
+    [HideInInspector] public string currentRigName, otherPlayerRigName;
 
   
     // Start is called before the first frame update
