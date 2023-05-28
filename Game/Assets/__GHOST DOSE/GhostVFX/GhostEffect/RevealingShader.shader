@@ -62,11 +62,11 @@ Shader "Custom/Ghost" {
 
             //ENVIRONMENT LIGHTS
             int _EnvLightCount;
-            float4 _LightPositions[20];
-            float4 _LightDirections[20];
-            float _LightAngles[20];
-            float _StrengthScalarLight[20];
-            float _LightRanges[20];
+            float4 _LightPositions[25];
+            float4 _LightDirections[25];
+            float _LightAngles[25];
+            float _StrengthScalarLight[25];
+            float _LightRanges[25];
 
             //SHADOW MAP DETAILS
             float4x4 _ShadowMatrix;
@@ -80,7 +80,7 @@ Shader "Custom/Ghost" {
 
                 float minStrength = 1;
                 float alphaStrength = 1;
-                float _strength[20];
+                float _strength[25];
 
                 //ENVIRONMENT LIGHTS
                 for (int i = 0; i < _EnvLightCount; i++) {

@@ -18,8 +18,8 @@ public class RigManager : MonoBehaviour
     public List<GameObject> travRigList;
     public List<GameObject> wesRigList;
      
-    public GameObject travBasicRig;
-    public GameObject wesBasicRig;
+    public GameObject[] travBasicRigs;
+    public GameObject[] wesBasicRigs;
 
     public int[] lvl1SpeedTeirs;
     public int[] lvl2SpeedTeirs;
@@ -54,9 +54,9 @@ public class RigManager : MonoBehaviour
         
         if (SceneManager.GetActiveScene().name == "Lobby")
         {
-           //create initial rigs
-            UpdatePlayerRig(wesBasicRig.name, false, false);
-            UpdatePlayerRig(travBasicRig.name, true, false);
+            //create initial rigs
+            UpdatePlayerRig(wesBasicRigs[0].name, false, false);
+            UpdatePlayerRig(travBasicRigs[0].name, true, false);
         }
     }
  
@@ -138,8 +138,18 @@ public class RigManager : MonoBehaviour
         List<GameObject> updatedList = new List<GameObject>();
 
         //ADD BASIC RIGS
-        if (NetworkDriver.instance.isTRAVIS) { updatedList.Add(travBasicRig); }
-        else { updatedList.Add(wesBasicRig); }
+        if (NetworkDriver.instance.isTRAVIS) { 
+            foreach(GameObject rig in travBasicRigs)
+            {
+                updatedList.Add(rig);
+            }
+        }
+        else {
+            foreach (GameObject rig in wesBasicRigs)
+            {
+                updatedList.Add(rig);
+            }
+        }
 
  
         for (int i = 1; i<leveldata.Length; i++)
@@ -148,14 +158,16 @@ public class RigManager : MonoBehaviour
             if (i == 1 &&  leveldata[1] > 0) {
                 if (NetworkDriver.instance.isTRAVIS) { thisRewardsList = travLevel1RewardRigs; } 
                 else { thisRewardsList = wesLevel1RewardRigs; }
-
-                //CHECK TEIRS
-                for (int j = 0; j < lvl1SpeedTeirs.Length; j++)
+                if (thisRewardsList.Count > 0)
                 {
-                    if (leveldata[i] <= lvl1SpeedTeirs[j])
+                    //CHECK TEIRS
+                    for (int j = 0; j < lvl1SpeedTeirs.Length; j++)
                     {
-                        updatedList.Add(thisRewardsList[j]);
+                        if (leveldata[i] <= lvl1SpeedTeirs[j])
+                        {
+                            updatedList.Add(thisRewardsList[j]);
 
+                        }
                     }
                 }
             }
@@ -164,14 +176,16 @@ public class RigManager : MonoBehaviour
             {
                 if (NetworkDriver.instance.isTRAVIS) {  thisRewardsList = travLevel2RewardRigs; }
                 else { thisRewardsList = wesLevel2RewardRigs; }
-
-                //CHECK TEIRS
-                for (int j = 0; j < lvl2SpeedTeirs.Length; j++)
+                if (thisRewardsList.Count > 0)
                 {
-                    if (leveldata[i] <= lvl2SpeedTeirs[j])
+                    //CHECK TEIRS
+                    for (int j = 0; j < lvl2SpeedTeirs.Length; j++)
                     {
-                        updatedList.Add(thisRewardsList[j]);
+                        if (leveldata[i] <= lvl2SpeedTeirs[j])
+                        {
+                            updatedList.Add(thisRewardsList[j]);
 
+                        }
                     }
                 }
             }

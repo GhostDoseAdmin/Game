@@ -68,7 +68,7 @@ public class GhostVFX : MonoBehaviour
         List<Light> lights = new List<Light>();
         foreach (GhostLight ghostLight in ghostLights)
         {
-            if(Vector3.Distance(ghostLight.gameObject.transform.position, this.gameObject.transform.position)<100)
+            if(Vector3.Distance(ghostLight.gameObject.transform.position, this.gameObject.transform.position)<80)
             {
                 if ((ghostLight.ghost || ghostLight.shadower) && (ghostLight.gameObject.name!="WeaponLight" && ghostLight.gameObject.name != "FlashLight"))
                 {
@@ -106,7 +106,7 @@ public class GhostVFX : MonoBehaviour
                 else { ScalarStrengths[i] = 5; }
                 lightRanges[i] = lightSource.range;//30
             }
-
+            Debug.Log("COUNT " + envLights.Length);
             foreach (Material material in skin.GetComponent<SkinnedMeshRenderer>().materials)
             {
                 //Debug.Log("---------------------LIGHT POSITIONS " + lightPositions[0] + " " + material.name +" "+ envLights.Length);
