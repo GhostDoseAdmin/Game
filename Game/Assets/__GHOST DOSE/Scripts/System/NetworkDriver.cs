@@ -52,7 +52,7 @@ namespace NetworkSystem
         public void Awake()
         {
             if (Application.isMobilePlatform) { isMobile = true; }
-            //isMobile = true;
+            isMobile = true;
             //ONLY ONE CAN EXIST
             if (instance == null) { instance = this;  DontDestroyOnLoad(gameObject); }
             else { DestroyImmediate(gameObject); }

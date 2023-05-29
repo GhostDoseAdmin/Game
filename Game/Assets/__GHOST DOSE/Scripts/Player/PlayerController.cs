@@ -5,6 +5,7 @@ using Newtonsoft.Json;
 using UnityEngine.InputSystem.LowLevel;
 using NetworkSystem;
 using GameManager;
+using System.Net;
 
 public class PlayerController : MonoBehaviour
 {
@@ -239,7 +240,7 @@ public class PlayerController : MonoBehaviour
 				}
 				//--------------- AIM EMIT-----------------
 				string aimString = "";
-				if (Input.GetMouseButton(1)){
+				if (Input.GetMouseButton(1) || mobileGearAim){
 					aimString = $",'aim':''";
 				}
 				//--------------- WALK EMIT-----------------
@@ -382,6 +383,7 @@ public class PlayerController : MonoBehaviour
                 aimPos.y = transform.position.y + 1f;
                 targetPos.position = aimPos;
             }
+            //if (mobileGearAim) { walk = 0; strafe = 0; }
         }
        
 		//-------DODGE
@@ -397,9 +399,9 @@ public class PlayerController : MonoBehaviour
             lastTapTime = Time.time;
         }
 		//---------------------A N I M A T I O N --------------------------
-        if (NetworkDriver.instance.isMobile) { 
-            anim.SetFloat("Walk", Mathf.Max(Mathf.Abs(walk), Mathf.Abs(strafe)));
-            if ((Mathf.Abs(walk) + Mathf.Abs(strafe)) / 2 > 0.52f) {  anim.SetBool("Running", true); } else { anim.SetBool("Running", false); }
+        if (NetworkDriver.instance.isMobile) {
+				anim.SetFloat("Walk", Mathf.Max(Mathf.Abs(walk), Mathf.Abs(strafe)));
+				if ((Mathf.Abs(walk) + Mathf.Abs(strafe)) / 2 > 0.52f && !mobileGearAim) { anim.SetBool("Running", true); } else { anim.SetBool("Running", false); }
 		}
 		else
 		{
@@ -411,7 +413,7 @@ public class PlayerController : MonoBehaviour
         //------------------  R O T A T E --------------------------------
         if (!NetworkDriver.instance.isMobile)
 		{
-			if (walk != 0 || strafe != 0 || is_FlashlightAim == true || gearAim || mobileGearAim || CameraType.FPS == cameraController.cameraType)
+			if (walk != 0 || strafe != 0 || is_FlashlightAim == true || gearAim || CameraType.FPS == cameraController.cameraType)
 			{
 				Vector3 rot = transform.eulerAngles;
 				transform.LookAt(targetPosVec);
@@ -439,7 +441,7 @@ public class PlayerController : MonoBehaviour
             if (currentAni == "Running" || anim.GetBool("Running")) { speed = 4f; }
 
 			Vector3 movement = new Vector3(strafe, 0.0f, walk);
-			if (NetworkDriver.instance.isMobile) { transform.position = Vector3.MoveTowards(transform.position, targetPos.transform.position, Mathf.Max(Mathf.Abs(walk), Mathf.Abs(strafe)) * speed * Time.deltaTime); } //transform.position = Vector3.MoveTowards(transform.position, targetPos.transform.position, speed * Time.deltaTime); 
+			if (NetworkDriver.instance.isMobile) { if (speed > 0) { transform.position = Vector3.MoveTowards(transform.position, targetPos.transform.position, Mathf.Max(Mathf.Abs(walk), Mathf.Abs(strafe)) * speed * Time.deltaTime); } } //transform.position = Vector3.MoveTowards(transform.position, targetPos.transform.position, speed * Time.deltaTime); 
 			else { transform.Translate(movement * speed * Time.deltaTime); }
             //movement = movement.normalized;
             //if (speed > 0) { Debug.Log("SPEED " + speed); }
@@ -554,8 +556,47 @@ public class PlayerController : MonoBehaviour
         anim.SetBool("GetGear", false);
     }
 
+	void MobileAim()
+	{
+
+        if (NetworkDriver.instance.isMobile)
+        {
+            //mobileGearAim = false;
+            NPCController[] enemies = FindObjectsOfType<NPCController>();
+            NPCController closestEnemy = null;
+            float closestDistance = 99999;
+            foreach (NPCController enemy in enemies)
+            {
+                float enemyDist = Vector3.Distance(transform.position, enemy.transform.position);
+                //Debug.Log("CHECKING DISTANCE     " + enemyDist);
+                if (enemyDist > 10) { continue; }
+                if (enemyDist > closestDistance) { continue; }
+				//check if fov
+                Quaternion look = Quaternion.LookRotation(enemy.transform.position - transform.position);
+                float angle = Quaternion.Angle(transform.rotation, look);
+				if (angle > 30) { continue; }
+                //check line of sight
+                Ray ray = new Ray(transform.position + Vector3.up, ((enemy.transform.position + Vector3.up) - (transform.position + Vector3.up)).normalized);
+                LayerMask mask = 1 << LayerMask.NameToLayer("Default") | 1 << LayerMask.NameToLayer("Enemy");
+                RaycastHit[] hits = Physics.RaycastAll(ray, enemyDist+0.5f, mask);
+                Debug.DrawLine(transform.position + Vector3.up, enemy.transform.position + Vector3.up, Color.blue);
+                bool inLineOfSight = false;
+                foreach (RaycastHit hit in hits)
+                {
+                    if (hit.collider.gameObject.layer != LayerMask.NameToLayer("Enemy")) { inLineOfSight = false; break; }//environment obstruction
+					else { inLineOfSight = true;  }
+                }
+				if (!inLineOfSight) { continue; }
+                closestDistance = enemyDist; 
+				closestEnemy = enemy;
+            }
+			if (closestEnemy != null) { mobileGearAim = true; }
+			else { mobileGearAim = false; }
+        }
+    }
     void GearAim()
 	{
+		MobileAim();
 
         if (!changingGear)
 		{
@@ -566,20 +607,6 @@ public class PlayerController : MonoBehaviour
 				newHandWeight = 1f;
             }
 			
-               /* if (NetworkDriver.instance.isMobile)
-				{
-					mobileGearAim = false;
-					NPCController[] enemies = FindObjectsOfType<NPCController>();
-					NPCController closestEnemy = null;
-					float closestDistance = 99999;
-                    foreach (NPCController enemy in enemies)
-                    {
-						float enemyDist = Vector3.Distance(enemy.gameObject.transform.position, new Vector3(targetPos.transform.position.x, enemy.gameObject.transform.position.y, targetPos.transform.position.x));
-						if (enemyDist < closestDistance && enemyDist < 1) { closestDistance = enemyDist; closestEnemy = enemy; }
-                    }
-					if(closestEnemy != null) { mobileGearAim = true; }
-                }*/
-
                 if ( (Input.GetMouseButton(1) && !NetworkDriver.instance.isMobile) || (mobileGearAim && NetworkDriver.instance.isMobile) )//AIMING
                 {
                     if (!gearAim) { if (gear == 1) { AudioManager.instance.Play("camfocus", audioSource); } }

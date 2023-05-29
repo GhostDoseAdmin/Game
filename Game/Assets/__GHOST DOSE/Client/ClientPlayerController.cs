@@ -200,7 +200,7 @@ public class ClientPlayerController : MonoBehaviour
             float distance = Vector3.Distance(transform.position, destination);
             float timeToTravel = distance / (speed + 0.00001f);
             if (!NetworkDriver.instance.isMobile) { transform.position = Vector3.Lerp(transform.position, destination, Time.deltaTime / timeToTravel); }
-            else { transform.position = Vector3.Lerp(transform.position, destination, 0.1f); }
+            else { if (speed > 0) { transform.position = Vector3.Lerp(transform.position, destination, 0.1f); } }
         }
 
 

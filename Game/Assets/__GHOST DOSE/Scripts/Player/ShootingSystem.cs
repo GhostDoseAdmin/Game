@@ -163,7 +163,7 @@ public class ShootingSystem : MonoBehaviour
     {
         //if (AmmoShoot)
         {
-            Debug.Log("TARGET " + target);
+            //Debug.Log("TARGET " + target);
             //---------------------CAN SHOOT------------------------------------
             //if (Mathf.Approximately(Mathf.Round(camera.fieldOfView * 10) / 10f, aiming.zoom))//if current zoom is close to target zoom
             {

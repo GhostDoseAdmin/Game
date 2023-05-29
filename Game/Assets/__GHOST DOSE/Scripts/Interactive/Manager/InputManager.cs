@@ -65,6 +65,7 @@ namespace InteractionSystem
         public bool GetFLkeyDown;
         void FlashLightButton()
         {
+            Debug.Log("PRESSED FLASHLIGHT");
             GetFLkeyDown = true;
             canUnclick = false;
         }

@@ -106,7 +106,7 @@ public class GhostVFX : MonoBehaviour
                 else { ScalarStrengths[i] = 5; }
                 lightRanges[i] = lightSource.range;//30
             }
-            Debug.Log("COUNT " + envLights.Length);
+            //Debug.Log("COUNT " + envLights.Length);
             foreach (Material material in skin.GetComponent<SkinnedMeshRenderer>().materials)
             {
                 //Debug.Log("---------------------LIGHT POSITIONS " + lightPositions[0] + " " + material.name +" "+ envLights.Length);
