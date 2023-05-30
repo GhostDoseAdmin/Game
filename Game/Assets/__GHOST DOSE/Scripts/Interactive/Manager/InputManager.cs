@@ -43,8 +43,8 @@ namespace InteractionSystem
 
 
         public static InputManager instance;
-        public Button flashLightButton;
-        private bool canUnclick;
+        public Button flashLightButton, shootButton;
+        private bool releaseFlKey, releaseShoot;
         private void Awake()
         {
             if (instance != null) 
@@ -55,28 +55,28 @@ namespace InteractionSystem
             { 
                 instance = this; 
             }
-
-            flashLightButton.onClick.AddListener(FlashLightButton);
         }
+
         private void Start()
         {
             flashLightButton.onClick.AddListener(FlashLightButton);
+            shootButton.onClick.AddListener(ShootButton);
         }
-        public bool GetFLkeyDown;
-        void FlashLightButton()
-        {
-            Debug.Log("PRESSED FLASHLIGHT");
-            GetFLkeyDown = true;
-            canUnclick = false;
-        }
+        public bool GetFLkeyDown, ShootKeyDown;
+        void FlashLightButton(){ GetFLkeyDown = true; releaseFlKey = false; }
+        void ShootButton() { ShootKeyDown = true; releaseShoot = false; }
         private void Update()
         {
-            if (canUnclick) { GetFLkeyDown = false; }
+            if (releaseFlKey) { GetFLkeyDown = false; }
+            if (releaseShoot) { ShootKeyDown = false; }
         }
 
         private void LateUpdate()
         {
-            canUnclick = true;
+            releaseFlKey = true;
+            releaseShoot = true;
         }
+
+
     }
 }
