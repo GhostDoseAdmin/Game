@@ -18,6 +18,14 @@ public class MobileController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        //SHOOT
+        if (GameDriver.instance.Player.GetComponent<PlayerController>().mobileGearAim)
+        {
+            shoot.SetActive(true);
+        }
+        else { shoot.SetActive(false); }
+
+        //FLAHSLIGHT
         if (GameDriver.instance.Player.GetComponent<FlashlightSystem>().FlashLight.GetComponent<Light>().enabled || GameDriver.instance.Player.GetComponent<FlashlightSystem>().WeaponLight.GetComponent<Light>().enabled)
         {
             flashlight.SetActive(true);

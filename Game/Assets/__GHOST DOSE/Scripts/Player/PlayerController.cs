@@ -2,10 +2,10 @@
 using UnityEngine;
 using UnityEngine.UI;
 using Newtonsoft.Json;
-using UnityEngine.InputSystem.LowLevel;
 using NetworkSystem;
 using GameManager;
 using System.Net;
+
 
 public class PlayerController : MonoBehaviour
 {
@@ -95,7 +95,7 @@ public class PlayerController : MonoBehaviour
 	private string prevPos;
 	public bool emitPos;
 	private int emitDodge;
-	private bool runningMobile, mobileGearAim;
+	public bool mobileGearAim;
 	//private GameObject playerCam;
     private static utilities util;
 
@@ -310,6 +310,7 @@ public class PlayerController : MonoBehaviour
     public float doubleTapTimeThreshold = 0.3f;
     private float lastTapTime = -10f;
     public VariableJoystick joystick;
+	public GameObject stick, region;
     void MobileControls()
 	{
         //------------MOBILE CONTROLS----------
@@ -373,10 +374,10 @@ public class PlayerController : MonoBehaviour
        walk = Input.GetAxis("Vertical"); strafe = Input.GetAxis("Horizontal");
 
 		//-------------------J O Y S T I C K ----------------------------------
-		//float dirMagnitude = 0;
+		float joyMagnitude = 0;
 		if (NetworkDriver.instance.isMobile) {
 			walk = joystick.Vertical; strafe = joystick.Horizontal;
-			//dirMagnitude = (Mathf.Abs(walk) + Mathf.Abs(strafe)) / 2; Debug.Log("SPEED------------------------" + dirMagnitude); //Mathf.Max(Mathf.Abs(walk), Mathf.Abs(strafe));
+            joyMagnitude =  Mathf.Sqrt(Mathf.Pow(walk, 2) + Mathf.Pow(strafe, 2));
             Vector3 aimPos = transform.position + (Camera.main.transform.forward * walk + Camera.main.transform.right * strafe).normalized * 5f;
             if (walk!=0 || strafe!=0)
 			{
@@ -400,8 +401,8 @@ public class PlayerController : MonoBehaviour
         }
 		//---------------------A N I M A T I O N --------------------------
         if (NetworkDriver.instance.isMobile) {
-				anim.SetFloat("Walk", Mathf.Max(Mathf.Abs(walk), Mathf.Abs(strafe)));
-				if ((Mathf.Abs(walk) + Mathf.Abs(strafe)) / 2 > 0.52f && !mobileGearAim) { anim.SetBool("Running", true); } else { anim.SetBool("Running", false); }
+				anim.SetFloat("Walk", joyMagnitude);
+				if (joyMagnitude > 0.9f && !mobileGearAim) { anim.SetBool("Running", true); } else { anim.SetBool("Running", false); }
 		}
 		else
 		{
@@ -441,7 +442,7 @@ public class PlayerController : MonoBehaviour
             if (currentAni == "Running" || anim.GetBool("Running")) { speed = 4f; }
 
 			Vector3 movement = new Vector3(strafe, 0.0f, walk);
-			if (NetworkDriver.instance.isMobile) { if (speed > 0) { transform.position = Vector3.MoveTowards(transform.position, targetPos.transform.position, Mathf.Max(Mathf.Abs(walk), Mathf.Abs(strafe)) * speed * Time.deltaTime); } } //transform.position = Vector3.MoveTowards(transform.position, targetPos.transform.position, speed * Time.deltaTime); 
+			if (NetworkDriver.instance.isMobile) { if (speed > 0) { transform.position = Vector3.MoveTowards(transform.position, targetPos.transform.position, joyMagnitude * speed * Time.deltaTime); } } //transform.position = Vector3.MoveTowards(transform.position, targetPos.transform.position, speed * Time.deltaTime); 
 			else { transform.Translate(movement * speed * Time.deltaTime); }
             //movement = movement.normalized;
             //if (speed > 0) { Debug.Log("SPEED " + speed); }
@@ -577,7 +578,7 @@ public class PlayerController : MonoBehaviour
 				if (angle > 30) { continue; }
                 //check line of sight
                 Ray ray = new Ray(transform.position + Vector3.up, ((enemy.transform.position + Vector3.up) - (transform.position + Vector3.up)).normalized);
-                LayerMask mask = 1 << LayerMask.NameToLayer("Default") | 1 << LayerMask.NameToLayer("Enemy");
+                LayerMask mask = 1 << LayerMask.NameToLayer("Default") | 1 << LayerMask.NameToLayer("Enemy") | 1 << LayerMask.NameToLayer("Ghost");
                 RaycastHit[] hits = Physics.RaycastAll(ray, enemyDist+0.5f, mask);
                 Debug.DrawLine(transform.position + Vector3.up, enemy.transform.position + Vector3.up, Color.blue);
                 bool inLineOfSight = false;
@@ -638,7 +639,7 @@ public class PlayerController : MonoBehaviour
                     GetComponent<ShootingSystem>().Aiming(gear);
 
 					//-------------------------------SHOOTING -----------------------------------
-					if (Input.GetMouseButtonDown(0))
+					if ((Input.GetMouseButtonDown(0) && !NetworkDriver.instance.isMobile) || (InputManager.instance.ShootKeyDown && NetworkDriver.instance.isMobile) )
 					{
                         if (gear == 1) { anim.SetBool("Shoot", true); GetComponent<ShootingSystem>().Shoot(); AudioManager.instance.StopPlaying("camfocus", audioSource); }
                         if (gear == 3) { anim.SetBool("Throw", true); throwing = true; }

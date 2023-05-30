@@ -137,10 +137,11 @@ public class Camera_Controller : MonoBehaviour
         }
         else
         {
-            offsetVector = new Vector3(0.12f, 2.28f, 0);
-            cameraOffsetVector = new Vector3(0.31f, -0.42f, -4.37f);
-            zoomOutStepValue = 0.01f;
-            zoomOutStepValuePerFrame = 0.01f;
+            desiredDistance = 7;
+            //offsetVector = new Vector3(0.12f, 2.28f, 0);
+            //cameraOffsetVector = new Vector3(0.31f, -0.42f, -4.37f);
+            //zoomOutStepValue = 0.01f;
+            //zoomOutStepValuePerFrame = 0.01f;
         }
     }
 
@@ -217,23 +218,26 @@ public class Camera_Controller : MonoBehaviour
         }
 
         //----------FIX Z AXIS AFTER FLINCH-----
-        if (player.GetComponent<PlayerController>().currentAni != null)
+        if (!NetworkDriver.instance.isMobile)
         {
-            if (player.GetComponent<PlayerController>().currentAni == "React")
+            if (player.GetComponent<PlayerController>().currentAni != null)
             {
-                zAxisFixTimer = 1f;
+                if (player.GetComponent<PlayerController>().currentAni == "React")
+                {
+                    zAxisFixTimer = 1f;
+                }
             }
-        }
-        if (player.GetComponent<PlayerController>().currentAni == "Idle") 
-        {
-            if (zAxisFixTimer > 0)
+            if (player.GetComponent<PlayerController>().currentAni == "Idle")
             {
+                if (zAxisFixTimer > 0)
+                {
 
-                Quaternion currentRotation = gameObject.transform.rotation;
-                Quaternion targetRotation = Quaternion.Euler(currentRotation.x, currentRotation.y, 0f);
-                Quaternion newRotation = Quaternion.Lerp(currentRotation, targetRotation, 5f * Time.deltaTime);
-                gameObject.transform.rotation = newRotation;
-                zAxisFixTimer -= Time.deltaTime;
+                    Quaternion currentRotation = gameObject.transform.rotation;
+                    Quaternion targetRotation = Quaternion.Euler(currentRotation.x, currentRotation.y, 0f);
+                    Quaternion newRotation = Quaternion.Lerp(currentRotation, targetRotation, 5f * Time.deltaTime);
+                    gameObject.transform.rotation = newRotation;
+                    zAxisFixTimer -= Time.deltaTime;
+                }
             }
         }
 
@@ -287,7 +291,8 @@ public class Camera_Controller : MonoBehaviour
         }
 
 
-        if (shake) { GetComponent<Camera>().fieldOfView = GetComponent<Camera>().fieldOfView + (UnityEngine.Random.Range(-shakeMagnitude, shakeMagnitude)*5f); }
+        if (shake && !NetworkDriver.instance.isMobile) { GetComponent<Camera>().fieldOfView = GetComponent<Camera>().fieldOfView + (UnityEngine.Random.Range(-shakeMagnitude, shakeMagnitude)*5f); }
+
 
         targetPosWithOffset = (targetPosition + offsetVectorTransformed);
         Vector3 targetPosWithCameraOffset = targetPosition + offsetVectorTransformed + cameraOffsetVectorTransformed;

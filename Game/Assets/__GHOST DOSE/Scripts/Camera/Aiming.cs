@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine.UI;
 using UnityEngine;
-
+using NetworkSystem;
 public class Aiming : MonoBehaviour {
 
 	[Range(10,60)]
@@ -36,6 +36,8 @@ public class Aiming : MonoBehaviour {
 
 	void Update()
 	{
+		if(NetworkDriver.instance.isMobile) { return; }
+
 		if(gear==1) { zoom = 35; }
 		if(gear==2) { zoom = 50;}
 		if(isOuija) { zoom = 20; }

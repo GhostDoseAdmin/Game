@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using NetworkSystem;
 using GameManager;
+using UnityEngine.UIElements;
 
 [RequireComponent(typeof(Camera_Controller))]
 public class Camera_Supplyer : MonoBehaviour
@@ -51,14 +52,16 @@ public class Camera_Supplyer : MonoBehaviour
     public bool forceCharacterDirection = false;
 
     private Camera_Controller cameraController;
-    //public VariableJoystick joystick;
+    private RectTransform gamePad;
+
 
     public void Start()
     {
+        gamePad = GameObject.Find("GamePad").GetComponent<RectTransform>();
         cameraController = GetComponent<Camera_Controller>();
+        //targetRotation = Quaternion.identity;
 
-
-        if (NetworkDriver.instance.isMobile) { yAngleLimitMin = 110f; }
+        if (NetworkDriver.instance.isMobile) { yAngleLimitMin = 160f; yAngleLimitMax = 110f; }
 
             x = 0;
         y = 0;
@@ -92,11 +95,87 @@ public class Camera_Supplyer : MonoBehaviour
             controllerEnabled = false;
         }
     }
+    public void Update()
+    {
+        /*if (NetworkDriver.instance.isMobile)
+        {
+            Vector3 playerDirection = GameDriver.instance.Player.transform.forward;
+            Vector3 cameraDirection = Camera.main.transform.forward;
+            // Check if the player is facing the camera
+            bool isFacingCamera = Vector3.Dot(playerDirection, cameraDirection) <= 0.2f;  // Adjust the threshold as needed
+
+            // If the player is facing the camera, rotate the camera around to see what the player is looking at
+            if (isFacingCamera)
+            {
+                if(!fixCamDir) {
+                    fixCamDir = true;
+                    Translate camera behind player, stop target look from tracking
+                   // targetRotation = Quaternion.LookRotation(GameDriver.instance.Player.transform.position - GameDriver.instance.Player.GetComponent<PlayerController>().targetPos.position, Vector3.up);
+                    Debug.Log("FACING CAMERA");
+                    cameraEnabled = false;
+                }
+                if (fixCamDir)
+                {
+                    Debug.Log("FIXING CAMERA");
+                    transform.rotation = Quaternion.Lerp(transform.rotation, targetRotation, 5 * Time.deltaTime);
+                }
+            }
+            else
+            {
+                if (fixCamDir)
+                {
+                    Debug.Log("CAMERA FIXED");
+                    fixCamDir = false;
+                    cameraEnabled = true;
+                }
+            }
+ 
+
+        }*/
+
+
+        //DISABLE CAM for GAMEPAD AREA OF SCREEN 
+        if (Input.touchCount > 0 && NetworkDriver.instance.isMobile)
+        {
+            // Iterate through each touch
+            foreach (Touch touch in Input.touches)
+            {
+                // Check if the touch is in the lower right quadrant
+                if (RectTransformUtility.RectangleContainsScreenPoint(gamePad, touch.position))
+                {
+                    cameraEnabled = false;
+                    Invoke("ReEnableCam", 0.1f);
+                }
+            }
+        }
+    }
+    void ReEnableCam()
+    {
+        CancelInvoke("ReEnableCam");
+        cameraEnabled = true;
+    }
 
     public void LateUpdate()
     {
         if (cameraController == null || cameraController.player == null)
             return;
+
+        //DISABLE CAM for GAMEPAD AREA OF SCREEN 
+        if (Input.touchCount > 0 && NetworkDriver.instance.isMobile)
+        {
+            // Iterate through each touch
+            foreach (Touch touch in Input.touches)
+            {
+                // Check if the touch is in the lower right quadrant
+                //if (touch.position.x >= Screen.width / 2f && touch.position.y <= Screen.height / 2f)
+                    if (RectTransformUtility.RectangleContainsScreenPoint(gamePad, touch.position))
+                    {
+                    cameraEnabled = false;
+                    Invoke("ReEnableCam", 0.1f);
+                }
+            }
+        }
+
 
         if (cameraEnabled)
         {
@@ -104,6 +183,16 @@ public class Camera_Supplyer : MonoBehaviour
             x = Input.GetAxis("Mouse X") * mouseSensitivity.x;
             y = Input.GetAxis("Mouse Y") * mouseSensitivity.y;
 
+            if (NetworkDriver.instance.isMobile)
+            {
+                if (GameDriver.instance.Player.GetComponent<PlayerController>().joystick.Horizontal != 0 || GameDriver.instance.Player.GetComponent<PlayerController>().joystick.Vertical != 0) {
+                    x = GameDriver.instance.Player.GetComponent<PlayerController>().joystick.Horizontal * mouseSensitivity.x;
+                    y = GameDriver.instance.Player.GetComponent<PlayerController>().joystick.Vertical * mouseSensitivity.y;
+                }
+               
+                
+
+            }
             //Debug.Log(x.ToString() + " AND " + y.ToString());
 
             if (mouseInvertY)
@@ -111,8 +200,8 @@ public class Camera_Supplyer : MonoBehaviour
 
             if (lockMouseCursor)
             {
-                Cursor.visible = false;
-                Cursor.lockState = CursorLockMode.Locked;
+                UnityEngine.Cursor.visible = false;
+                UnityEngine.Cursor.lockState = CursorLockMode.Locked;
             }
 
             if (controllerEnabled && x == 0 && y == 0)
@@ -155,8 +244,9 @@ public class Camera_Supplyer : MonoBehaviour
             
             Vector3 offsetVectorTransformed = cameraController.player.transform.rotation * cameraController.offsetVector;
 
-            transform.RotateAround(cameraController.player.position + offsetVectorTransformed, cameraController.player.up, smoothX); 
-            //else { transform.LookAt(GameDriver.instance.Player.GetComponent<PlayerController>().targetPos); }
+            transform.RotateAround(cameraController.player.position + offsetVectorTransformed, cameraController.player.up, smoothX);
+
+
 
             yAngle = -smoothY;
             angle = Vector3.Angle(transform.forward, upVector);
