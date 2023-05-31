@@ -7,33 +7,47 @@ public class RayAimer : MonoBehaviour {
     [SerializeField] private LayerMask layerMask;
     public Mesh mesh;
     public float fov;
-    private float startFov;
+    public float startFov = 45;
     public float viewDistance;
     private Vector3 origin;
     public float startingAngle;
-    private bool StartAim;
+    //private bool StartAim = false;
     public bool isHeadshot;
+    private GameObject Player;
 
     private void Start() {
+        Player = GameDriver.instance.Player;
         mesh = new Mesh();
         GetComponent<MeshFilter>().mesh = mesh;
         GetComponent<MeshRenderer>().material.SetColor("_Color", Color.cyan);
 
         origin = Vector3.zero;
-        startFov = fov;
-        StartAim = true;
+        gameObject.SetActive(false);
     }
 
-    
+    void OnEnable()
+    {
+        fov = startFov; isHeadshot = false; GetComponent<MeshRenderer>().material.SetColor("_Color", Color.cyan); GetComponent<MeshRenderer>().material.SetFloat("_Alpha", 0); 
+    }
     private void LateUpdate() {
 
-        //transform.position = GameDriver.instance.Player.transform.position + Vector3.up;
+        transform.position = Player.transform.position + Vector3.up;
+        //transform.rotation = Player.transform.rotation;
+        // Get the Z-axis rotation of the player
 
-        if (StartAim)
+        // Create a new rotation Quaternion with the desired Z-axis rotation
+        Quaternion targetRotation = Quaternion.Euler(90f, 0f, -Player.transform.eulerAngles.y + 180f);
+        // Apply the new rotation to the object
+        transform.localRotation = targetRotation;
+
+
+        //if (StartAim)
         {
-            fov -= 10f * Time.deltaTime; //AIM TIME
+            fov -= 20f * Time.deltaTime; //AIM TIME
+            //SHOW AIMER
+            if (fov < startFov -5) { GetComponent<MeshRenderer>().material.SetFloat("_Alpha", 0.314f); }
             //END AIM
-            if (fov < 0f){fov = startFov; StartAim = false; isHeadshot = false; GetComponent<MeshRenderer>().material.SetColor("_Color", Color.cyan); }
+            if (fov < 0f){ gameObject.SetActive(false); } //StartAim = false;
             //HEADSHOT
             if (fov < 10f) { isHeadshot = true; GetComponent<MeshRenderer>().material.SetColor("_Color", Color.yellow); }
 

@@ -95,7 +95,8 @@ public class PlayerController : MonoBehaviour
 	private string prevPos;
 	public bool emitPos;
 	private int emitDodge;
-	public bool mobileGearAim;
+	public MobileController gamePad;
+	//public bool mobileGearAim;
 	//private GameObject playerCam;
     private static utilities util;
 
@@ -140,7 +141,8 @@ public class PlayerController : MonoBehaviour
         GetComponent<ShootingSystem>().RigShooter();
         GetComponent<FlashlightSystem>().RigLights();
 
-		k2.SetActive(false);
+
+        k2.SetActive(false);
         fireK2 = false;
 		canFlinch = true;
 
@@ -240,7 +242,8 @@ public class PlayerController : MonoBehaviour
 				}
 				//--------------- AIM EMIT-----------------
 				string aimString = "";
-				if (Input.GetMouseButton(1) || mobileGearAim){
+				if (Input.GetMouseButton(1) || gamePad.aimShootBTN.buttonPressed)
+            {
 					aimString = $",'aim':''";
 				}
 				//--------------- WALK EMIT-----------------
@@ -309,7 +312,7 @@ public class PlayerController : MonoBehaviour
     #region Locomotion
     public float doubleTapTimeThreshold = 0.3f;
     private float lastTapTime = -10f;
-    public VariableJoystick joystick;
+    //public VariableJoystick joystick;
 	public GameObject stick, region;
     void MobileControls()
 	{
@@ -376,7 +379,7 @@ public class PlayerController : MonoBehaviour
 		//-------------------J O Y S T I C K ----------------------------------
 		float joyMagnitude = 0;
 		if (NetworkDriver.instance.isMobile) {
-			walk = joystick.Vertical; strafe = joystick.Horizontal;
+			walk = gamePad.joystick.Vertical; strafe = gamePad.joystick.Horizontal;
             joyMagnitude =  Mathf.Sqrt(Mathf.Pow(walk, 2) + Mathf.Pow(strafe, 2));
             Vector3 aimPos = transform.position + (Camera.main.transform.forward * walk + Camera.main.transform.right * strafe).normalized * 5f;
             if (walk!=0 || strafe!=0)
@@ -402,7 +405,7 @@ public class PlayerController : MonoBehaviour
 		//---------------------A N I M A T I O N --------------------------
         if (NetworkDriver.instance.isMobile) {
 				anim.SetFloat("Walk", joyMagnitude);
-				if (joyMagnitude > 0.9f && !mobileGearAim) { anim.SetBool("Running", true); } else { anim.SetBool("Running", false); }
+				if (joyMagnitude > 0.9f && !gamePad.aimShootBTN.buttonPressed) { anim.SetBool("Running", true); } else { anim.SetBool("Running", false); }
 		}
 		else
 		{
@@ -458,8 +461,11 @@ public class PlayerController : MonoBehaviour
 			if (Input.GetKey(InputManager.instance.running) && walk != 0) { anim.SetBool("Running", true); }
 			else if (Input.GetKeyUp(InputManager.instance.running)) { anim.SetBool("Running", false); }
 		}
-		if (gearAim == true)        {			anim.SetBool("Running", false);        }
-	}
+		//if (gearAim == true)        {			anim.SetBool("Running", false);        }
+
+		if (anim.GetBool("Running")) { ResetAniFromAim(); }
+
+    }
 	#endregion
 
 	public bool canFlinch;
@@ -591,8 +597,8 @@ public class PlayerController : MonoBehaviour
                 closestDistance = enemyDist; 
 				closestEnemy = enemy;
             }
-			if (closestEnemy != null) { mobileGearAim = true; }
-			else { mobileGearAim = false; }
+			//if (closestEnemy != null) { mobileGearAim = true; }
+			//else { mobileGearAim = false; }
         }
     }
     void GearAim()
@@ -608,7 +614,7 @@ public class PlayerController : MonoBehaviour
 				newHandWeight = 1f;
             }
 			
-                if ( (Input.GetMouseButton(1) && !NetworkDriver.instance.isMobile) || (mobileGearAim && NetworkDriver.instance.isMobile) )//AIMING
+                if ( (Input.GetMouseButton(1) && !NetworkDriver.instance.isMobile) || (gamePad.aimShootBTN.buttonPressed && gamePad.aimer.gameObject.activeSelf && NetworkDriver.instance.isMobile) )//AIMING
                 {
                     if (!gearAim) { if (gear == 1) { AudioManager.instance.Play("camfocus", audioSource); } }
 
@@ -639,7 +645,7 @@ public class PlayerController : MonoBehaviour
                     GetComponent<ShootingSystem>().Aiming(gear);
 
 					//-------------------------------SHOOTING -----------------------------------
-					if ((Input.GetMouseButtonDown(0) && !NetworkDriver.instance.isMobile) || (InputManager.instance.ShootKeyDown && NetworkDriver.instance.isMobile) )
+					if ((Input.GetMouseButtonDown(0) && !NetworkDriver.instance.isMobile) )
 					{
                         if (gear == 1) { anim.SetBool("Shoot", true); GetComponent<ShootingSystem>().Shoot(); AudioManager.instance.StopPlaying("camfocus", audioSource); }
                         if (gear == 3) { anim.SetBool("Throw", true); throwing = true; }
@@ -651,14 +657,22 @@ public class PlayerController : MonoBehaviour
                         //anim.SetBool("Throw", false);
                     }
 				}
-				else if ((Input.GetMouseButtonUp(1) && !NetworkDriver.instance.isMobile) || (!mobileGearAim && NetworkDriver.instance.isMobile))
+				else if ((Input.GetMouseButtonUp(1) && !NetworkDriver.instance.isMobile) || (gamePad.aimShootBTN.buttonReleased && NetworkDriver.instance.isMobile))
                 {
-					gearAim = false;
-					anim.SetBool("Pistol", false);
-					anim.SetBool("Shoot", false);
+					//MOBILE SHOOT
+					if(NetworkDriver.instance.isMobile && gamePad.aimer.gameObject.activeSelf)
+					{
+                    if (gear == 1) { anim.SetBool("Shoot", true); GetComponent<ShootingSystem>().Shoot(); AudioManager.instance.StopPlaying("camfocus", audioSource); }
+                    if (gear == 3) { anim.SetBool("Throw", true); throwing = true; }
+					}
+
+
+
+					
+					Invoke("ResetAniFromAim", 1);
 					//anim.SetBool("Throw", false);
 
-					if (gear != 3) { newHandWeight = 0f; }
+					
 
 					if (is_FlashlightAim)
 					{
@@ -674,7 +688,14 @@ public class PlayerController : MonoBehaviour
             
 		}
 	}
-
+	public void ResetAniFromAim()
+	{
+        //smooths out ani so no rapid repetitive aim
+        gearAim = false;
+        anim.SetBool("Pistol", false);
+        anim.SetBool("Shoot", false);
+        if (gear != 3) { newHandWeight = 0f; }
+    }
 
 	#region Flashlight
 	private void CheckFlashlight()
