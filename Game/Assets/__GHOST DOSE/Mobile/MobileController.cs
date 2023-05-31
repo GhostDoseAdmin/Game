@@ -6,7 +6,10 @@ using GameManager;
 
 public class MobileController : MonoBehaviour
 {
-    public GameObject joystick, flashlight, gear, interact, shoot;
+    public GameObject flashlight, gear, interact;
+    public GPButton aimShootBTN, flashlightBTN;
+    public VariableJoystick joystick;
+    public RayAimer aimer;
     void Start()
     {
         if (!NetworkDriver.instance.isMobile)
@@ -18,12 +21,23 @@ public class MobileController : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        //SHOOT
-        if (GameDriver.instance.Player.GetComponent<PlayerController>().mobileGearAim)
-        {
-            shoot.SetActive(true);
+
+        //AIM
+        if (aimShootBTN.buttonPressed && !GameDriver.instance.Player.GetComponent<PlayerController>().gearAim){
+            aimer.gameObject.SetActive(true);
+            
         }
-        else { shoot.SetActive(false); }
+        //SHOOT
+        if (aimShootBTN.buttonReleased)
+        {
+            Invoke("ReleaseShoot",0.01f);
+        }
+        //SHOOT
+        /* if (GameDriver.instance.Player.GetComponent<PlayerController>().mobileGearAim)
+         {
+             shoot.SetActive(true);
+         }
+         else { shoot.SetActive(false); }*/
 
         //FLAHSLIGHT
         if (GameDriver.instance.Player.GetComponent<FlashlightSystem>().FlashLight.GetComponent<Light>().enabled || GameDriver.instance.Player.GetComponent<FlashlightSystem>().WeaponLight.GetComponent<Light>().enabled)
@@ -32,5 +46,12 @@ public class MobileController : MonoBehaviour
 
         }
         else { flashlight.SetActive(false); }
+    }
+
+    void ReleaseShoot()
+    {
+        //Delay to allow playercontroller to trigger shoot
+        CancelInvoke("ReleaseShoot");
+        aimer.gameObject.SetActive(false);
     }
 }

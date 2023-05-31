@@ -16,6 +16,7 @@ namespace GameManager
         //public bool isTRAVIS = true;//which character is the player playing
         public GameObject Player;
         public GameObject Client;
+        public MobileController mobileController;
         //public string ROOM;
         //public bool ROOM_VALID;//they joined valid room
         
@@ -221,10 +222,10 @@ namespace GameManager
                 Client.GetComponent<ClientPlayerController>().SetupRig();
 
                 //RIG GHOST VFX
-                PlayerWeapLight = Player.GetComponent<FlashlightSystem>().WeaponLight;
-                PlayerFlashLight = Player.GetComponent<FlashlightSystem>().FlashLight;
-                ClientWeapLight = Client.GetComponent<ClientFlashlightSystem>().WeaponLight;
-                ClientFlashLight = Client.GetComponent<ClientFlashlightSystem>().FlashLight;
+                //PlayerWeapLight = Player.GetComponent<FlashlightSystem>().WeaponLight;
+                //PlayerFlashLight = Player.GetComponent<FlashlightSystem>().FlashLight;
+                //ClientWeapLight = Client.GetComponent<ClientFlashlightSystem>().WeaponLight;
+                //ClientFlashLight = Client.GetComponent<ClientFlashlightSystem>().FlashLight;
 
                 Debug.Log("I AM READY");
                 NetworkDriver.instance.SCENE_READY = true;

@@ -3,7 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
-
+using GameManager;
 public class FlashlightSystem : MonoBehaviour
 {
     [Header("FLASHLIGHT PARAMETERS")]
@@ -68,8 +68,12 @@ public class FlashlightSystem : MonoBehaviour
         WeaponLight.intensity = weapLightIntensity;
 
 
-        GetComponent<PlayerController>().currLight =FlashLight.gameObject; 
+        GetComponent<PlayerController>().currLight =FlashLight.gameObject;
+        //GHOST LIGHT REFERENCES
+        GameDriver.instance.PlayerWeapLight = WeaponLight;
+        GameDriver.instance.PlayerFlashLight = FlashLight;
 
+        Debug.Log("LIGHTS SETUP");
         //Debug.Log("Player Lights Setup");
 
     }

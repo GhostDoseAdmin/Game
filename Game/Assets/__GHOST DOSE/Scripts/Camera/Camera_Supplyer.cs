@@ -57,7 +57,7 @@ public class Camera_Supplyer : MonoBehaviour
 
     public void Start()
     {
-        gamePad = GameObject.Find("GamePad").GetComponent<RectTransform>();
+        if (NetworkDriver.instance.isMobile) { gamePad = GameObject.Find("GamePad").GetComponent<RectTransform>(); }
         cameraController = GetComponent<Camera_Controller>();
         //targetRotation = Quaternion.identity;
 
@@ -185,9 +185,9 @@ public class Camera_Supplyer : MonoBehaviour
 
             if (NetworkDriver.instance.isMobile)
             {
-                if (GameDriver.instance.Player.GetComponent<PlayerController>().joystick.Horizontal != 0 || GameDriver.instance.Player.GetComponent<PlayerController>().joystick.Vertical != 0) {
-                    x = GameDriver.instance.Player.GetComponent<PlayerController>().joystick.Horizontal * mouseSensitivity.x;
-                    y = GameDriver.instance.Player.GetComponent<PlayerController>().joystick.Vertical * mouseSensitivity.y;
+                if (GameDriver.instance.Player.GetComponent<PlayerController>().gamePad.joystick.Horizontal != 0 || GameDriver.instance.Player.GetComponent<PlayerController>().gamePad.joystick.Vertical != 0) {
+                    x = GameDriver.instance.Player.GetComponent<PlayerController>().gamePad.joystick.Horizontal * mouseSensitivity.x;
+                    y = GameDriver.instance.Player.GetComponent<PlayerController>().gamePad.joystick.Vertical * mouseSensitivity.y;
                 }
                
                 
