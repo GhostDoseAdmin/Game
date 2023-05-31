@@ -7166,10 +7166,13 @@ MonoBehaviour:
   emitFlashlight: 0
   sb7: 0
   emitPos: 0
+  mobileGearAim: 0
   currLight: {fileID: 0}
   audioSource: {fileID: 0}
   doubleTapTimeThreshold: 0.3
   joystick: {fileID: 0}
+  stick: {fileID: 0}
+  region: {fileID: 0}
   canFlinch: 0
 --- !u!82 &692362301
 AudioSource:
@@ -60953,7 +60956,7 @@ PrefabInstance:
       objectReference: {fileID: 6062853213436908088, guid: 896de54c027d704459ab02c64d730a50, type: 3}
     - target: {fileID: 4600351335788548323, guid: 4d61142dc0de3be4e9e386ae8f2458c4, type: 3}
       propertyPath: isMobile
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 4d61142dc0de3be4e9e386ae8f2458c4, type: 3}
@@ -62487,10 +62490,13 @@ MonoBehaviour:
   emitFlashlight: 0
   sb7: 0
   emitPos: 0
+  mobileGearAim: 0
   currLight: {fileID: 0}
   audioSource: {fileID: 0}
   doubleTapTimeThreshold: 0.3
   joystick: {fileID: 0}
+  stick: {fileID: 0}
+  region: {fileID: 0}
   canFlinch: 0
 --- !u!114 &5055496213087247198
 MonoBehaviour:
@@ -62831,10 +62837,13 @@ MonoBehaviour:
   emitFlashlight: 0
   sb7: 0
   emitPos: 0
+  mobileGearAim: 0
   currLight: {fileID: 0}
   audioSource: {fileID: 0}
   doubleTapTimeThreshold: 0.3
   joystick: {fileID: 0}
+  stick: {fileID: 0}
+  region: {fileID: 0}
   canFlinch: 0
 --- !u!82 &5055957529509440848
 AudioSource:
