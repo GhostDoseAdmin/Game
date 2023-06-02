@@ -63,7 +63,7 @@ public class Camera_Supplyer : MonoBehaviour
 
         if (NetworkDriver.instance.isMobile) { yAngleLimitMin = 160f; yAngleLimitMax = 110f; }
 
-            x = 0;
+        x = 0;
         y = 0;
 
         smartPivotInit = true;
@@ -97,45 +97,64 @@ public class Camera_Supplyer : MonoBehaviour
     }
     public void Update()
     {
-        /*if (NetworkDriver.instance.isMobile)
+        if (NetworkDriver.instance.isMobile)
         {
-            Vector3 playerDirection = GameDriver.instance.Player.transform.forward;
-            Vector3 cameraDirection = Camera.main.transform.forward;
-            // Check if the player is facing the camera
-            bool isFacingCamera = Vector3.Dot(playerDirection, cameraDirection) <= 0.2f;  // Adjust the threshold as needed
-
-            // If the player is facing the camera, rotate the camera around to see what the player is looking at
-            if (isFacingCamera)
+            cameraController.desiredDistance = 10f;
+            maxDistance = 15f;
+            cameraController.occlusionCheck = true;
+            cameraController.thicknessCheck = true;
+            bool facingCamera = Vector3.Dot(GameDriver.instance.Player.transform.forward, Camera.main.transform.position - GameDriver.instance.Player.transform.position) > 0f;
+            if (facingCamera)
             {
-                if(!fixCamDir) {
-                    fixCamDir = true;
-                    Translate camera behind player, stop target look from tracking
-                   // targetRotation = Quaternion.LookRotation(GameDriver.instance.Player.transform.position - GameDriver.instance.Player.GetComponent<PlayerController>().targetPos.position, Vector3.up);
-                    Debug.Log("FACING CAMERA");
-                    cameraEnabled = false;
-                }
-                if (fixCamDir)
+                //minDistance= 4;
+
+                if (GameDriver.instance.Player.GetComponent<PlayerController>().gearAim)
                 {
-                    Debug.Log("FIXING CAMERA");
-                    transform.rotation = Quaternion.Lerp(transform.rotation, targetRotation, 5 * Time.deltaTime);
+                    cameraController.occlusionCheck = false;
+                    cameraController.thicknessCheck = false;
                 }
+
             }
-            else
+        }
+            /*if (NetworkDriver.instance.isMobile)
             {
-                if (fixCamDir)
+                Vector3 playerDirection = GameDriver.instance.Player.transform.forward;
+                Vector3 cameraDirection = Camera.main.transform.forward;
+                // Check if the player is facing the camera
+                bool isFacingCamera = Vector3.Dot(GameDriver.instance.Player.transform.forward, GameDriver.instance.Player.transform.forward) <= 0.2f;  // Adjust the threshold as needed
+
+                // If the player is facing the camera, rotate the camera around to see what the player is looking at
+                if (isFacingCamera)
                 {
-                    Debug.Log("CAMERA FIXED");
-                    fixCamDir = false;
-                    cameraEnabled = true;
+                    if(!fixCamDir) {
+                        fixCamDir = true;
+                        Translate camera behind player, stop target look from tracking
+                       // targetRotation = Quaternion.LookRotation(GameDriver.instance.Player.transform.position - GameDriver.instance.Player.GetComponent<PlayerController>().targetPos.position, Vector3.up);
+                        Debug.Log("FACING CAMERA");
+                        cameraEnabled = false;
+                    }
+                    if (fixCamDir)
+                    {
+                        Debug.Log("FIXING CAMERA");
+                        transform.rotation = Quaternion.Lerp(transform.rotation, targetRotation, 5 * Time.deltaTime);
+                    }
                 }
-            }
- 
+                else
+                {
+                    if (fixCamDir)
+                    {
+                        Debug.Log("CAMERA FIXED");
+                        fixCamDir = false;
+                        cameraEnabled = true;
+                    }
+                }
 
-        }*/
+
+            }*/
 
 
-        //DISABLE CAM for GAMEPAD AREA OF SCREEN 
-        if (Input.touchCount > 0 && NetworkDriver.instance.isMobile)
+            //DISABLE CAM for GAMEPAD AREA OF SCREEN 
+            if (Input.touchCount > 0 && NetworkDriver.instance.isMobile)
         {
             // Iterate through each touch
             foreach (Touch touch in Input.touches)
@@ -212,20 +231,22 @@ public class Camera_Supplyer : MonoBehaviour
                 if (controllerInvertY)
                     y *= -1.0f;
             }
-
-            if (Input.GetAxis("Mouse ScrollWheel") < 0) // back
+            if (!NetworkDriver.instance.isMobile)
             {
-                cameraController.desiredDistance += cameraController.zoomOutStepValue;
+                if (Input.GetAxis("Mouse ScrollWheel") < 0) // back
+                {
+                    cameraController.desiredDistance += cameraController.zoomOutStepValue;
 
-                if (cameraController.desiredDistance > maxDistance)
-                    cameraController.desiredDistance = maxDistance;
-            }
-            if (Input.GetAxis("Mouse ScrollWheel") > 0) // forward
-            {
-                cameraController.desiredDistance -= cameraController.zoomOutStepValue;
-                
-                if (cameraController.desiredDistance < minDistance)
-                    cameraController.desiredDistance = minDistance;
+                    if (cameraController.desiredDistance > maxDistance)
+                        cameraController.desiredDistance = maxDistance;
+                }
+                if (Input.GetAxis("Mouse ScrollWheel") > 0) // forward
+                {
+                    cameraController.desiredDistance -= cameraController.zoomOutStepValue;
+
+                    if (cameraController.desiredDistance < minDistance)
+                        cameraController.desiredDistance = minDistance;
+                }
             }
 
             if (cameraController.desiredDistance < 0)

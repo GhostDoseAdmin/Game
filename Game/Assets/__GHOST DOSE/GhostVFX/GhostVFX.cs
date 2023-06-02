@@ -19,8 +19,8 @@ public class GhostVFX : MonoBehaviour
     private GameObject skin;
     Light[] envLights;
     [HideInInspector] public List<Light> LightSources;
-    List<float> originalMaxAlpha = new List<float>(); //affects total alpha
-    List<float> currentMaxAlpha = new List<float>();
+    public List<float> originalMaxAlpha = new List<float>(); //affects total alpha
+    public List<float> currentMaxAlpha = new List<float>();
     public bool visible; //USD IN CONJUNCTION WITH PLAY AIM RAYCAST
     public bool inShadow;
     public bool invisible;
@@ -127,7 +127,7 @@ public class GhostVFX : MonoBehaviour
     {
         updateCall++;
         //if (updateCall > 2)
-        if (updateCall > 1 && GeometryUtility.TestPlanesAABB(GeometryUtility.CalculateFrustumPlanes(Camera.main), skin.GetComponent<SkinnedMeshRenderer>().bounds)) //
+        if ((updateCall > 1 && GeometryUtility.TestPlanesAABB(GeometryUtility.CalculateFrustumPlanes(Camera.main), skin.GetComponent<SkinnedMeshRenderer>().bounds)) || (GetComponent<Teleport>().teleport!=0))//
         {
             updateCall = 0;
             if (Application.isPlaying)
@@ -164,6 +164,8 @@ public class GhostVFX : MonoBehaviour
                         //material.SetFloatArray("_LightRanges", lightRanges);
                         //Debug.Log("--LIGHTS--" + "count " + envLightCount + "pos " + lightPositions[0] + "dir " + lightDirections[0] + "angle " + lightAngles[0] + "strength " + ScalarStrengths[0] + "range " + lightRanges[0]);
                     }
+
+
                 }
                 //SHADOW OVERRIDES ENVIRONMENT LIGHTS
                 if (inShadow)
@@ -235,8 +237,8 @@ public class GhostVFX : MonoBehaviour
                 //if (death) { visible = true; visibilitySet = true; Fade(true, 5f, 1); }
                 invisible = false;
                 {
-                    if (visible) { if (!GetComponent<NPCController>().ZOZO) { Fade(true, 0.5f, 1); } else { Fade(true, 2f, 1); } }
-                    else { if (!GetComponent<NPCController>().ZOZO) { Fade(false, 1f, 1); } else { Fade(false, 0.2f, 1); } }//fadeout
+                    if (visible) { if (!GetComponent<NPCController>().ZOZO) { Fade(true, 0.5f); } else { Fade(true, 2f); } }
+                    else { if (!GetComponent<NPCController>().ZOZO) { Fade(false, 1f); } else { Fade(false, 0.2f); } }//fadeout
                 }// DEATH FADE
                  //else { Fade(false, 10f, 0); }
                 for (int i = 0; i < skin.GetComponent<SkinnedMeshRenderer>().materials.Length; i++)
@@ -272,7 +274,7 @@ public class GhostVFX : MonoBehaviour
 
         }
     }
-    public void Fade(bool fadeIn, float speed, int fadeOutLimit)
+    public void Fade(bool fadeIn, float speed)
     {
         for (int i = 0; i < skin.GetComponent<SkinnedMeshRenderer>().materials.Length; i++)
         {
@@ -285,8 +287,10 @@ public class GhostVFX : MonoBehaviour
                 }
                 else//FADE OUT
                 {
-                    if (currentMaxAlpha[i] > 0.01) { currentMaxAlpha[i] = Mathf.Lerp(currentMaxAlpha[i], currentMaxAlpha[i] * 0.5f * fadeOutLimit, Time.deltaTime * speed); }
-                    if (currentMaxAlpha[i] < 0.1f || (GetComponent<ZozoControl>()!=null && currentMaxAlpha[i] < 0.2f)) //if diff in alpha less than 0.1
+                   // Debug.Log(currentMaxAlpha[i]);
+                    //if (currentMaxAlpha[i] > 0.01) { currentMaxAlpha[i] = Mathf.Lerp(currentMaxAlpha[i], currentMaxAlpha[i] * 0.5f * fadeOutLimit, Time.deltaTime * speed); }
+                    if (currentMaxAlpha[i] > 0.01) { currentMaxAlpha[i] = Mathf.Lerp(currentMaxAlpha[i], 0, Time.deltaTime * speed); }
+                    if (currentMaxAlpha[i] < 0.2f) //|| (GetComponent<ZozoControl>()!=null && currentMaxAlpha[i] < 0.2f)) //if diff in alpha less than 0.1
                     {
                         invisible = true; playedSound = false;
                     }

@@ -573,9 +573,9 @@ public class NPCController : MonoBehaviour
         if (!onlyOnceThisFrame)//prevent flash from interrupting
         {
             onlyOnceThisFrame = true;
-
+           
             if (damageAmount > 5) { AudioManager.instance.Play("enemyflinchimpact", audioSource); }
-            if (damageAmount == 100) { AudioManager.instance.Play("headshot", audioSource); }
+            if (damageAmount > 100) { AudioManager.instance.Play("headshot", null); Debug.Log("---------------------------------------" + damageAmount); }
             //if (animEnemy.GetCurrentAnimatorClipInfo(0)[0].clip!= null && animEnemy.GetCurrentAnimatorClipInfo(0)[0].clip.name != "agro" && GetComponent<Teleport>().teleport==0) { healthEnemy -= damageAmount; }
             healthEnemy -= damageAmount;
             //MAKE SUSPECIOUS
@@ -604,7 +604,7 @@ public class NPCController : MonoBehaviour
                 if (NetworkDriver.instance.HOST)
                 {
                     GetComponent<Teleport>().CheckTeleport(true, true);
-                    GetComponent<Teleport>().Invoke("Respawn", spawnTimer);
+                    GetComponent<Teleport>().Invoke("Respawn", 1f+spawnTimer);
                 }
                 agro = false;
                 target = null;
@@ -612,7 +612,7 @@ public class NPCController : MonoBehaviour
                 this.gameObject.transform.GetChild(0).GetComponent<SkinnedMeshRenderer>().enabled = false;
                 this.gameObject.transform.GetChild(0).GetComponent<Outline>().OutlineWidth = 0;
                 GameObject death = Instantiate(Death, transform.position, transform.rotation);
-                if (Shadower) { death.GetComponent<GhostVFX>().Shadower = true;  }
+                if (Shadower) { death.GetComponent<EnemyDeath>().Shadower = true;  }
                 HIT_COL.GetComponent<SphereCollider>().enabled = false;
                 if (!canRespawn) { DestroyImmediate(this.gameObject); }
 

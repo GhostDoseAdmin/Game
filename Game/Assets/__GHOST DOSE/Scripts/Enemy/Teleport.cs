@@ -68,7 +68,7 @@ public class Teleport : MonoBehaviour
         //---------------AGRO----------------------
         if (NetworkDriver.instance.HOST)
         {
-            if (GetComponent<NPCController>().target != null && GetComponent<NPCController>().teleports && !GetComponent<NPCController>().zozoLaser) //GetComponent<NPCController>().agro && 
+            if (GetComponent<NPCController>().target != null && GetComponent<NPCController>().teleports && !GetComponent<NPCController>().zozoLaser && !GetComponent<NPCController>().zapActive) //GetComponent<NPCController>().agro && 
             {
                 // if (Vector3.Distance(transform.position, GetComponent<NPCController>().target.transform.position) > 3)//3
                 if ((Time.time > coolDown + 15f))
@@ -81,7 +81,7 @@ public class Teleport : MonoBehaviour
         if (teleport == 1)
         {
             if (GetComponent<NPCController>().ZOZO) { GameObject.Find("PlayerCamera").GetComponent<Camera_Controller>().InvokeShake(1f, 2f); }
-            if (GetComponent<NPCController>().healthEnemy > 0 && !GetComponent<NPCController>().ZOZO) {GameObject TPVFX = Instantiate(teleportVFX); TPVFX.transform.position = new Vector3(this.gameObject.transform.position.x, this.gameObject.transform.position.y+1f, this.gameObject.transform.position.z); }
+            if ((GetComponent<NPCController>().healthEnemy > 0 || !DEATH )&& !GetComponent<NPCController>().ZOZO) {GameObject TPVFX = Instantiate(teleportVFX); TPVFX.transform.position = new Vector3(this.gameObject.transform.position.x, this.gameObject.transform.position.y+1f, this.gameObject.transform.position.z); }
             if (NetworkDriver.instance.HOST) { NetworkDriver.instance.sioCom.Instance.Emit("teleport", JsonConvert.SerializeObject($"{{'obj':'{gameObject.name}','tp':'1','x':'{transform.position.x}','y':'{transform.position.y}','z':'{transform.position.z}'}}"), false); }
             fadeTimer = Time.time;
             if (GetComponent<NPCController>().target != null) { target = GetComponent<NPCController>().target; }
@@ -104,27 +104,27 @@ public class Teleport : MonoBehaviour
             if (Time.time - fadeTimer < 1f){
                 Vector3 currPos = transform.position; 
                 currPos.y = -999f; 
-                GetComponent<GhostVFX>().Fade(false, 10f, 0); //10f
+                GetComponent<GhostVFX>().Fade(false, 10f); //10f
                 //if (!NetworkDriver.instance.HOST) { GetComponent<GhostVFX>().Fade(false, 16f, 0); }//client fade faster, prevent seeing them
                 transform.position = currPos;//descend
             }
             else//NEXT STEP
             {
                 this.gameObject.transform.GetChild(0).GetComponent<SkinnedMeshRenderer>().enabled = false;
-                if (NetworkDriver.instance.HOST) { teleport = 2; }
+                if (NetworkDriver.instance.HOST) { teleport = 2; GetComponent<GhostVFX>().currentMaxAlpha[0] = GetComponent<GhostVFX>().originalMaxAlpha[0]; }
             }
         }
         //STEP 2 - RELOCATE
         if (teleport == 2)//HOST ONLY
         {
             //EVER delay SECONDS RELOCATE
-            if ((Time.time > timer + 1f))
+            if ((Time.time > timer + 2f))
             {
+                GetComponent<GhostVFX>().invisible = false;
+                GetComponent<GhostVFX>().currentMaxAlpha[0] = GetComponent<GhostVFX>().originalMaxAlpha[0]; //reset to default alpha for testing visiblity
                 relocate++;
-               // GetComponent<GhostVFX>().invisibleCounter = 0;//reset counter to test new position
                 transform.position = new Vector3(transform.position.x, b4Pos.y, transform.position.z);
-
-                if(!isWaypoint)
+                if (!isWaypoint)
                 {
                     float randomXOffset = Random.Range(-1f, 1f);
                     float randomYOffset = Random.Range(-1f, 1f);
@@ -132,6 +132,8 @@ public class Teleport : MonoBehaviour
                     if (randomYOffset < 0f) { randomYOffset = Random.Range(-minRadius, -maxRadius); } else { randomYOffset = Random.Range(minRadius, maxRadius); }
                     Vector3 randomOffset = new Vector3(randomXOffset, 0f, randomYOffset);
                     transform.position = target.position + randomOffset;
+                    LayerMask mask = 1 << LayerMask.NameToLayer("Default") | 1 << LayerMask.NameToLayer("Player");
+                    if (!Physics.Linecast(transform.position, target.position, mask)) { relocate--; }//if cant see target try again
 
                 }
                 else//USE WAYPOINTS / FOR DEATH AS WELL
@@ -149,7 +151,7 @@ public class Teleport : MonoBehaviour
             //--REAPPEAR--
             if(relocate>1 && !DEATH)
             {
-                if ((!GetComponent<NPCController>().Shadower && GetComponent<GhostVFX>().invisible && !GetComponent<GhostVFX>().visible) || (GetComponent<NPCController>().Shadower && !GetComponent<GhostVFX>().visible))
+                if (GetComponent<GhostVFX>().invisible && !GetComponent<GhostVFX>().visible)
                 {
                     teleport = 3;
                     if (NetworkDriver.instance.HOST) { NetworkDriver.instance.sioCom.Instance.Emit("teleport", JsonConvert.SerializeObject($"{{'obj':'{gameObject.name}','tp':'3','x':'{transform.position.x}','y':'{transform.position.y}','z':'{transform.position.z}'}}"), false); }
@@ -163,6 +165,7 @@ public class Teleport : MonoBehaviour
             if (!delayForEmit)
             { //skip a frame to allow NPCcontroller to emit state 3
                 teleport = 0;
+                GetComponent<GhostVFX>().currentMaxAlpha[0] = 0f;
                 //if (!GetComponent<NPCController>().GD.ND.HOST) { transform.position = new Vector3(transform.position.x, b4Pos.y, transform.position.z); }
                 if (!isWaypoint && !GetComponent<NPCController>().ZOZO) { AudioManager.instance.Play("Reappear", gameObject.GetComponent<NPCController>().audioSource); }
                 if (!isWaypoint && GetComponent<NPCController>().ZOZO) { AudioManager.instance.Play("zozoReappear", gameObject.GetComponent<NPCController>().audioSource); }
@@ -171,7 +174,7 @@ public class Teleport : MonoBehaviour
                 GetComponent<Animator>().enabled = true;
                 this.gameObject.transform.GetChild(0).GetComponent<SkinnedMeshRenderer>().enabled = true;
                 StartCoroutine(resetOutline());
-                StartCoroutine(resetCanTeleport());
+                StartCoroutine(resetCanTeleport());//COOLDOWN TIME
                 AudioManager.instance.StopPlaying("haunting", null);
                 //CLIENT RESPAWN
                 if (!NetworkDriver.instance.HOST && GetComponent<NPCController>().healthEnemy<=0){ Respawn(); }
@@ -179,9 +182,10 @@ public class Teleport : MonoBehaviour
             if (delayForEmit){ delayForEmit = false; }
         }
 
+        //COOLDOWN TIME
         IEnumerator resetCanTeleport()
         {
-                yield return new WaitForSeconds(3f);
+                yield return new WaitForSeconds(15f);
                 canTeleport = true;
         }
         //--------FADE OUTLINE BACK IN 

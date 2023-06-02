@@ -53,6 +53,7 @@ public class DisablerControl : MonoBehaviour
 
                 foreach (GameObject enemy in enemyObjects)
                 {
+                    if (enemy == null) { continue; }
                     float p1_dist = Vector3.Distance(enemy.transform.position, GameDriver.instance.Player.transform.position);
                     float p2_dist = Vector3.Distance(enemy.transform.position, GameDriver.instance.Client.transform.position);
                     if (p1_dist < p2_dist) { closestPlayerDist = p1_dist; } else { closestPlayerDist = p2_dist; }

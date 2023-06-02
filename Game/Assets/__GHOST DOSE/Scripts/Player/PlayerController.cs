@@ -387,6 +387,7 @@ public class PlayerController : MonoBehaviour
                 aimPos.y = transform.position.y + 1f;
                 targetPos.position = aimPos;
             }
+			if(GetComponent<ShootingSystem>().target!=null) { targetPos.position = GetComponent<ShootingSystem>().target.transform.position+Vector3.up; }
             //if (mobileGearAim) { walk = 0; strafe = 0; }
         }
        
@@ -415,7 +416,7 @@ public class PlayerController : MonoBehaviour
         //Debug.Log("SPEED---------------------------------------------------" + strafe + walk);
 
         //------------------  R O T A T E --------------------------------
-        if (!NetworkDriver.instance.isMobile)
+        //if (!NetworkDriver.instance.isMobile)
 		{
 			if (walk != 0 || strafe != 0 || is_FlashlightAim == true || gearAim || CameraType.FPS == cameraController.cameraType)
 			{
@@ -436,7 +437,11 @@ public class PlayerController : MonoBehaviour
 			}
          transform.eulerAngles = new Vector3(0f, transform.eulerAngles.y, 0f);
         }
-		else{ transform.rotation = Quaternion.Euler(0f, Quaternion.LookRotation(targetPos.transform.position - transform.position).eulerAngles.y, 0f); }
+		//else
+		{
+            //transform.rotation = Quaternion.Euler(0f, Quaternion.LookRotation(targetPos.transform.position - transform.position).eulerAngles.y, 0f); 
+           // transform.LookAt(targetPos);
+        }
 
 
         //------------------ T R A N S L A T E -------------------------
@@ -461,11 +466,8 @@ public class PlayerController : MonoBehaviour
 			if (Input.GetKey(InputManager.instance.running) && walk != 0) { anim.SetBool("Running", true); }
 			else if (Input.GetKeyUp(InputManager.instance.running)) { anim.SetBool("Running", false); }
 		}
-		//if (gearAim == true)        {			anim.SetBool("Running", false);        }
-
-		if (anim.GetBool("Running")) { ResetAniFromAim(); }
-
-    }
+		if (gearAim == true)        {			anim.SetBool("Running", false);        }
+	}
 	#endregion
 
 	public bool canFlinch;
@@ -614,8 +616,8 @@ public class PlayerController : MonoBehaviour
 				newHandWeight = 1f;
             }
 			
-                if ( (Input.GetMouseButton(1) && !NetworkDriver.instance.isMobile) || (gamePad.aimShootBTN.buttonPressed && gamePad.aimer.gameObject.activeSelf && NetworkDriver.instance.isMobile) )//AIMING
-                {
+                if ( (Input.GetMouseButton(1) && !NetworkDriver.instance.isMobile) || (gamePad.aimShootBTN.buttonPressed && NetworkDriver.instance.isMobile))//AIMING  //&& gamePad.aimer.gameObject.activeSelf 
+				{
                     if (!gearAim) { if (gear == 1) { AudioManager.instance.Play("camfocus", audioSource); } }
 
                     if (is_FlashlightAim)
@@ -644,57 +646,57 @@ public class PlayerController : MonoBehaviour
                    // if (anim.GetBool("ouija")) { newHandWeight = 0f; anim.SetBool("Pistol", true); gearAim = false; }
                     GetComponent<ShootingSystem>().Aiming(gear);
 
-					//-------------------------------SHOOTING -----------------------------------
-					if ((Input.GetMouseButtonDown(0) && !NetworkDriver.instance.isMobile) )
+                //-------------------------------SHOOTING -----------------------------------
+				if (!NetworkDriver.instance.isMobile)
+				{
+					if (Input.GetMouseButtonDown(0))
 					{
-                        if (gear == 1) { anim.SetBool("Shoot", true); GetComponent<ShootingSystem>().Shoot(); AudioManager.instance.StopPlaying("camfocus", audioSource); }
-                        if (gear == 3) { anim.SetBool("Throw", true); throwing = true; }
+						if (gear == 1) { anim.SetBool("Shoot", true); GetComponent<ShootingSystem>().Shoot(); AudioManager.instance.StopPlaying("camfocus", audioSource); }
+						if (gear == 3) { anim.SetBool("Throw", true); throwing = true; }
 
 					}
 					else if (Input.GetMouseButtonUp(0))
 					{
 						anim.SetBool("Shoot", false);
-                        //anim.SetBool("Throw", false);
-                    }
-				}
-				else if ((Input.GetMouseButtonUp(1) && !NetworkDriver.instance.isMobile) || (gamePad.aimShootBTN.buttonReleased && NetworkDriver.instance.isMobile))
-                {
-					//MOBILE SHOOT
-					if(NetworkDriver.instance.isMobile && gamePad.aimer.gameObject.activeSelf)
-					{
-                    if (gear == 1) { anim.SetBool("Shoot", true); GetComponent<ShootingSystem>().Shoot(); AudioManager.instance.StopPlaying("camfocus", audioSource); }
-                    if (gear == 3) { anim.SetBool("Throw", true); throwing = true; }
-					}
-
-
-
-					
-					Invoke("ResetAniFromAim", 1);
-					//anim.SetBool("Throw", false);
-
-					
-
-					if (is_FlashlightAim)
-					{
-						anim.SetBool("Flashlight", true);
-						gameObject.GetComponent<FlashlightSystem>().handFlashlight.SetActive(true);
-						gameObject.GetComponent<FlashlightSystem>().FlashLight.enabled = true;
-						gameObject.GetComponent<FlashlightSystem>().WeaponLight.enabled = false;
+						//anim.SetBool("Throw", false);
 					}
 				}
+                CancelInvoke("ReleaseAim");
+				if (!NetworkDriver.instance.isMobile) { Invoke("ReleaseAim", 0.2f); }
+				else { Invoke("ReleaseAim", 0.5f); }
+				}
+
+				//--------------------------MOBILE SHOOTING--------------------------------
+            if (NetworkDriver.instance.isMobile && gamePad.aimShootBTN.buttonReleased && gamePad.aimer.fov>0) //&& gamePad.aimer.gameObject.activeSelf
+            {
+                if (gear == 1) { anim.SetBool("Shoot", true); GetComponent<ShootingSystem>().Shoot(); AudioManager.instance.StopPlaying("camfocus", audioSource); }
+                if (gear == 3) { anim.SetBool("Throw", true); throwing = true; }
+            }
+
 				handWeight = Mathf.Lerp(handWeight, newHandWeight, Time.deltaTime * handSpeed);
 				//OUIJA
 				if (anim.GetBool("ouija")) { handWeight = 0f; anim.SetBool("Pistol", true); gear = 1; ouija.SetActive(true); camera.SetActive(false); k2.SetActive(false); camInventory.SetActive(true); k2Inventory.SetActive(true); } else { ouija.SetActive(false); }
             
 		}
 	}
-	public void ResetAniFromAim()
+	public void ReleaseAim()
 	{
-        //smooths out ani so no rapid repetitive aim
+		
         gearAim = false;
         anim.SetBool("Pistol", false);
         anim.SetBool("Shoot", false);
+
         if (gear != 3) { newHandWeight = 0f; }
+
+        if (is_FlashlightAim)
+        {
+            anim.SetBool("Flashlight", true);
+            gameObject.GetComponent<FlashlightSystem>().handFlashlight.SetActive(true);
+            gameObject.GetComponent<FlashlightSystem>().FlashLight.enabled = true;
+            gameObject.GetComponent<FlashlightSystem>().WeaponLight.enabled = false;
+        }
+
+
     }
 
 	#region Flashlight

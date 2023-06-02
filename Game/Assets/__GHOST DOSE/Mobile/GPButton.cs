@@ -19,6 +19,6 @@ public class GPButton : MonoBehaviour, IPointerDownHandler, IPointerUpHandler
     }
     public void LateUpdate()
     {
-       buttonReleased = false; 
+       buttonReleased = false;
     }
 }

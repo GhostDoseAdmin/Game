@@ -16,25 +16,12 @@ public class EnemyDeath : MonoBehaviour
     public AudioSource audioSource;
 
 
-    public Vector3 targetScale = Vector3.one * 2f;
-    private void Awake()
-    {
-        for (int i = 0; i < transform.GetChild(0).GetComponent<SkinnedMeshRenderer>().materials.Length; i++)
-        {
-
-            if (transform.GetChild(0).GetComponent<SkinnedMeshRenderer>().materials[i].shader.name == "Custom/Ghost")
-            {
-                transform.GetChild(0).GetComponent<SkinnedMeshRenderer>().materials[i].SetFloat("_EMFAlpha", 0.6f); 
-            }
-            else if (transform.GetChild(0).GetComponent<SkinnedMeshRenderer>().materials[i].shader.name == "Custom/GhostAlphaCutoff")
-            {
-                transform.GetChild(0).GetComponent<SkinnedMeshRenderer>().materials[i].SetFloat("_EMFAlpha", 1f); 
-            }
-        }
-    }
     // Start is called before the first frame update
     void Start()
     {
+        transform.GetChild(0).GetComponent<SkinnedMeshRenderer>().materials[0].SetFloat("_Alpha", 0.5f);
+        if (Shadower) { transform.GetChild(0).GetComponent<SkinnedMeshRenderer>().materials[0].SetFloat("_Shadower", 1f); }
+
         audioSource = gameObject.AddComponent<AudioSource>();
         audioSource.spatialBlend = 1.0f;
 

@@ -135,14 +135,6 @@ public class Camera_Controller : MonoBehaviour
             UnityEngine.Cursor.lockState = CursorLockMode.Locked;
             UnityEngine.Cursor.visible = false;
         }
-        else
-        {
-            desiredDistance = 7;
-            //offsetVector = new Vector3(0.12f, 2.28f, 0);
-            //cameraOffsetVector = new Vector3(0.31f, -0.42f, -4.37f);
-            //zoomOutStepValue = 0.01f;
-            //zoomOutStepValuePerFrame = 0.01f;
-        }
     }
 
     public void InvokeShake(float duration, float magnitude)
@@ -193,6 +185,7 @@ public class Camera_Controller : MonoBehaviour
 
     private void Update()
     {
+
         if (Input.GetKeyDown(InputManager.instance.switchCamera))
         {
             if (cameraType == CameraType.FPS)

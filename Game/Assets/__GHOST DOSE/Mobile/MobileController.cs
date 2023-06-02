@@ -10,34 +10,29 @@ public class MobileController : MonoBehaviour
     public GPButton aimShootBTN, flashlightBTN;
     public VariableJoystick joystick;
     public RayAimer aimer;
-    void Start()
-    {
-        if (!NetworkDriver.instance.isMobile)
-        {
-            this.gameObject.SetActive(false);
-        }
-    }
 
+    private void Start()
+    {
+        Debug.Log("-----------------------MOBILE CONTROLLER" + gameObject.name + "NETWORK DRIVER " + NetworkDriver.instance.name);
+        if (!NetworkDriver.instance.isMobile) { gameObject.SetActive(false); }
+    }
     // Update is called once per frame
     void Update()
     {
-
+        
         //AIM
-        if (aimShootBTN.buttonPressed && !GameDriver.instance.Player.GetComponent<PlayerController>().gearAim){
+        if (aimShootBTN.buttonPressed)
+        { // && !GameDriver.instance.Player.GetComponent<PlayerController>().gearAim
             aimer.gameObject.SetActive(true);
             
         }
         //SHOOT
         if (aimShootBTN.buttonReleased)
         {
-            Invoke("ReleaseShoot",0.01f);
+            aimer.shrink = false;
+            Invoke("ReleaseShoot",0.3f);
         }
-        //SHOOT
-        /* if (GameDriver.instance.Player.GetComponent<PlayerController>().mobileGearAim)
-         {
-             shoot.SetActive(true);
-         }
-         else { shoot.SetActive(false); }*/
+
 
         //FLAHSLIGHT
         if (GameDriver.instance.Player.GetComponent<FlashlightSystem>().FlashLight.GetComponent<Light>().enabled || GameDriver.instance.Player.GetComponent<FlashlightSystem>().WeaponLight.GetComponent<Light>().enabled)
@@ -54,4 +49,6 @@ public class MobileController : MonoBehaviour
         CancelInvoke("ReleaseShoot");
         aimer.gameObject.SetActive(false);
     }
+
+
 }

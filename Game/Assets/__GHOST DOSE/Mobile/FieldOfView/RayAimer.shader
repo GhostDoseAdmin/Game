@@ -13,7 +13,7 @@ Shader "Custom/RayAimer" {
             Tags { "RenderType" = "Transparent" "Queue" = "Transparent"}
             Blend SrcAlpha OneMinusSrcAlpha
             LOD 200
-            //Cull Off 
+            Cull Off 
 
             CGPROGRAM
             #include "UnityCG.cginc"

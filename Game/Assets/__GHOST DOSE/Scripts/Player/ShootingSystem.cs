@@ -51,7 +51,7 @@ public class ShootingSystem : MonoBehaviour
     public ParticleSystem Shell;
     
     float curRateFire;
-    
+    public int headShotDamage = 101;
     //bool canShoot;
     //bool AmmoShoot = true;
 
@@ -59,11 +59,13 @@ public class ShootingSystem : MonoBehaviour
 
     //TARGET
     //private bool[] targParams;
-    private bool isVisible;
-    private bool isHeadshot;
+    public bool isVisible;
+    public bool isHeadshot;
     private Camera camera;
     public Aiming aiming;
-    private GameObject target;
+    public GameObject target;
+    public int Damage = 40;
+
 
     public static ShootingSystem instance;
     private static utilities util;
@@ -122,8 +124,18 @@ public class ShootingSystem : MonoBehaviour
             flashLightIndicatorUI.color = Color.white;
             focusIndicatorUI.color = Color.white;
 
-            //TARGET PARAMS
-            targetParams(20); //GetComponent<FlashlightSystem>().FlashLight.range
+            //MOBILE TARGET PARAMS
+            /* if (NetworkDriver.instance.isMobile)
+             {
+                 RayAimer aimer = GetComponent<PlayerController>().gamePad.aimer;
+                 target = aimer.target;
+                 isHeadshot = aimer.isHeadshot;
+             }*/
+            if (!NetworkDriver.instance.isMobile)
+            {
+                //TARGET PARAMS
+                targetParams(20); //GetComponent<FlashlightSystem>().FlashLight.range
+            }
             if (isVisible)
             {
                 if (target != null) { 
@@ -159,6 +171,7 @@ public class ShootingSystem : MonoBehaviour
 
     private float shootTimer;
     private float shootCoolDown = 0.7f;
+    public bool canShoot;
     public bool Shoot()
     {
         //if (AmmoShoot)
@@ -181,12 +194,13 @@ public class ShootingSystem : MonoBehaviour
                     {
                             if ((target.GetComponent<GhostVFX>()!=null) && isVisible && target.GetComponent<Teleport>().teleport == 0)
                             {
-                                damage = 40;
-                                if (target.GetComponent<NPCController>().animEnemy.GetCurrentAnimatorClipInfo(0)[0].clip != null && target.GetComponent<NPCController>().animEnemy.GetCurrentAnimatorClipInfo(0)[0].clip.name != "agro") { damage = 20; }
-                                if (isHeadshot) { damage = 100; }
-                                target.GetComponent<NPCController>().TakeDamage(damage, false);
+                                damage = Damage;
+                                if (target.GetComponent<NPCController>().animEnemy.GetCurrentAnimatorClipInfo(0).Length>0 && target.GetComponent<NPCController>().animEnemy.GetCurrentAnimatorClipInfo(0)[0].clip.name == "agro") { damage = 20; }
+                                if (isHeadshot) { damage = headShotDamage; }
+                            //Debug.Log("---------------------------------------" + damage);
+                            target.GetComponent<NPCController>().TakeDamage(damage, false);
                             }
-                            if (target.tag == "Victim")
+                            if (target != null && target.tag == "Victim")
                             {
                                 victimManager.GetComponent<VictimControl>().testAnswer(target);
                                 //used to emit answer
@@ -249,7 +263,6 @@ public class ShootingSystem : MonoBehaviour
                         //if (!isVisible) { Debug.Log("INVISISHOT"); }
                         if (hit.collider.gameObject.name == "mixamorig:Head") { isHeadshot = true; }
                     }
-                    //VICTIMS
                     target = ghost.gameObject;
                 }
             }

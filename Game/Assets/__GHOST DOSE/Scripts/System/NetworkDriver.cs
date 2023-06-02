@@ -48,10 +48,11 @@ namespace NetworkSystem
         public int LEVELINDEX;
         // public float SPEEDSCORE;
         public GameObject PlayerScores;
-        [HideInInspector] public bool isMobile = false;
+         public bool isMobile = false;
         public bool FORCEMOBILE;
         public void Awake()
         {
+            Debug.Log("-----------------------NETWORK DRIVER");
             if (Application.isMobilePlatform) { isMobile = true; }
             if (FORCEMOBILE) { isMobile = true; }
            // isMobile = true;

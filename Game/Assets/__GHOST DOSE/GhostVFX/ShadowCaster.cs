@@ -65,8 +65,8 @@ public class ShadowCaster : MonoBehaviour
 
         foreach (GhostVFX ghostVFX in ghostVFXObjects)
         {
-           // Debug.Log("--------------------------------UPDATING SHADER INFO-----------------------------------");
-            ghostVFX.UpdateShaderValues();
+            // Debug.Log("--------------------------------UPDATING SHADER INFO-----------------------------------");
+            if (ghostVFX != null) { ghostVFX.UpdateShaderValues(); }
         }
 
     }
