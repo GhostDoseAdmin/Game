@@ -7,8 +7,8 @@ using GameManager;
 public class MobileController : MonoBehaviour
 {
     public GameObject flashlight, gear, interact;
-    public GPButton aimShootBTN, flashlightBTN;
-    public VariableJoystick joystick;
+    public GPButton  flashlightBTN;
+    public VariableJoystick joystick, joystickAim;
     public RayAimer aimer;
 
     private void Start()
@@ -21,13 +21,13 @@ public class MobileController : MonoBehaviour
     {
         
         //AIM
-        if (aimShootBTN.buttonPressed)
+        if (joystickAim.GetComponent<GPButton>().buttonPressed)
         { // && !GameDriver.instance.Player.GetComponent<PlayerController>().gearAim
             aimer.gameObject.SetActive(true);
             
         }
         //SHOOT
-        if (aimShootBTN.buttonReleased)
+        if (joystickAim.GetComponent<GPButton>().buttonReleased)
         {
             aimer.shrink = false;
             Invoke("ReleaseShoot",0.3f);

@@ -46,7 +46,12 @@ public class RayAimer : MonoBehaviour {
         if (NetworkDriver.instance.isMobile)
         {
             shrink = true;
-            fov = startFov; SS.isHeadshot = false; if (GetComponent<MeshRenderer>() != null) { GetComponent<MeshRenderer>().material.SetColor("_Color", Color.cyan); GetComponent<MeshRenderer>().material.SetFloat("_Alpha", 0); }
+            fov = startFov;
+            if (SS != null) { SS.isHeadshot = false; }
+            if (GetComponent<MeshRenderer>() != null && GetComponent<MeshRenderer>().material!=null) {
+                GetComponent<MeshRenderer>().material.SetColor("_Color", Color.cyan); 
+                GetComponent<MeshRenderer>().material.SetFloat("_Alpha", 0); 
+            }
         }
     }
 

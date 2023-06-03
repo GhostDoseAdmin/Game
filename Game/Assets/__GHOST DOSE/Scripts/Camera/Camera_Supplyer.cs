@@ -54,14 +54,22 @@ public class Camera_Supplyer : MonoBehaviour
     private Camera_Controller cameraController;
     private RectTransform gamePad;
 
+    private PlayerController Player;
+
 
     public void Start()
     {
+        Player = GameDriver.instance.Player.GetComponent<PlayerController>();
         if (NetworkDriver.instance.isMobile) { gamePad = GameObject.Find("GamePad").GetComponent<RectTransform>(); }
         cameraController = GetComponent<Camera_Controller>();
         //targetRotation = Quaternion.identity;
 
-        if (NetworkDriver.instance.isMobile) { yAngleLimitMin = 160f; yAngleLimitMax = 110f; }
+        if (NetworkDriver.instance.isMobile) { 
+            yAngleLimitMin = 160f; yAngleLimitMax = 110f;
+            //mouseSensitivity.x = 0f;
+            //mouseSensitivity.y = 0f;
+
+        }
 
         x = 0;
         y = 0;
@@ -97,7 +105,7 @@ public class Camera_Supplyer : MonoBehaviour
     }
     public void Update()
     {
-        if (NetworkDriver.instance.isMobile)
+        /*if (NetworkDriver.instance.isMobile)
         {
             cameraController.desiredDistance = 10f;
             maxDistance = 15f;
@@ -116,45 +124,10 @@ public class Camera_Supplyer : MonoBehaviour
 
             }
         }
-            /*if (NetworkDriver.instance.isMobile)
-            {
-                Vector3 playerDirection = GameDriver.instance.Player.transform.forward;
-                Vector3 cameraDirection = Camera.main.transform.forward;
-                // Check if the player is facing the camera
-                bool isFacingCamera = Vector3.Dot(GameDriver.instance.Player.transform.forward, GameDriver.instance.Player.transform.forward) <= 0.2f;  // Adjust the threshold as needed
-
-                // If the player is facing the camera, rotate the camera around to see what the player is looking at
-                if (isFacingCamera)
-                {
-                    if(!fixCamDir) {
-                        fixCamDir = true;
-                        Translate camera behind player, stop target look from tracking
-                       // targetRotation = Quaternion.LookRotation(GameDriver.instance.Player.transform.position - GameDriver.instance.Player.GetComponent<PlayerController>().targetPos.position, Vector3.up);
-                        Debug.Log("FACING CAMERA");
-                        cameraEnabled = false;
-                    }
-                    if (fixCamDir)
-                    {
-                        Debug.Log("FIXING CAMERA");
-                        transform.rotation = Quaternion.Lerp(transform.rotation, targetRotation, 5 * Time.deltaTime);
-                    }
-                }
-                else
-                {
-                    if (fixCamDir)
-                    {
-                        Debug.Log("CAMERA FIXED");
-                        fixCamDir = false;
-                        cameraEnabled = true;
-                    }
-                }
-
-
-            }*/
 
 
             //DISABLE CAM for GAMEPAD AREA OF SCREEN 
-            if (Input.touchCount > 0 && NetworkDriver.instance.isMobile)
+          if (Input.touchCount > 0 && NetworkDriver.instance.isMobile)
         {
             // Iterate through each touch
             foreach (Touch touch in Input.touches)
@@ -166,7 +139,7 @@ public class Camera_Supplyer : MonoBehaviour
                     Invoke("ReEnableCam", 0.1f);
                 }
             }
-        }
+        }*/
     }
     void ReEnableCam()
     {
@@ -180,7 +153,7 @@ public class Camera_Supplyer : MonoBehaviour
             return;
 
         //DISABLE CAM for GAMEPAD AREA OF SCREEN 
-        if (Input.touchCount > 0 && NetworkDriver.instance.isMobile)
+        /*if (Input.touchCount > 0 && NetworkDriver.instance.isMobile)
         {
             // Iterate through each touch
             foreach (Touch touch in Input.touches)
@@ -193,7 +166,7 @@ public class Camera_Supplyer : MonoBehaviour
                     Invoke("ReEnableCam", 0.1f);
                 }
             }
-        }
+        }*/
 
 
         if (cameraEnabled)
@@ -204,13 +177,38 @@ public class Camera_Supplyer : MonoBehaviour
 
             if (NetworkDriver.instance.isMobile)
             {
-                if (GameDriver.instance.Player.GetComponent<PlayerController>().gamePad.joystick.Horizontal != 0 || GameDriver.instance.Player.GetComponent<PlayerController>().gamePad.joystick.Vertical != 0) {
+                //AIMING
+                if(Player.gamePad.joystickAim.Horizontal!= 0 || Player.gamePad.joystickAim.Vertical != 0)
+                    {
+                    cameraController.desiredDistance = 1.2f;
+                    x = Player.gamePad.joystickAim.Horizontal * mouseSensitivity.x * 10;
+                    y = Player.gamePad.joystickAim.Vertical * mouseSensitivity.y * 10;
+                    
+                    Player.targetPos.position = transform.position + Camera.main.transform.forward * 5f;
+                    Player.gameObject.transform.rotation = Quaternion.AngleAxis(transform.rotation.eulerAngles.y, Vector3.up);
+                    //Player.targetPos.position = transform.position + Camera.main.transform.forward * 5f;
+                    //Player.targetPos.position = new Vector3(Player.targetPos.position.x, Player.gameObject.transform.position.y, Player.targetPos.position.z);
+                }
+                //MOVING
+                else
+                {
+                    if (Player.gamePad.joystick.Horizontal != 0 || Player.gamePad.joystick.Vertical != 0)
+                    {
+                        cameraController.desiredDistance = 7f;
+                        Player.targetPos.position = Player.transform.position + (Camera.main.transform.forward * Player.gamePad.joystick.Vertical + Camera.main.transform.right * Player.gamePad.joystick.Horizontal).normalized * 5f;
+                    }
+                       
+                }
+                /*if (GameDriver.instance.Player.GetComponent<PlayerController>().gamePad.joystick.Horizontal != 0 || GameDriver.instance.Player.GetComponent<PlayerController>().gamePad.joystick.Vertical != 0) {
                     x = GameDriver.instance.Player.GetComponent<PlayerController>().gamePad.joystick.Horizontal * mouseSensitivity.x;
                     y = GameDriver.instance.Player.GetComponent<PlayerController>().gamePad.joystick.Vertical * mouseSensitivity.y;
-                }
-               
-                
+                }*/
+                /*bool facingCamera = Vector3.Dot(GameDriver.instance.Player.transform.forward, Camera.main.transform.position - GameDriver.instance.Player.transform.position) > 0f;
+                if (facingCamera)
+                {
+                    GameDriver.instance.Player.GetComponent<PlayerController>().targetPos.transform.position = GameDriver.instance.Player.transform.position + Camera.main.transform.forward * 5;
 
+                }*/
             }
             //Debug.Log(x.ToString() + " AND " + y.ToString());
 
