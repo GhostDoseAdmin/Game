@@ -59,7 +59,7 @@ public class RayAimer : MonoBehaviour {
     {
         if (NetworkDriver.instance.isMobile)
         {
-        SS.target = null;
+       
         indicator = false;
         crossHairTarg = false;
         viewDistance = startViewDistance;
@@ -100,8 +100,8 @@ public class RayAimer : MonoBehaviour {
 
         {
            // fov = 45;
-            if(shrink){ fov -= 50f * Time.deltaTime; } //AIM TIME
-            viewDistance+=0.2f;
+            if(shrink) { fov -= 35f * Time.deltaTime; } //AIM TIME
+            viewDistance+=0.1f;//0.2
             //SHOW AIMER
             if (fov < startFov -5) { GetComponent<MeshRenderer>().material.SetFloat("_Alpha", 0.314f); indicator = true; }
             //END AIM
@@ -124,7 +124,7 @@ public class RayAimer : MonoBehaviour {
 
             int vertexIndex = 1;
             int triangleIndex = 0;
-            
+            SS.target = null;
             //Shoot Ray at the Y level of closest target to ensure hit regardless of heigh difference
             //Vector3 raycastOrigin = new Vector3(transform.TransformPoint(origin).x, FindTarget().transform.position.y, transform.TransformPoint(origin).z) + Vector3.up;
             Vector3 raycastOrigin = transform.TransformPoint(origin); // Transform the origin to the mesh's position

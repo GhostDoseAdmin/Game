@@ -382,17 +382,6 @@ public class PlayerController : MonoBehaviour
 			//MOVE
 			walk = gamePad.joystick.Vertical; strafe = gamePad.joystick.Horizontal;
             joyMagnitude =  Mathf.Sqrt(Mathf.Pow(walk, 2) + Mathf.Pow(strafe, 2));
-			//JOY STICKS
-			//if (gearAim) { targetPos.position = transform.position + (Camera.main.transform.forward * gamePad.joystickAim.Vertical + Camera.main.transform.right * gamePad.joystickAim.Horizontal).normalized * 5f; }
-            if (gamePad.joystickAim.Horizontal ==0 && gamePad.joystickAim.Vertical == 0)
-            { 
-				//targetPos.position = transform.position + (Camera.main.transform.forward * gamePad.joystick.Vertical + Camera.main.transform.right * gamePad.joystick.Horizontal).normalized * 5f; 
-			}
-			
-			{
-                //Quaternion.AngleAxis(transform.rotation.eulerAngles.y, Vector3.up);
-                //Quaternion.AngleAxis(transform.rotation.eulerAngles.y, Vector3.up);
-            }
 		
 		}
        
