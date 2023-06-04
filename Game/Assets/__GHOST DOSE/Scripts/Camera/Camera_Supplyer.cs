@@ -24,6 +24,8 @@ public class Camera_Supplyer : MonoBehaviour
     [Space]
     public Vector2 mouseSensitivity = new Vector2(1.5f, 1.0f);
     public Vector2 controllerSensitivity = new Vector2(1.0f, 0.7f);
+    private Vector2 mouseSensitivityStart;
+
 
     [Space]
     public float yAngleLimitMin = 0.0f;
@@ -55,22 +57,17 @@ public class Camera_Supplyer : MonoBehaviour
     private RectTransform gamePad;
 
     private PlayerController Player;
-
-
+    Quaternion currentRotation;
+    Vector3 spinDirection;
+    public bool CAMFIX;
     public void Start()
     {
         Player = GameDriver.instance.Player.GetComponent<PlayerController>();
         if (NetworkDriver.instance.isMobile) { gamePad = GameObject.Find("GamePad").GetComponent<RectTransform>(); }
         cameraController = GetComponent<Camera_Controller>();
+
         //targetRotation = Quaternion.identity;
-
-        if (NetworkDriver.instance.isMobile) { 
-            yAngleLimitMin = 160f; yAngleLimitMax = 110f;
-            //mouseSensitivity.x = 0f;
-            //mouseSensitivity.y = 0f;
-
-        }
-
+        mouseSensitivityStart = mouseSensitivity;
         x = 0;
         y = 0;
 
@@ -103,52 +100,21 @@ public class Camera_Supplyer : MonoBehaviour
             controllerEnabled = false;
         }
     }
-    public void Update()
-    {
-        /*if (NetworkDriver.instance.isMobile)
-        {
-            cameraController.desiredDistance = 10f;
-            maxDistance = 15f;
-            cameraController.occlusionCheck = true;
-            cameraController.thicknessCheck = true;
-            bool facingCamera = Vector3.Dot(GameDriver.instance.Player.transform.forward, Camera.main.transform.position - GameDriver.instance.Player.transform.position) > 0f;
-            if (facingCamera)
-            {
-                //minDistance= 4;
 
-                if (GameDriver.instance.Player.GetComponent<PlayerController>().gearAim)
-                {
-                    cameraController.occlusionCheck = false;
-                    cameraController.thicknessCheck = false;
-                }
-
-            }
-        }
-
-
-            //DISABLE CAM for GAMEPAD AREA OF SCREEN 
-          if (Input.touchCount > 0 && NetworkDriver.instance.isMobile)
-        {
-            // Iterate through each touch
-            foreach (Touch touch in Input.touches)
-            {
-                // Check if the touch is in the lower right quadrant
-                if (RectTransformUtility.RectangleContainsScreenPoint(gamePad, touch.position))
-                {
-                    cameraEnabled = false;
-                    Invoke("ReEnableCam", 0.1f);
-                }
-            }
-        }*/
-    }
     void ReEnableCam()
     {
         CancelInvoke("ReEnableCam");
         cameraEnabled = true;
     }
 
-    public void LateUpdate()
+    
+
+    public void Update()
     {
+
+        float facingForwardFromCam = Vector3.Dot(GameDriver.instance.Player.transform.forward, Camera.main.transform.forward);
+
+
         if (cameraController == null || cameraController.player == null)
             return;
 
@@ -171,46 +137,80 @@ public class Camera_Supplyer : MonoBehaviour
 
         if (cameraEnabled)
         {
-
-            x = Input.GetAxis("Mouse X") * mouseSensitivity.x;
-            y = Input.GetAxis("Mouse Y") * mouseSensitivity.y;
+            mouseSensitivity = mouseSensitivityStart;
+            x = 0; y = 0;
 
             if (NetworkDriver.instance.isMobile)
             {
-                //AIMING
-                if(Player.gamePad.joystickAim.Horizontal!= 0 || Player.gamePad.joystickAim.Vertical != 0)
-                    {
-                    cameraController.desiredDistance = 1.2f;
-                    x = Player.gamePad.joystickAim.Horizontal * mouseSensitivity.x * 10;
-                    y = Player.gamePad.joystickAim.Vertical * mouseSensitivity.y * 10;
-                    
-                    Player.targetPos.position = transform.position + Camera.main.transform.forward * 5f;
-                    Player.gameObject.transform.rotation = Quaternion.AngleAxis(transform.rotation.eulerAngles.y, Vector3.up);
-                    //Player.targetPos.position = transform.position + Camera.main.transform.forward * 5f;
-                    //Player.targetPos.position = new Vector3(Player.targetPos.position.x, Player.gameObject.transform.position.y, Player.targetPos.position.z);
-                }
-                //MOVING
-                else
+                cameraController.offsetVector = new Vector3(0f, 2f, 0f);
+                if (!CAMFIX)
                 {
-                    if (Player.gamePad.joystick.Horizontal != 0 || Player.gamePad.joystick.Vertical != 0)
+                    //MOVE JOY
+                    if (!Player.gamePad.aimer.AIMING)
                     {
-                        cameraController.desiredDistance = 7f;
-                        Player.targetPos.position = Player.transform.position + (Camera.main.transform.forward * Player.gamePad.joystick.Vertical + Camera.main.transform.right * Player.gamePad.joystick.Horizontal).normalized * 5f;
-                    }
-                       
-                }
-                /*if (GameDriver.instance.Player.GetComponent<PlayerController>().gamePad.joystick.Horizontal != 0 || GameDriver.instance.Player.GetComponent<PlayerController>().gamePad.joystick.Vertical != 0) {
-                    x = GameDriver.instance.Player.GetComponent<PlayerController>().gamePad.joystick.Horizontal * mouseSensitivity.x;
-                    y = GameDriver.instance.Player.GetComponent<PlayerController>().gamePad.joystick.Vertical * mouseSensitivity.y;
-                }*/
-                /*bool facingCamera = Vector3.Dot(GameDriver.instance.Player.transform.forward, Camera.main.transform.position - GameDriver.instance.Player.transform.position) > 0f;
-                if (facingCamera)
-                {
-                    GameDriver.instance.Player.GetComponent<PlayerController>().targetPos.transform.position = GameDriver.instance.Player.transform.position + Camera.main.transform.forward * 5;
+                        if (Player.gamePad.joystick.Horizontal != 0 || Player.gamePad.joystick.Vertical != 0)
+                        {
+                            //cameraController.offsetVector = new Vector3(0f, 1.4f, 0f);
+                            smoothing = true;
+                            yAngleLimitMin = 160f; yAngleLimitMax = 110f;
+                            cameraController.desiredDistance = 7f;
+                            //move targlook in position of joystick relative to cam
+                            Player.targetPos.position = Player.transform.position + (Camera.main.transform.forward * Player.gamePad.joystick.Vertical + Camera.main.transform.right * Player.gamePad.joystick.Horizontal).normalized * 5f;
+                        }
 
-                }*/
+                    }
+                    //AIMER JOY
+                    if (Player.gamePad.joystickAim.Horizontal != 0 || Player.gamePad.joystickAim.Vertical != 0)
+                    {
+                        
+                        yAngleLimitMin = 110; yAngleLimitMax = 110;
+                        cameraController.desiredDistance = 5f;
+                        mouseSensitivity.x = 5f; mouseSensitivity.y = 1f;
+                        float magnitude = Mathf.Sqrt(Mathf.Pow(Player.gamePad.joystickAim.Vertical, 2) + Mathf.Pow(Player.gamePad.joystickAim.Horizontal, 2));
+                        smoothing = false;
+                        //Sticky scope
+                        if (Player.gamePad.aimer.RayTarget != null) { mouseSensitivity.x = 1f; mouseSensitivity.y = 0.2f; }
+                        x = Player.gamePad.joystickAim.Horizontal * mouseSensitivity.x;
+                        y = Player.gamePad.joystickAim.Vertical * mouseSensitivity.y;
+                        if (magnitude > 0.9f) { x = x * 2; }
+
+                        if (Player.GetComponent<ShootingSystem>().target != null)
+                        {
+                            Player.targetPos.position = Player.GetComponent<ShootingSystem>().target.transform.position + Vector3.up;
+                        }
+                    }
+                    //AIMER JOY HELD
+                    if (Player.gamePad.aimer.AIMING)
+                    {
+                        if (facingForwardFromCam < 0.6f)
+                        { //facing away from cam
+                            if (!CAMFIX) { CAMFIX = true; currentRotation = Player.transform.rotation; spinDirection = Vector3.Cross(GameDriver.instance.Player.transform.forward, Camera.main.transform.forward); return; }
+                        }
+                        Player.targetPos.position = (Player.transform.position + Camera.main.transform.forward * 5f) + Vector3.up;//move targlook to forward cam
+                    }
+                }
             }
-            //Debug.Log(x.ToString() + " AND " + y.ToString());
+
+            //PC
+            else
+            {
+                x = Input.GetAxis("Mouse X") * mouseSensitivity.x;
+                y = Input.GetAxis("Mouse Y") * mouseSensitivity.y;
+            }
+
+            //CAM FIX
+            if(CAMFIX)
+            {
+                if (facingForwardFromCam <= 0.90f)//rotate cam
+                {
+                    Player.gamePad.aimer.fov = Player.gamePad.aimer.startFov - 5;
+                    if (spinDirection.y > 0) { x = -10; } else { x = 10; }
+                    Player.transform.rotation = currentRotation; Player.targetPos.position = Player.transform.position + Player.transform.forward * 3;
+                }
+                else { CAMFIX = false; } //cam fixed
+            }
+
+            
 
             if (mouseInvertY)
                 y *= -1.0f;

@@ -10,22 +10,24 @@ public class MobileController : MonoBehaviour
     public GPButton  flashlightBTN;
     public VariableJoystick joystick, joystickAim;
     public RayAimer aimer;
+    public Camera_Supplyer camSup;
 
     private void Start()
     {
-        Debug.Log("-----------------------MOBILE CONTROLLER" + gameObject.name + "NETWORK DRIVER " + NetworkDriver.instance.name);
+        camSup = Camera.main.GetComponent<Camera_Supplyer>();
         if (!NetworkDriver.instance.isMobile) { gameObject.SetActive(false); }
     }
     // Update is called once per frame
     void Update()
     {
-        
+
         //AIM
+        if (!GameDriver.instance.Player.GetComponent<PlayerController>().gearAim && aimer.gameObject.activeSelf) { aimer.gameObject.SetActive(false); }
         if (joystickAim.GetComponent<GPButton>().buttonPressed)
         { // && !GameDriver.instance.Player.GetComponent<PlayerController>().gearAim
             aimer.gameObject.SetActive(true);
-            
         }
+
         //SHOOT
         if (joystickAim.GetComponent<GPButton>().buttonReleased)
         {
@@ -45,7 +47,7 @@ public class MobileController : MonoBehaviour
 
     void ReleaseShoot()
     {
-        //Delay to allow playercontroller to trigger shoot
+        //Delay to allow playercontroller to get target info
         CancelInvoke("ReleaseShoot");
         aimer.gameObject.SetActive(false);
     }

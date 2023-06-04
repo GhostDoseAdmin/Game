@@ -51,7 +51,7 @@ public class Aiming : MonoBehaviour {
             if (player.GetComponent<PlayerController>().gearAim == true) { aim = true; }
             //if (Input.GetMouseButtonUp(1)) { aim = false; }
         }
-		if (NetworkDriver.instance.isMobile && gamePad.aimer.indicator && GameDriver.instance.Player.GetComponent<ShootingSystem>().target!=null && GameDriver.instance.Player.GetComponent<PlayerController>().gamePad.aimer.crossHairTarg) { 
+		if (NetworkDriver.instance.isMobile && gamePad.aimer.AIMING && GameDriver.instance.Player.GetComponent<ShootingSystem>().target!=null && GameDriver.instance.Player.GetComponent<PlayerController>().gamePad.aimer.crossHairTarg) { 
 			aim = true;
             crosshair.GetComponent<RectTransform>().position = Camera.main.WorldToScreenPoint(GameDriver.instance.Player.GetComponent<ShootingSystem>().target.transform.position + Vector3.up);
 

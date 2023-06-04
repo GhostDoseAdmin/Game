@@ -382,17 +382,6 @@ public class PlayerController : MonoBehaviour
 			//MOVE
 			walk = gamePad.joystick.Vertical; strafe = gamePad.joystick.Horizontal;
             joyMagnitude =  Mathf.Sqrt(Mathf.Pow(walk, 2) + Mathf.Pow(strafe, 2));
-			//JOY STICKS
-			//if (gearAim) { targetPos.position = transform.position + (Camera.main.transform.forward * gamePad.joystickAim.Vertical + Camera.main.transform.right * gamePad.joystickAim.Horizontal).normalized * 5f; }
-            if (gamePad.joystickAim.Horizontal ==0 && gamePad.joystickAim.Vertical == 0)
-            { 
-				//targetPos.position = transform.position + (Camera.main.transform.forward * gamePad.joystick.Vertical + Camera.main.transform.right * gamePad.joystick.Horizontal).normalized * 5f; 
-			}
-			
-			{
-                //Quaternion.AngleAxis(transform.rotation.eulerAngles.y, Vector3.up);
-                //Quaternion.AngleAxis(transform.rotation.eulerAngles.y, Vector3.up);
-            }
 		
 		}
        
@@ -673,7 +662,7 @@ public class PlayerController : MonoBehaviour
 				}
 
 				//--------------------------MOBILE SHOOTING--------------------------------
-            if (NetworkDriver.instance.isMobile && gamePad.joystickAim.GetComponent<GPButton>().buttonReleased && gamePad.aimer.fov>0) //&& gamePad.aimer.gameObject.activeSelf
+            if (NetworkDriver.instance.isMobile && gamePad.joystickAim.GetComponent<GPButton>().buttonReleased && gamePad.aimer.fov>0 && ((!gamePad.aimer.AIMING) || (gamePad.aimer.AIMING && GetComponent<ShootingSystem>().target != null))) 
             {
                 if (gear == 1) { anim.SetBool("Shoot", true); GetComponent<ShootingSystem>().Shoot(); AudioManager.instance.StopPlaying("camfocus", audioSource); }
                 if (gear == 3) { anim.SetBool("Throw", true); throwing = true; }
