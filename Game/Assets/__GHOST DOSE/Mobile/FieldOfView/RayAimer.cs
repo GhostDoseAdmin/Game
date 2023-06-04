@@ -22,19 +22,19 @@ public class RayAimer : MonoBehaviour {
     private GameObject Player;
     private ShootingSystem SS;
 
-    public bool indicator;
-
+    public bool AIMING;
+    public GameObject RayTarget;
     Quaternion targetRotation;
 
     public bool crossHairTarg; // used for crosshairs
-
+    private GameObject closestTarget;
     private void Start() {
         Player = GameDriver.instance.Player;
         SS = Player.GetComponent<ShootingSystem>();
         mesh = new Mesh();
         GetComponent<MeshFilter>().mesh = mesh;
         GetComponent<MeshRenderer>().material.SetColor("_Color", Color.cyan);
-        indicator = false;
+        AIMING = false;
         origin = Vector3.zero;
         startViewDistance = viewDistance;
         startFov = 65f;
@@ -59,10 +59,13 @@ public class RayAimer : MonoBehaviour {
     {
         if (NetworkDriver.instance.isMobile)
         {
-       
-        indicator = false;
+
+        AIMING = false;
         crossHairTarg = false;
         viewDistance = startViewDistance;
+        RayTarget = null;
+        closestTarget = null;
+        SS.target = null;
         }
     }
         private void Update() {
@@ -75,14 +78,14 @@ public class RayAimer : MonoBehaviour {
         if (shrink) { transform.localRotation = Quaternion.Euler(90f, 0f, yAngle); }
 
 
-        //ANGLE RAY BASED ON HEIGHT OF CLOSEST ENEMY
-        GameObject closestTarget = FindTarget(viewDistance);
+        //CLOSEST TARGET DETERMIENS ANGLE / DEFAULT TARGET
+        closestTarget = FindTarget(viewDistance);
         if (closestTarget != null)
         {
             if(Vector3.Distance(transform.position, closestTarget.transform.position)>2)
             {
-                bool facingEnemy = Vector3.Dot(Player.transform.forward, closestTarget.transform.position - Player.transform.position) > 0f;
-                if (facingEnemy)
+                bool facingTarget = Vector3.Dot(Player.transform.forward, closestTarget.transform.position - Player.transform.position) > 0f;
+                if (facingTarget)
                 {
                     Vector3 targetPosition = closestTarget.GetComponentInParent<Animator>().GetBoneTransform(HumanBodyBones.Hips).transform.position; //closestTarget.transform.position + (Vector3.up*1.2f);
                     Vector3 direction = targetPosition - transform.position;
@@ -103,7 +106,7 @@ public class RayAimer : MonoBehaviour {
             if(shrink) { fov -= 35f * Time.deltaTime; } //AIM TIME
             viewDistance+=0.1f;//0.2
             //SHOW AIMER
-            if (fov < startFov -5) { GetComponent<MeshRenderer>().material.SetFloat("_Alpha", 0.314f); indicator = true; }
+            if (fov < startFov -5) { GetComponent<MeshRenderer>().material.SetFloat("_Alpha", 0.314f); AIMING = true; }
             //END AIM
             if (fov < 0f){ fov = 0; } //StartAim = false;
             SS.Damage = 35 + ((int)startFov - (int)fov)*2;
@@ -124,9 +127,11 @@ public class RayAimer : MonoBehaviour {
 
             int vertexIndex = 1;
             int triangleIndex = 0;
-            SS.target = null;
+            
+            RayTarget = null;
+            float closestDistance = 99999;
             //Shoot Ray at the Y level of closest target to ensure hit regardless of heigh difference
-            //Vector3 raycastOrigin = new Vector3(transform.TransformPoint(origin).x, FindTarget().transform.position.y, transform.TransformPoint(origin).z) + Vector3.up;
+            //-------------RAY AIMER-----------------
             Vector3 raycastOrigin = transform.TransformPoint(origin); // Transform the origin to the mesh's position
             for (int i = 0; i <= rayCount; i++)
             {
@@ -135,53 +140,66 @@ public class RayAimer : MonoBehaviour {
 
                 Vector3 raycastDirection = transform.TransformDirection(GetVectorFromAngle(angle)); // Transform the direction to the mesh's orientation
 
-               bool isHit = Physics.Raycast(raycastOrigin, raycastDirection, out hit, viewDistance, layerMask);
+                bool isHit = Physics.Raycast(raycastOrigin, raycastDirection, out hit, viewDistance, layerMask);
                 Debug.DrawLine(raycastOrigin, raycastOrigin + raycastDirection * viewDistance, Color.yellow);
 
-               
-                float closestDistance = 99999;
                 if (isHit)
                 {
-                    GameObject ClosestTarget = hit.collider.gameObject;
-                    float targDist = Vector3.Distance(transform.position, ClosestTarget.transform.position);
-                    if (targDist <= closestDistance) {
-                        closestDistance = targDist;
-                        if (ClosestTarget.layer == LayerMask.NameToLayer("Enemy")) {
-                            if (ClosestTarget.GetComponentInParent<Teleport>()!=null && ClosestTarget.GetComponentInParent<Teleport>().teleport == 0)
-                            {
-                                if (!ClosestTarget.GetComponentInParent<GhostVFX>().Shadower) { SS.isVisible = !ClosestTarget.GetComponentInParent<GhostVFX>().invisible; if (SS.isVisible) { crossHairTarg = SS.isVisible; } }
-                                else { SS.isVisible = ClosestTarget.GetComponentInParent<GhostVFX>().visible; if (ClosestTarget.GetComponentInParent<NPCController>().target != null) { crossHairTarg = true; } }
-                                SS.target = ClosestTarget.GetComponentInParent<NPCController>().gameObject;
-                            }
+                    GameObject hitObject = hit.collider.gameObject;
+                    float targDist = Vector3.Distance(Player.transform.position, hitObject.transform.position);
+                    if (targDist <= closestDistance)
+                    {
+                        if ((hitObject.layer == LayerMask.NameToLayer("Enemy") && hitObject.GetComponentInParent<Teleport>() != null && hitObject.GetComponentInParent<Teleport>().teleport == 0 && hitObject.GetComponentInParent<NPCController>().healthEnemy > 0) || (hitObject.tag.Contains("Victim")))
+                        {
+                            closestDistance = targDist;
+                            RayTarget = hitObject;
                         }
-                        else {
-                            SS.isVisible = true;
-                            SS.target = ClosestTarget.GetComponentInParent<Person>().gameObject; 
-                        }
-
                     }
                 }
+                    //FOV CONE
+                    vertices[vertexIndex] = vertex;
+                    if (i > 0)
+                    {
+                        triangles[triangleIndex + 0] = 0;
+                        triangles[triangleIndex + 1] = vertexIndex - 1;
+                        triangles[triangleIndex + 2] = vertexIndex;
 
-                vertices[vertexIndex] = vertex;
+                        triangleIndex += 3;
+                    }
 
-                if (i > 0)
-                {
-                    triangles[triangleIndex + 0] = 0;
-                    triangles[triangleIndex + 1] = vertexIndex - 1;
-                    triangles[triangleIndex + 2] = vertexIndex;
-
-                    triangleIndex += 3;
-                }
-
-                vertexIndex++;
-                angle -= angleIncrease;
+                    vertexIndex++;
+                    angle -= angleIncrease;
             }
 
+            //TARGET PARAMS
+            crossHairTarg = false;
+            if (RayTarget != null)
+            {
+                Debug.Log("RAY TARGET " + RayTarget.name);
+                if (RayTarget.layer == LayerMask.NameToLayer("Enemy"))
+                {
+                    if (!RayTarget.GetComponentInParent<GhostVFX>().Shadower) { SS.isVisible = !RayTarget.GetComponentInParent<GhostVFX>().invisible; if (SS.isVisible) { crossHairTarg = SS.isVisible; } }
+                    else { SS.isVisible = RayTarget.GetComponentInParent<GhostVFX>().visible; if (RayTarget.GetComponentInParent<NPCController>().target != null) { crossHairTarg = true; } }
+                    SS.target = RayTarget.GetComponentInParent<NPCController>().gameObject;
+                }
+                else
+                {
+                    SS.isVisible = true;
+                    SS.target = RayTarget.GetComponentInParent<Person>().gameObject;
+                    crossHairTarg = true;
+                }
+            }
+            else { //FALLBACK ON CLOSEST TARGET
+                if (closestTarget != null && Vector3.Distance(Player.transform.position, closestTarget.transform.position) < 2 && Vector3.Dot(GameDriver.instance.Player.transform.forward, closestTarget.transform.forward) < 0.6f) { SS.target = closestTarget; }
+            }
 
             mesh.vertices = vertices;
             mesh.uv = uv;
             mesh.triangles = triangles;
             mesh.bounds = new Bounds(origin, Vector3.one * 1000f);
+
+
+
 
         }
     }

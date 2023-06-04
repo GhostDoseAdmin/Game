@@ -662,7 +662,7 @@ public class PlayerController : MonoBehaviour
 				}
 
 				//--------------------------MOBILE SHOOTING--------------------------------
-            if (NetworkDriver.instance.isMobile && gamePad.joystickAim.GetComponent<GPButton>().buttonReleased && gamePad.aimer.fov>0) //&& gamePad.aimer.gameObject.activeSelf
+            if (NetworkDriver.instance.isMobile && gamePad.joystickAim.GetComponent<GPButton>().buttonReleased && gamePad.aimer.fov>0 && ((!gamePad.aimer.AIMING) || (gamePad.aimer.AIMING && GetComponent<ShootingSystem>().target != null))) 
             {
                 if (gear == 1) { anim.SetBool("Shoot", true); GetComponent<ShootingSystem>().Shoot(); AudioManager.instance.StopPlaying("camfocus", audioSource); }
                 if (gear == 3) { anim.SetBool("Throw", true); throwing = true; }

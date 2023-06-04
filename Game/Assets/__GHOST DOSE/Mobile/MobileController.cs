@@ -47,7 +47,7 @@ public class MobileController : MonoBehaviour
 
     void ReleaseShoot()
     {
-        //Delay to allow playercontroller to trigger shoot
+        //Delay to allow playercontroller to get target info
         CancelInvoke("ReleaseShoot");
         aimer.gameObject.SetActive(false);
     }
