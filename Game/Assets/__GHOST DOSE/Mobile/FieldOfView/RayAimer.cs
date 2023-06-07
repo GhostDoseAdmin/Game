@@ -156,7 +156,7 @@ public class RayAimer : MonoBehaviour {
                         }
                     }
                 }
-                    //FOV CONE
+                    //FOV CONE MESH
                     vertices[vertexIndex] = vertex;
                     if (i > 0)
                     {
