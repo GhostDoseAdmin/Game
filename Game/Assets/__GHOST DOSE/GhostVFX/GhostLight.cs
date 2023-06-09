@@ -9,7 +9,7 @@ public class GhostLight : MonoBehaviour
     [HideInInspector] public bool ghost;
     [HideInInspector] public bool shadower;
     [HideInInspector] public bool flicker;
-    public bool canFlickers = true;
+    public bool canFlicker = false;
     public float strength;
 
     private float flickerDuration = 0.05f; // duration of each flicker in seconds
