@@ -261,7 +261,7 @@ public class ShootingSystem : MonoBehaviour
                     if (ghost.GetComponent<NPCController>().healthEnemy>0 && ghost.GetComponent<Teleport>().teleport == 0)
                     {
                         if (!ghost.GetComponent<GhostVFX>().Shadower) { isVisible = !ghost.GetComponent<GhostVFX>().invisible; }
-                        else { isVisible = ghost.GetComponent<GhostVFX>().visible; }
+                        else { isVisible = true; }
                         //if (!isVisible) { Debug.Log("INVISISHOT"); }
                         if (hit.collider.gameObject.name == "mixamorig:Head") { isHeadshot = true; }
                     }
