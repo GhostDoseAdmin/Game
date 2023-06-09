@@ -22,17 +22,17 @@ public class MobileController : MonoBehaviour
     {
 
         //AIM
-        if (!GameDriver.instance.Player.GetComponent<PlayerController>().gearAim && aimer.gameObject.activeSelf) { aimer.gameObject.SetActive(false); }
+        //if (!GameDriver.instance.Player.GetComponent<PlayerController>().gearAim && aimer.gameObject.activeSelf) { aimer.gameObject.SetActive(false); }
         if (joystickAim.GetComponent<GPButton>().buttonPressed)
         { // && !GameDriver.instance.Player.GetComponent<PlayerController>().gearAim
-            aimer.gameObject.SetActive(true);
+          //  aimer.gameObject.SetActive(true);
         }
 
         //SHOOT
         if (joystickAim.GetComponent<GPButton>().buttonReleased)
         {
-            aimer.shrink = false;
-            Invoke("ReleaseShoot",0.3f);
+           // ReleaseShoot();
+            Invoke("ReleaseShoot",0.1f);
         }
 
 
@@ -48,8 +48,14 @@ public class MobileController : MonoBehaviour
     void ReleaseShoot()
     {
         //Delay to allow playercontroller to get target info
-        CancelInvoke("ReleaseShoot");
-        aimer.gameObject.SetActive(false);
+        //CancelInvoke("ReleaseShoot");
+        //aimer.DisableAimer();
+        if (aimer.AIMING && GameDriver.instance.Player.GetComponent<ShootingSystem>().canShoot)
+        {
+            aimer.fov = aimer.startFov;
+            aimer.GetComponent<MeshRenderer>().material.SetColor("_Color", Color.cyan);
+        }
+
     }
 
 

@@ -174,10 +174,10 @@ public class Camera_Supplyer : MonoBehaviour
                         y = Player.gamePad.joystickAim.Vertical * mouseSensitivity.y;
                         if (magnitude > 0.9f) { x = x * 2; }
 
-                        if (Player.GetComponent<ShootingSystem>().target != null)
+                        /*if (Player.GetComponent<ShootingSystem>().target != null)
                         {
                             Player.targetPos.position = Player.GetComponent<ShootingSystem>().target.transform.position + Vector3.up;
-                        }
+                        }*/
                     }
                     //AIMER JOY HELD
                     if (Player.gamePad.aimer.AIMING)
@@ -203,7 +203,7 @@ public class Camera_Supplyer : MonoBehaviour
             {
                 if (facingForwardFromCam <= 0.90f)//rotate cam
                 {
-                    Player.gamePad.aimer.fov = Player.gamePad.aimer.startFov - 5;
+                    Player.gamePad.aimer.fov = Player.gamePad.aimer.startFov;
                     if (spinDirection.y > 0) { x = -10; } else { x = 10; }
                     Player.transform.rotation = currentRotation; Player.targetPos.position = Player.transform.position + Player.transform.forward * 3;
                 }

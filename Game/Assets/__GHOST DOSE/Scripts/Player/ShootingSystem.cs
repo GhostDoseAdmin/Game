@@ -181,8 +181,9 @@ public class ShootingSystem : MonoBehaviour
             //if (Mathf.Approximately(Mathf.Round(camera.fieldOfView * 10) / 10f, aiming.zoom))//if current zoom is close to target zoom
             {
 
-                if (Time.time > shootTimer + shootCoolDown && camBatteryUI.fillAmount>0)
+                if (Time.time > shootTimer + shootCoolDown && camBatteryUI.fillAmount > 0)
                 {
+                    canShoot = true;
                     GameObject victimManager = GameObject.Find("OuijaBoardManager").GetComponent<OuijaSessionControl>().OuijaSessions[GameObject.Find("OuijaBoardManager").GetComponent<OuijaSessionControl>().currentSession];
                     //AudioManager.instance.Play("ShotCam");
                     camBatteryUI.fillAmount -= 0.1f;
@@ -192,25 +193,25 @@ public class ShootingSystem : MonoBehaviour
                     //DO DAMAGE
                     if (target != null)
                     {
-                            if ((target.GetComponent<GhostVFX>()!=null) && isVisible && target.GetComponent<Teleport>().teleport == 0)
-                            {
-                                damage = Damage;
-                                if (target.GetComponent<NPCController>().animEnemy.GetCurrentAnimatorClipInfo(0).Length>0 && target.GetComponent<NPCController>().animEnemy.GetCurrentAnimatorClipInfo(0)[0].clip.name == "agro") { damage = 20; }
-                                if (isHeadshot) { damage = headShotDamage; }
+                        if ((target.GetComponent<GhostVFX>() != null) && isVisible && target.GetComponent<Teleport>().teleport == 0)
+                        {
+                            damage = Damage;
+                            if (target.GetComponent<NPCController>().animEnemy.GetCurrentAnimatorClipInfo(0).Length > 0 && target.GetComponent<NPCController>().animEnemy.GetCurrentAnimatorClipInfo(0)[0].clip.name == "agro") { damage = 20; }
+                            if (isHeadshot) { damage = headShotDamage; }
                             //Debug.Log("---------------------------------------" + damage);
                             target.GetComponent<NPCController>().TakeDamage(damage, false);
-                            }
-                            if (target != null && target.tag == "Victim")
-                            {
-                                victimManager.GetComponent<VictimControl>().testAnswer(target);
-                                //used to emit answer
-                                damage = -1;
-                            }
+                        }
+                        if (target != null && target.tag == "Victim")
+                        {
+                            victimManager.GetComponent<VictimControl>().testAnswer(target);
+                            //used to emit answer
+                            damage = -1;
+                        }
 
                         if (NetworkDriver.instance.TWOPLAYER) { NetworkDriver.instance.sioCom.Instance.Emit("event", JsonConvert.SerializeObject(new { shoot = true, obj = target.name, dmg = damage }), false); }
                     }
 
-                   
+
 
                     //--------------FLASH-----------------
                     GameObject newFlash = Instantiate(camFlash);
@@ -222,8 +223,9 @@ public class ShootingSystem : MonoBehaviour
 
                     camera.fieldOfView = 40;//40
                     shootTimer = Time.time;//cooldown
-                  
+
                 }
+                else { canShoot = false; }
 
             }
             

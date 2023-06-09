@@ -169,7 +169,6 @@ public class PlayerController : MonoBehaviour
 
 		if (currentAni != "React")
 		{
-            MobileControls();
             Locomotion();
 
 			if (currentAni != "dodgeRightAni" && currentAni != "dodgeLeftAni" )
@@ -188,6 +187,7 @@ public class PlayerController : MonoBehaviour
 		}
 		else
         {
+			if (NetworkDriver.instance.isMobile) { transform.eulerAngles = new Vector3(0f, transform.eulerAngles.y, 0f); }//PREVENT CAM TILT ISSUE
             gearAim = false;
             anim.SetBool("Pistol", false);
         }
@@ -314,61 +314,6 @@ public class PlayerController : MonoBehaviour
     private float lastTapTime = -10f;
     //public VariableJoystick joystick;
 	public GameObject stick, region;
-    void MobileControls()
-	{
-        //------------MOBILE CONTROLS----------
-        /*if (NetworkDriver.instance.isMobile)
-        {
-            float minDist = 1; //minimum distance to move
-            if (Input.GetMouseButton(0))//finger on screen
-            {
-                walk = Mathf.Lerp(walk, 1f, 0.8f);
-                runningMobile = false;
-				mobileGearAim = false;
-                //LayerMask mask = 1 << LayerMask.NameToLayer("Environment");
-                Vector3 mouse = Input.mousePosition;
-                Ray ray = Camera.main.ScreenPointToRay(mouse);
-                RaycastHit[] hits;
-                hits = Physics.RaycastAll(ray, Mathf.Infinity);
-                foreach (RaycastHit hit in hits)
-                {
-                    Vector3 newPos = new Vector3(hit.point.x, hit.point.y + 0.7f, hit.point.z);
-                    //MOVEMENT
-                    if (hit.normal.y > 0.5f && hit.collider.gameObject.layer == LayerMask.NameToLayer("Environment"))// check to ensure its a ground point  && hit.point.y < transform.position.y + 0.5f
-                    {
-                        
-                        float distance = Vector3.Distance(newPos, new Vector3(transform.position.x, newPos.y, transform.position.z));
-                       
-                        if (distance < minDist)//keep targPos at distance
-                        {
-                            Vector3 directionToTarget = (newPos - new Vector3(transform.position.x, newPos.y, transform.position.z)).normalized;
-                            targetPos.transform.position = newPos + directionToTarget * minDist;
-							walk = 0;
-                        }
-                        else
-                        {
-                            targetPos.transform.position = newPos;
-                            if (Vector3.Distance(transform.position, hit.point) > 3) { runningMobile = true; }
-                        }
-                        //break;
-                    }
-                    //DETECT ENEMY
-                    if (hit.collider.gameObject.layer == LayerMask.NameToLayer("Enemy"))
-                    {
-                        targetPos.transform.position = hit.point;
-                        //transform.LookAt(hit.collider.gameObject.transform.position);
-                        //Quaternion targetRotation = Quaternion.LookRotation(newPos);
-                        //transform.rotation = Quaternion.Euler(0f, targetRotation.eulerAngles.y, 0f);
-                        mobileGearAim = true;
-                        walk = 0;
-						break;
-                    }
-
-                }
-            }
-            else { walk = 0; }
-        }*/
-    }
 
     void Locomotion()
 	{
@@ -401,7 +346,7 @@ public class PlayerController : MonoBehaviour
 		//running ani
         if (NetworkDriver.instance.isMobile) {
 				anim.SetFloat("Walk", joyMagnitude);
-				if (joyMagnitude > 0.9f && !gamePad.joystickAim.GetComponent<GPButton>().buttonPressed) { anim.SetBool("Running", true); } else { anim.SetBool("Running", false); }
+				if (joyMagnitude > 0.9f && !gamePad.aimer.AIMING) { anim.SetBool("Running", true); } else { anim.SetBool("Running", false); }
 		}
 		else
 		{
@@ -611,7 +556,7 @@ public class PlayerController : MonoBehaviour
 				newHandWeight = 1f;
             }
 			
-                if ( (Input.GetMouseButton(1) && !NetworkDriver.instance.isMobile) || (gamePad.joystickAim.GetComponent<GPButton>().buttonPressed && NetworkDriver.instance.isMobile))//AIMING  //&& gamePad.aimer.gameObject.activeSelf 
+                if ( (Input.GetMouseButton(1) && !NetworkDriver.instance.isMobile) || (gamePad.aimer.AIMING && NetworkDriver.instance.isMobile))//AIMING  //&& gamePad.aimer.gameObject.activeSelf 
 				{
                     if (!gearAim) { if (gear == 1) { AudioManager.instance.Play("camfocus", audioSource); } }
 
@@ -662,7 +607,7 @@ public class PlayerController : MonoBehaviour
 				}
 
 				//--------------------------MOBILE SHOOTING--------------------------------
-            if (NetworkDriver.instance.isMobile && gamePad.joystickAim.GetComponent<GPButton>().buttonReleased && gamePad.aimer.fov>0 && ((!gamePad.aimer.AIMING) || (gamePad.aimer.AIMING && GetComponent<ShootingSystem>().target != null))) 
+            if (NetworkDriver.instance.isMobile && gamePad.joystickAim.GetComponent<GPButton>().buttonReleased && gamePad.aimer.AIMING)
             {
                 if (gear == 1) { anim.SetBool("Shoot", true); GetComponent<ShootingSystem>().Shoot(); AudioManager.instance.StopPlaying("camfocus", audioSource); }
                 if (gear == 3) { anim.SetBool("Throw", true); throwing = true; }
