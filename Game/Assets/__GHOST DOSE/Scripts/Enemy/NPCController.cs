@@ -381,7 +381,7 @@ public class NPCController : MonoBehaviour
         //ZAP
         if (NetworkDriver.instance.HOST)
         {
-            if (distance <= zapRange && distance > range && canZap && zaps)
+            if (distance <= zapRange && canZap && zaps) //&& distance > range
             {
                 if (canZap)
                 {

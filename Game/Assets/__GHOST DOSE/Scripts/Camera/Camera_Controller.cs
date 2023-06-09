@@ -284,7 +284,7 @@ public class Camera_Controller : MonoBehaviour
         }
 
 
-        if (shake && !NetworkDriver.instance.isMobile) { Debug.Log("----------------SHAKING");  GetComponent<Camera>().fieldOfView = GetComponent<Camera>().fieldOfView + (UnityEngine.Random.Range(-shakeMagnitude, shakeMagnitude)*5f); }
+        if (shake && !NetworkDriver.instance.isMobile) {  GetComponent<Camera>().fieldOfView = GetComponent<Camera>().fieldOfView + (UnityEngine.Random.Range(-shakeMagnitude, shakeMagnitude)*5f); }
 
 
         targetPosWithOffset = (targetPosition + offsetVectorTransformed);
