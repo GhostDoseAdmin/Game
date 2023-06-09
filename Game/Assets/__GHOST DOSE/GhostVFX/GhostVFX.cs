@@ -200,7 +200,7 @@ public class GhostVFX : MonoBehaviour
                     material.SetFloat("_PlayerLightRange", lightSource.range);
                 }
                 //FLICKER
-                if (GetComponent<Animator>().GetCurrentAnimatorClipInfo(0).Length > 0 && GetComponent<Animator>().GetCurrentAnimatorClipInfo(0)[0].clip.name == "agro" && PlayerLight.GetComponent<GhostLight>() != null) { PlayerLight.GetComponent<GhostLight>().InvokeFlicker(1f); }
+                //if (GetComponent<Animator>().GetCurrentAnimatorClipInfo(0).Length > 0 && GetComponent<Animator>().GetCurrentAnimatorClipInfo(0)[0].clip.name == "agro" && PlayerLight.GetComponent<GhostLight>() != null) { PlayerLight.GetComponent<GhostLight>().InvokeFlicker(1f); }
                 //ADD IN CLIENT LIGHT
                 lightSource = ClientLight.GetComponent<Light>();
                 spotAngle = lightSource.spotAngle;
@@ -225,7 +225,7 @@ public class GhostVFX : MonoBehaviour
                     material.SetFloat("_ClientLightRange", lightSource.range);
                 }
                 //FLICKER
-                if (GetComponent<Animator>().GetCurrentAnimatorClipInfo(0).Length > 0 && GetComponent<Animator>().GetCurrentAnimatorClipInfo(0)[0].clip.name == "agro" && ClientLight.GetComponent<GhostLight>() != null) { ClientLight.GetComponent<GhostLight>().InvokeFlicker(1f); }
+                //if (GetComponent<Animator>().GetCurrentAnimatorClipInfo(0).Length > 0 && GetComponent<Animator>().GetCurrentAnimatorClipInfo(0)[0].clip.name == "agro" && ClientLight.GetComponent<GhostLight>() != null) { ClientLight.GetComponent<GhostLight>().InvokeFlicker(1f); }
 
                 //--------------VISIBLE IF CLOSE ----------------
                 if (Vector3.Distance(PlayerLight.gameObject.transform.position, this.transform.position) < 2 || Vector3.Distance(ClientLight.gameObject.transform.position, this.transform.position) < 2)
