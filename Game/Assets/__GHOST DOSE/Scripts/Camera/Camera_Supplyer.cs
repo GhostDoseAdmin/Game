@@ -139,6 +139,8 @@ public class Camera_Supplyer : MonoBehaviour
         {
             mouseSensitivity = mouseSensitivityStart;
             x = 0; y = 0;
+            x = Input.GetAxis("Mouse X") * mouseSensitivity.x;
+            y = Input.GetAxis("Mouse Y") * mouseSensitivity.y;
 
             if (NetworkDriver.instance.isMobile)
             {
@@ -146,7 +148,7 @@ public class Camera_Supplyer : MonoBehaviour
                 if (!CAMFIX)
                 {
                     //MOVE JOY
-                    if (!Player.gamePad.aimer.AIMING)
+                    //if (!Player.gamePad.aimer.AIMING)
                     {
                         if (Player.gamePad.joystick.Horizontal != 0 || Player.gamePad.joystick.Vertical != 0)
                         {
@@ -190,13 +192,7 @@ public class Camera_Supplyer : MonoBehaviour
                     }
                 }
             }
-
-            //PC
-            else
-            {
-                x = Input.GetAxis("Mouse X") * mouseSensitivity.x;
-                y = Input.GetAxis("Mouse Y") * mouseSensitivity.y;
-            }
+            
 
             //CAM FIX
             if(CAMFIX)

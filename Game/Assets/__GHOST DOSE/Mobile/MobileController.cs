@@ -26,6 +26,8 @@ public class MobileController : MonoBehaviour
         if (joystickAim.GetComponent<GPButton>().buttonPressed)
         { // && !GameDriver.instance.Player.GetComponent<PlayerController>().gearAim
           //  aimer.gameObject.SetActive(true);
+
+            if (!aimer.AIMING) { aimer.EnableAimer(); }
         }
 
         //SHOOT
@@ -49,12 +51,13 @@ public class MobileController : MonoBehaviour
     {
         //Delay to allow playercontroller to get target info
         //CancelInvoke("ReleaseShoot");
-        //aimer.DisableAimer();
-        if (aimer.AIMING && GameDriver.instance.Player.GetComponent<ShootingSystem>().canShoot)
+        aimer.DisableAimer();
+
+        /*if (aimer.AIMING && GameDriver.instance.Player.GetComponent<ShootingSystem>().canShoot)
         {
             aimer.fov = aimer.startFov;
             aimer.GetComponent<MeshRenderer>().material.SetColor("_Color", Color.cyan);
-        }
+        }*/
 
     }
 

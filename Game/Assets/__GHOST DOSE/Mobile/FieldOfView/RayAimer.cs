@@ -95,23 +95,28 @@ public class RayAimer : MonoBehaviour {
         }
 
         //ENABLE/DISABLE AIMER
-        if (validTarget != null)
+       // if (validTarget != null)
         {
-            if (!AIMING) { EnableAimer(); }
+           // if (!AIMING) { EnableAimer(); }
         }
-        else { DisableAimer(); }
+        //else { DisableAimer(); }
 
-             fov -= 35f * Time.deltaTime;  //AIM TIME
-            viewDistance+=0.1f;//0.2
+        if (AIMING)
+        {
+            fov -= 35f * Time.deltaTime;  //AIM TIME
+            viewDistance += 0.1f;//0.2
             //SHOW AIMER
-            if (fov < startFov && fov>0) { GetComponent<MeshRenderer>().material.SetFloat("_Alpha", 0.314f); }
+            if (fov < startFov && fov > 0) { GetComponent<MeshRenderer>().material.SetFloat("_Alpha", 0.314f); }
             //HIDE AIMER
-            if (fov <= 0f){  GetComponent<MeshRenderer>().material.SetFloat("_Alpha", 0f); RayTarget = null; } //StartAim = false;
+            if (fov <= 0f) { GetComponent<MeshRenderer>().material.SetFloat("_Alpha", 0f); RayTarget = null; } //StartAim = false;
             //RESTART AIM
             if (fov < -30f) { fov = startFov; }
+        }
 
         if (AIMING && fov>0)
         {
+
+
             SS.Damage = 35 + ((int)startFov - (int)fov) * 2;
             //HEADSHOT
             SS.isHeadshot = false;
