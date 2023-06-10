@@ -93,6 +93,7 @@ public class ShootingSystem : MonoBehaviour
 
     void Start()
     {
+        headShotDamage = 101;
         curRateFire = rateOfFire;
         //ammoCountUI.text = ammoCount.ToString("0");
         //ammo—lipCountUI.text = ammoClipCount.ToString("0");
