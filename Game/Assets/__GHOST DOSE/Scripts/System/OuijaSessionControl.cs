@@ -17,15 +17,15 @@ public class OuijaSessionControl : MonoBehaviour
         currentSession = 0;
 
 
-       // MainTunnelExitDoors[0] = GameObject.Find("exit1");
-       // MainTunnelExitDoors[1] = GameObject.Find("exit2");
-       // MainTunnelExitDoors[2] = GameObject.Find("exit3");
-       /* foreach (GameObject door in MainTunnelExitDoors)
+        MainTunnelExitDoors[0] = GameObject.Find("exit");
+        //MainTunnelExitDoors[1] = GameObject.Find("exit2");
+        //MainTunnelExitDoors[2] = GameObject.Find("exit3");
+        foreach (GameObject door in MainTunnelExitDoors)
         {
             GameObject newVFX = Instantiate(GhostDoorVFX, door.transform);
             newVFX.transform.SetParent(door.transform);
             newVFX.transform.SetAsFirstSibling();
-        }*/
+        }
     }
 
     // Update is called once per frame
