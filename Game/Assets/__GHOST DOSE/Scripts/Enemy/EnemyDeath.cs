@@ -20,6 +20,7 @@ public class EnemyDeath : MonoBehaviour
     void Start()
     {
         transform.GetChild(0).GetComponent<SkinnedMeshRenderer>().materials[0].SetFloat("_Alpha", 0.5f);
+        transform.GetChild(0).GetComponent<SkinnedMeshRenderer>().materials[0].SetFloat("_EMFAlpha", 0.5f);
         if (Shadower) { transform.GetChild(0).GetComponent<SkinnedMeshRenderer>().materials[0].SetFloat("_Shadower", 1f); }
 
         audioSource = gameObject.AddComponent<AudioSource>();

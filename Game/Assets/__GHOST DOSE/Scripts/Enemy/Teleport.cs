@@ -81,7 +81,8 @@ public class Teleport : MonoBehaviour
         if (teleport == 1)
         {
             if (GetComponent<NPCController>().ZOZO) { GameObject.Find("PlayerCamera").GetComponent<Camera_Controller>().InvokeShake(1f, 2f); }
-            if ((GetComponent<NPCController>().healthEnemy > 0 || !DEATH )&& !GetComponent<NPCController>().ZOZO) {GameObject TPVFX = Instantiate(teleportVFX); TPVFX.transform.position = new Vector3(this.gameObject.transform.position.x, this.gameObject.transform.position.y+1f, this.gameObject.transform.position.z); }
+            //GameObject TPVFX = Instantiate(teleportVFX); TPVFX.transform.position = new Vector3(this.gameObject.transform.position.x, this.gameObject.transform.position.y + 1f, this.gameObject.transform.position.z);
+            if (!GetComponent<NPCController>().dead || GetComponent<NPCController>().ZOZO) {GameObject TPVFX = Instantiate(teleportVFX); TPVFX.transform.position = new Vector3(this.gameObject.transform.position.x, this.gameObject.transform.position.y+1f, this.gameObject.transform.position.z); }
             if (NetworkDriver.instance.HOST) { NetworkDriver.instance.sioCom.Instance.Emit("teleport", JsonConvert.SerializeObject($"{{'obj':'{gameObject.name}','tp':'1','x':'{transform.position.x}','y':'{transform.position.y}','z':'{transform.position.z}'}}"), false); }
             fadeTimer = Time.time;
             if (GetComponent<NPCController>().target != null) { target = GetComponent<NPCController>().target; }
@@ -173,9 +174,10 @@ public class Teleport : MonoBehaviour
                 GetComponent<NPCController>().enabled = true;
                 GetComponent<Animator>().enabled = true;
                 this.gameObject.transform.GetChild(0).GetComponent<SkinnedMeshRenderer>().enabled = true;
+                if (GetComponent<NPCController>().ZOZO) { GameObject TPVFX = Instantiate(teleportVFX); TPVFX.transform.position = new Vector3(this.gameObject.transform.position.x, this.gameObject.transform.position.y + 1f, this.gameObject.transform.position.z); }
                 StartCoroutine(resetOutline());
                 StartCoroutine(resetCanTeleport());//COOLDOWN TIME
-                AudioManager.instance.StopPlaying("haunting", null);
+                if (!GetComponent<NPCController>().ZOZO) { AudioManager.instance.StopPlaying("haunting", null); }
                 //CLIENT RESPAWN
                 if (!NetworkDriver.instance.HOST && GetComponent<NPCController>().healthEnemy<=0){ Respawn(); }
             }

@@ -195,8 +195,9 @@ public class GhostVFX : MonoBehaviour
                     material.SetVector("_PlayerLightPosition", lightSource.transform.position);
                     material.SetVector("_PlayerLightDirection", -lightSource.transform.forward);
                     material.SetFloat("_PlayerLightAngle", spotAngle);
-                    if (!GetComponent<NPCController>().ZOZO) { material.SetFloat("_PlayerStrengthScalarLight", 20); }
-                    else { material.SetFloat("_PlayerStrengthScalarLight", 5); }
+                    material.SetFloat("_PlayerStrengthScalarLight", 20);
+                    //if (!GetComponent<NPCController>().ZOZO) { material.SetFloat("_PlayerStrengthScalarLight", 20); }
+                    //else { material.SetFloat("_PlayerStrengthScalarLight", 5); }
                     material.SetFloat("_PlayerLightRange", lightSource.range);
                 }
                 //FLICKER
@@ -220,8 +221,9 @@ public class GhostVFX : MonoBehaviour
                     material.SetVector("_ClientLightPosition", lightSource.transform.position);
                     material.SetVector("_ClientLightDirection", -lightSource.transform.forward);
                     material.SetFloat("_ClientLightAngle", spotAngle);
-                    if (!GetComponent<NPCController>().ZOZO) { material.SetFloat("_ClientStrengthScalarLight", 20); }
-                    else { material.SetFloat("_ClientStrengthScalarLight", 5); }
+                    material.SetFloat("_PlayerStrengthScalarLight", 20);
+                    //if (!GetComponent<NPCController>().ZOZO) { material.SetFloat("_ClientStrengthScalarLight", 20); }
+                    //else { material.SetFloat("_ClientStrengthScalarLight", 5); }
                     material.SetFloat("_ClientLightRange", lightSource.range);
                 }
                 //FLICKER
@@ -237,8 +239,8 @@ public class GhostVFX : MonoBehaviour
                 //if (death) { visible = true; visibilitySet = true; Fade(true, 5f, 1); }
                 invisible = false;
                 {
-                    if (visible) { if (!GetComponent<NPCController>().ZOZO) { Fade(true, 0.5f); } else { Fade(true, 2f); } }
-                    else { if (!GetComponent<NPCController>().ZOZO) { Fade(false, 1f); } else { Fade(false, 0.2f); } }//fadeout
+                    if (visible) { if (GetComponent<ZozoControl>() == null) { Fade(true, 0.5f); } else { Fade(true, 1f); }  }
+                    else { Fade(false, 1f); }//fadeout
                 }// DEATH FADE
                  //else { Fade(false, 10f, 0); }
                 for (int i = 0; i < skin.GetComponent<SkinnedMeshRenderer>().materials.Length; i++)

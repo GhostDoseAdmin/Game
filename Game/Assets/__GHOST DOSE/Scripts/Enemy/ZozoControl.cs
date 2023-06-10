@@ -85,12 +85,12 @@ public class ZozoControl : MonoBehaviour
                 }
             }
         }
-        if(GetComponent<NPCController>().zozoLaser)
+        if (GetComponent<NPCController>().zozoLaser)
         {
             //CHARGING
             if (charging)
             {
-                if (Vector3.Distance(chargeEndTransform.transform.position, chargeLight.transform.position) < 0.1f) { laserChargeVFX.transform.localScale = Vector3.Lerp(laserChargeVFX.transform.localScale, laserChargeVFX.transform.localScale * 2f, Time.deltaTime * 1); } 
+                if (Vector3.Distance(chargeEndTransform.transform.position, chargeLight.transform.position) < 0.1f) { laserChargeVFX.transform.localScale = Vector3.Lerp(laserChargeVFX.transform.localScale, laserChargeVFX.transform.localScale * 2f, Time.deltaTime * 1); }
                 else { chargeLight.transform.position += (chargeEndTransform.transform.position - chargeLight.transform.position).normalized * 0.1f; }
             }
             //SHOOTING
@@ -98,11 +98,11 @@ public class ZozoControl : MonoBehaviour
             {
                 startCharging = false;
                 chargeLight.transform.localPosition = chargeLightStart;
-                if(charging)
+                if (charging)
                 {
                     audioSource1.volume = 10f;
                     AudioManager.instance.Play("laserorigin", audioSource1);
-                   // Invoke("HasTriedLaser", 1f);
+                    // Invoke("HasTriedLaser", 1f);
                 }
                 charging = false;
                 chargeLight.SetActive(false);
@@ -149,6 +149,7 @@ public class ZozoControl : MonoBehaviour
             GetComponent<Animator>().SetBool("Run", false);
             GetComponent<Animator>().SetBool("Attack", false);
         }
+        else { chargeLight.SetActive(false); }
 
 
     }
@@ -239,7 +240,7 @@ public class ZozoControl : MonoBehaviour
 
             if (distanceToLight <= 20f) // If the light is within range, call the InvokeFlicker method
             {
-                if (light.GetComponent<GhostLight>() != null) { light.GetComponent<GhostLight>().InvokeFlicker(1f); }
+                if (light.GetComponent<GhostLight>() != null) { if (light.GetComponent<GhostLight>().canFlicker) { light.GetComponent<GhostLight>().InvokeFlicker(1f); } }
             }
         }
     }

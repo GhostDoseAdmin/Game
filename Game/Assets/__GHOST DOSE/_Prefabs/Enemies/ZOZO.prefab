@@ -5549,18 +5549,22 @@ MonoBehaviour:
   angleView: 360
   startAngleView: 0
   hitRange: 3
-  chaseSpeed: 4
+  chaseSpeed: 2
   spawnTimer: 0
   damage: 200
   force: 500
   retreatThreshold: 0
   unawareness: 200
   xrayvision: 1
+  laserForce: 0
+  laserDamage: 0
   persist: 200
   canRespawn: 0
   teleports: 1
   canFlinch: 0
   zozoLaser: 0
+  zapActive: 0
+  zapRange: 0
   startHealth: 0
   canAttack: 1
   agro: 0
@@ -5580,6 +5584,8 @@ MonoBehaviour:
   dead: 0
   activeWayPoint: {fileID: 0}
   audioSource: {fileID: 0}
+  prev_dest: {fileID: 0}
+  prev_targ: {fileID: 0}
   serverPosition: {x: 0, y: 0, z: 0}
   active_timer: 0
 --- !u!195 &5315007209675186882
@@ -5620,6 +5626,8 @@ MonoBehaviour:
   PlayerLight: {fileID: 0}
   ClientLight: {fileID: 0}
   LightSources: []
+  originalMaxAlpha: []
+  currentMaxAlpha: []
   visible: 1
   inShadow: 0
   invisible: 0
@@ -5637,7 +5645,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   teleport: 0
-  teleportVFX: {fileID: 0}
+  teleportVFX: {fileID: 1535281443880992985, guid: 5566661b7bd4fe847a06203e0f832107, type: 3}
   realNotVisible: 0
   target: {fileID: 0}
   minRadius: 4
@@ -5687,8 +5695,6 @@ MonoBehaviour:
   laserDistanceMin: 5
   laserDistanceMax: 20
   laserActive: 0
-  laserForce: 100
-  laserDamage: 100
   laserCoolDown: 30
 --- !u!82 &5315007209675186886
 AudioSource:
