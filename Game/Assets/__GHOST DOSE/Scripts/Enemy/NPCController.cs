@@ -606,6 +606,7 @@ public class NPCController : MonoBehaviour
                     GetComponent<Teleport>().CheckTeleport(true, true);
                     GetComponent<Teleport>().Invoke("Respawn", 1f+spawnTimer);
                 }
+                zapActive = false;
                 agro = false;
                 target = null;
                 hasRetreated = 0;
