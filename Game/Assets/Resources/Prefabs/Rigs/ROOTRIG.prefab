@@ -1284,6 +1284,7 @@ MonoBehaviour:
   ghost: 0
   shadower: 0
   flicker: 0
+  canFlicker: 0
   strength: 0
 --- !u!1 &2444500223840318269
 GameObject:
@@ -19507,6 +19508,7 @@ MonoBehaviour:
   ghost: 0
   shadower: 0
   flicker: 0
+  canFlicker: 0
   strength: 0
 --- !u!1001 &1109697560948597784
 PrefabInstance:
@@ -19738,7 +19740,7 @@ PrefabInstance:
     - target: {fileID: 6072257239331072051, guid: efd96abdb62a131428b08e768bf2b46a, type: 3}
       propertyPath: AnswersEvil.Array.data[0].clip
       value: 
-      objectReference: {fileID: 8300000, guid: efe2c282cff7d5a4fab57e8776f1e4bc, type: 3}
+      objectReference: {fileID: 8300000, guid: e07c49d60ab59d142bd45715eaf45812, type: 3}
     - target: {fileID: 6072257239331072051, guid: efd96abdb62a131428b08e768bf2b46a, type: 3}
       propertyPath: AnswersEvil.Array.data[0].name
       value: no
@@ -19746,7 +19748,7 @@ PrefabInstance:
     - target: {fileID: 6072257239331072051, guid: efd96abdb62a131428b08e768bf2b46a, type: 3}
       propertyPath: AnswersEvil.Array.data[1].clip
       value: 
-      objectReference: {fileID: 8300000, guid: 2b65ee9272ffb544dad295fb55af024c, type: 3}
+      objectReference: {fileID: 8300000, guid: 47c5768a508e1e548811f412699d4b73, type: 3}
     - target: {fileID: 6072257239331072051, guid: efd96abdb62a131428b08e768bf2b46a, type: 3}
       propertyPath: AnswersEvil.Array.data[1].name
       value: yes
@@ -19754,7 +19756,7 @@ PrefabInstance:
     - target: {fileID: 6072257239331072051, guid: efd96abdb62a131428b08e768bf2b46a, type: 3}
       propertyPath: AnswersYoung.Array.data[0].clip
       value: 
-      objectReference: {fileID: 8300000, guid: 3f4c8007d8798f74f90944366e318c38, type: 3}
+      objectReference: {fileID: 8300000, guid: 9239dc50d44b41f4d86190fda54c2fca, type: 3}
     - target: {fileID: 6072257239331072051, guid: efd96abdb62a131428b08e768bf2b46a, type: 3}
       propertyPath: AnswersYoung.Array.data[0].name
       value: no
@@ -19762,7 +19764,7 @@ PrefabInstance:
     - target: {fileID: 6072257239331072051, guid: efd96abdb62a131428b08e768bf2b46a, type: 3}
       propertyPath: AnswersYoung.Array.data[1].clip
       value: 
-      objectReference: {fileID: 8300000, guid: 5511858eacc74a04eb5377636d55c359, type: 3}
+      objectReference: {fileID: 8300000, guid: 405db0d6487a28647b628147c1287c60, type: 3}
     - target: {fileID: 6072257239331072051, guid: efd96abdb62a131428b08e768bf2b46a, type: 3}
       propertyPath: AnswersYoung.Array.data[1].name
       value: yes
@@ -19770,7 +19772,7 @@ PrefabInstance:
     - target: {fileID: 6072257239331072051, guid: efd96abdb62a131428b08e768bf2b46a, type: 3}
       propertyPath: AnswersMurdered.Array.data[0].clip
       value: 
-      objectReference: {fileID: 8300000, guid: 6495d298a4663a847a07fdf89d244d59, type: 3}
+      objectReference: {fileID: 8300000, guid: 21059a3c28a3fb347b5d5baa84be982a, type: 3}
     - target: {fileID: 6072257239331072051, guid: efd96abdb62a131428b08e768bf2b46a, type: 3}
       propertyPath: AnswersMurdered.Array.data[0].name
       value: no
@@ -19778,7 +19780,7 @@ PrefabInstance:
     - target: {fileID: 6072257239331072051, guid: efd96abdb62a131428b08e768bf2b46a, type: 3}
       propertyPath: AnswersMurdered.Array.data[1].clip
       value: 
-      objectReference: {fileID: 8300000, guid: 5c1d24483b2d33a4c937bc2eb508f5ef, type: 3}
+      objectReference: {fileID: 8300000, guid: 179cb2687e0abfb458736a7838202044, type: 3}
     - target: {fileID: 6072257239331072051, guid: efd96abdb62a131428b08e768bf2b46a, type: 3}
       propertyPath: AnswersMurdered.Array.data[1].name
       value: yes
