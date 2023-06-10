@@ -242,7 +242,10 @@ namespace NetworkSystem
                 if (!NETWORK_TEST) { if (dict["host"] != sioCom.Instance.SocketID) { HOST = false; } }
                 if (SceneManager.GetActiveScene().name != "Lobby") { UpdateGameState(); OTHERS_SCENE_READY = true; SCENE_READY = true; }
                 sioCom.Instance.Emit("event", JsonConvert.SerializeObject(new { username = USERNAME }), false);
-                if (SceneManager.GetActiveScene().name == "Lobby") { GameObject.Find("LobbyManager").GetComponent<LobbyControlV2>().EmitSkin(); }
+                if (SceneManager.GetActiveScene().name == "Lobby") { 
+                    GameObject.Find("LobbyManager").GetComponent<LobbyControlV2>().EmitSkin();
+                    GameObject.Find("LobbyManager").GetComponent<LobbyControlV2>().EmitLevel();
+                }
                 //GameDriver.instance.WriteGuiMsg("Two Player Mode - HOST " + payload + "     MY SOCKET    " + sioCom.Instance.SocketID,999f,false,Color.white);
                 //Debug.Log("HOST DETERMINED " + payload);
             });
