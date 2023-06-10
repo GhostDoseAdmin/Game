@@ -1,6 +1,6 @@
 
 using UnityEngine;
-
+using InteractionSystem;
 
 
 public class K2Wave : MonoBehaviour
@@ -14,7 +14,7 @@ public class K2Wave : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-
+        AudioManager.instance.Play("k2wave", GameObject.Find("Player").GetComponent<PlayerController>().audioSource);
         hud.transform.localScale = Vector3.one*40;
             // transform.localScale = Vector3.Lerp(transform.localScale, transform.localScale * 0.0001f, Time.deltaTime * 1);
         GetComponent<Shockwave>().NewShockwave(startPoint, 2);//3
