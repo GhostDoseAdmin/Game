@@ -546,7 +546,7 @@ public class PlayerController : MonoBehaviour
     void GearAim()
 	{
 		MobileAim();
-
+       
         if (!changingGear)
 		{
             if (gear == 3 || gear==0) //SPIRIT BOX AND REM

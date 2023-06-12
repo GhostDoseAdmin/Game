@@ -111,7 +111,7 @@ public class NPCController : MonoBehaviour
     void Start()
     {
         //zapActive = true;
-        
+        if (spawnTimer == 0) { spawnTimer = 9999; }
         if (wayPoint.Count == 0)        {            wayPoint = new List<Transform>(); wayPoint.Add(transform);        }
 
         PlayerWP = GameObject.Find("PlayerWavePoint");
@@ -139,7 +139,7 @@ public class NPCController : MonoBehaviour
         outline = transform.GetChild(0).GetComponent<Outline>();
 
         zozoLaser = false;
-        if (Shadower) { zaps = true; canZap = true; }
+        if (Shadower && !ZOZO) { zaps = true; canZap = true; }
         //Debug.Log("----------------------------------------" + HIT_COL.GetComponent<SphereCollider>().enabled);
         if (NetworkDriver.instance.isMobile) { head.GetComponent<SphereCollider>().radius = 0.28f; }
 
@@ -604,7 +604,7 @@ public class NPCController : MonoBehaviour
                 if (NetworkDriver.instance.HOST)
                 {
                     GetComponent<Teleport>().CheckTeleport(true, true);
-                    GetComponent<Teleport>().Invoke("Respawn", 1f+spawnTimer);
+                    GetComponent<Teleport>().Invoke("Respawn", spawnTimer);
                 }
                 zapActive = false;
                 agro = false;

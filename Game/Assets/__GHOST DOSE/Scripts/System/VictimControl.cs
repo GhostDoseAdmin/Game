@@ -13,9 +13,6 @@ public class VictimControl : Item
     public List<GameObject> Victims;
     public List<GameObject> candles;
     public int candleCount;
-    private bool targetIsMurdered;
-    private bool targetIsEvil;
-    private bool targetIsYoung;
     public GameObject ChosenVictim;
     public GameObject trigger;
     private bool startCircle;
@@ -441,7 +438,7 @@ public class VictimControl : Item
         zozoEffectEnd.transform.localScale = zozoEffectEndStartSize;
         effectDome.transform.localScale = domeStartSize;
 
-        RandomVictim(null);
+        //RandomVictim(null);
 
     }
 }

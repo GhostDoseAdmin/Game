@@ -65,17 +65,20 @@ public class RayAimer : MonoBehaviour {
         //float yAngle = -Player.transform.eulerAngles.y + 180f;
         //if (yAngle > 180f) { yAngle -= 360f; }
         //transform.localRotation = Quaternion.Euler(90f, 0f, yAngle);
-
+        //Player.GetComponent<PlayerController>().gamePad.aimer.AIMING = true;
         transform.position = SS.shootPoint.position;
         transform.SetParent(SS.shootPoint);
-        //transform.eulerAngles = new Vector3(297f, 180f, 172f);
+        //transform.localRotation = Quaternion.Euler(-84, 187, -180);
 
         //CLOSEST TARGET DETERMIENS ANGLE / DEFAULT TARGET
         validTarget = FindValidTarget(viewDistance);
-        if (validTarget != null)
+        if (validTarget == null) { validTarget = Player; }
         {
+            //Debug.Log("FOV" + fov);
             Vector3 targPos = (Player.transform.position + Player.transform.forward * 5f) + Vector3.up;
-            Vector3 targetLookHeight = new Vector3(targPos.x, validTarget.GetComponentInParent<Animator>().GetBoneTransform(HumanBodyBones.Hips).transform.position.y, targPos.z);
+            Vector3 targetLookHeight;
+            if (validTarget != Player) { targetLookHeight = new Vector3(targPos.x, validTarget.GetComponentInParent<Animator>().GetBoneTransform(HumanBodyBones.Hips).transform.position.y, targPos.z); }
+            else { targetLookHeight = targPos + (Vector3.up*0.5f); }
             Vector3 eulerRotation = Quaternion.LookRotation(targetLookHeight - transform.position, Vector3.up).eulerAngles;
 
             float distanceToTarget = Vector3.Distance(SS.shootPoint.transform.position, validTarget.transform.position);
@@ -104,9 +107,9 @@ public class RayAimer : MonoBehaviour {
         if (AIMING)
         {
             fov -= 35f * Time.deltaTime;  //AIM TIME
-            viewDistance += 0.1f;//0.2
+            viewDistance += 0.01f;//0.2
             //SHOW AIMER
-            if (fov < startFov && fov > 0) { GetComponent<MeshRenderer>().material.SetFloat("_Alpha", 0.314f); }
+            if (fov < startFov && fov > 0) { GetComponent<MeshRenderer>().material.SetFloat("_Alpha", 0.314f);  }
             //HIDE AIMER
             if (fov <= 0f) { GetComponent<MeshRenderer>().material.SetFloat("_Alpha", 0f); RayTarget = null; } //StartAim = false;
             //RESTART AIM
@@ -271,33 +274,35 @@ public class RayAimer : MonoBehaviour {
                 {
                     RaycastHit hit; //if the line between player and enemy hits a default object
                     if (Physics.Linecast(Player.GetComponent<ShootingSystem>().shootPoint.transform.position, target.GetComponentInParent<Animator>().GetBoneTransform(HumanBodyBones.Hips).transform.position, out hit, layerMask))
-                    if (hit.collider.gameObject.layer == LayerMask.NameToLayer("Default")) { continue; }
-
-                    if (hit.collider != null)
                     {
-                        if ((hit.collider.gameObject.layer == LayerMask.NameToLayer("Enemy") && hit.collider.gameObject.GetComponentInParent<Teleport>() != null && hit.collider.gameObject.GetComponentInParent<Teleport>().teleport == 0 && hit.collider.gameObject.GetComponentInParent<NPCController>().healthEnemy > 0) || (hit.collider.gameObject.tag.Contains("Victim")))
+                        if (hit.collider != null)
                         {
+                            if (hit.collider.gameObject.layer == LayerMask.NameToLayer("Default")) { continue; }
+
                             bool facingTarget = Vector3.Dot(Player.transform.forward, target.transform.position - Player.transform.position) > 0.95f;
                             if (facingTarget)
                             {
                                 if (hit.collider.gameObject.layer == LayerMask.NameToLayer("Enemy"))
                                 {
-                                    if (hit.collider.gameObject.GetComponentInParent<GhostVFX>().Shadower && hit.collider.gameObject.GetComponentInParent<GhostVFX>().visible)
+                                    if (hit.collider.gameObject.GetComponentInParent<Teleport>() != null && hit.collider.gameObject.GetComponentInParent<Teleport>().teleport != 0) { continue; }
+                                    if (hit.collider.gameObject.GetComponentInParent<NPCController>().dead) {  continue; }
+
+
+                                    if (!hit.collider.gameObject.GetComponentInParent<GhostVFX>().Shadower && !hit.collider.gameObject.GetComponentInParent<GhostVFX>().invisible)
                                     {
-                                        closestTarget = target;
-                                        closestDistance = targetDistance;
+                                        closestTarget = target; closestDistance = targetDistance;
                                     }
-                                    else if (!hit.collider.gameObject.GetComponentInParent<GhostVFX>().Shadower && !hit.collider.gameObject.GetComponentInParent<GhostVFX>().invisible)
-                                    {
-                                        closestTarget = target;
-                                        closestDistance = targetDistance;
-                                    }
+                                    else { closestTarget = target; closestDistance = targetDistance; }
+
 
                                 }
-                                else//VICTIM
+                                else //VICTIM
                                 {
-                                    closestTarget = target;
-                                    closestDistance = targetDistance;
+                                    if(hit.collider.gameObject.transform.position.y > Player.transform.position.y)
+                                    {
+                                        closestTarget = target;
+                                        closestDistance = targetDistance;
+                                    }
                                 }
                             }
                         }

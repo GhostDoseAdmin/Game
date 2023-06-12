@@ -584,7 +584,10 @@ namespace NetworkSystem
             timeElapsed = Time.time -startTime;
             GameObject.Find("PlayerCamera").transform.SetParent(GameDriver.instance.gameObject.transform);
 
-            if (SceneManager.GetActiveScene().name == "GoldCamp" || SceneManager.GetActiveScene().name == "Experiment") { NetworkDriver.instance.LEVELINDEX = 1; }
+            if (SceneManager.GetActiveScene().name == "DarkEchoes" || SceneManager.GetActiveScene().name == "Experiment") { NetworkDriver.instance.LEVELINDEX = 1; }
+            if (SceneManager.GetActiveScene().name == "Forsaken") { NetworkDriver.instance.LEVELINDEX = 2; }
+            if (SceneManager.GetActiveScene().name == "HollowAngel") { NetworkDriver.instance.LEVELINDEX = 3; }
+
             SceneManager.LoadScene("EndGame");
 
             //PLAYER PERSIST
