@@ -302,7 +302,7 @@ public class Camera_Supplyer : MonoBehaviour
 
             transform.RotateAround(cameraController.player.position + offsetVectorTransformed, cameraController.player.up, smoothX);
 
-            GameDriver.instance.WriteGuiMsg("X" + smoothX.ToString(), 1f, false, Color.white);
+            //GameDriver.instance.WriteGuiMsg("X" + smoothX.ToString(), 1f, false, Color.white);
 
             yAngle = -smoothY;
             angle = Vector3.Angle(transform.forward, upVector);

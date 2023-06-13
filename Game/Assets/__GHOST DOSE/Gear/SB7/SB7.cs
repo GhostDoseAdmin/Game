@@ -35,7 +35,7 @@ public class SB7 : MonoBehaviour
         else if (GameDriver.instance.Player.transform.parent.name == "WESTIN" || GameDriver.instance.Player.transform.parent.name == "TRAVIS") { isClient = false;  }
         else { DestroyImmediate(this.gameObject); }//DEAD PLAYER
 
-
+        gameObject.SetActive(false);
     }
 
     // Update is called once per frame

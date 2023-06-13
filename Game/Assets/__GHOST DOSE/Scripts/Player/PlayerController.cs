@@ -133,7 +133,7 @@ public class PlayerController : MonoBehaviour
         SB7 = util.FindChildObject(this.gameObject.transform, "SB7").gameObject;
         ouija = util.FindChildObject(this.gameObject.transform, "Ouija").gameObject;
         ouija.SetActive(false);
-        SB7.SetActive(false);
+        //SB7.SetActive(false);
         
         camInventory.SetActive(false);
         //targetPos = GameDriver.instance.targetLook.transform;
