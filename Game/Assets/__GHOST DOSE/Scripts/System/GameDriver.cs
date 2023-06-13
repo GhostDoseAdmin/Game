@@ -77,7 +77,6 @@ namespace GameManager
         void Awake()
         {
 
-
             //CREATE RIG FROM LOBYS
             if (NetworkDriver.instance)
             {
@@ -121,7 +120,7 @@ namespace GameManager
                 SetupScene();
             }
             //LOBBY
-            else {  playerUI.SetActive(false); AudioManager.instance.Play("lobbymusic", null); }
+            else { if (playerUI != null) { playerUI.SetActive(false); } AudioManager.instance.Play("lobbymusic", null); }
 
 
         }
