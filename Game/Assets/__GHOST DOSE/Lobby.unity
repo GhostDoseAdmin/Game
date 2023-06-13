@@ -3456,7 +3456,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: a1235d87f41399c419b03cc17336dc72, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 2ecf295c75b5162499aa78dd43552461, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -3510,9 +3510,9 @@ RectTransform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 376655957}
-  m_LocalRotation: {x: 0, y: 0, z: -0.7071068, w: 0.7071068}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalRotation: {x: -0.00000002235174, y: -0.000000014901159, z: -0.7071067, w: 0.70710695}
+  m_LocalPosition: {x: 0, y: 0, z: 0.00014996529}
+  m_LocalScale: {x: 0.99999976, y: 0.9999998, z: 0.9999999}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 889527474}
@@ -3520,7 +3520,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: -90}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -292, y: 551.4}
+  m_AnchoredPosition: {x: -291.99997, y: 551.4}
   m_SizeDelta: {x: 56.1, y: 56.1}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &376655959
@@ -7262,7 +7262,6 @@ MonoBehaviour:
   replaceKitTimer: 1
   maxReplaceKitTimer: 1
   healthLevel: {fileID: 0}
-  kitCountUI: {fileID: 0}
   kitIndicator: {fileID: 0}
   bloodEffect: {fileID: 0}
   healthPrecent: 0
@@ -7291,9 +7290,7 @@ MonoBehaviour:
   batteryCount: 1
   replaceBatteryTimer: 1
   maxReplaceBatteryTimer: 1
-  batteryLevel: {fileID: 0}
   batteryUI: {fileID: 0}
-  batteryCountUI: {fileID: 0}
   radialIndicator: {fileID: 0}
   pickUp: PickUp
   flashlightClick: FlashlightClick
@@ -9523,7 +9520,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: a1235d87f41399c419b03cc17336dc72, type: 3}
+  m_Sprite: {fileID: 21300000, guid: b94494f2d8764944084b6a28b2243362, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -19459,7 +19456,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: a1235d87f41399c419b03cc17336dc72, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 30dece255c606114296eac366fd9ba6f, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -56803,6 +56800,7 @@ MonoBehaviour:
   smoothSpeed: 15
   forceCharacterDirection: 0
   CAMFIX: 0
+  AIMMODE: 0
 --- !u!114 &2223322646375490429
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -62682,7 +62680,6 @@ MonoBehaviour:
   replaceKitTimer: 1
   maxReplaceKitTimer: 1
   healthLevel: {fileID: 0}
-  kitCountUI: {fileID: 0}
   kitIndicator: {fileID: 0}
   bloodEffect: {fileID: 0}
   healthPrecent: 0
@@ -62968,9 +62965,7 @@ MonoBehaviour:
   batteryCount: 1
   replaceBatteryTimer: 1
   maxReplaceBatteryTimer: 1
-  batteryLevel: {fileID: 0}
   batteryUI: {fileID: 0}
-  batteryCountUI: {fileID: 0}
   radialIndicator: {fileID: 0}
   pickUp: PickUp
   flashlightClick: FlashlightClick
@@ -63190,6 +63185,7 @@ MonoBehaviour:
   smoothSpeed: 15
   forceCharacterDirection: 0
   CAMFIX: 0
+  AIMMODE: 0
 --- !u!114 &5055496213904145727
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -63398,9 +63394,7 @@ MonoBehaviour:
   batteryCount: 1
   replaceBatteryTimer: 1
   maxReplaceBatteryTimer: 1
-  batteryLevel: {fileID: 0}
   batteryUI: {fileID: 0}
-  batteryCountUI: {fileID: 0}
   radialIndicator: {fileID: 0}
   pickUp: PickUp
   flashlightClick: FlashlightClick
@@ -63584,7 +63578,6 @@ MonoBehaviour:
   replaceKitTimer: 1
   maxReplaceKitTimer: 1
   healthLevel: {fileID: 0}
-  kitCountUI: {fileID: 0}
   kitIndicator: {fileID: 0}
   bloodEffect: {fileID: 0}
   healthPrecent: 0
