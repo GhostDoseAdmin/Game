@@ -4,6 +4,7 @@ using UnityEngine.UI;
 using UnityEngine;
 using NetworkSystem;
 using GameManager;
+using UnityEngine.UIElements;
 
 public class Aiming : MonoBehaviour {
 
@@ -34,7 +35,11 @@ public class Aiming : MonoBehaviour {
         crosshair.SetActive(false);
         K2.SetActive(false);
 
-        gamePad = GameDriver.instance.Player.GetComponent<PlayerController>().gamePad;
+		if (NetworkDriver.instance.isMobile)
+		{
+			gamePad = GameDriver.instance.Player.GetComponent<PlayerController>().gamePad;
+			crosshair.GetComponent<RectTransform>().localScale = new Vector3(1, 1, 1);
+		}
 
     }
 
@@ -49,14 +54,23 @@ public class Aiming : MonoBehaviour {
 		if(!NetworkDriver.instance.isMobile)
 		{
             if (player.GetComponent<PlayerController>().gearAim == true) { aim = true; }
-            //if (Input.GetMouseButtonUp(1)) { aim = false; }
+			//if (Input.GetMouseButtonUp(1)) { aim = false; }
+		}
+		else
+		{
+			if (GameDriver.instance.Player.GetComponent<PlayerController>().gamePad.camSup.AIMMODE && !GameDriver.instance.Player.GetComponent<PlayerController>().gamePad.camSup.CAMFIX) { aim = true; }
+           
+            //crosshair.GetComponent<RectTransform>().position = Camera.main.WorldToScreenPoint(GameDriver.instance.Player.GetComponent<ShootingSystem>().targetLook.transform.position + Vector3.up);
+
         }
-		if (NetworkDriver.instance.isMobile && gamePad.aimer.AIMING && GameDriver.instance.Player.GetComponent<ShootingSystem>().target!=null && GameDriver.instance.Player.GetComponent<PlayerController>().gamePad.aimer.crossHairTarg) { 
+
+       
+        /*if (NetworkDriver.instance.isMobile && gamePad.aimer.AIMING && GameDriver.instance.Player.GetComponent<ShootingSystem>().target!=null && GameDriver.instance.Player.GetComponent<PlayerController>().gamePad.aimer.crossHairTarg) { 
 			aim = true;
             crosshair.GetComponent<RectTransform>().position = Camera.main.WorldToScreenPoint(GameDriver.instance.Player.GetComponent<ShootingSystem>().target.transform.position + Vector3.up);
 
-        }
-       
+        }*/
+
         if (aim)
         {
 			//if (Input.GetMouseButton(1))
@@ -65,9 +79,9 @@ public class Aiming : MonoBehaviour {
 				if (gear == 1) { crosshair.SetActive(true); }
 				if (gear == 2) { K2.SetActive(true); }
             }
-			if (isZoomed == 1 && !NetworkDriver.instance.isMobile)
+			if (isZoomed == 1 )
 			{
-				GetComponent<Camera>().fieldOfView = Mathf.Lerp(GetComponent<Camera>().fieldOfView, zoom, Time.deltaTime * smoothZoom);
+				if (!NetworkDriver.instance.isMobile) { GetComponent<Camera>().fieldOfView = Mathf.Lerp(GetComponent<Camera>().fieldOfView, zoom, Time.deltaTime * smoothZoom); }
 			}
 		}
 		else

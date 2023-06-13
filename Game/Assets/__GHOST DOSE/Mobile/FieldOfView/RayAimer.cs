@@ -220,10 +220,7 @@ public class RayAimer : MonoBehaviour {
                     crossHairTarg = true;
                 }
             }
-            /*else
-            { //FALLBACK ON CLOSEST TARGET
-                if (closestTarget != null && Vector3.Distance(Player.transform.position, closestTarget.transform.position) < 2 && Vector3.Dot(GameDriver.instance.Player.transform.forward, closestTarget.transform.forward) < 0.6f) { SS.target = closestTarget; }
-            }*/
+
 
             mesh.vertices = vertices;
             mesh.uv = uv;

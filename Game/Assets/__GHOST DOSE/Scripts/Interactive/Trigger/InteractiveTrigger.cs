@@ -4,7 +4,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using GameManager;
-
+using NetworkSystem;
 
 public class InteractiveTrigger : MonoBehaviour
 {
@@ -29,7 +29,7 @@ public class InteractiveTrigger : MonoBehaviour
 
     private void Update()
     {
-        if (Input.GetKeyDown(InputManager.instance.interactButton) && allowInteraction)
+        if (((Input.GetKeyDown(InputManager.instance.interactButton) && !NetworkDriver.instance.isMobile) || (GameDriver.instance.Player.GetComponent<PlayerController>().gamePad.interactBTN.buttonReleased && NetworkDriver.instance.isMobile)) && allowInteraction)
         {
             if (Time.time > timer + delay)
             {
@@ -54,6 +54,7 @@ public class InteractiveTrigger : MonoBehaviour
             allowInteraction = true;
             interact.SetActive(true);
             interactiveObject.GetComponent<Item>().playerOn = true;
+            if (NetworkDriver.instance.isMobile) { other.gameObject.GetComponent<PlayerController>().gamePad.canPickUp = true; }
         }
 
         if (other.gameObject.name == "Client") { interactiveObject.GetComponent<Item>().clientOn = true; }

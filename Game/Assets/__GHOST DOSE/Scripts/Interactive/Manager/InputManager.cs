@@ -43,8 +43,6 @@ namespace InteractionSystem
 
 
         public static InputManager instance;
-        public Button flashLightButton, shootButton;
-        private bool releaseFlKey, releaseShoot;
         private void Awake()
         {
             if (instance != null) 
@@ -56,27 +54,6 @@ namespace InteractionSystem
                 instance = this; 
             }
         }
-
-        private void Start()
-        {
-            flashLightButton.onClick.AddListener(FlashLightButton);
-            shootButton.onClick.AddListener(ShootButton);
-        }
-        public bool GetFLkeyDown, ShootKeyDown;
-        void FlashLightButton(){ GetFLkeyDown = true; releaseFlKey = false; }
-        void ShootButton() { ShootKeyDown = true; releaseShoot = false; }
-        private void Update()
-        {
-            if (releaseFlKey) { GetFLkeyDown = false; }
-            if (releaseShoot) { ShootKeyDown = false; }
-        }
-
-        private void LateUpdate()
-        {
-            releaseFlKey = true;
-            releaseShoot = true;
-        }
-
 
     }
 }

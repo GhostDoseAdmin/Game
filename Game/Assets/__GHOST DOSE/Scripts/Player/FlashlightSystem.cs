@@ -117,7 +117,7 @@ public class FlashlightSystem : MonoBehaviour
         if (hasFlashlight)
         {
             //---------TOGGLE FLASHLGITH ON AND OFF---------------------------------
-            if ((Input.GetKeyDown(InputManager.instance.flashlightSwitchV2) || InputManager.instance.GetFLkeyDown)  && !showOnce)
+            if ((Input.GetKeyDown(InputManager.instance.flashlightSwitchV2) || GetComponent<PlayerController>().gamePad.flashlightBTN.buttonReleased)  && !showOnce)
             {
                 if (FlashLight.enabled == false)
                 {

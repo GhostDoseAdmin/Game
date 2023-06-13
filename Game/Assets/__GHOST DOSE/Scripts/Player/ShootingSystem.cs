@@ -5,6 +5,8 @@ using GameManager;
 using NetworkSystem;
 using UnityEngine;
 using UnityEngine.UI;
+using System.Collections.Generic;
+
 
 public class ShootingSystem : MonoBehaviour
 {
@@ -137,6 +139,7 @@ public class ShootingSystem : MonoBehaviour
                 //TARGET PARAMS
                 targetParams(20); //GetComponent<FlashlightSystem>().FlashLight.range
             }
+            else { targetParamsMobile(20); }
             if (isVisible)
             {
                 if (target != null) { 
@@ -160,7 +163,7 @@ public class ShootingSystem : MonoBehaviour
                 //animator.Update(0f);
             }
 
-            crosshairs.GetComponent<Animator>().speed = (camera.fieldOfView - aiming.zoom) * 3;//ANIMATE FOCUS INDICATOR
+            if (!NetworkDriver.instance.isMobile) { crosshairs.GetComponent<Animator>().speed = (camera.fieldOfView - aiming.zoom) * 3; }//ANIMATE FOCUS INDICATOR
         }
         if (gear == 2)
         {
@@ -190,26 +193,24 @@ public class ShootingSystem : MonoBehaviour
                     camBatteryUI.fillAmount -= 0.1f;
                     muzzleFlash.Play();
                     Shell.Play();
-                    int damage = 0;
                     //DO DAMAGE
                     if (target != null)
                     {
                         if ((target.GetComponent<GhostVFX>() != null) && isVisible && target.GetComponent<Teleport>().teleport == 0)
                         {
-                            damage = Damage;
-                            if (target.GetComponent<NPCController>().animEnemy.GetCurrentAnimatorClipInfo(0).Length > 0 && target.GetComponent<NPCController>().animEnemy.GetCurrentAnimatorClipInfo(0)[0].clip.name == "agro") { damage = 20; }
-                            if (isHeadshot) { damage = headShotDamage; }
+                            if (target.GetComponent<NPCController>().animEnemy.GetCurrentAnimatorClipInfo(0).Length > 0 && target.GetComponent<NPCController>().animEnemy.GetCurrentAnimatorClipInfo(0)[0].clip.name == "agro") { Damage = 20; }
+                            if (isHeadshot) { Damage = headShotDamage; }
                             //Debug.Log("---------------------------------------" + damage);
-                            target.GetComponent<NPCController>().TakeDamage(damage, false);
+                            target.GetComponent<NPCController>().TakeDamage(Damage, false);
                         }
                         if (target != null && target.tag == "Victim")
                         {
                             victimManager.GetComponent<VictimControl>().testAnswer(target);
                             //used to emit answer
-                            damage = -1;
+                            Damage = -1;
                         }
 
-                        if (NetworkDriver.instance.TWOPLAYER) { NetworkDriver.instance.sioCom.Instance.Emit("event", JsonConvert.SerializeObject(new { shoot = true, obj = target.name, dmg = damage }), false); }
+                        if (NetworkDriver.instance.TWOPLAYER) { NetworkDriver.instance.sioCom.Instance.Emit("event", JsonConvert.SerializeObject(new { shoot = true, obj = target.name, dmg = Damage }), false); }
                     }
 
 
@@ -242,6 +243,7 @@ public class ShootingSystem : MonoBehaviour
         isHeadshot = false;
         isVisible = false;
         target = null;
+        Damage = 40;
         //RETUNRS 1 for visible 2 for headshot
         LayerMask mask = 1 << LayerMask.NameToLayer("Default") | 1 << LayerMask.NameToLayer("Enemy") | 1 << LayerMask.NameToLayer("Ghost");
         RaycastHit hit;
@@ -279,6 +281,128 @@ public class ShootingSystem : MonoBehaviour
 
         }
     }
+    public void targetParamsMobile(float distance)
+    {
+        isHeadshot = false;
+        target = null;
+        isVisible = true;
+        GameObject targ = EasyTarget(distance);
+        if (GetComponent<PlayerController>().gamePad.camSup.AIMMODE)
+        {
+            Damage = 60;
+            RectTransform rect = headShotIndicatorUI.GetComponent<RectTransform>();//CENTER OF CROSSHAIR
+            
+            //CROSSHAIR TARGET
+            if (targ != null)
+            {
+                Vector3 targetScreenPos = Camera.main.WorldToScreenPoint(targ.GetComponentInParent<Animator>().GetBoneTransform(HumanBodyBones.Hips).transform.position) + (Vector3.up * 0.3f);
+                Vector2 targetScreenPoint = new Vector2(targetScreenPos.x, targetScreenPos.y);
+
+                float proximity = Vector2.Distance(targetScreenPoint, new Vector2(rect.transform.position.x, rect.transform.position.y));
+
+                if (proximity < (aiming.crosshair.GetComponent<RectTransform>().rect.width / 2)){target = targ;}
+            }
+            //RAY TARGET by HEADSHOT
+            LayerMask mask = 1 << LayerMask.NameToLayer("Default") | 1 << LayerMask.NameToLayer("Enemy") | 1 << LayerMask.NameToLayer("Ghost");
+            RaycastHit hit;
+            Ray ray = Camera.main.ScreenPointToRay(new Vector2(rect.transform.position.x, rect.transform.position.y));
+            Debug.DrawRay(ray.origin, ray.direction * distance, Color.green);
+            if (Physics.Raycast(ray, out hit, distance, mask.value))
+            {
+                if (hit.collider.gameObject.layer == LayerMask.NameToLayer("Default")) { return; }
+                if(hit.collider.gameObject.layer == LayerMask.NameToLayer("Enemy"))
+                {
+                    if (hit.collider.gameObject.GetComponentInParent<Teleport>() != null && hit.collider.gameObject.GetComponentInParent<Teleport>().teleport != 0) { return; }
+                    if (hit.collider.gameObject.GetComponentInParent<NPCController>().dead) { return; }
+                    if (!hit.collider.gameObject.GetComponentInParent<GhostVFX>().Shadower && hit.collider.gameObject.GetComponentInParent<GhostVFX>().invisible) { return; }
+                }
+                if (hit.collider.gameObject.name == "mixamorig:Head") { isHeadshot = true; target = hit.collider.GetComponentInParent<Animator>().gameObject; }
+            }
+
+        }
+        else
+        {
+            Damage = 30;
+            target = targ;
+        }
+    }
+
+    public GameObject EasyTarget(float dist)
+    {
+        List<NPCController> enemies = new List<NPCController>(FindObjectsOfType<NPCController>());
+        List<Person> victims = new List<Person>(FindObjectsOfType<Person>());
+
+        List<GameObject> targets = new List<GameObject>();
+
+        foreach (NPCController enemy in enemies)
+        {
+            targets.Add(enemy.gameObject);
+        }
+
+        foreach (Person victim in victims)
+        {
+            targets.Add(victim.gameObject);
+        }
+
+        GameObject closestTarget = null;
+        float closestDistance = Mathf.Infinity;
+
+        foreach (GameObject target in targets)
+        {
+            float targetDistance = Vector3.Distance(transform.position, target.transform.position);
+            if (targetDistance < dist)
+            {
+                if (targetDistance < closestDistance)
+                {
+                    RaycastHit hit; //if the line between player and enemy hits a default object
+                    if (Physics.Linecast(shootPoint.transform.position, target.GetComponentInParent<Animator>().GetBoneTransform(HumanBodyBones.Hips).transform.position, out hit, 1 << LayerMask.NameToLayer("Default") | 1 << LayerMask.NameToLayer("Enemy") | 1 << LayerMask.NameToLayer("Ghost")))
+                    {
+                        if (hit.collider != null)
+                        {
+                            if (hit.collider.gameObject.layer == LayerMask.NameToLayer("Default")) { continue; }
+                            
+                            float angleThreshold = 30f; // Set the angle threshold in degrees
+                            if (!GetComponent<PlayerController>().gamePad.camSup.AIMMODE) { angleThreshold = 60f; }
+                            Vector3 targetDirection = target.transform.position - transform.position;
+                            float angle = Vector3.Angle(transform.forward, targetDirection);
+
+                            bool facingTarget = angle < angleThreshold;
+                            if (facingTarget)
+                            {
+                                if (hit.collider.gameObject.layer == LayerMask.NameToLayer("Enemy"))
+                                {
+                                    if (hit.collider.gameObject.GetComponentInParent<Teleport>() != null && hit.collider.gameObject.GetComponentInParent<Teleport>().teleport != 0) { continue; }
+                                    if (hit.collider.gameObject.GetComponentInParent<NPCController>().dead) { continue; }
+
+
+                                    if (!hit.collider.gameObject.GetComponentInParent<GhostVFX>().Shadower)//GHOST
+                                    {
+                                        if (!hit.collider.gameObject.GetComponentInParent<GhostVFX>().invisible) { closestTarget = target; closestDistance = targetDistance; }
+                                        
+                                    }
+                                    else { closestTarget = target; closestDistance = targetDistance; }//shadower
+
+
+                                }
+                                else //VICTIM
+                                {
+                                    if (hit.collider.gameObject.transform.position.y > transform.position.y)
+                                    {
+                                        closestTarget = target;
+                                        closestDistance = targetDistance;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+       // Debug.Log(closestTarget.name);
+        return closestTarget;
+    }
+
+
     GameObject FindEnemyMain(Transform head)
     {
         Transform currentTransform = head;

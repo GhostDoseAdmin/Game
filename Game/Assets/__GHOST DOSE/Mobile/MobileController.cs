@@ -7,14 +7,18 @@ using GameManager;
 public class MobileController : MonoBehaviour
 {
     public GameObject flashlight, gear, interact;
-    public GPButton  flashlightBTN;
+    public GPButton  flashlightBTN, interactBTN, gearBTN;
     public VariableJoystick joystick, joystickAim;
-    public RayAimer aimer;
+    //public RayAimer aimer;
     public Camera_Supplyer camSup;
-
+    private PlayerController Player;
+    private ShootingSystem SS;
+    public bool canPickUp;
     private void Start()
     {
-        camSup = Camera.main.GetComponent<Camera_Supplyer>();
+        Player = GameDriver.instance.Player.GetComponent<PlayerController>();
+        SS = Player.GetComponent<ShootingSystem>();
+        camSup = Camera.main.GetComponent<Camera_Supplyer>(); //!!!!!!!!!!!!!!!!!!!!!!!!MOUSE CONTROLS
         if (!NetworkDriver.instance.isMobile) { gameObject.SetActive(false); }
     }
     // Update is called once per frame
@@ -22,21 +26,18 @@ public class MobileController : MonoBehaviour
     {
 
         //AIM
-        //if (!GameDriver.instance.Player.GetComponent<PlayerController>().gearAim && aimer.gameObject.activeSelf) { aimer.gameObject.SetActive(false); }
         if (joystickAim.GetComponent<GPButton>().buttonPressed)
-        { // && !GameDriver.instance.Player.GetComponent<PlayerController>().gearAim
-          //  aimer.gameObject.SetActive(true);
-
-            if (!aimer.AIMING) { aimer.EnableAimer(); }
-        }
-
-        //SHOOT
-        if (joystickAim.GetComponent<GPButton>().buttonReleased)
         {
-           // ReleaseShoot();
-            Invoke("ReleaseShoot",0.1f);
+            //FindValidTarget(10);
+
+            //if (!aimer.AIMING) { aimer.EnableAimer(); }
         }
 
+        if(canPickUp)
+        {
+            interactBTN.gameObject.SetActive(true);
+        }
+        else { interactBTN.gameObject.SetActive(false); }
 
         //FLAHSLIGHT
         if (GameDriver.instance.Player.GetComponent<FlashlightSystem>().FlashLight.GetComponent<Light>().enabled || GameDriver.instance.Player.GetComponent<FlashlightSystem>().WeaponLight.GetComponent<Light>().enabled)
@@ -47,19 +48,10 @@ public class MobileController : MonoBehaviour
         else { flashlight.SetActive(false); }
     }
 
-    void ReleaseShoot()
+
+    private void LateUpdate()
     {
-        //Delay to allow playercontroller to get target info
-        //CancelInvoke("ReleaseShoot");
-        aimer.DisableAimer();
-
-        /*if (aimer.AIMING && GameDriver.instance.Player.GetComponent<ShootingSystem>().canShoot)
-        {
-            aimer.fov = aimer.startFov;
-            aimer.GetComponent<MeshRenderer>().material.SetColor("_Color", Color.cyan);
-        }*/
-
+        canPickUp = false;
     }
-
 
 }

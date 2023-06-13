@@ -574,7 +574,7 @@ public class NPCController : MonoBehaviour
         {
             onlyOnceThisFrame = true;
            
-            if (damageAmount > 5) { AudioManager.instance.Play("enemyflinchimpact", audioSource); }
+            if (damageAmount > 5 && damageAmount<=100) { AudioManager.instance.Play("enemyflinchimpact", audioSource); }
             if (damageAmount > 100) { AudioManager.instance.Play("headshot", null); Debug.Log("---------------------------------------" + damageAmount); }
             //if (animEnemy.GetCurrentAnimatorClipInfo(0)[0].clip!= null && animEnemy.GetCurrentAnimatorClipInfo(0)[0].clip.name != "agro" && GetComponent<Teleport>().teleport==0) { healthEnemy -= damageAmount; }
             healthEnemy -= damageAmount;

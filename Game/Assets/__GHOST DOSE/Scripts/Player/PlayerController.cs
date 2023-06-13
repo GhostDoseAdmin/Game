@@ -345,11 +345,12 @@ public class PlayerController : MonoBehaviour
         //---------------------A N I M A T I O N --------------------------
 		//running ani
         if (NetworkDriver.instance.isMobile) {
-				anim.SetFloat("Walk", joyMagnitude);
-				if (joyMagnitude > 0.9f && !gamePad.aimer.AIMING) { anim.SetBool("Running", true); } else { anim.SetBool("Running", false); }
+		    anim.SetFloat("Walk", joyMagnitude);
+            anim.SetFloat("Strafe", 0);
+            if (joyMagnitude > 0.9f && !gamePad.camSup.AIMMODE) { anim.SetBool("Running", true); } else { anim.SetBool("Running", false); }
 		}
-		else
-		{
+        if(!NetworkDriver.instance.isMobile || gamePad.camSup.AIMMODE)
+        {
             anim.SetFloat("Strafe", strafe);
             anim.SetFloat("Walk", walk);
         }
@@ -444,7 +445,7 @@ public class PlayerController : MonoBehaviour
 			{
 				changingGear = false;
 				//START OF GEARCHANGE
-				if ((Input.GetKeyDown(InputManager.instance.gear)) || (triggerSb7 && !sb7) || (triggerSb7 && sb7))
+				if (((Input.GetKeyDown(InputManager.instance.gear) && !NetworkDriver.instance.isMobile) || (GameDriver.instance.Player.GetComponent<PlayerController>().gamePad.gearBTN.buttonReleased && NetworkDriver.instance.isMobile)) || (triggerSb7 && !sb7) || (triggerSb7 && sb7))
 				{
 
 					emitGear = true;
@@ -505,48 +506,10 @@ public class PlayerController : MonoBehaviour
         anim.SetBool("GetGear", false);
     }
 
-	void MobileAim()
-	{
-
-        if (NetworkDriver.instance.isMobile)
-        {
-            //mobileGearAim = false;
-            NPCController[] enemies = FindObjectsOfType<NPCController>();
-            NPCController closestEnemy = null;
-            float closestDistance = 99999;
-            foreach (NPCController enemy in enemies)
-            {
-                float enemyDist = Vector3.Distance(transform.position, enemy.transform.position);
-                //Debug.Log("CHECKING DISTANCE     " + enemyDist);
-                if (enemyDist > 10) { continue; }
-                if (enemyDist > closestDistance) { continue; }
-				//check if fov
-                Quaternion look = Quaternion.LookRotation(enemy.transform.position - transform.position);
-                float angle = Quaternion.Angle(transform.rotation, look);
-				if (angle > 30) { continue; }
-                //check line of sight
-                Ray ray = new Ray(transform.position + Vector3.up, ((enemy.transform.position + Vector3.up) - (transform.position + Vector3.up)).normalized);
-                LayerMask mask = 1 << LayerMask.NameToLayer("Default") | 1 << LayerMask.NameToLayer("Enemy") | 1 << LayerMask.NameToLayer("Ghost");
-                RaycastHit[] hits = Physics.RaycastAll(ray, enemyDist+0.5f, mask);
-                Debug.DrawLine(transform.position + Vector3.up, enemy.transform.position + Vector3.up, Color.blue);
-                bool inLineOfSight = false;
-                foreach (RaycastHit hit in hits)
-                {
-                    if (hit.collider.gameObject.layer != LayerMask.NameToLayer("Enemy")) { inLineOfSight = false; break; }//environment obstruction
-					else { inLineOfSight = true;  }
-                }
-				if (!inLineOfSight) { continue; }
-                closestDistance = enemyDist; 
-				closestEnemy = enemy;
-            }
-			//if (closestEnemy != null) { mobileGearAim = true; }
-			//else { mobileGearAim = false; }
-        }
-    }
+	
     void GearAim()
 	{
-		MobileAim();
-       
+
         if (!changingGear)
 		{
             if (gear == 3 || gear==0) //SPIRIT BOX AND REM
@@ -556,7 +519,7 @@ public class PlayerController : MonoBehaviour
 				newHandWeight = 1f;
             }
 			
-                if ( (Input.GetMouseButton(1) && !NetworkDriver.instance.isMobile) || (gamePad.aimer.AIMING && NetworkDriver.instance.isMobile))//AIMING  //&& gamePad.aimer.gameObject.activeSelf 
+                if ( (Input.GetMouseButton(1) && !NetworkDriver.instance.isMobile) || (gamePad.joystickAim.GetComponent<GPButton>().buttonPressed && NetworkDriver.instance.isMobile))//AIMING  //&& gamePad.aimer.gameObject.activeSelf 
 				{
                     if (!gearAim) { if (gear == 1) { AudioManager.instance.Play("camfocus", audioSource); } }
 
@@ -607,7 +570,7 @@ public class PlayerController : MonoBehaviour
 				}
 
 				//--------------------------MOBILE SHOOTING--------------------------------
-            if (NetworkDriver.instance.isMobile && gamePad.joystickAim.GetComponent<GPButton>().buttonReleased && gamePad.aimer.AIMING)
+            if (NetworkDriver.instance.isMobile && gamePad.joystickAim.GetComponent<GPButton>().buttonReleased && ((GetComponent<ShootingSystem>().target!=null && gamePad.camSup.AIMMODE)|| !gamePad.camSup.AIMMODE))
             {
                 if (gear == 1) { anim.SetBool("Shoot", true); GetComponent<ShootingSystem>().Shoot(); AudioManager.instance.StopPlaying("camfocus", audioSource); }
                 if (gear == 3) { anim.SetBool("Throw", true); throwing = true; }
@@ -642,7 +605,7 @@ public class PlayerController : MonoBehaviour
 	#region Flashlight
 	private void CheckFlashlight()
     {
-		if ((Input.GetKeyDown(InputManager.instance.flashlightSwitchV2) || InputManager.instance.GetFLkeyDown) && is_FlashlightAim == false)
+		if ((Input.GetKeyDown(InputManager.instance.flashlightSwitchV2) || GetComponent<PlayerController>().gamePad.flashlightBTN.buttonReleased) && is_FlashlightAim == false)
 		{
 			//if (gameObject.GetComponent<FlashlightSystem>().hasFlashlight == true)
             {
@@ -652,7 +615,7 @@ public class PlayerController : MonoBehaviour
                 
             }
 		}
-		else if ((Input.GetKeyDown(InputManager.instance.flashlightSwitchV2) || InputManager.instance.GetFLkeyDown) && is_FlashlightAim == true)
+		else if ((Input.GetKeyDown(InputManager.instance.flashlightSwitchV2) || GetComponent<PlayerController>().gamePad.flashlightBTN.buttonReleased) && is_FlashlightAim == true)
 		{
 			is_Flashlight = false;
 			is_FlashlightAim = false;
