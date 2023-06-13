@@ -19,13 +19,13 @@ public class K2 : MonoBehaviour
     private GameObject hud;
     private void Awake()
     {
-        hud =GameObject.Find("K2Hud");
+        hud = Camera.main.gameObject.GetComponent<Aiming>().K2;
     }
     void Start()
     {
             closestEnemyDist = 20f;//MAX DISTANCE
-            if (transform.root.name == "CLIENT") { isClient = true; }
-            else if (transform.root.name == "WESTIN" || transform.root.name == "TRAVIS") { isClient = false; }
+            if (GameDriver.instance.Player.transform.parent.name == "CLIENT") { isClient = true; }
+            else if (GameDriver.instance.Player.transform.parent.name == "WESTIN" || GameDriver.instance.Player.transform.parent.name == "TRAVIS") { isClient = false; }
             else { DestroyImmediate(this.gameObject); }//DEAD PLAYER
 
             if (!isClient) { shootPoint = GameDriver.instance.Player.GetComponent<ShootingSystem>().shootPoint; }
