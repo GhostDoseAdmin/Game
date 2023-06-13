@@ -85,18 +85,13 @@ public class HealthSystem : MonoBehaviour
 
 	void Update()
 	{
-		HealthPlayer();
-		Treatment();
+		UpdateHealth();
+		//Treatment();
 	}
+
+
 
 	void UpdateHealth()
-    {
-		healthPrecent = (1-(maxHealth - Health) / maxHealth);
-		healthLevel.fillAmount = healthPrecent;
-        bloodEffect.color = new Color (255, 0, 0, (1-healthPrecent));
-	}
-
-	void HealthPlayer()
 	{
 		if (Health <= 0)
 		{
@@ -107,14 +102,21 @@ public class HealthSystem : MonoBehaviour
 		{
 			Health += (restoringHealth / 10) * Time.deltaTime;
 			//healthLevel.fillAmount += (restoringHealth / 1000) * Time.deltaTime;
-			UpdateHealth();
 		}
 
 		if (Health >= maxHealth)
 		{
 			Health = maxHealth;
 		}
-	}
+
+		if (Health > 0)
+		{
+			healthPrecent = Health / maxHealth;
+			healthLevel.fillAmount = healthPrecent;
+			bloodEffect.color = new Color(255, 0, 0, (1 - healthPrecent));
+		}
+
+    }
 
 	public void HealthDamage(int damage , Vector3 force)
     {
@@ -126,7 +128,6 @@ public class HealthSystem : MonoBehaviour
        GameObject.Find("PlayerCamera").GetComponent<Camera_Controller>().InvokeShake(1f, 2f); 
         Health -= damage;
 		//healthLevel.fillAmount -= damage * 0.01f;
-		UpdateHealth();
 		Invoke("changeHealthUIColor",0.5f);
 	}
 
@@ -171,7 +172,7 @@ public class HealthSystem : MonoBehaviour
         gameObject.SetActive(false);
     }
 
-	void Treatment()
+	/*void Treatment()
     {
 		if (Input.GetKey(InputManager.instance.treatment) && kitCount > 0 && Health < maxHealth)
 		{
@@ -211,5 +212,5 @@ public class HealthSystem : MonoBehaviour
 				}
 			}
 		} 
-	}
+	}*/
 }
