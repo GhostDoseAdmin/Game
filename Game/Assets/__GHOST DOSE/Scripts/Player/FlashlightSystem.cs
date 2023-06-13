@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using GameManager;
+using NetworkSystem;
 public class FlashlightSystem : MonoBehaviour
 {
     [Header("FLASHLIGHT PARAMETERS")]
@@ -23,9 +24,9 @@ public class FlashlightSystem : MonoBehaviour
 
     [Header("FLASHLIGHT UI")]
     [Space(10)]
-    [SerializeField] private Image batteryLevel = null;
+    //[SerializeField] private Image batteryLevel = null;
     [SerializeField] private Image batteryUI = null;
-    [SerializeField] private Text batteryCountUI = null;
+    //[SerializeField] private Text batteryCountUI = null;
     [SerializeField] private Image radialIndicator = null;
 
     [Header("FLASHLIGHT SOUNDS")]
@@ -88,7 +89,7 @@ public class FlashlightSystem : MonoBehaviour
 
         inventoryFlashlight.SetActive(false);
         //FlashLight.intensity = maxFlashlightIntensity;
-        batteryCountUI.text = batteryCount.ToString("0");
+        //batteryCountUI.text = batteryCount.ToString("0");
     }
 
     public void EnableInventory()
@@ -101,7 +102,7 @@ public class FlashlightSystem : MonoBehaviour
     public void CollectBattery(int batteries)
     {
         batteryCount = batteryCount + batteries;
-        batteryCountUI.text = batteryCount.ToString("0");
+        //batteryCountUI.text = batteryCount.ToString("0");
         batteryUI.enabled = true;
         AudioManager.instance.Play(pickUp, gameObject.GetComponent<PlayerController>().audioSource);
     }
@@ -117,7 +118,7 @@ public class FlashlightSystem : MonoBehaviour
         if (hasFlashlight)
         {
             //---------TOGGLE FLASHLGITH ON AND OFF---------------------------------
-            if ((Input.GetKeyDown(InputManager.instance.flashlightSwitchV2) || GetComponent<PlayerController>().gamePad.flashlightBTN.buttonReleased)  && !showOnce)
+            if ((Input.GetKeyDown(InputManager.instance.flashlightSwitchV2) || (NetworkDriver.instance.isMobile && GetComponent<PlayerController>().gamePad.flashlightBTN.buttonReleased))  && !showOnce)
             {
                 if (FlashLight.enabled == false)
                 {
@@ -169,7 +170,7 @@ public class FlashlightSystem : MonoBehaviour
             {
                 {
                    // FlashLight.intensity += (0.05f * Time.deltaTime) * maxFlashlightIntensity;
-                    batteryLevel.fillAmount += 0.05f * Time.deltaTime;
+                    //batteryLevel.fillAmount += 0.05f * Time.deltaTime;
                 }
 
                 //if (FlashLight.intensity >= maxFlashlightIntensity)

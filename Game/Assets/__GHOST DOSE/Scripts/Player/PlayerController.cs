@@ -110,6 +110,8 @@ public class PlayerController : MonoBehaviour
     {
         audioSource = gameObject.AddComponent<AudioSource>();
         audioSource.spatialBlend = 1.0f;
+		targetPos = GameObject.Find("TargetLook").transform;
+        cameraController = Camera.main.gameObject.GetComponent<Camera_Controller>();
 
     }
     public void SetupRig()
@@ -445,7 +447,7 @@ public class PlayerController : MonoBehaviour
 			{
 				changingGear = false;
 				//START OF GEARCHANGE
-				if (((Input.GetKeyDown(InputManager.instance.gear) && !NetworkDriver.instance.isMobile) || (GameDriver.instance.Player.GetComponent<PlayerController>().gamePad.gearBTN.buttonReleased && NetworkDriver.instance.isMobile)) || (triggerSb7 && !sb7) || (triggerSb7 && sb7))
+				if (((Input.GetKeyDown(InputManager.instance.gear) && !NetworkDriver.instance.isMobile) || (NetworkDriver.instance.isMobile && GameDriver.instance.Player.GetComponent<PlayerController>().gamePad.gearBTN.buttonReleased)) || (triggerSb7 && !sb7) || (triggerSb7 && sb7))
 				{
 
 					emitGear = true;
@@ -519,7 +521,7 @@ public class PlayerController : MonoBehaviour
 				newHandWeight = 1f;
             }
 			
-                if ( (Input.GetMouseButton(1) && !NetworkDriver.instance.isMobile) || (gamePad.joystickAim.GetComponent<GPButton>().buttonPressed && NetworkDriver.instance.isMobile))//AIMING  //&& gamePad.aimer.gameObject.activeSelf 
+                if ( (Input.GetMouseButton(1) && !NetworkDriver.instance.isMobile) || (NetworkDriver.instance.isMobile && gamePad.joystickAim.GetComponent<GPButton>().buttonPressed))//AIMING  //&& gamePad.aimer.gameObject.activeSelf 
 				{
                     if (!gearAim) { if (gear == 1) { AudioManager.instance.Play("camfocus", audioSource); } }
 
@@ -605,7 +607,7 @@ public class PlayerController : MonoBehaviour
 	#region Flashlight
 	private void CheckFlashlight()
     {
-		if ((Input.GetKeyDown(InputManager.instance.flashlightSwitchV2) || GetComponent<PlayerController>().gamePad.flashlightBTN.buttonReleased) && is_FlashlightAim == false)
+		if ((Input.GetKeyDown(InputManager.instance.flashlightSwitchV2) || (NetworkDriver.instance.isMobile && GetComponent<PlayerController>().gamePad.flashlightBTN.buttonReleased)) && is_FlashlightAim == false)
 		{
 			//if (gameObject.GetComponent<FlashlightSystem>().hasFlashlight == true)
             {
@@ -615,7 +617,7 @@ public class PlayerController : MonoBehaviour
                 
             }
 		}
-		else if ((Input.GetKeyDown(InputManager.instance.flashlightSwitchV2) || GetComponent<PlayerController>().gamePad.flashlightBTN.buttonReleased) && is_FlashlightAim == true)
+		else if ((Input.GetKeyDown(InputManager.instance.flashlightSwitchV2) || (NetworkDriver.instance.isMobile && GetComponent<PlayerController>().gamePad.flashlightBTN.buttonReleased)) && is_FlashlightAim == true)
 		{
 			is_Flashlight = false;
 			is_FlashlightAim = false;

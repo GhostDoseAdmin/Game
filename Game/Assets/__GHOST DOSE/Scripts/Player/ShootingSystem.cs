@@ -76,6 +76,7 @@ public class ShootingSystem : MonoBehaviour
     {
         util = new utilities();
 
+        camBatteryUI = GameObject.Find("cam_battery_ui").GetComponent<Image>();
         shootPoint = util.FindChildObject(this.gameObject.transform, "ShootPoint").transform;
         muzzleFlash = util.FindChildObject(this.gameObject.transform, "MuzzleFlashEffect").GetComponent<ParticleSystem>();
         Shell = util.FindChildObject(this.gameObject.transform, "Puff").GetComponent<ParticleSystem>();
@@ -89,6 +90,7 @@ public class ShootingSystem : MonoBehaviour
         camera = transform.parent.Find("PlayerCamera").GetComponent<Camera>();
         aiming = transform.parent.Find("PlayerCamera").GetComponent<Aiming>();
         planchette.SetActive(false);
+
 
     }
 

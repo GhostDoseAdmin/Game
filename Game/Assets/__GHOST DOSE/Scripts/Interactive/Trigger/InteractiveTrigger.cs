@@ -29,7 +29,7 @@ public class InteractiveTrigger : MonoBehaviour
 
     private void Update()
     {
-        if (((Input.GetKeyDown(InputManager.instance.interactButton) && !NetworkDriver.instance.isMobile) || (GameDriver.instance.Player.GetComponent<PlayerController>().gamePad.interactBTN.buttonReleased && NetworkDriver.instance.isMobile)) && allowInteraction)
+        if ((Input.GetKeyDown(InputManager.instance.interactButton) && !NetworkDriver.instance.isMobile)  && allowInteraction)
         {
             if (Time.time > timer + delay)
             {
@@ -37,7 +37,14 @@ public class InteractiveTrigger : MonoBehaviour
                 timer = Time.time;//cooldown
             }
         }
-
+        if (NetworkDriver.instance.isMobile)
+        {
+            if(GameDriver.instance.Player.GetComponent<PlayerController>().gamePad.interactBTN.buttonReleased && allowInteraction)
+            {
+                interactiveObject.GetComponent<Item>().ActivateObject(false);
+                timer = Time.time;//cooldown
+            }
+        }
 
         if (interactiveObject == null)
         {

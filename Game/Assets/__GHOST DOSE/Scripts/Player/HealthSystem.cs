@@ -26,7 +26,7 @@ public class HealthSystem : MonoBehaviour
 	[Header("HEALTH UI")]
 	[Space(10)]
 	[SerializeField] private Image healthLevel = null;
-	[SerializeField] private Text kitCountUI = null;
+	//[SerializeField] private Text kitCountUI = null;
 	[SerializeField] private Image kitIndicator = null;
 	[SerializeField] private Image bloodEffect = null;
 	public float healthPrecent;
@@ -72,13 +72,14 @@ public class HealthSystem : MonoBehaviour
 	void Start()
 	{
 		dead = false;
-		kitCountUI.text = kitCount.ToString("0");
-	}
+		//healthLevel = GameObject.Find();
+        //kitCountUI.text = kitCount.ToString("0");
+    }
 
     public void CollectKit(int firstkit)
 	{
 		kitCount = kitCount + firstkit;
-		kitCountUI.text = kitCount.ToString("0");
+		//kitCountUI.text = kitCount.ToString("0");
 		kitIndicator.enabled = true;
 		AudioManager.instance.Play(pickUp, gameObject.GetComponent<PlayerController>().audioSource);
 	}
