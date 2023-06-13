@@ -48,6 +48,7 @@ namespace NetworkSystem
         public int LEVELINDEX;
         // public float SPEEDSCORE;
         public GameObject PlayerScores;
+        public GameObject LevelManager;
          public bool isMobile = false;
         public bool FORCEMOBILE;
         public void Awake()
