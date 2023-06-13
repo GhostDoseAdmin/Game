@@ -39,7 +39,9 @@ public class Aiming : MonoBehaviour {
 		{
 			gamePad = GameDriver.instance.Player.GetComponent<PlayerController>().gamePad;
 			crosshair.GetComponent<RectTransform>().localScale = new Vector3(1, 1, 1);
-		}
+			crosshair.transform.GetChild(2).gameObject.SetActive(false);
+            crosshair.transform.GetChild(3).gameObject.SetActive(false);
+        }
 
     }
 

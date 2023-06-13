@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using NetworkSystem;
 using GameManager;
+using UnityEngine.UI;
 
 public class MobileController : MonoBehaviour
 {
@@ -32,7 +33,7 @@ public class MobileController : MonoBehaviour
 
             //if (!aimer.AIMING) { aimer.EnableAimer(); }
         }
-
+        //INTERACT
         if(canPickUp)
         {
             interactBTN.gameObject.SetActive(true);
@@ -46,6 +47,15 @@ public class MobileController : MonoBehaviour
 
         }
         else { flashlight.SetActive(false); }
+        //AIMER
+        if (camSup.AIMMODE)
+        {
+            joystickAim.handle.gameObject.GetComponent<Image>().color = Color.red;
+        }
+        else
+        {
+            joystickAim.handle.gameObject.GetComponent<Image>().color = Color.white;
+        }
     }
 
 
