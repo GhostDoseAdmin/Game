@@ -325,12 +325,12 @@ namespace NetworkSystem
             IEnumerator waitForZozoActive()
             {
                 
-                while (!GameDriver.instance.GetComponentInChildren<VictimControl>().ZOZO.activeSelf)
+                while (!LevelManager.GetComponentInChildren<VictimControl>().ZOZO.activeSelf)
                 {
                     Debug.Log("WAIT FOR ACTIVE");
                     yield return new WaitForSeconds(0.2f);
                 }
-                GameDriver.instance.GetComponentInChildren<VictimControl>().ZOZO.GetComponent<ZozoControl>().ChargeLaser(true);
+               LevelManager.GetComponentInChildren<VictimControl>().ZOZO.GetComponent<ZozoControl>().ChargeLaser(true);
             }
             //-----------------EVENT  ----------------->
             sioCom.Instance.On("event", (payload) =>
@@ -361,7 +361,7 @@ namespace NetworkSystem
                             GameDriver.instance.Client.GetComponent<ClientPlayerController>().triggerShoot = true;//shoot ani
                             if (obj != null) { obj.GetComponent<NPCController>().TakeDamage(int.Parse(dict["dmg"]), true); } //do flinch
                         }
-                        else { GameDriver.instance.GetComponentInChildren<VictimControl>().testAnswer(obj); }
+                        else { LevelManager.GetComponentInChildren<VictimControl>().testAnswer(obj); }
                     }
                     //ENEMY
                     if (dict.ContainsKey("zap")) { obj.GetComponent<NPCController>().Zap();  }
@@ -379,7 +379,7 @@ namespace NetworkSystem
                                 if (dict["type"] == "key") { obj.GetComponent<Key>().DestroyWithSound(true); }
                                 if (dict["type"] == "med") { obj.GetComponent<FirstAidKit>().DestroyWithSound(true); }
                                 if (dict["type"] == "bat") { obj.GetComponent<Battery>().DestroyWithSound(true); }
-                                if (dict["type"] == "cand") { obj.GetComponent<Candle>().DestroyWithSound(true); GameDriver.instance.GetComponentInChildren<VictimControl>().candleCount++; }
+                                if (dict["type"] == "cand") { obj.GetComponent<Candle>().DestroyWithSound(true); LevelManager.GetComponentInChildren<VictimControl>().candleCount++; }
                             }
                             else { if (dict["type"] == "key") { KeyInventory.instance.RemoveKey(dict["pass"]); } }//local player already picked up
                         }
@@ -394,8 +394,8 @@ namespace NetworkSystem
                             if (dict["type"] == "expose") { obj.GetComponent<ColdSpot>().Exposed(true); }
                             //GameObject.Find("ColdSpotManager").GetComponent<ColdSpotControl>().ChooseColdSpotNetwork(int.Parse(dict["q1"]), int.Parse(dict["q2"]), int.Parse(dict["q3"]));
                         }
-                        if (dict["event"] == "randomvictim") { Debug.Log(" RECEIVED RANDOM VICTIM  " + obj.name); GameDriver.instance.GetComponentInChildren<VictimControl>().RandomVictim(obj); }
-                        if (dict["event"] == "startcircle") { GameDriver.instance.GetComponentInChildren<VictimControl>().ActivateCircle(true); }
+                        if (dict["event"] == "randomvictim") { Debug.Log(" RECEIVED RANDOM VICTIM  " + obj.name); LevelManager.GetComponentInChildren<VictimControl>().RandomVictim(obj); }
+                        if (dict["event"] == "startcircle") { LevelManager.GetComponentInChildren<VictimControl>().ActivateCircle(true); }
                     }
                 }
             });
@@ -572,7 +572,7 @@ namespace NetworkSystem
                 //UpdateEnemies(false);
                 ColdSpot[] coldSpots = FindObjectsOfType<ColdSpot>();
                 foreach (ColdSpot coldspot in coldSpots) { coldspot.Respawn(null); }
-                GameDriver.instance.GetComponentInChildren<VictimControl>().RandomVictim(null);
+                LevelManager.GetComponentInChildren<VictimControl>().RandomVictim(null);
             }
 
 
