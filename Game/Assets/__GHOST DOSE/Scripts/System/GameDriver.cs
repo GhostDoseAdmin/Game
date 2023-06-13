@@ -127,7 +127,7 @@ namespace GameManager
         public void SetupScene()//ON AWAKE OR SCENE LOAD
         {
             {
-
+                NetworkDriver.instance.LevelManager = GameObject.Find("LevelManager");
                 //Debug.Log("SETTING UP SCENE");
                 TRAVIS = GameObject.Find("TRAVIS");
                 WESTIN = GameObject.Find("WESTIN");
