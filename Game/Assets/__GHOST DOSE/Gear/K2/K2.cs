@@ -17,13 +17,11 @@ public class K2 : MonoBehaviour
     public GameObject closestEnemy;
     private float k2range = 10f;
     private GameObject hud;
-    private void Awake()
-    {
-        hud = Camera.main.gameObject.GetComponent<Aiming>().K2;
-    }
+
     void Start()
     {
-            closestEnemyDist = 20f;//MAX DISTANCE
+        hud = Camera.main.gameObject.GetComponent<Aiming>().K2;
+        closestEnemyDist = 20f;//MAX DISTANCE
             if (GameDriver.instance.Player.transform.parent.name == "CLIENT") { isClient = true; }
             else if (GameDriver.instance.Player.transform.parent.name == "WESTIN" || GameDriver.instance.Player.transform.parent.name == "TRAVIS") { isClient = false; }
             else { DestroyImmediate(this.gameObject); }//DEAD PLAYER

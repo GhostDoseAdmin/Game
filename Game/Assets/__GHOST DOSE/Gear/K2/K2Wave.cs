@@ -10,7 +10,6 @@ public class K2Wave : MonoBehaviour
     public bool isClient = false;
     public GameObject K2Source;
     public GameObject hud;
-    private 
     // Start is called before the first frame update
     void Start()
     {
