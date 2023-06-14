@@ -364,7 +364,17 @@ namespace NetworkSystem
                         else { LevelManager.GetComponentInChildren<VictimControl>().testAnswer(obj); }
                     }
                     //ENEMY
-                    if (dict.ContainsKey("zap")) { obj.GetComponent<NPCController>().Zap();  }
+                    if (dict.ContainsKey("zap")) {
+                        foreach (GameObject enemy in GameDriver.instance.GetComponent<DisablerControl>().enemyObjects)
+                        {
+                            if (enemy.name == dict["obj"])
+                            {
+                                if (!enemy.activeSelf) { enemy.SetActive(true); }
+                                enemy.GetComponent<NPCController>().active_timer = timer_delay * 5;//DISABLE IF NO MESSAGES BEYOND 0.6s
+                                enemy.GetComponent<NPCController>().Zap();
+                            }
+                        }
+                    }
                     
                     if (dict.ContainsKey("event"))
                     {
@@ -407,11 +417,18 @@ namespace NetworkSystem
                 JObject data = JObject.Parse(payload);
                 Dictionary<string, string> dict = data.ToObject<Dictionary<string, string>>();
                 Debug.Log("RECEIVING TELEPORT " + data);
-                GameObject enemy = GameObject.Find(dict["obj"]);
-                    if (enemy.GetComponent<Teleport>().teleport == 0 || (enemy.GetComponent<Teleport>().teleport == 1.5 && float.Parse(dict["tp"]) == 3f))
+                    foreach (GameObject enemy in GameDriver.instance.GetComponent<DisablerControl>().enemyObjects)
                     {
-                        enemy.GetComponent<Teleport>().teleport = float.Parse(dict["tp"]);
-                        enemy.transform.position = new Vector3(float.Parse(dict["x"]), float.Parse(dict["y"]), float.Parse(dict["z"]));
+                        if (enemy.name == dict["obj"])
+                        {
+                            if (!enemy.activeSelf) { enemy.SetActive(true); }
+                            enemy.GetComponent<NPCController>().active_timer = timer_delay * 5;//DISABLE IF NO MESSAGES BEYOND 0.6s
+                            if (enemy.GetComponent<Teleport>().teleport == 0 || (enemy.GetComponent<Teleport>().teleport == 1.5 && float.Parse(dict["tp"]) == 3f))
+                            {
+                                enemy.GetComponent<Teleport>().teleport = float.Parse(dict["tp"]);
+                                enemy.transform.position = new Vector3(float.Parse(dict["x"]), float.Parse(dict["y"]), float.Parse(dict["z"]));
+                            }
+                        }
                     }
                 }
             });
@@ -423,7 +440,7 @@ namespace NetworkSystem
                 if (OTHERS_SCENE_READY && SCENE_READY)
                 {
                     JObject data = JObject.Parse(payload);
-                    //Debug.Log("SYNCING " + data);
+                    Debug.Log("SYNCING " + data);
                     Dictionary<string, Dictionary<string, string>> dict = data.ToObject<Dictionary<string, Dictionary<string, string>>>();
                     // Log the object positions to the console
                     foreach (KeyValuePair<string, Dictionary<string, string>> obj in dict)
@@ -436,7 +453,7 @@ namespace NetworkSystem
                                 //--------ACTIVE-----------
                                 //if (obj.Value["ax"] != null) { enemy.SetActive(bool.Parse(obj.Value["ax"])); }
                                 if (!enemy.activeSelf) {  enemy.SetActive(true); } //if (!enemy.tag.Contains("ZOZO")){
-                                enemy.GetComponent<NPCController>().active_timer = timer_delay * 2;//DISABLE IF NO MESSAGES BEYOND 0.6s
+                                enemy.GetComponent<NPCController>().active_timer = timer_delay * 5;//DISABLE IF NO MESSAGES BEYOND 0.6s
                                                                                                    //--------POSITION---------
                                 Vector3 targPos;
                                 if (obj.Value["x"] != null)
@@ -513,6 +530,8 @@ namespace NetworkSystem
                         obj.GetComponent<NPCController>().prev_dest = obj.GetComponent<NPCController>().destination;
                         if (obj.GetComponent<NPCController>().prev_targ != obj.GetComponent<NPCController>().target) { if (obj.GetComponent<NPCController>().target != null) { propsDict.Add("tx", obj.GetComponent<NPCController>().target.name); } else { propsDict.Add("tx", ""); } }
                         obj.GetComponent<NPCController>().prev_targ = obj.GetComponent<NPCController>().target;
+                        //DISABLE IS DONE LOCALLY ON NPC CONTROLLER FOR CLIENT & DISABLECONTROLLER ON HOST
+                        
                         //obj.Value.ContainsKey("dx")
                        
                         //propsDict.Add("ax", obj.gameObject.activeSelf.ToString());
@@ -585,9 +604,9 @@ namespace NetworkSystem
             timeElapsed = Time.time -startTime;
             GameObject.Find("PlayerCamera").transform.SetParent(GameDriver.instance.gameObject.transform);
 
-            if (SceneManager.GetActiveScene().name == "DarkEchoes" || SceneManager.GetActiveScene().name == "Experiment") { NetworkDriver.instance.LEVELINDEX = 1; }
-            if (SceneManager.GetActiveScene().name == "Forsaken") { NetworkDriver.instance.LEVELINDEX = 2; }
-            if (SceneManager.GetActiveScene().name == "HollowAngel") { NetworkDriver.instance.LEVELINDEX = 3; }
+            if (SceneManager.GetActiveScene().name == "DarkEchoes" || SceneManager.GetActiveScene().name == "Experiment") { LEVELINDEX = 1; }
+            if (SceneManager.GetActiveScene().name == "Forsaken") { LEVELINDEX = 2; }
+            if (SceneManager.GetActiveScene().name == "HollowAngel") { LEVELINDEX = 3; }
 
             SceneManager.LoadScene("EndGame");
 
