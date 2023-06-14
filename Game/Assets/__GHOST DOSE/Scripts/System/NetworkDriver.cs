@@ -371,7 +371,7 @@ namespace NetworkSystem
                             {
                                 if (!enemy.activeSelf) { enemy.SetActive(true); }
                                 enemy.GetComponent<NPCController>().active_timer = timer_delay * 5;//DISABLE IF NO MESSAGES BEYOND 0.6s
-                                enemy.GetComponent<NPCController>().Zap();
+                                enemy.GetComponent<NPCController>().zapClient = 30;
                             }
                         }
                     }
@@ -518,8 +518,8 @@ namespace NetworkSystem
                 {
 
                     if ((obj.activeSelf == true && checkActive) || (!checkActive))
-                    //if (GetComponent<DisablerControl>().closestPlayerDist<=GetComponent<DisablerControl>().disableDistance)
-                    {
+                        //if (!GameDriver.instance.GetComponent<DisablerControl>().enemyObjects.Contains(obj))
+                        {
                         Dictionary<string, string> propsDict = new Dictionary<string, string>();
                         //Debug.Log("PREPARING UPDATE FOR OBJ" + obj.name);
                         // Add the position values to the dictionary

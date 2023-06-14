@@ -151,6 +151,15 @@ public class NPCController : MonoBehaviour
     {
         //DEBUG ZAP --TURN OFF ZAP
         if (animEnemy.GetCurrentAnimatorClipInfo(0).Length > 0 && animEnemy.GetCurrentAnimatorClipInfo(0)[0].clip.name != "zapAni" && zapActive) { zapActive = false; }
+        //CLIENT ZAP
+        zapClient--;
+        if (zapClient > 0) {
+            if (animEnemy.GetCurrentAnimatorClipInfo(0).Length > 0 && animEnemy.GetCurrentAnimatorClipInfo(0)[0].clip.name != "zapAni")
+            {
+                animEnemy.Play("zapAni");
+            }
+        }
+
 
         //---CLIENT SIDE PREDICTION--close position gap
         if (!NetworkDriver.instance.HOST)
@@ -348,6 +357,8 @@ public class NPCController : MonoBehaviour
     public void TriggerZapOn() { zapActive = true; }
     public void TriggerZapOff() { zapActive = false; }
     public void ZapReset() { canZap = true; }
+
+    public int zapClient;
     public void Zap()
     {
         animEnemy.Play("zapAni"); canZap = false; Invoke("ZapReset", 8f);
