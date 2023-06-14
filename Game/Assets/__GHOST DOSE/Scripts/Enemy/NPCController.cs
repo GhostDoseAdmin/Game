@@ -82,7 +82,7 @@ public class NPCController : MonoBehaviour
     public GameObject destination;
     [HideInInspector] public Vector3 truePosition;
     [HideInInspector] public bool update;
-    private Outline outline;
+    public Outline outline;
     [HideInInspector] public bool activateOutline;
     public bool dead;
     private bool engageSound;
