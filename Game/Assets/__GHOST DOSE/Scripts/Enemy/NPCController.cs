@@ -149,6 +149,9 @@ public class NPCController : MonoBehaviour
     public float active_timer;
     void Update()
     {
+        //DEBUG ZAP --TURN OFF ZAP
+        if (animEnemy.GetCurrentAnimatorClipInfo(0).Length > 0 && animEnemy.GetCurrentAnimatorClipInfo(0)[0].clip.name != "zapAni" && zapActive) { zapActive = false; }
+
         //---CLIENT SIDE PREDICTION--close position gap
         if (!NetworkDriver.instance.HOST)
         {
