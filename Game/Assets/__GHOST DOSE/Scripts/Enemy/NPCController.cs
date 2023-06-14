@@ -184,6 +184,9 @@ public class NPCController : MonoBehaviour
 
         //ALWAYS CHOOSE CLOSEST TARGET
         if (p1_dist < p2_dist) { distance = p1_dist; closestPlayer = Player.transform; } else { distance = p2_dist; closestPlayer = Client.transform; }
+        if (!Player.gameObject.activeSelf) { distance = p2_dist; closestPlayer = Client.transform; }
+        if (!Client.gameObject.activeSelf) { distance = p1_dist; closestPlayer = Player.transform; }
+
         //if (ZOZO) { if (closestPlayer != null) { target = closestPlayer; } }
 
         float teleport = GetComponent<Teleport>().teleport;
@@ -559,6 +562,7 @@ public class NPCController : MonoBehaviour
             animEnemy.Play("React");
         }
     }
+
     private void Agro(bool otherPlayer)
     {
         if (!agro)

@@ -8,6 +8,7 @@ using Unity.VisualScripting;
 using Newtonsoft.Json;
 using NetworkSystem;
 using InteractionSystem;
+using static UnityEditor.ShaderGraph.Internal.KeywordDependentCollection;
 
 public class ZozoControl : MonoBehaviour
 {
@@ -153,11 +154,21 @@ public class ZozoControl : MonoBehaviour
 
 
     }
-   /* bool hasTriedLaser;
-    void HasTriedLaser()
+    private bool zozoCanFlinsh = true;
+    private void zozoFlinchReset()
     {
-        hasTriedLaser = true;
-    }*/
+        zozoCanFlinsh = true;
+    }
+    public void ZOZOFlinch()
+    {
+        if (GetComponent<Animator>().GetCurrentAnimatorClipInfo(0).Length > 0 && GetComponent<Animator>().GetCurrentAnimatorClipInfo(0)[0].clip.name != "agro" && !GetComponent<NPCController>().zozoLaser && zozoCanFlinsh && !GetComponent<Animator>().GetBool("Attack")) // && !animEnemy.GetCurrentAnimatorStateInfo(0).IsName("Attack")
+        {
+            zozoCanFlinsh = false;
+            Invoke("zozoFlinchReset",5f);
+            GetComponent<Animator>().Play("React");
+            AudioManager.instance.Play("zozoflinch", null);
+        }
+    }
     public void TriggerCharge()//FROM ANIMATION, FOR EFFECTS
     {
         charging = true;
