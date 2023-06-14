@@ -270,6 +270,11 @@ public class ShootingSystem : MonoBehaviour
                         //if (!isVisible) { Debug.Log("INVISISHOT"); }
                         if (hit.collider.gameObject.name == "mixamorig:Head") { isHeadshot = true; }
                     }
+
+                    if (target.GetComponent<NPCController>().outline.OutlineWidth > 0.01f)
+                    {
+                        isVisible = true;
+                    }
                     target = ghost.gameObject;
                 }
             }
