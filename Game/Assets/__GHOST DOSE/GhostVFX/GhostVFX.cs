@@ -354,6 +354,7 @@ public class GhostVFX : MonoBehaviour
             if (hit.collider.GetComponentInParent<NPCController>().gameObject == this.gameObject)
             {
                 targetHit = true;
+                if(GetComponent<ZozoControl>() != null) { GetComponent<ZozoControl>().ZOZOFlinch(); }
                 //FLICKER
                 if (GetComponent<Animator>().GetCurrentAnimatorClipInfo(0).Length > 0 && GetComponent<Animator>().GetCurrentAnimatorClipInfo(0)[0].clip.name == "agro" && light.GetComponent<GhostLight>() != null) { if (light.GetComponent<GhostLight>().canFlicker) { light.GetComponent<GhostLight>().InvokeFlicker(1f); } }
                 break;
