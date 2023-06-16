@@ -73,6 +73,7 @@ public class LobbyControlV2 : MonoBehaviour
         //findRoomButton.SetActive(true);
         foundRoom = false;
         NetworkDriver.instance.GetComponent<RigManager>().otherPlayerProp.SetActive(false);
+        //NetworkDriver.instance.sioCom.Instance.Emit("disconnect", "", true);
         NetworkDriver.instance.Reconnect();
         NetworkDriver.instance.otherUSERNAME = "";
     }

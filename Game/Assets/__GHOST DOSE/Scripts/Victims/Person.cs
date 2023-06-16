@@ -1,7 +1,8 @@
+using Newtonsoft.Json;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
+using NetworkSystem;
 public class Person : MonoBehaviour
 {
     public bool isYoung;
@@ -33,8 +34,13 @@ public class Person : MonoBehaviour
         if (isMurdered) { deathWeap.SetActive(true); } else { deathWeap.SetActive(false); }
     }
 
+    public void EmitTraits()
+    {
+        NetworkDriver.instance.sioCom.Instance.Emit("event", JsonConvert.SerializeObject($"{{'obj':'{gameObject.name}','isEvil':'{isEvil}','isMurdered':'{isMurdered}'}}"), false);
+    }
     public void Update()
     {
         
     }
+
 }

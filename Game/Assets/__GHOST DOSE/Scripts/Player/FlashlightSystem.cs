@@ -42,8 +42,8 @@ public class FlashlightSystem : MonoBehaviour
 
     public float weapLightAngle = 45;
     private float flashLightAngle = 52;
-    public float weapLightIntensity = 5;//20
-    private float flashLightIntensity = 5;
+    public float weapLightIntensity = 10;//20
+    private float flashLightIntensity = 10;
 
 
     public static FlashlightSystem instance;

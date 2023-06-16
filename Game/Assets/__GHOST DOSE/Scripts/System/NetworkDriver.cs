@@ -49,6 +49,7 @@ namespace NetworkSystem
         // public float SPEEDSCORE;
         public GameObject PlayerScores;
         public GameObject LevelManager;
+        private GameObject otherPlayerDeath;
          public bool isMobile = false;
         public bool FORCEMOBILE;
         public void Awake()
@@ -75,6 +76,7 @@ namespace NetworkSystem
         public void Reconnect()
         {
             connected = false;
+            PING = 0;
             sioCom.Instance.Close();
             StartCoroutine(connectSIO());
             Invoke("ConnectionTimeout", 10f);
@@ -206,7 +208,7 @@ namespace NetworkSystem
                     //Debug.Log("THEIR PING IS " + dict["ping"]);
                     if (float.Parse(dict["ping"]) == 0) //THEY JUST JOINED
                     {
-                        GameDriver.instance.WriteGuiMsg("Player Joined", 1f, false, Color.white);
+                        GameDriver.instance.WriteGuiMsg("Player Joined", 5f, false, Color.white);
                         Debug.Log("PLAYER JOINED SENDING MY PING SPEED TO OTHER PLAYER");
                         dict = new Dictionary<string, string> {
                         { "sid", sioCom.Instance.SocketID },
@@ -241,7 +243,11 @@ namespace NetworkSystem
 
                 TWOPLAYER = true;
                 if (!NETWORK_TEST) { if (dict["host"] != sioCom.Instance.SocketID) { HOST = false; } }
-                if (SceneManager.GetActiveScene().name != "Lobby") { UpdateGameState(); OTHERS_SCENE_READY = true; SCENE_READY = true; }
+                if (SceneManager.GetActiveScene().name != "Lobby") { 
+                    UpdateGameState();
+                    //OTHERS_SCENE_READY = true; 
+                    //SCENE_READY = true; 
+                }
                 sioCom.Instance.Emit("event", JsonConvert.SerializeObject(new { username = USERNAME }), false);
                 if (SceneManager.GetActiveScene().name == "Lobby") { 
                     GameObject.Find("LobbyManager").GetComponent<LobbyControlV2>().EmitSkin();
@@ -259,6 +265,7 @@ namespace NetworkSystem
             //-----------------PLAYER ACTION ----------------->
             sioCom.Instance.On("player_action", (payload) =>
             {
+                if (!OTHERS_SCENE_READY && SCENE_READY) { OTHERS_SCENE_READY = true; UpdateGameState(); } 
                 //Debug.Log("PLAYER ACTION" + payload);
                 //GameDriver.instance.WriteGuiMsg("OTHER PLAYER LOADED - GAME START" + GameDriver.instance.GAMESTART + " opl " + otherPlayerLoaded, 999f, false, Color.white);
                 if (OTHERS_SCENE_READY && SCENE_READY)
@@ -303,8 +310,8 @@ namespace NetworkSystem
                 Debug.Log(" RECEIVED DEATH  " + payload);
                 //JObject data = JObject.Parse(payload);
                 //Dictionary<string, string> dict = data.ToObject<Dictionary<string, string>>();
-                GameObject newDeath = Instantiate(GameDriver.instance.Client.GetComponent<ClientPlayerController>().death, GameDriver.instance.Client.transform.position, GameDriver.instance.Client.transform.rotation);
-                newDeath.GetComponent<PlayerDeath>().otherPlayer = true;
+                otherPlayerDeath = Instantiate(GameDriver.instance.Client.GetComponent<ClientPlayerController>().death, GameDriver.instance.Client.transform.position, GameDriver.instance.Client.transform.rotation);
+                otherPlayerDeath.GetComponent<PlayerDeath>().otherPlayer = true;
                 GameDriver.instance.Client.SetActive(false);
                 GameDriver.instance.Client.GetComponent<ClientPlayerController>().hp = 0;
             });
@@ -345,9 +352,9 @@ namespace NetworkSystem
                 if (dict.ContainsKey("ready")) { GameObject.Find("LobbyManager").GetComponent<LobbyControlV2>().OtherReady();}
                 //LOADS GAME SCENE
                 if (dict.ContainsKey("otherssceneready")) { 
-                    Debug.Log("---YOUR SCENE IS READY"); 
-                        OTHERS_SCENE_READY = true;
-                        if (SceneManager.GetActiveScene().name != "Lobby") { UpdateGameState();  } 
+                    Debug.Log("---YOUR SCENE IS READY");
+                    //OTHERS_SCENE_READY = true;
+                    //if (SceneManager.GetActiveScene().name != "Lobby") { UpdateGameState();  } 
                     } 
 
                 if (OTHERS_SCENE_READY && SCENE_READY)
@@ -363,6 +370,12 @@ namespace NetworkSystem
                         }
                         else { LevelManager.GetComponentInChildren<VictimControl>().testAnswer(obj); }
                     }
+                    if (dict.ContainsKey("revive"))
+                    {
+                        Destroy(otherPlayerDeath);
+                        GameDriver.instance.Client.SetActive(true);
+                        GameDriver.instance.Client.GetComponent<ClientPlayerController>().hp = 99999;
+                    }
                     //ENEMY
                     if (dict.ContainsKey("zap")) {
                         foreach (GameObject enemy in GameDriver.instance.GetComponent<DisablerControl>().enemyObjects)
@@ -375,7 +388,14 @@ namespace NetworkSystem
                             }
                         }
                     }
-                    
+                    //VICTIMS
+                    if (dict.ContainsKey("isMurdered"))
+                    {
+                        obj.GetComponent<Person>().isEvil = bool.Parse(dict["isEvil"]);
+                        obj.GetComponent<Person>().isMurdered = bool.Parse(dict["isMurdered"]);
+                        obj.GetComponent<Person>().UpdateTraits();
+                    }
+
                     if (dict.ContainsKey("event"))
                     {
                         if (dict["event"] == "setfree") { obj.GetComponent<VictimControl>().SetSpiritsFree(); }
@@ -440,7 +460,7 @@ namespace NetworkSystem
                 if (OTHERS_SCENE_READY && SCENE_READY)
                 {
                     JObject data = JObject.Parse(payload);
-                    Debug.Log("SYNCING " + data);
+                    //Debug.Log("SYNCING " + data);
                     Dictionary<string, Dictionary<string, string>> dict = data.ToObject<Dictionary<string, Dictionary<string, string>>>();
                     // Log the object positions to the console
                     foreach (KeyValuePair<string, Dictionary<string, string>> obj in dict)
@@ -554,6 +574,8 @@ namespace NetworkSystem
         private float timer_delay = 0.8f;//0.5
         public void Update()
         {
+            //GameDriver.instance.WriteGuiMsg("OTHERS_SCENE_READY " + OTHERS_SCENE_READY, 9999f, false, Color.red);
+
             //----------------------------------SYNC ACTIVE ENEMIES-----------------------------------------
             if (OTHERS_SCENE_READY && SCENE_READY && HOST) //&& GameDriver.instance.twoPlayer
             {
@@ -588,10 +610,15 @@ namespace NetworkSystem
             
             if (HOST)
             {
-                //UpdateEnemies(false);
+                //EMIT COLD SPOTS
                 ColdSpot[] coldSpots = FindObjectsOfType<ColdSpot>();
                 foreach (ColdSpot coldspot in coldSpots) { coldspot.Respawn(null); }
+                //EMIT CHOSEN VICTIM
                 LevelManager.GetComponentInChildren<VictimControl>().RandomVictim(null);
+                //EMIT VICTIM PROPERTIES
+                Person[] victims = FindObjectsOfType<Person>();
+                foreach (Person victim in victims) { victim.EmitTraits(); }
+               
             }
 
 

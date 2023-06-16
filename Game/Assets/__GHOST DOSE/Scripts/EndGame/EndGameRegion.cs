@@ -7,7 +7,9 @@ public class EndGameRegion : MonoBehaviour
 {
     public void OnTriggerEnter(Collider other)
     {
-        NetworkDriver.instance.EndGame();
-
+        if (other.gameObject.name == "Player")
+        {
+            NetworkDriver.instance.EndGame();
+        }
     }
 }

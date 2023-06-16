@@ -35,8 +35,7 @@ public class HealthSystem : MonoBehaviour
 	[Space(10)]
 	public GameObject death;
 	public GameObject cameraPlayer;
-	public static bool dead = false;
-	public bool deadPlayer = false;
+	public bool dead = false;
 
 	[Header("HEALTH SOUNDS")]
 	[Space(10)]
@@ -90,7 +89,16 @@ public class HealthSystem : MonoBehaviour
 		//Treatment();
 	}
 
+	public void Revive()
+	{
+		//PLAYER MADE ACTIVE BY PLAYERDEATH OBJECT
+		Health = maxHealth;
+		dead = false;
+        if (NetworkDriver.instance.TWOPLAYER) {
+            NetworkDriver.instance.sioCom.Instance.Emit("event", JsonConvert.SerializeObject(new { obj = this.gameObject.name, revive = true }), false);
+        }
 
+    }
 
 	void UpdateHealth()
 	{
@@ -169,7 +177,6 @@ public class HealthSystem : MonoBehaviour
 		if (NetworkDriver.instance.TWOPLAYER) { NetworkDriver.instance.sioCom.Instance.Emit("death", "death", true); }
         //NetworkDriver.instance.sioCom.Instance.Emit("death", "death", true);
         dead = true;
-		deadPlayer = true;
         gameObject.SetActive(false);
     }
 
