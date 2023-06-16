@@ -218,7 +218,7 @@ RectTransform:
   - {fileID: 80994944484968202}
   - {fileID: 80994945764019512}
   m_Father: {fileID: 1960097159701177889}
-  m_RootOrder: 5
+  m_RootOrder: 6
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
@@ -2073,8 +2073,7 @@ Transform:
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
-  m_Children:
-  - {fileID: 2336393448037659368}
+  m_Children: []
   m_Father: {fileID: 80994944896847615}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 180, z: 0}
@@ -2345,7 +2344,7 @@ MonoBehaviour:
   healthPrecent: 0
   death: {fileID: 3749875807785305036, guid: e04fbf38e76d2ad49a69a85166349132, type: 3}
   cameraPlayer: {fileID: 80994946238739788}
-  deadPlayer: 0
+  dead: 0
   pickUp: PickUp
   treatmentKit: TreatmentKit
 --- !u!114 &80994945419842348
@@ -3933,7 +3932,7 @@ MonoBehaviour:
   healthPrecent: 0
   death: {fileID: 3749875807785305036, guid: e04fbf38e76d2ad49a69a85166349132, type: 3}
   cameraPlayer: {fileID: 80994946238739788}
-  deadPlayer: 0
+  dead: 0
   pickUp: PickUp
   treatmentKit: TreatmentKit
 --- !u!114 &80994946202897752
@@ -5270,6 +5269,7 @@ RectTransform:
   - {fileID: 839460255258691924}
   - {fileID: 5746148683222896498}
   - {fileID: 7840773084513824432}
+  - {fileID: 3206017185648782589}
   - {fileID: 80994944349006721}
   m_Father: {fileID: 578956745906852459}
   m_RootOrder: 8
@@ -5695,6 +5695,7 @@ MonoBehaviour:
   myRig: {fileID: 0}
   theirRig: {fileID: 0}
   reviveIndicator: {fileID: 33442856670618140}
+  DemonScreamerUI: {fileID: 836032936764139852}
   PlayerWeapLight: {fileID: 0}
   PlayerFlashLight: {fileID: 0}
   ClientWeapLight: {fileID: 0}
@@ -5718,6 +5719,82 @@ MonoBehaviour:
   disableDistance: 50
   p1dist: 0
   p2dist: 0
+--- !u!1 &3280993270542097822
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 3206017185648782589}
+  - component: {fileID: 643384019354192373}
+  - component: {fileID: 836032936764139852}
+  m_Layer: 5
+  m_Name: demonScreamerUI
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 0
+--- !u!224 &3206017185648782589
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3280993270542097822}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 9.853811, y: 9.853811, z: 9.853811}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1960097159701177889}
+  m_RootOrder: 5
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0.2424594, y: 0.2424594}
+  m_AnchorMax: {x: 0.7575406, y: 0.7575406}
+  m_AnchoredPosition: {x: -5.585083, y: 39}
+  m_SizeDelta: {x: -773.64264, y: -202.71155}
+  m_Pivot: {x: 0.5, y: 0.5}
+--- !u!222 &643384019354192373
+CanvasRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3280993270542097822}
+  m_CullTransparentMesh: 0
+--- !u!114 &836032936764139852
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3280993270542097822}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Material: {fileID: 0}
+  m_Color: {r: 1, g: 1, b: 1, a: 0.5058824}
+  m_RaycastTarget: 1
+  m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
+  m_Maskable: 1
+  m_OnCullStateChanged:
+    m_PersistentCalls:
+      m_Calls: []
+  m_Sprite: {fileID: 21300000, guid: 4459539de6d7db740a7098d75def54b4, type: 3}
+  m_Type: 0
+  m_PreserveAspect: 1
+  m_FillCenter: 1
+  m_FillMethod: 4
+  m_FillAmount: 1
+  m_FillClockwise: 1
+  m_FillOrigin: 0
+  m_UseSpriteMesh: 0
+  m_PixelsPerUnitMultiplier: 1
 --- !u!1 &3578339155245844349
 GameObject:
   m_ObjectHideFlags: 0
@@ -6696,6 +6773,15 @@ MonoBehaviour:
     volumeVariance: 0
     pitch: 0.95
     pitchVariance: 0.257
+    loop: 0
+    mixerGroup: {fileID: 0}
+    source: {fileID: 0}
+  - name: demonscream
+    clip: {fileID: 8300000, guid: 345e67bb9dc0ee34dbaf6104ded74bf2, type: 3}
+    volume: 1
+    volumeVariance: 0
+    pitch: 1
+    pitchVariance: 0
     loop: 0
     mixerGroup: {fileID: 0}
     source: {fileID: 0}
@@ -8131,68 +8217,6 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
---- !u!1001 &80994944566915187
-PrefabInstance:
-  m_ObjectHideFlags: 0
-  serializedVersion: 2
-  m_Modification:
-    m_TransformParent: {fileID: 80994945419842340}
-    m_Modifications:
-    - target: {fileID: 2410350555526775451, guid: 21e4d92130573c749ba834e9c42bd746, type: 3}
-      propertyPath: m_RootOrder
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 2410350555526775451, guid: 21e4d92130573c749ba834e9c42bd746, type: 3}
-      propertyPath: m_LocalPosition.x
-      value: 0.00000008940697
-      objectReference: {fileID: 0}
-    - target: {fileID: 2410350555526775451, guid: 21e4d92130573c749ba834e9c42bd746, type: 3}
-      propertyPath: m_LocalPosition.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 2410350555526775451, guid: 21e4d92130573c749ba834e9c42bd746, type: 3}
-      propertyPath: m_LocalPosition.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 2410350555526775451, guid: 21e4d92130573c749ba834e9c42bd746, type: 3}
-      propertyPath: m_LocalRotation.w
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 2410350555526775451, guid: 21e4d92130573c749ba834e9c42bd746, type: 3}
-      propertyPath: m_LocalRotation.x
-      value: -0
-      objectReference: {fileID: 0}
-    - target: {fileID: 2410350555526775451, guid: 21e4d92130573c749ba834e9c42bd746, type: 3}
-      propertyPath: m_LocalRotation.y
-      value: -0
-      objectReference: {fileID: 0}
-    - target: {fileID: 2410350555526775451, guid: 21e4d92130573c749ba834e9c42bd746, type: 3}
-      propertyPath: m_LocalRotation.z
-      value: -0
-      objectReference: {fileID: 0}
-    - target: {fileID: 2410350555526775451, guid: 21e4d92130573c749ba834e9c42bd746, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 2410350555526775451, guid: 21e4d92130573c749ba834e9c42bd746, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 2410350555526775451, guid: 21e4d92130573c749ba834e9c42bd746, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 3042350477353588769, guid: 21e4d92130573c749ba834e9c42bd746, type: 3}
-      propertyPath: m_Name
-      value: ROOTRIG
-      objectReference: {fileID: 0}
-    m_RemovedComponents: []
-  m_SourcePrefab: {fileID: 100100000, guid: 21e4d92130573c749ba834e9c42bd746, type: 3}
---- !u!4 &2336393448037659368 stripped
-Transform:
-  m_CorrespondingSourceObject: {fileID: 2410350555526775451, guid: 21e4d92130573c749ba834e9c42bd746, type: 3}
-  m_PrefabInstance: {fileID: 80994944566915187}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &80994945109808892
 PrefabInstance:
   m_ObjectHideFlags: 0

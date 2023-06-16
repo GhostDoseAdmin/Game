@@ -17,13 +17,13 @@ public class SB7 : MonoBehaviour
     public List<Sound> AnswersYoung;
     public List<Sound> AnswersEvil;
     public List<Sound> AnswersMurdered;
-    public List<Sound> AnswersGender;
+    public List<Sound> AnswersGirl;
     private GameObject currentColdSpot; 
     private float question_timer = 0f;
     private float question_delay = 5f;
     private bool askedQuestion;
     private AudioSource audioSourceVoices;
-    private int demon;
+    public int demon;
     // Start is called before the first frame update
     void Start()
     {
@@ -95,10 +95,30 @@ public class SB7 : MonoBehaviour
 
     void GetAnswer()
     {
-        if (demon >= 2)
+        if (demon >= 2 && Random.value < 0.5f)
         {
+            GameDriver.instance.DemonColdSpotScreamer();
             GameDriver.instance.Player.GetComponent<HealthSystem>().Health -= GameDriver.instance.Player.GetComponent<HealthSystem>().Health*0.5f;
-            AudioManager.instance.Play("demon",null);
+            AudioManager.instance.Play("demonscream", null);
+
+            //HURT PLAYER
+            GameObject thisPlayer = GetComponentInParent<Animator>().gameObject;
+            Vector3 oppositeForce = (currentColdSpot.transform.position - thisPlayer.transform.position) * 5000f;
+            oppositeForce.y = 0f; // Set the y component to 0
+            if (thisPlayer.gameObject.name == "Player")
+            {
+                if (thisPlayer.GetComponent<PlayerController>().canFlinch)
+                {
+                    thisPlayer.GetComponent<HealthSystem>().HealthDamage((int)(thisPlayer.GetComponent<HealthSystem>().Health*0.5f), oppositeForce);
+                }
+
+            }
+            if (thisPlayer.name == "Client")
+            {
+                thisPlayer.GetComponent<ClientPlayerController>().Flinch(oppositeForce);
+            }
+
+            Invoke("GotAnswer", 2f);
             return;
         }
         victim = GameObject.Find("VictimManager").GetComponent<VictimControl>().ChosenVictim;
@@ -125,8 +145,8 @@ public class SB7 : MonoBehaviour
         //MURDRERED?
         if (questionIndex == 3)
         {
-            if (victim.GetComponent<Person>().isGirl) { s = AnswersMurdered[1]; }//YES
-            else { s = AnswersMurdered[0]; }//NO
+            if (victim.GetComponent<Person>().isGirl) { s = AnswersGirl[1]; }//GIRL YES
+            else { s = AnswersGirl[0]; }//NO
         }
 
         if (s != null)

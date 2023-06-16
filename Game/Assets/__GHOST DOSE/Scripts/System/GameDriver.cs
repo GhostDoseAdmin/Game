@@ -5,6 +5,7 @@ using TMPro;
 using InteractionSystem;
 using Newtonsoft.Json;
 using UnityEngine.LowLevel;
+using UnityEngine.UI;
 
 namespace GameManager
 {
@@ -38,6 +39,7 @@ namespace GameManager
         public GameObject theirRig;
 
         public GameObject reviveIndicator;
+        public Image DemonScreamerUI;
         Vector3 playerStartPos;
 
         //public NetworkDriver ND;
@@ -55,6 +57,15 @@ namespace GameManager
 
         private void Update()
         {
+
+            //DEMON SCREAMER
+            if(DemonScreamerUI.gameObject.activeSelf)
+            {
+                Color color = DemonScreamerUI.color;
+                color.a -= 0.5f * Time.deltaTime;
+                DemonScreamerUI.color = color;
+            }
+
             if(infiniteAmmo) { if (Player != null) { Player.GetComponent<ShootingSystem>().camBatteryUI.fillAmount = 1; } }
 
             //---------------------------------WAITING FOR OTHER PLAYER----------------------------------
@@ -234,7 +245,21 @@ namespace GameManager
 
             }
         }
- 
+        public void DemonColdSpotScreamer()
+        {
+            DemonScreamerUI.gameObject.SetActive(true);
+
+            Color color = DemonScreamerUI.color;
+            color.a = 1f;
+            DemonScreamerUI.color = color;
+            Invoke("disableDemonScreamer",3f);
+        }
+
+        private void disableDemonScreamer()
+        {
+            DemonScreamerUI.gameObject.SetActive(false);
+        }
+
         //----------------SYSTEM CONSOLE-------------------------
         public GameObject loadingIcon;
         public GameObject systemConsole;
