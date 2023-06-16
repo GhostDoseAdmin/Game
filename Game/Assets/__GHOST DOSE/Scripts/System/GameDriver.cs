@@ -62,7 +62,7 @@ namespace GameManager
             if(DemonScreamerUI.gameObject.activeSelf)
             {
                 Color color = DemonScreamerUI.color;
-                color.a -= 1f * Time.deltaTime;
+                color.a -= 0.5f * Time.deltaTime;
                 DemonScreamerUI.color = color;
             }
 
@@ -250,7 +250,7 @@ namespace GameManager
             DemonScreamerUI.gameObject.SetActive(true);
 
             Color color = DemonScreamerUI.color;
-            color.a = 0.5f;
+            color.a = 1f;
             DemonScreamerUI.color = color;
             Invoke("disableDemonScreamer",3f);
         }

@@ -23,7 +23,7 @@ public class SB7 : MonoBehaviour
     private float question_delay = 5f;
     private bool askedQuestion;
     private AudioSource audioSourceVoices;
-    private int demon;
+    public int demon;
     // Start is called before the first frame update
     void Start()
     {
@@ -118,7 +118,7 @@ public class SB7 : MonoBehaviour
                 thisPlayer.GetComponent<ClientPlayerController>().Flinch(oppositeForce);
             }
 
-
+            Invoke("GotAnswer", 2f);
             return;
         }
         victim = GameObject.Find("VictimManager").GetComponent<VictimControl>().ChosenVictim;
