@@ -17,7 +17,7 @@ public class ColdSpot : Item
     private float effectStartSize;
     public GameObject Trigger;
     private bool exposed;
-    public int questionIndexYoungEvilMurder;
+    public int questionIndexYoungEvilMurderGender;
 
 
     public void Awake()
@@ -28,8 +28,8 @@ public class ColdSpot : Item
         Trigger.GetComponent<MeshRenderer>().enabled = false;
 
         exposed = false;
-       
     }
+
     public void Start()
     {
         Respawn(null);

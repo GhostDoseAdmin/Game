@@ -17,11 +17,13 @@ public class SB7 : MonoBehaviour
     public List<Sound> AnswersYoung;
     public List<Sound> AnswersEvil;
     public List<Sound> AnswersMurdered;
+    public List<Sound> AnswersGender;
     private GameObject currentColdSpot; 
     private float question_timer = 0f;
     private float question_delay = 5f;
     private bool askedQuestion;
     private AudioSource audioSourceVoices;
+    private int demon;
     // Start is called before the first frame update
     void Start()
     {
@@ -38,6 +40,10 @@ public class SB7 : MonoBehaviour
         gameObject.SetActive(false);
     }
 
+    private void OnDisable()
+    {
+        demon = 0;
+    }
     // Update is called once per frame
     void Update()
     {
@@ -78,18 +84,26 @@ public class SB7 : MonoBehaviour
         if (transform.root.name == "TRAVIS") { questionList = QuestionsTravis; }
         else { questionList = QuestionsWestin; }
 
-        questionIndex = currentColdSpot.GetComponent<ColdSpot>().questionIndexYoungEvilMurder;//Random.Range(0, questionList.Count);
+        questionIndex = currentColdSpot.GetComponent<ColdSpot>().questionIndexYoungEvilMurderGender;//Random.Range(0, questionList.Count);
         audioSourceVoices.clip = questionList[questionIndex].clip;
         audioSourceVoices.pitch = 1f;
         audioSourceVoices.Play();
         
         Invoke("GetAnswer", 2f);
+        demon++;
     }
 
     void GetAnswer()
     {
+        if (demon >= 2)
+        {
+            GameDriver.instance.Player.GetComponent<HealthSystem>().Health -= GameDriver.instance.Player.GetComponent<HealthSystem>().Health*0.5f;
+            AudioManager.instance.Play("demon",null);
+            return;
+        }
         victim = GameObject.Find("VictimManager").GetComponent<VictimControl>().ChosenVictim;
-        Sound s = null ;
+        Sound s = null;
+
         //YOUNG?
         if (questionIndex == 0)
         {
@@ -108,6 +122,13 @@ public class SB7 : MonoBehaviour
             if (victim.GetComponent<Person>().isMurdered) { s = AnswersMurdered[1]; }//YES
             else {s = AnswersMurdered[0]; }//NO
         }
+        //MURDRERED?
+        if (questionIndex == 3)
+        {
+            if (victim.GetComponent<Person>().isGirl) { s = AnswersMurdered[1]; }//YES
+            else { s = AnswersMurdered[0]; }//NO
+        }
+
         if (s != null)
         {
             audioSourceVoices.clip = s.clip;
