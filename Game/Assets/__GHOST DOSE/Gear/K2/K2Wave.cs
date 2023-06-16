@@ -10,10 +10,13 @@ public class K2Wave : MonoBehaviour
     public bool isClient = false;
     public GameObject K2Source;
     public GameObject hud;
+    private AudioSource audio;
     // Start is called before the first frame update
     void Start()
     {
-        AudioManager.instance.Play("k2wave", GameObject.Find("Player").GetComponent<PlayerController>().audioSource);
+        audio = gameObject.AddComponent<AudioSource>();
+        audio.spatialBlend = 1.0f;
+        AudioManager.instance.Play("k2wave", audio);
         hud.transform.localScale = Vector3.one*40;
             // transform.localScale = Vector3.Lerp(transform.localScale, transform.localScale * 0.0001f, Time.deltaTime * 1);
         GetComponent<Shockwave>().NewShockwave(startPoint, 2);//3

@@ -37,6 +37,7 @@ namespace GameManager
         public GameObject myRig;
         public GameObject theirRig;
 
+        public GameObject reviveIndicator;
         Vector3 playerStartPos;
 
         //public NetworkDriver ND;
@@ -228,7 +229,7 @@ namespace GameManager
 
                 Debug.Log("I AM READY");
                 NetworkDriver.instance.SCENE_READY = true;
-                NetworkDriver.instance.sioCom.Instance.Emit("event", JsonConvert.SerializeObject(new { otherssceneready = true }), false);
+                //NetworkDriver.instance.sioCom.Instance.Emit("event", JsonConvert.SerializeObject(new { otherssceneready = true }), false);
 
 
             }

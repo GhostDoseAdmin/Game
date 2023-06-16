@@ -22,8 +22,8 @@ public class K2 : MonoBehaviour
     {
         hud = Camera.main.gameObject.GetComponent<Aiming>().K2;
         closestEnemyDist = 20f;//MAX DISTANCE
-            if (GameDriver.instance.Player.transform.parent.name == "CLIENT") { isClient = true; }
-            else if (GameDriver.instance.Player.transform.parent.name == "WESTIN" || GameDriver.instance.Player.transform.parent.name == "TRAVIS") { isClient = false; }
+            if (GetComponentInParent<Animator>().gameObject.name == "Player") { isClient = false; }
+            else if (GetComponentInParent<Animator>().gameObject.name == "Client") { isClient = true; }
             else { DestroyImmediate(this.gameObject); }//DEAD PLAYER
 
             if (!isClient) { shootPoint = GameDriver.instance.Player.GetComponent<ShootingSystem>().shootPoint; }
@@ -72,14 +72,17 @@ public class K2 : MonoBehaviour
 
     public void fire(bool otherPlayer)
     {
-        GameObject newK2wave = Instantiate(k2wave);
-        newK2wave.transform.position = shootPoint.position;
-        Quaternion newYRotation = Quaternion.Euler(0f, shootPoint.rotation.eulerAngles.y + 90f, 90f);
-        newK2wave.transform.rotation = newYRotation;
-        newK2wave.GetComponent<K2Wave>().isClient = isClient;
-        newK2wave.GetComponent<K2Wave>().K2Source = this.gameObject;
-        newK2wave.GetComponent<K2Wave>().hud = hud;
-        if (!otherPlayer) { GameDriver.instance.Player.GetComponent<PlayerController>().fireK2 = true; }//EMIT FIRE
+        if (shootPoint != null && !GetComponentInParent<Animator>().GetBool("ouija"))
+        {
+            GameObject newK2wave = Instantiate(k2wave);
+            newK2wave.transform.position = shootPoint.position;
+            Quaternion newYRotation = Quaternion.Euler(0f, shootPoint.rotation.eulerAngles.y + 90f, 90f);
+            newK2wave.transform.rotation = newYRotation;
+            newK2wave.GetComponent<K2Wave>().isClient = isClient;
+            newK2wave.GetComponent<K2Wave>().K2Source = this.gameObject;
+            newK2wave.GetComponent<K2Wave>().hud = hud;
+            if (!otherPlayer) { GameDriver.instance.Player.GetComponent<PlayerController>().fireK2 = true; }//EMIT FIRE
+        }
     }
     private void OnDisable()
     {

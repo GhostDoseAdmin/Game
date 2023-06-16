@@ -267,9 +267,11 @@ public class VictimControl : Item
     {
         if (!zozo)
         {
-
             if (candleCount >= 6)
             {
+                if (GameDriver.instance.Player.GetComponent<HealthSystem>().Health <= 0){ playerOn = true;}
+                if (GameDriver.instance.Client.GetComponent<ClientPlayerController>().hp <= 0) { clientOn = true; }
+
                 if ((playerOn && clientOn && NetworkDriver.instance.TWOPLAYER) || (!NetworkDriver.instance.TWOPLAYER && playerOn))
                 {
                     ActivateCircle(false);

@@ -63,6 +63,7 @@ GameObject:
   m_Component:
   - component: {fileID: 8796939414661805867}
   - component: {fileID: 8960666733301202184}
+  - component: {fileID: 4573792621455445897}
   m_Layer: 0
   m_Name: PlayerDeath
   m_TagString: Untagged
@@ -79,7 +80,7 @@ Transform:
   m_GameObject: {fileID: 3749875807785305036}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalScale: {x: 5.598467, y: 5.598467, z: 5.598467}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 7205628360387074505}
@@ -99,3 +100,18 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   deathAnimator: {fileID: 3695439080273459195}
+  otherPlayer: 0
+  loadIndicator: {fileID: 5090428388690349090, guid: b7b2e169bd98a2841bc54efeffb5dbb1, type: 3}
+--- !u!65 &4573792621455445897
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3749875807785305036}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 1
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 1, y: 1, z: 1}
+  m_Center: {x: 0, y: 0, z: 0}
