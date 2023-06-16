@@ -8,6 +8,7 @@ public class Person : MonoBehaviour
     public bool isYoung;
     public bool isEvil;
     public bool isMurdered;
+    public bool isGirl;
 
     public GameObject eyes;
     public GameObject deathWeap;
