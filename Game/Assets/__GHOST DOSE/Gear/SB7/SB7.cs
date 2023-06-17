@@ -105,7 +105,7 @@ public class SB7 : MonoBehaviour
 
             //HURT PLAYER
             GameObject thisPlayer = GetComponentInParent<Animator>().gameObject;
-            Vector3 oppositeForce = (currentColdSpot.transform.position - thisPlayer.transform.position) * 5000f;
+            Vector3 oppositeForce = (currentColdSpot.transform.position - thisPlayer.transform.position) * 2500f;
             oppositeForce.y = 0f; // Set the y component to 0
             if (thisPlayer.gameObject.name == "Player")
             {
