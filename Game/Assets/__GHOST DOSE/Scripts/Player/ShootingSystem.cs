@@ -186,6 +186,15 @@ public class ShootingSystem : MonoBehaviour
             //---------------------CAN SHOOT------------------------------------
             //if (Mathf.Approximately(Mathf.Round(camera.fieldOfView * 10) / 10f, aiming.zoom))//if current zoom is close to target zoom
             {
+                //OUT OF BATTERY
+                if(Time.time > shootTimer + shootCoolDown && camBatteryUI.fillAmount <= 0)
+                {
+                    string audioString;
+                    if (NetworkDriver.instance.isTRAVIS) { audioString = "travbattery"; }
+                    else { audioString = "wesbattery"; }
+                    AudioManager.instance.Play(audioString, GameDriver.instance.Player.GetComponent<PlayerController>().audioSourceSpeech);
+                    shootTimer = Time.time;//cooldown
+                }
 
                 if (Time.time > shootTimer + shootCoolDown && camBatteryUI.fillAmount > 0)
                 {
@@ -230,12 +239,8 @@ public class ShootingSystem : MonoBehaviour
 
                 }
                 else { 
-                    //OUT OF BATTERY SOUNDS
                     canShoot = false;
-                    string audioString;
-                    if (NetworkDriver.instance.isTRAVIS) { audioString = "travbattery"; }
-                    else { audioString = "wesbattery"; }
-                    AudioManager.instance.Play(audioString, GameDriver.instance.Player.GetComponent<PlayerController>().audioSource);
+
 
                 }
 

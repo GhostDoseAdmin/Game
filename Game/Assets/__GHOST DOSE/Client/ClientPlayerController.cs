@@ -113,6 +113,7 @@ public class ClientPlayerController : MonoBehaviour
     public float targStrafe;
     public bool running;
     public AudioSource audioSource;
+    public AudioSource audioSourceSpeech;
     private string currentAni;
     public bool canFlinch;
     //public bool wlOn, flOn;//weaplight and flashlight
@@ -125,6 +126,9 @@ public class ClientPlayerController : MonoBehaviour
     {
         audioSource = gameObject.AddComponent<AudioSource>();
         audioSource.spatialBlend = 1.0f;
+
+        audioSourceSpeech = gameObject.AddComponent<AudioSource>();
+        audioSourceSpeech.spatialBlend = 1.0f;
         canFlinch = true;
     }
 

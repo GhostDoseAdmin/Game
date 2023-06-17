@@ -102,6 +102,7 @@ public class PlayerController : MonoBehaviour
 
 	public GameObject currLight;
 	public AudioSource audioSource;
+	public AudioSource audioSourceSpeech;
 
     #region Start
 
@@ -110,7 +111,11 @@ public class PlayerController : MonoBehaviour
     {
         audioSource = gameObject.AddComponent<AudioSource>();
         audioSource.spatialBlend = 1.0f;
-		targetPos = GameObject.Find("TargetLook").transform;
+        audioSourceSpeech = gameObject.AddComponent<AudioSource>();
+        audioSourceSpeech.spatialBlend = 1.0f;
+
+
+        targetPos = GameObject.Find("TargetLook").transform;
         cameraController = Camera.main.gameObject.GetComponent<Camera_Controller>();
 
     }
