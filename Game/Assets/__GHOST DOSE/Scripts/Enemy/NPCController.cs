@@ -608,7 +608,24 @@ public class NPCController : MonoBehaviour
                 Agro(otherPlayer);
 
             }
-            //-----------ENEMY DEATH---------------
+            //PLAY KILL SOUNDS
+            if(Random.value < 0.5f)
+            {
+                int i = Random.Range(1, 3);
+                AudioSource thisPlayerSource;
+                string audioString;
+                if (NetworkDriver.instance.isTRAVIS) { audioString = "travkill"; }
+                else { audioString = "weskill"; }
+                if (!otherPlayer)
+                { //PLAYER
+                    thisPlayerSource = GameDriver.instance.Player.GetComponent<PlayerController>().audioSource;
+                }
+                else
+                {//CLIENT
+                    thisPlayerSource = GameDriver.instance.Client.GetComponent<ClientPlayerController>().audioSource;
+                }
+                AudioManager.instance.Play(audioString + i.ToString(), thisPlayerSource);
+            }
 
             //-----------RETREAT-------------------
             if (healthEnemy < startHealth * retreatThreshold) { if (hasRetreated == 0) { hasRetreated = 1; } }

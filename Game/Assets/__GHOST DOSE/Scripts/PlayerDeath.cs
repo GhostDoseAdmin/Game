@@ -3,6 +3,7 @@ using UnityEngine;
 using GameManager;
 using NetworkSystem;
 using GameManager;
+using InteractionSystem;
 
 
 public class PlayerDeath : MonoBehaviour
@@ -25,6 +26,21 @@ public class PlayerDeath : MonoBehaviour
         death.transform.SetParent(deathAnimator.transform);
         StartCoroutine(util.ReactivateAnimator(deathAnimator));
         deathAnimator.GetComponentInChildren<K2>().gameObject.SetActive(false);
+
+        //DEATH SOUND
+        AudioSource thisPlayerSource;
+        string audioString;
+        if (NetworkDriver.instance.isTRAVIS) { audioString = "travdeath"; }
+        else { audioString = "wesdeath"; }
+        if (!otherPlayer)
+        { //PLAYER
+            thisPlayerSource = GameDriver.instance.Player.GetComponent<PlayerController>().audioSource;
+        }
+        else
+        {//CLIENT
+            thisPlayerSource = GameDriver.instance.Client.GetComponent<ClientPlayerController>().audioSource;
+        }
+        AudioManager.instance.Play(audioString, thisPlayerSource);
     }
     public void Update()
     {

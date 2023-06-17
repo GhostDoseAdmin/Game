@@ -393,6 +393,7 @@ namespace NetworkSystem
                     {
                         obj.GetComponent<Person>().isEvil = bool.Parse(dict["isEvil"]);
                         obj.GetComponent<Person>().isMurdered = bool.Parse(dict["isMurdered"]);
+                        obj.GetComponent<Person>().isGirl = bool.Parse(dict["isGirl"]);
                         obj.GetComponent<Person>().UpdateTraits();
                     }
 

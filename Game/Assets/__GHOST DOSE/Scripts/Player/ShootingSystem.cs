@@ -229,7 +229,15 @@ public class ShootingSystem : MonoBehaviour
                     shootTimer = Time.time;//cooldown
 
                 }
-                else { canShoot = false; }
+                else { 
+                    //OUT OF BATTERY SOUNDS
+                    canShoot = false;
+                    string audioString;
+                    if (NetworkDriver.instance.isTRAVIS) { audioString = "travbattery"; }
+                    else { audioString = "wesbattery"; }
+                    AudioManager.instance.Play(audioString, GameDriver.instance.Player.GetComponent<PlayerController>().audioSource);
+
+                }
 
             }
             
