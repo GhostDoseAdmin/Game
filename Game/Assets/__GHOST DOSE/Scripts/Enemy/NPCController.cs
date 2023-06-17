@@ -619,18 +619,19 @@ public class NPCController : MonoBehaviour
                 //PLAY KILL SOUNDS
                // if (Random.value < 0.5f)
                 {
-                    int i = Random.Range(1, 3);
+                    int i = Random.Range(1, 4);
                     AudioSource thisPlayerSource;
                     string audioString;
-                    if (NetworkDriver.instance.isTRAVIS) { audioString = "travkill"; }
-                    else { audioString = "weskill"; }
                     if (!otherPlayer)
                     { //PLAYER
                         thisPlayerSource = GameDriver.instance.Player.GetComponent<PlayerController>().audioSourceSpeech;
+                        if (GameDriver.instance.Player.GetComponent<PlayerController>().isTravis) { audioString = "travkill"; } else { audioString = "weskill"; }
                     }
                     else
                     {//CLIENT
                         thisPlayerSource = GameDriver.instance.Client.GetComponent<ClientPlayerController>().audioSourceSpeech;
+                        if (GameDriver.instance.Client.GetComponent<ClientPlayerController>().isTravis) { audioString = "travkill"; } else { audioString = "weskill"; }
+
                     }
                     AudioManager.instance.Play(audioString + i.ToString(), thisPlayerSource);
                     //Debug.Log("PLAYING AUDIO " + audioString + i.ToString());

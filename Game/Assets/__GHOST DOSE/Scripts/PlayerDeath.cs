@@ -28,17 +28,15 @@ public class PlayerDeath : MonoBehaviour
         deathAnimator.GetComponentInChildren<K2>().gameObject.SetActive(false);
 
         //DEATH SOUND
-       // AudioSource thisPlayerSource;
         string audioString;
-        if (NetworkDriver.instance.isTRAVIS) { audioString = "travdeath"; }
-        else { audioString = "wesdeath"; }
         if (!otherPlayer)
         { //PLAYER
-           // thisPlayerSource = GameDriver.instance.Player.GetComponent<PlayerController>().audioSourceSpeech;
+            if (GameDriver.instance.Player.GetComponent<PlayerController>().isTravis) { audioString = "travkill"; } else { audioString = "weskill"; }
         }
         else
         {//CLIENT
-           // thisPlayerSource = GameDriver.instance.Client.GetComponent<ClientPlayerController>().audioSourceSpeech;
+            if (GameDriver.instance.Client.GetComponent<ClientPlayerController>().isTravis) { audioString = "travkill"; } else { audioString = "weskill"; }
+
         }
         AudioManager.instance.Play(audioString, null);
     }
