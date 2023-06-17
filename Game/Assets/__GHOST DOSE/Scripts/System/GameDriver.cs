@@ -59,13 +59,15 @@ namespace GameManager
         {
 
             //DEMON SCREAMER
-            if(DemonScreamerUI.gameObject.activeSelf)
+            if (SceneManager.GetActiveScene().name != "Lobby")
             {
-                Color color = DemonScreamerUI.color;
-                color.a -= 0.5f * Time.deltaTime;
-                DemonScreamerUI.color = color;
+                if (DemonScreamerUI.gameObject.activeSelf)
+                {
+                    Color color = DemonScreamerUI.color;
+                    color.a -= 0.5f * Time.deltaTime;
+                    DemonScreamerUI.color = color;
+                }
             }
-
             if(infiniteAmmo) { if (Player != null) { Player.GetComponent<ShootingSystem>().camBatteryUI.fillAmount = 1; } }
 
             //---------------------------------WAITING FOR OTHER PLAYER----------------------------------
