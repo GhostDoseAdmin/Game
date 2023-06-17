@@ -617,7 +617,7 @@ public class NPCController : MonoBehaviour
             {
 
                 //PLAY KILL SOUNDS
-                if (Random.value < 0.5f)
+               // if (Random.value < 0.5f)
                 {
                     int i = Random.Range(1, 3);
                     AudioSource thisPlayerSource;
