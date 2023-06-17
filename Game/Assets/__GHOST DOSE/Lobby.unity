@@ -7490,7 +7490,7 @@ MonoBehaviour:
   healthPrecent: 0
   death: {fileID: 0}
   cameraPlayer: {fileID: 5055496213904145721}
-  deadPlayer: 0
+  dead: 0
   pickUp: PickUp
   treatmentKit: TreatmentKit
 --- !u!114 &692362298
@@ -56878,9 +56878,7 @@ GameObject:
   - component: {fileID: 169562506838548010}
   - component: {fileID: 2027390161038787887}
   - component: {fileID: 7697810059454884765}
-  - component: {fileID: 7256435151334546408}
   - component: {fileID: 4716411303144148558}
-  - component: {fileID: 8115085899351747070}
   m_Layer: 7
   m_Name: DisplayTV
   m_TagString: Untagged
@@ -62985,7 +62983,7 @@ MonoBehaviour:
   healthPrecent: 0
   death: {fileID: 0}
   cameraPlayer: {fileID: 5055496213904145721}
-  deadPlayer: 0
+  dead: 0
   pickUp: PickUp
   treatmentKit: TreatmentKit
 --- !u!114 &5055496213087247193
@@ -63825,6 +63823,8 @@ MonoBehaviour:
   westinBasic: {fileID: 0}
   myRig: {fileID: 0}
   theirRig: {fileID: 0}
+  reviveIndicator: {fileID: 0}
+  DemonScreamerUI: {fileID: 0}
   PlayerWeapLight: {fileID: 0}
   PlayerFlashLight: {fileID: 0}
   ClientWeapLight: {fileID: 0}
@@ -63883,7 +63883,7 @@ MonoBehaviour:
   healthPrecent: 0
   death: {fileID: 0}
   cameraPlayer: {fileID: 2223322646375490423}
-  deadPlayer: 0
+  dead: 0
   pickUp: PickUp
   treatmentKit: TreatmentKit
 --- !u!224 &5850444841200052818
@@ -64355,102 +64355,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 6183385700478685497}
   m_CullTransparentMesh: 0
---- !u!82 &7256435151334546408
-AudioSource:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2167890919020872731}
-  m_Enabled: 1
-  serializedVersion: 4
-  OutputAudioMixerGroup: {fileID: 0}
-  m_audioClip: {fileID: 8300000, guid: d9ca3be383423b449b3798be4d05c817, type: 3}
-  m_PlayOnAwake: 0
-  m_Volume: 0.02
-  m_Pitch: 1
-  Loop: 0
-  Mute: 0
-  Spatialize: 0
-  SpatializePostEffects: 0
-  Priority: 128
-  DopplerLevel: 1
-  MinDistance: 0
-  MaxDistance: 10
-  Pan2D: 0
-  rolloffMode: 2
-  BypassEffects: 0
-  BypassListenerEffects: 0
-  BypassReverbZones: 0
-  rolloffCustomCurve:
-    serializedVersion: 2
-    m_Curve:
-    - serializedVersion: 3
-      time: 0
-      value: 1
-      inSlope: 0
-      outSlope: 0
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0.33333334
-      outWeight: 0.33333334
-    - serializedVersion: 3
-      time: 1
-      value: 0
-      inSlope: 0
-      outSlope: 0
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0.33333334
-      outWeight: 0.33333334
-    m_PreInfinity: 2
-    m_PostInfinity: 2
-    m_RotationOrder: 4
-  panLevelCustomCurve:
-    serializedVersion: 2
-    m_Curve:
-    - serializedVersion: 3
-      time: 0
-      value: 1
-      inSlope: 0
-      outSlope: 0
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0.33333334
-      outWeight: 0.33333334
-    m_PreInfinity: 2
-    m_PostInfinity: 2
-    m_RotationOrder: 4
-  spreadCustomCurve:
-    serializedVersion: 2
-    m_Curve:
-    - serializedVersion: 3
-      time: 0
-      value: 0
-      inSlope: 0
-      outSlope: 0
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0.33333334
-      outWeight: 0.33333334
-    m_PreInfinity: 2
-    m_PostInfinity: 2
-    m_RotationOrder: 4
-  reverbZoneMixCustomCurve:
-    serializedVersion: 2
-    m_Curve:
-    - serializedVersion: 3
-      time: 0
-      value: 1
-      inSlope: 0
-      outSlope: 0
-      tangentMode: 0
-      weightedMode: 0
-      inWeight: 0.33333334
-      outWeight: 0.33333334
-    m_PreInfinity: 2
-    m_PostInfinity: 2
-    m_RotationOrder: 4
 --- !u!65 &7597822833627072805
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -64688,27 +64592,6 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2012727466595077775}
   m_CullTransparentMesh: 1
---- !u!114 &8115085899351747070
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2167890919020872731}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 9b9d3880c48dc8f42b0765462599e70c, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  audioSource: {fileID: 0}
-  playerOn: 0
-  clientOn: 0
-  Display: {fileID: 7697810059454884765}
-  timerScream: 5
-  pointlightSpot: {fileID: 0}
-  audioScreen: {fileID: 0}
-  OffMaterial: {fileID: 2100000, guid: a5156528924951946aaa84c6844ea9bf, type: 2}
-  RenderMaterial: {fileID: 2100000, guid: 68239404260bd794b9eb4a94a26d5898, type: 2}
 --- !u!224 &8125037255587571076
 RectTransform:
   m_ObjectHideFlags: 0
