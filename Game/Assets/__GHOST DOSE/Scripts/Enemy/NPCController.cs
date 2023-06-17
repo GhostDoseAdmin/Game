@@ -632,7 +632,7 @@ public class NPCController : MonoBehaviour
                     {//CLIENT
                         thisPlayerSource = GameDriver.instance.Client.GetComponent<ClientPlayerController>().audioSourceSpeech;
                     }
-                    AudioManager.instance.Play(audioString + i.ToString(), null);
+                    AudioManager.instance.Play(audioString + i.ToString(), thisPlayerSource);
                     //Debug.Log("PLAYING AUDIO " + audioString + i.ToString());
                 }
 

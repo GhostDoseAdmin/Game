@@ -240,6 +240,17 @@ namespace GameManager
                 //ClientWeapLight = Client.GetComponent<ClientFlashlightSystem>().WeaponLight;
                 //ClientFlashLight = Client.GetComponent<ClientFlashlightSystem>().FlashLight;
 
+                if(NetworkDriver.instance.isTRAVIS)
+                {
+                    Player.GetComponent<PlayerController>().isTravis = true;
+                    Client.GetComponent<ClientPlayerController>().isTravis = false;
+                }
+                else
+                {
+                    Player.GetComponent<PlayerController>().isTravis = false;
+                    Client.GetComponent<ClientPlayerController>().isTravis = true;
+                }
+
                 Debug.Log("I AM READY");
                 NetworkDriver.instance.SCENE_READY = true;
                 //NetworkDriver.instance.sioCom.Instance.Emit("event", JsonConvert.SerializeObject(new { otherssceneready = true }), false);

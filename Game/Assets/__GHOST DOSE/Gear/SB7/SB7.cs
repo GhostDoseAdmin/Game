@@ -81,8 +81,10 @@ public class SB7 : MonoBehaviour
         }
         Debug.Log("CURRENT COLD SPOT" + currentColdSpot.name);
         List<Sound> questionList = new List<Sound>();
-        if (transform.root.name == "TRAVIS") { questionList = QuestionsTravis; }
-        else { questionList = QuestionsWestin; }
+        if(GetComponentInParent<PlayerController>()!=null && GetComponentInParent<PlayerController>().isTravis) { questionList = QuestionsTravis; }
+        if (GetComponentInParent<PlayerController>() != null && !GetComponentInParent<PlayerController>().isTravis) { questionList = QuestionsWestin; }
+        if (GetComponentInParent<ClientPlayerController>() != null && GetComponentInParent<ClientPlayerController>().isTravis) { questionList = QuestionsTravis; }
+        if (GetComponentInParent<ClientPlayerController>() != null && !GetComponentInParent<ClientPlayerController>().isTravis) { questionList = QuestionsWestin; }
 
         questionIndex = currentColdSpot.GetComponent<ColdSpot>().questionIndexYoungEvilMurderGender;//Random.Range(0, questionList.Count);
         audioSourceVoices.clip = questionList[questionIndex].clip;

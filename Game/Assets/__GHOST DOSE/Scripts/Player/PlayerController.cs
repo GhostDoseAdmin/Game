@@ -95,6 +95,7 @@ public class PlayerController : MonoBehaviour
 	private string prevPos;
 	public bool emitPos;
 	private int emitDodge;
+	public bool isTravis;
 	public MobileController gamePad;
 	//public bool mobileGearAim;
 	//private GameObject playerCam;

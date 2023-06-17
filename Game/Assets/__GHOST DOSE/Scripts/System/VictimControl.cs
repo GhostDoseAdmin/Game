@@ -25,7 +25,7 @@ public class VictimControl : Item
     public GameObject zozoDummy;
     public GameObject heaventVFX;
     public GameObject Pentagram;
-    public GameObject pentagramLight;
+    //public GameObject pentagramLight;
     Vector3 domeStartSize;
     Vector3 zozoSpawnStartPos;
     Vector3 zozoSpawnStartSize;
@@ -329,7 +329,7 @@ public class VictimControl : Item
     {
         revertGear();
         Pentagram.GetComponent<MeshRenderer>().materials[0].SetColor("_Color", Color.blue);
-        pentagramLight.GetComponent<Light>().color = Color.blue;
+        //pentagramLight.GetComponent<Light>().color = Color.blue;
         AudioManager.instance.StopPlaying("creepywhisper", null);
         AudioManager.instance.Play("heavenmusic", null);
         heaventVFX.SetActive(true);

@@ -115,6 +115,7 @@ public class ClientPlayerController : MonoBehaviour
     public AudioSource audioSource;
     public AudioSource audioSourceSpeech;
     private string currentAni;
+    public bool isTravis;
     public bool canFlinch;
     //public bool wlOn, flOn;//weaplight and flashlight
 
