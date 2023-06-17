@@ -37,7 +37,7 @@ public class Person : MonoBehaviour
 
     public void EmitTraits()
     {
-        NetworkDriver.instance.sioCom.Instance.Emit("event", JsonConvert.SerializeObject($"{{'obj':'{gameObject.name}','isEvil':'{isEvil}','isMurdered':'{isMurdered}'}}"), false);
+        NetworkDriver.instance.sioCom.Instance.Emit("event", JsonConvert.SerializeObject($"{{'obj':'{gameObject.name}','isEvil':'{isEvil}','isMurdered':'{isMurdered}','isGirl':'{isGirl}'}}"), false);
     }
     public void Update()
     {
