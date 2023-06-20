@@ -239,7 +239,7 @@ public class GhostVFX : MonoBehaviour
                 //if (death) { visible = true; visibilitySet = true; Fade(true, 5f, 1); }
                 invisible = false;
                 {
-                    if (visible) { if (GetComponent<ZozoControl>() == null) { Fade(true, 0.5f); } else { Fade(true, 1f); }  }
+                    if (visible) { if (GetComponent<ZozoControl>() == null) { Fade(true, 0.5f); } else { Fade(true, 1.5f); }  }
                     else { Fade(false, 1f); }//fadeout
                 }// DEATH FADE
                  //else { Fade(false, 10f, 0); }

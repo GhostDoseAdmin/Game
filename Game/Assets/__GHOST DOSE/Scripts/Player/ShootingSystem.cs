@@ -207,7 +207,7 @@ public class ShootingSystem : MonoBehaviour
                     //DO DAMAGE
                     if (target != null)
                     {
-                        if ((target.GetComponent<GhostVFX>() != null) && isVisible && target.GetComponent<Teleport>().teleport == 0)
+                        if ((target.GetComponent<GhostVFX>() != null) && target.GetComponent<Teleport>().teleport == 0) // && isVisible 
                         {
                             if (target.GetComponent<NPCController>().animEnemy.GetCurrentAnimatorClipInfo(0).Length > 0 && target.GetComponent<NPCController>().animEnemy.GetCurrentAnimatorClipInfo(0)[0].clip.name == "agro") { Damage = 20; }
                             if (isHeadshot) { Damage = headShotDamage; }
@@ -279,7 +279,7 @@ public class ShootingSystem : MonoBehaviour
                     if (ghost.GetComponent<NPCController>().healthEnemy>0 && ghost.GetComponent<Teleport>().teleport == 0)
                     {
                         if (!ghost.GetComponent<GhostVFX>().Shadower) { isVisible = !ghost.GetComponent<GhostVFX>().invisible; }
-                        else { isVisible = true; }
+                        if (ghost.GetComponent<GhostVFX>().Shadower) { isVisible = ghost.GetComponent<GhostVFX>().visible; }
                         //if (!isVisible) { Debug.Log("INVISISHOT"); }
                         if (hit.collider.gameObject.name == "mixamorig:Head") { isHeadshot = true; }
                     }
@@ -305,7 +305,7 @@ public class ShootingSystem : MonoBehaviour
     {
         isHeadshot = false;
         target = null;
-        isVisible = true;
+        isVisible = false;
         GameObject targ = EasyTarget(distance);
         if (GetComponent<PlayerController>().gamePad.camSup.AIMMODE)
         {
@@ -320,7 +320,18 @@ public class ShootingSystem : MonoBehaviour
 
                 float proximity = Vector2.Distance(targetScreenPoint, new Vector2(rect.transform.position.x, rect.transform.position.y));
 
-                if (proximity < (aiming.crosshair.GetComponent<RectTransform>().rect.width / 2)){target = targ;}
+                if (proximity < (aiming.crosshair.GetComponent<RectTransform>().rect.width / 2)){
+
+                    target = targ;
+
+                        if (target.gameObject.layer == LayerMask.NameToLayer("Enemy"))
+                        {
+                                if (!target.GetComponent<GhostVFX>().Shadower) { isVisible = !target.GetComponent<GhostVFX>().invisible; }
+                                if (target.GetComponent<GhostVFX>().Shadower) { isVisible = target.GetComponent<GhostVFX>().visible; }
+                            if (target.GetComponent<NPCController>().outline.OutlineWidth > 0f){isVisible = true;}
+                        }
+                
+                }
             }
             //RAY TARGET by HEADSHOT
             LayerMask mask = 1 << LayerMask.NameToLayer("Default") | 1 << LayerMask.NameToLayer("Enemy") | 1 << LayerMask.NameToLayer("Ghost");
@@ -334,7 +345,7 @@ public class ShootingSystem : MonoBehaviour
                 {
                     if (hit.collider.gameObject.GetComponentInParent<Teleport>() != null && hit.collider.gameObject.GetComponentInParent<Teleport>().teleport != 0) { return; }
                     if (hit.collider.gameObject.GetComponentInParent<NPCController>().dead) { return; }
-                    if (!hit.collider.gameObject.GetComponentInParent<GhostVFX>().Shadower && hit.collider.gameObject.GetComponentInParent<GhostVFX>().invisible) { return; }
+                    //if (!hit.collider.gameObject.GetComponentInParent<GhostVFX>().Shadower && hit.collider.gameObject.GetComponentInParent<GhostVFX>().invisible) { return; }
                 }
                 if (hit.collider.gameObject.name == "mixamorig:Head") { isHeadshot = true; target = hit.collider.GetComponentInParent<Animator>().gameObject; }
             }
@@ -394,13 +405,17 @@ public class ShootingSystem : MonoBehaviour
                                     if (hit.collider.gameObject.GetComponentInParent<Teleport>() != null && hit.collider.gameObject.GetComponentInParent<Teleport>().teleport != 0) { continue; }
                                     if (hit.collider.gameObject.GetComponentInParent<NPCController>().dead) { continue; }
 
+                                    closestTarget = target; closestDistance = targetDistance;
 
-                                    if (!hit.collider.gameObject.GetComponentInParent<GhostVFX>().Shadower)//GHOST
+                                    /*if (!hit.collider.gameObject.GetComponentInParent<GhostVFX>().Shadower)//GHOST
                                     {
-                                        if (!hit.collider.gameObject.GetComponentInParent<GhostVFX>().invisible) { closestTarget = target; closestDistance = targetDistance; }
+                                        if (!hit.collider.gameObject.GetComponentInParent<GhostVFX>().invisible) { 
+                                            closestTarget = target; closestDistance = targetDistance; 
+                                        }
                                         
                                     }
                                     else { closestTarget = target; closestDistance = targetDistance; }//shadower
+                                    */
 
 
                                 }

@@ -640,6 +640,7 @@ namespace NetworkSystem
 
             //PLAYER PERSIST
             GameObject Player = GameDriver.instance.Player;
+            Player.transform.parent.transform.SetParent(null);
             GetComponent<RigManager>().travisProp = Player;
             GetComponent<RigManager>().travCurrentRig = Player.transform.GetChild(0).gameObject;
             GetComponent<RigManager>().westinProp = Player;

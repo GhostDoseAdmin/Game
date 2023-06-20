@@ -157,7 +157,7 @@ Shader "Custom/Ghost" {
                 o.Emission = c.rgb * c.a * _Emission;
                 o.Metallic = _Metallic;
                 o.Smoothness = _Glossiness;
-                o.Alpha = (total_alpha * _Alpha) + _EMFAlpha;
+                o.Alpha = 0.05 + (total_alpha * _Alpha) + _EMFAlpha;
 
             }
 
