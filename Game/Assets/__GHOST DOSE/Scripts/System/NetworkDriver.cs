@@ -597,6 +597,8 @@ namespace NetworkSystem
                 if (TWOPLAYER && SCENE_READY && OTHERS_SCENE_READY) { startTime = Time.time; GAMESTARTED = true; }
             }
 
+            //PLAYER PLACEMENT IN END GAME SCREEN
+            if (SceneManager.GetActiveScene().name == "EndGame") { GameDriver.instance.Player.transform.position = new Vector3(-0.9f, -1.3f, 3.27f); }
 
         }
 
@@ -651,7 +653,7 @@ namespace NetworkSystem
             Player.GetComponent<HealthSystem>().enabled = false;
             Player.GetComponent<ShootingSystem>().enabled = false;
             Player.transform.root.position = new Vector3(0, 0, 0);
-            Player.transform.position = new Vector3(-1.03f,-1.34f,2.67f);
+            Player.transform.position = new Vector3(-0.9f,-1.3f,3.27f);
             Player.transform.rotation = Quaternion.Euler(0f, -180f, 0f);
             Player.GetComponent<Animator>().Rebind();
             Destroy(Player.GetComponent<Rigidbody>());
