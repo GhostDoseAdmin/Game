@@ -195,7 +195,7 @@ public class GhostVFX : MonoBehaviour
                     material.SetVector("_PlayerLightPosition", lightSource.transform.position);
                     material.SetVector("_PlayerLightDirection", -lightSource.transform.forward);
                     material.SetFloat("_PlayerLightAngle", spotAngle);
-                    material.SetFloat("_PlayerStrengthScalarLight", 20);
+                    material.SetFloat("_PlayerStrengthScalarLight", 40);//20
                     //if (!GetComponent<NPCController>().ZOZO) { material.SetFloat("_PlayerStrengthScalarLight", 20); }
                     //else { material.SetFloat("_PlayerStrengthScalarLight", 5); }
                     material.SetFloat("_PlayerLightRange", lightSource.range);
@@ -221,7 +221,7 @@ public class GhostVFX : MonoBehaviour
                     material.SetVector("_ClientLightPosition", lightSource.transform.position);
                     material.SetVector("_ClientLightDirection", -lightSource.transform.forward);
                     material.SetFloat("_ClientLightAngle", spotAngle);
-                    material.SetFloat("_PlayerStrengthScalarLight", 20);
+                    material.SetFloat("_PlayerStrengthScalarLight", 40);//20
                     //if (!GetComponent<NPCController>().ZOZO) { material.SetFloat("_ClientStrengthScalarLight", 20); }
                     //else { material.SetFloat("_ClientStrengthScalarLight", 5); }
                     material.SetFloat("_ClientLightRange", lightSource.range);

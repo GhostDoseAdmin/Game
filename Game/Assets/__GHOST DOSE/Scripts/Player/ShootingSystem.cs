@@ -279,7 +279,7 @@ public class ShootingSystem : MonoBehaviour
                     if (ghost.GetComponent<NPCController>().healthEnemy>0 && ghost.GetComponent<Teleport>().teleport == 0)
                     {
                         if (!ghost.GetComponent<GhostVFX>().Shadower) { isVisible = !ghost.GetComponent<GhostVFX>().invisible; }
-                        if (ghost.GetComponent<GhostVFX>().Shadower) { isVisible = ghost.GetComponent<GhostVFX>().visible; }
+                        if (ghost.GetComponent<GhostVFX>().Shadower) { isVisible = true; } //ghost.GetComponent<GhostVFX>().visible;
                         //if (!isVisible) { Debug.Log("INVISISHOT"); }
                         if (hit.collider.gameObject.name == "mixamorig:Head") { isHeadshot = true; }
                     }
@@ -327,7 +327,7 @@ public class ShootingSystem : MonoBehaviour
                         if (target.gameObject.layer == LayerMask.NameToLayer("Enemy"))
                         {
                                 if (!target.GetComponent<GhostVFX>().Shadower) { isVisible = !target.GetComponent<GhostVFX>().invisible; }
-                                if (target.GetComponent<GhostVFX>().Shadower) { isVisible = target.GetComponent<GhostVFX>().visible; }
+                                if (target.GetComponent<GhostVFX>().Shadower) { isVisible = true; }
                             if (target.GetComponent<NPCController>().outline.OutlineWidth > 0f){isVisible = true;}
                         }
                 
