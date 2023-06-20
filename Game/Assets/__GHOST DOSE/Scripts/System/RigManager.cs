@@ -23,10 +23,13 @@ public class RigManager : MonoBehaviour
 
     public int[] lvl1SpeedTeirs;
     public int[] lvl2SpeedTeirs;
+    public int[] lvl3SpeedTeirs;
     public List<GameObject> travLevel1RewardRigs;
     public List<GameObject> travLevel2RewardRigs;
+    public List<GameObject> travLevel3RewardRigs;
     public List<GameObject> wesLevel1RewardRigs;
     public List<GameObject> wesLevel2RewardRigs;
+    public List<GameObject> wesLevel3RewardRigs;
 
     [HideInInspector] public GameObject travisProp;//PLAYER GAME OBJECT
     [HideInInspector] public GameObject travCurrentRig;
@@ -116,7 +119,7 @@ public class RigManager : MonoBehaviour
 
     public void RetreiveLevelSpeeds()
     {
-        if(!hasRetrievedSkins) { RetreiveLevelData("level1speed"); RetreiveLevelData("level2speed"); }
+        if(!hasRetrievedSkins) { RetreiveLevelData("level1speed"); RetreiveLevelData("level2speed"); RetreiveLevelData("level3speed"); }
         hasRetrievedSkins = true;
     }
 
@@ -189,6 +192,24 @@ public class RigManager : MonoBehaviour
                     }
                 }
             }
+            //LEVEL3
+            if (i == 3 && leveldata[3] > 0)
+            {
+                if (NetworkDriver.instance.isTRAVIS) { thisRewardsList = travLevel3RewardRigs; }
+                else { thisRewardsList = wesLevel3RewardRigs; }
+                if (thisRewardsList.Count > 0)
+                {
+                    //CHECK TEIRS
+                    for (int j = 0; j < lvl3SpeedTeirs.Length; j++)
+                    {
+                        if (leveldata[i] <= lvl3SpeedTeirs[j])
+                        {
+                            updatedList.Add(thisRewardsList[j]);
+
+                        }
+                    }
+                }
+            }
         }
 
         //UPDATE LIST
@@ -244,6 +265,19 @@ public class RigManager : MonoBehaviour
                 {
                         updatedList.Add(travLevel2RewardRigs[j]);
                         updatedList.Add(wesLevel2RewardRigs[j]);
+                    }
+                }
+            }
+            //LEVEL3
+            if (levelIndex == 3)
+            {
+                //CHECK TEIRS
+                for (int j = 0; j < lvl3SpeedTeirs.Length; j++)
+                {
+                    if (speed <= lvl3SpeedTeirs[j] && prevSpeed > lvl3SpeedTeirs[j])
+                    {
+                        updatedList.Add(travLevel3RewardRigs[j]);
+                        updatedList.Add(wesLevel3RewardRigs[j]);
                     }
                 }
             }
