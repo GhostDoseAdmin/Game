@@ -63949,16 +63949,20 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 4600351335788548322, guid: 4d61142dc0de3be4e9e386ae8f2458c4, type: 3}
       propertyPath: wesBasicRigs.Array.size
-      value: 9
+      value: 4
       objectReference: {fileID: 0}
     - target: {fileID: 4600351335788548322, guid: 4d61142dc0de3be4e9e386ae8f2458c4, type: 3}
       propertyPath: travBasicRigs.Array.size
-      value: 7
+      value: 4
       objectReference: {fileID: 0}
     - target: {fileID: 4600351335788548322, guid: 4d61142dc0de3be4e9e386ae8f2458c4, type: 3}
       propertyPath: wesRigList.Array.data[1]
       value: 
       objectReference: {fileID: 3042350477353588769, guid: e17bb9b9f7143154fb9e423c829c7a76, type: 3}
+    - target: {fileID: 4600351335788548322, guid: 4d61142dc0de3be4e9e386ae8f2458c4, type: 3}
+      propertyPath: lvl3SpeedTeirs.Array.size
+      value: 2
+      objectReference: {fileID: 0}
     - target: {fileID: 4600351335788548322, guid: 4d61142dc0de3be4e9e386ae8f2458c4, type: 3}
       propertyPath: wesBasicRigs.Array.data[0]
       value: 
@@ -64024,16 +64028,48 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 1254628644858567362, guid: 8ded8fff5528fef49a4e632291f0592a, type: 3}
     - target: {fileID: 4600351335788548322, guid: 4d61142dc0de3be4e9e386ae8f2458c4, type: 3}
+      propertyPath: lvl1SpeedTeirs.Array.data[0]
+      value: 9999999
+      objectReference: {fileID: 0}
+    - target: {fileID: 4600351335788548322, guid: 4d61142dc0de3be4e9e386ae8f2458c4, type: 3}
+      propertyPath: lvl1SpeedTeirs.Array.data[1]
+      value: 600
+      objectReference: {fileID: 0}
+    - target: {fileID: 4600351335788548322, guid: 4d61142dc0de3be4e9e386ae8f2458c4, type: 3}
+      propertyPath: lvl2SpeedTeirs.Array.data[0]
+      value: 999999
+      objectReference: {fileID: 0}
+    - target: {fileID: 4600351335788548322, guid: 4d61142dc0de3be4e9e386ae8f2458c4, type: 3}
+      propertyPath: lvl2SpeedTeirs.Array.data[1]
+      value: 600
+      objectReference: {fileID: 0}
+    - target: {fileID: 4600351335788548322, guid: 4d61142dc0de3be4e9e386ae8f2458c4, type: 3}
+      propertyPath: lvl3SpeedTeirs.Array.data[0]
+      value: 999999
+      objectReference: {fileID: 0}
+    - target: {fileID: 4600351335788548322, guid: 4d61142dc0de3be4e9e386ae8f2458c4, type: 3}
+      propertyPath: lvl3SpeedTeirs.Array.data[1]
+      value: 600
+      objectReference: {fileID: 0}
+    - target: {fileID: 4600351335788548322, guid: 4d61142dc0de3be4e9e386ae8f2458c4, type: 3}
       propertyPath: wesLevel1RewardRigs.Array.size
-      value: 3
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 4600351335788548322, guid: 4d61142dc0de3be4e9e386ae8f2458c4, type: 3}
       propertyPath: wesLevel2RewardRigs.Array.size
       value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 4600351335788548322, guid: 4d61142dc0de3be4e9e386ae8f2458c4, type: 3}
+      propertyPath: wesLevel3RewardRigs.Array.size
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 4600351335788548322, guid: 4d61142dc0de3be4e9e386ae8f2458c4, type: 3}
       propertyPath: travLevel1RewardRigs.Array.size
-      value: 3
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 4600351335788548322, guid: 4d61142dc0de3be4e9e386ae8f2458c4, type: 3}
+      propertyPath: travLevel3RewardRigs.Array.size
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 4600351335788548322, guid: 4d61142dc0de3be4e9e386ae8f2458c4, type: 3}
       propertyPath: wesLevel1RewardRigs.Array.data[0]
@@ -64042,7 +64078,7 @@ PrefabInstance:
     - target: {fileID: 4600351335788548322, guid: 4d61142dc0de3be4e9e386ae8f2458c4, type: 3}
       propertyPath: wesLevel1RewardRigs.Array.data[1]
       value: 
-      objectReference: {fileID: 4988294687365147337, guid: 896272423ebe4ab458d3cc1a4f2337c2, type: 3}
+      objectReference: {fileID: 2966502271100162753, guid: 92bf7b9bb1657dd409ace830183933cb, type: 3}
     - target: {fileID: 4600351335788548322, guid: 4d61142dc0de3be4e9e386ae8f2458c4, type: 3}
       propertyPath: wesLevel1RewardRigs.Array.data[2]
       value: 
@@ -64050,11 +64086,11 @@ PrefabInstance:
     - target: {fileID: 4600351335788548322, guid: 4d61142dc0de3be4e9e386ae8f2458c4, type: 3}
       propertyPath: wesLevel2RewardRigs.Array.data[0]
       value: 
-      objectReference: {fileID: 6045802490858252163, guid: 8d248f216749de2439244d14a2443762, type: 3}
+      objectReference: {fileID: 4988294687365147337, guid: 896272423ebe4ab458d3cc1a4f2337c2, type: 3}
     - target: {fileID: 4600351335788548322, guid: 4d61142dc0de3be4e9e386ae8f2458c4, type: 3}
       propertyPath: wesLevel2RewardRigs.Array.data[1]
       value: 
-      objectReference: {fileID: 2966502271100162753, guid: 92bf7b9bb1657dd409ace830183933cb, type: 3}
+      objectReference: {fileID: 8485769366313727278, guid: e1ba68ed5909ae04a90be5c1e33a85ad, type: 3}
     - target: {fileID: 4600351335788548322, guid: 4d61142dc0de3be4e9e386ae8f2458c4, type: 3}
       propertyPath: wesLevel2RewardRigs.Array.data[2]
       value: 
@@ -64064,13 +64100,21 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 3042350477353588769, guid: 47e6ee8b658c4da4683c0010b1e940f3, type: 3}
     - target: {fileID: 4600351335788548322, guid: 4d61142dc0de3be4e9e386ae8f2458c4, type: 3}
+      propertyPath: wesLevel3RewardRigs.Array.data[0]
+      value: 
+      objectReference: {fileID: 5647780513739358184, guid: ddf553361f5ebb24c8efe43724d406fc, type: 3}
+    - target: {fileID: 4600351335788548322, guid: 4d61142dc0de3be4e9e386ae8f2458c4, type: 3}
+      propertyPath: wesLevel3RewardRigs.Array.data[1]
+      value: 
+      objectReference: {fileID: 6045802490858252163, guid: 8d248f216749de2439244d14a2443762, type: 3}
+    - target: {fileID: 4600351335788548322, guid: 4d61142dc0de3be4e9e386ae8f2458c4, type: 3}
       propertyPath: travLevel1RewardRigs.Array.data[0]
       value: 
       objectReference: {fileID: 6366496293786361218, guid: 236f3b241141d5742a7ce24062a1d377, type: 3}
     - target: {fileID: 4600351335788548322, guid: 4d61142dc0de3be4e9e386ae8f2458c4, type: 3}
       propertyPath: travLevel1RewardRigs.Array.data[1]
       value: 
-      objectReference: {fileID: 7980194834814132744, guid: 3d4607684c268814981056806355677c, type: 3}
+      objectReference: {fileID: 1133421069572404941, guid: 77b85cb037a47424ebb4093d4eaa3d2a, type: 3}
     - target: {fileID: 4600351335788548322, guid: 4d61142dc0de3be4e9e386ae8f2458c4, type: 3}
       propertyPath: travLevel1RewardRigs.Array.data[2]
       value: 
@@ -64082,7 +64126,15 @@ PrefabInstance:
     - target: {fileID: 4600351335788548322, guid: 4d61142dc0de3be4e9e386ae8f2458c4, type: 3}
       propertyPath: travLevel2RewardRigs.Array.data[1]
       value: 
-      objectReference: {fileID: 6062853213436908088, guid: 896de54c027d704459ab02c64d730a50, type: 3}
+      objectReference: {fileID: 4593977534827150345, guid: 88c9e1a1d56300643bbaba6ac45a6124, type: 3}
+    - target: {fileID: 4600351335788548322, guid: 4d61142dc0de3be4e9e386ae8f2458c4, type: 3}
+      propertyPath: travLevel3RewardRigs.Array.data[0]
+      value: 
+      objectReference: {fileID: 7980194834814132744, guid: 3d4607684c268814981056806355677c, type: 3}
+    - target: {fileID: 4600351335788548322, guid: 4d61142dc0de3be4e9e386ae8f2458c4, type: 3}
+      propertyPath: travLevel3RewardRigs.Array.data[1]
+      value: 
+      objectReference: {fileID: 1254628644858567362, guid: 8ded8fff5528fef49a4e632291f0592a, type: 3}
     - target: {fileID: 4600351335788548323, guid: 4d61142dc0de3be4e9e386ae8f2458c4, type: 3}
       propertyPath: isMobile
       value: 0
