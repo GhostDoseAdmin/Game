@@ -12,7 +12,7 @@ public class ColdSpotControl : MonoBehaviour
     public List<GameObject> ColdSpotsSession2;
     public List<GameObject> ColdSpotsSession3;
     public List<GameObject> currentSession;
-    public float respawnTimer;
+    //public float respawnTimer;
     public int q1, q2, q3;//locations
     public bool hasDoneSession;
 
