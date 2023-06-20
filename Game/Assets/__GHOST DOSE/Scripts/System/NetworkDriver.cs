@@ -342,7 +342,7 @@ namespace NetworkSystem
             //-----------------EVENT  ----------------->
             sioCom.Instance.On("event", (payload) =>
             {
-                Debug.Log(" RECEIVED EVENT  " + payload);
+                //Debug.Log(" RECEIVED EVENT  " + payload);
                 JObject data = JObject.Parse(payload);
                 Dictionary<string, string> dict = data.ToObject<Dictionary<string, string>>();
                 //LOBBY
