@@ -357,7 +357,7 @@ namespace NetworkSystem
                     //if (SceneManager.GetActiveScene().name != "Lobby") { UpdateGameState();  } 
                     } 
 
-                if (OTHERS_SCENE_READY && SCENE_READY)
+                if (SCENE_READY)
                 {
                     GameObject obj = null;
                     if (dict.ContainsKey("obj")) { obj = GameObject.Find(dict["obj"]); }
