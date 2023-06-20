@@ -31,11 +31,11 @@ public class PlayerDeath : MonoBehaviour
         string audioString;
         if (!otherPlayer)
         { //PLAYER
-            if (GameDriver.instance.Player.GetComponent<PlayerController>().isTravis) { audioString = "travkill"; } else { audioString = "weskill"; }
+            if (GameDriver.instance.Player.GetComponent<PlayerController>().isTravis) { audioString = "travdeath"; } else { audioString = "wesdeath"; }
         }
         else
         {//CLIENT
-            if (GameDriver.instance.Client.GetComponent<ClientPlayerController>().isTravis) { audioString = "travkill"; } else { audioString = "weskill"; }
+            if (GameDriver.instance.Client.GetComponent<ClientPlayerController>().isTravis) { audioString = "travdeath"; } else { audioString = "wesdeath"; }
 
         }
         AudioManager.instance.Play(audioString, null);
