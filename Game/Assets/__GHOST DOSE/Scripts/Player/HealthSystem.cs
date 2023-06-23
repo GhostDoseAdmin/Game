@@ -107,7 +107,7 @@ public class HealthSystem : MonoBehaviour
 			Death();
 		}
 
-		if (Health < maxHealth)
+		if (Health < maxHealth && !dead)
 		{
 			Health += (restoringHealth / 10) * Time.deltaTime;
 			//healthLevel.fillAmount += (restoringHealth / 1000) * Time.deltaTime;
@@ -117,7 +117,6 @@ public class HealthSystem : MonoBehaviour
 		{
 			Health = maxHealth;
 		}
-
 		if (Health > 0)
 		{
 			healthPrecent = Health / maxHealth;

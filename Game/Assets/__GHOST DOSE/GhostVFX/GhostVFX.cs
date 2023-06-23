@@ -250,12 +250,10 @@ public class GhostVFX : MonoBehaviour
                     {
 
                         skin.GetComponent<SkinnedMeshRenderer>().materials[i].SetFloat("_Alpha", currentMaxAlpha[i]);
-                       // if (death) { skin.GetComponent<SkinnedMeshRenderer>().materials[i].SetFloat("_EMFAlpha", 0.6f); }
                     }
                     else if (skin.GetComponent<SkinnedMeshRenderer>().materials[i].shader.name == "Custom/GhostAlphaCutoff")
                     {
                         skin.GetComponent<SkinnedMeshRenderer>().materials[i].SetFloat("_Emission", currentMaxAlpha[i]);
-                       // if (death) { skin.GetComponent<SkinnedMeshRenderer>().materials[i].SetFloat("_EMFAlpha", 1f); }
                     }
                 }
 

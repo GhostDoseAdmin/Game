@@ -52,6 +52,8 @@ namespace NetworkSystem
         private GameObject otherPlayerDeath;
          public bool isMobile = false;
         public bool FORCEMOBILE;
+        public bool lostGame = false;
+        private bool hasEverConnected = false;
         public void Awake()
         {
             Debug.Log("-----------------------NETWORK DRIVER");
@@ -106,7 +108,7 @@ namespace NetworkSystem
                 if (payload != null)
                 {
                     connected = true;
-                    GameDriver.instance.WriteGuiMsg("Connected Successfully!", 5f, false, Color.white);
+                    if (!hasEverConnected) { GameDriver.instance.WriteGuiMsg("Connected Successfully!", 5f, false, Color.white); hasEverConnected = true; }
                     if (SceneManager.GetActiveScene().name == "Lobby") { GameObject.Find("LobbyManager").GetComponent<LobbyControlV2>().loginCanvas.SetActive(true); }
                     else { sioCom.Instance.Emit("join", ROOM, true); } //PlayerPrefs.GetString("room")}
                     //GameDriver.instance.WriteGuiMsg("Checking Room " + GameDriver.instance.ROOM,1f, true);
@@ -176,11 +178,13 @@ namespace NetworkSystem
                 if (payload == "full")
                 {
                     GameDriver.instance.WriteGuiMsg("Room is full! Can't join Game! ", 10f, false, Color.red);
+                    GameObject.Find("LobbyManager").GetComponent<LobbyControlV2>().LeaveRoom();
                     //GameObject.Find("LobbyManager").GetComponent<LobbyControl>().checkingRoom = false;
                     //sioCom.Instance.Close();
                 }
                 else
                 {
+                    ROOM = payload;
                     //GameDriver.instance.ROOM_VALID = true;
                     if (SceneManager.GetActiveScene().name == "Lobby") { GameObject.Find("LobbyManager").GetComponent<LobbyControlV2>().RoomFound(); }
                     GameDriver.instance.WriteGuiMsg("Found Room " + ROOM, 1f, false, Color.white);
@@ -193,6 +197,7 @@ namespace NetworkSystem
                         pingTimer = Time.time; sioCom.Instance.Emit("ping", JsonConvert.SerializeObject(dict), false); //Debug.Log("PINGING");
                     }
                 }
+                GameDriver.instance.WriteGuiMsg("IN ROOM " + ROOM, 9999f, false, Color.magenta);
             });
 
             //-----------------PING----------------->
@@ -524,7 +529,7 @@ namespace NetworkSystem
             //--------------DISCONNECT-----------------
             sioCom.Instance.On("disconnect", (payload) => { Debug.LogWarning("Disconnected: " + payload); });
             //--------------PLAYER DISCONNECT-----------------
-            sioCom.Instance.On("player_disconnect", (payload) => { GameDriver.instance.WriteGuiMsg("Other Player Disconnected! ", 10f, false, Color.red); HOST = true; }); // sioCom.Instance.Close(); SceneManager.LoadScene("Lobby");
+            sioCom.Instance.On("player_disconnect", (payload) => { GameObject.Find("LobbyManager").GetComponent<LobbyControlV2>().LeaveRoom(); GameDriver.instance.WriteGuiMsg("Other Player Disconnected! ", 10f, false, Color.red); HOST = true; }); // sioCom.Instance.Close(); SceneManager.LoadScene("Lobby");
         }
 
 
@@ -642,6 +647,7 @@ namespace NetworkSystem
 
             //PLAYER PERSIST
             GameObject Player = GameDriver.instance.Player;
+            Player.SetActive(true);
             Player.transform.parent.transform.SetParent(null);
             GetComponent<RigManager>().travisProp = Player;
             GetComponent<RigManager>().travCurrentRig = Player.transform.GetChild(0).gameObject;
@@ -665,7 +671,7 @@ namespace NetworkSystem
         {
             DestroyImmediate(GameObject.Find("Player").transform.parent.gameObject);
             SceneManager.LoadScene("Lobby");
-            Destroy(gameObject);
+            DestroyImmediate(gameObject);
         }
 
     }

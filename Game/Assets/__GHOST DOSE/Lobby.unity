@@ -8035,6 +8035,7 @@ GameObject:
   - component: {fileID: 780930802}
   - component: {fileID: 780930801}
   - component: {fileID: 780930800}
+  - component: {fileID: 780930805}
   m_Layer: 5
   m_Name: RoomCanvas
   m_TagString: Untagged
@@ -8172,6 +8173,14 @@ Canvas:
   m_SortingLayerID: 0
   m_SortingOrder: 1
   m_TargetDisplay: 0
+--- !u!81 &780930805
+AudioListener:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 780930798}
+  m_Enabled: 1
 --- !u!1 &794956572
 GameObject:
   m_ObjectHideFlags: 0
@@ -66296,6 +66305,7 @@ MonoBehaviour:
   theirRig: {fileID: 0}
   reviveIndicator: {fileID: 0}
   DemonScreamerUI: {fileID: 0}
+  TimeElapsedUI: {fileID: 0}
   PlayerWeapLight: {fileID: 0}
   PlayerFlashLight: {fileID: 0}
   ClientWeapLight: {fileID: 0}

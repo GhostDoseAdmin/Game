@@ -41,6 +41,7 @@ namespace GameManager
         public GameObject reviveIndicator;
         public Image DemonScreamerUI;
         Vector3 playerStartPos;
+        public TextMeshProUGUI TimeElapsedUI;
 
         //public NetworkDriver ND;
 
@@ -57,6 +58,45 @@ namespace GameManager
 
         private void Update()
         {
+
+            //GAME TIMER
+            if(NetworkDriver.instance.GAMESTARTED)
+            {
+                // Calculate the elapsed time in minutes and seconds
+                float elapsedSeconds = Time.time - NetworkDriver.instance.startTime;
+                int minutes = Mathf.FloorToInt(elapsedSeconds / 60f);
+                int seconds = Mathf.FloorToInt(elapsedSeconds % 60f);
+
+                // Format the time as "mm:ss"
+                string formattedTime = string.Format("{0:00}:{1:00}", minutes, seconds);
+
+                // Update the TextMeshProUGUI element
+                TimeElapsedUI.text = formattedTime;
+            }
+
+            //END GAME
+            if(NetworkDriver.instance.GAMESTARTED && !NetworkDriver.instance.lostGame)
+            {
+                if (NetworkDriver.instance.TWOPLAYER)
+                {
+                    if (Player!=null && Client!=null && Player.GetComponent<HealthSystem>().Health<=0 && Client.GetComponent<ClientPlayerController>().hp==0)
+                    {
+                        NetworkDriver.instance.lostGame = true;
+                        WriteGuiMsg("Investigation Failed", 1f, false, Color.red);
+                        Invoke("LostGame", 5f);
+                    }
+                }
+                else
+                {
+                    if (Player!=null && Player.GetComponent<HealthSystem>().Health <= 0)
+                    {
+                        NetworkDriver.instance.lostGame = true;
+                        WriteGuiMsg("Investigation Failed", 1f, false, Color.red);
+                        Invoke("LostGame", 5f);
+                    }
+                }
+            }
+
 
             //DEMON SCREAMER
             if (SceneManager.GetActiveScene().name != "Lobby")
@@ -257,6 +297,11 @@ namespace GameManager
 
 
             }
+        }
+
+        public void LostGame()
+        {
+            NetworkDriver.instance.EndGame();
         }
         public void DemonColdSpotScreamer()
         {

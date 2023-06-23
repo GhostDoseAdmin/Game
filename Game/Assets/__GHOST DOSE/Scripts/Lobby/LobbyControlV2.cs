@@ -52,32 +52,25 @@ public class LobbyControlV2 : MonoBehaviour
         entryMenuCanvas.SetActive(false);
         GAMEMODE = gameMode;
 
-        //if (gameMode == "duo" || gameMode == "duorandom")
         {
             screenMask.SetActive(true);
             roomCanvas.SetActive(true);
             roomNameField.SetActive(true);
             findRoomButton.SetActive(true);
             lookingForPlayer = false;
-            if (gameMode == "single") { roomNameField.GetComponent<TMP_InputField>().text = NetworkDriver.instance.USERNAME; FindRoom(); }
+            if (gameMode == "single") { 
+                roomNameField.GetComponent<TMP_InputField>().text = NetworkDriver.instance.USERNAME; 
+                FindRoomSingle(); 
+            }
+            if (gameMode == "duorandom")
+            {
+                FindRoomRandom();
+            }
 
         }
-       // else { lobbyMenuCanvas.SetActive(true); }
         
         
     }
-
-    public void LeaveRoom()
-    {
-        //roomNameField.SetActive(true);
-        //findRoomButton.SetActive(true);
-        foundRoom = false;
-        NetworkDriver.instance.GetComponent<RigManager>().otherPlayerProp.SetActive(false);
-        //NetworkDriver.instance.sioCom.Instance.Emit("disconnect", "", true);
-        NetworkDriver.instance.Reconnect();
-        NetworkDriver.instance.otherUSERNAME = "";
-    }
-
     public void FindRoom()
     {
         string roomName = roomNameField.GetComponent<TMP_InputField>().text;
@@ -94,6 +87,37 @@ public class LobbyControlV2 : MonoBehaviour
         }
         else { GameDriver.instance.WriteGuiMsg("Must Specify Room!" + roomName, 999f, true, Color.red); }
     }
+    public void FindRoomSingle()
+    {
+        NetworkDriver.instance.sioCom.Instance.Emit("join_single", "", true);
+        roomNameField.SetActive(false);
+        findRoomButton.SetActive(false);
+        GameDriver.instance.WriteGuiMsg("Joining Room ", 999f, true, Color.yellow);
+    }
+    public void FindRoomRandom()
+    {
+        NetworkDriver.instance.sioCom.Instance.Emit("join_random", "", true);
+        roomNameField.SetActive(false);
+        findRoomButton.SetActive(false);
+        GameDriver.instance.WriteGuiMsg("Joining Room ", 999f, true, Color.yellow);
+    }
+    public void LeaveRoom()
+    {
+        //roomNameField.SetActive(true);
+        //findRoomButton.SetActive(true);
+        lobbyMenuCanvas.SetActive(false);
+        entryMenuCanvas.SetActive(true);
+        lookingForPlayer = false;
+        foundRoom = false;
+        NetworkDriver.instance.GetComponent<RigManager>().otherPlayerProp.SetActive(false);
+        //NetworkDriver.instance.sioCom.Instance.Emit("disconnect", "", true);
+        NetworkDriver.instance.Reconnect();
+        NetworkDriver.instance.otherUSERNAME = "";
+        otherUserName.GetComponent<TextMeshPro>().text = NetworkDriver.instance.otherUSERNAME;
+    }
+
+
+
     public void RoomFound()
     {
         roomCanvas.SetActive(false);
@@ -194,8 +218,11 @@ public class LobbyControlV2 : MonoBehaviour
     }
     public void Update()
     {
+
+        //GameDriver.instance.WriteGuiMsg("ROOM " + NetworkDriver.instance.ROOM, 999f, true, Color.magenta);
+
         //--------------NEXT SCENE-------------------
-        if(READY && otherREADY) { LoadScene(); }
+        if (READY && otherREADY) { LoadScene(); }
 
         //--------------OTHER PLAYER-----------------
         if (foundRoom)
