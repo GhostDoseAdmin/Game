@@ -474,14 +474,16 @@ public class PlayerController : MonoBehaviour
 						{ //TAKE OUT sb7
 							sb7 = true;
 							gear = 0;
-							camera.SetActive(false); k2.SetActive(false); camInventory.SetActive(true); k2Inventory.SetActive(true); SB7.SetActive(true);
+                            GameDriver.instance.gearuicam.SetActive(false);
+                            GameDriver.instance.gearuik2.SetActive(false);
+                            camera.SetActive(false); k2.SetActive(false); camInventory.SetActive(true); k2Inventory.SetActive(true); SB7.SetActive(true);
 						}
 					}
 					//------Q
 					else { sb7 = false; }
 
-					if (gear == 1) { camera.SetActive(true); k2.SetActive(false); camInventory.SetActive(false); k2Inventory.SetActive(true); }
-					if (gear == 2) { camera.SetActive(false); k2.SetActive(true); camInventory.SetActive(true); k2Inventory.SetActive(false); }
+					if (gear == 1) { GameDriver.instance.gearuicam.SetActive(true); GameDriver.instance.gearuik2.SetActive(false); camera.SetActive(true); k2.SetActive(false); camInventory.SetActive(false); k2Inventory.SetActive(true); }
+					if (gear == 2) { GameDriver.instance.gearuik2.SetActive(true); GameDriver.instance.gearuicam.SetActive(false); camera.SetActive(false); k2.SetActive(true); camInventory.SetActive(true); k2Inventory.SetActive(false); }
 
                     if (gear == 0) { AudioManager.instance.Play("sb7sweep", audioSource); }
                     else { AudioManager.instance.StopPlaying("sb7sweep", audioSource); }
