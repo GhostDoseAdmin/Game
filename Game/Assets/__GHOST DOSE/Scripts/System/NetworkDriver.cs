@@ -529,7 +529,7 @@ namespace NetworkSystem
             //--------------DISCONNECT-----------------
             sioCom.Instance.On("disconnect", (payload) => { Debug.LogWarning("Disconnected: " + payload); });
             //--------------PLAYER DISCONNECT-----------------
-            sioCom.Instance.On("player_disconnect", (payload) => { GameObject.Find("LobbyManager").GetComponent<LobbyControlV2>().LeaveRoom(); GameDriver.instance.WriteGuiMsg("Other Player Disconnected! ", 10f, false, Color.red); HOST = true; }); // sioCom.Instance.Close(); SceneManager.LoadScene("Lobby");
+            sioCom.Instance.On("player_disconnect", (payload) => { if (SceneManager.GetActiveScene().name == "Lobby") { GameObject.Find("LobbyManager").GetComponent<LobbyControlV2>().LeaveRoom(); } GameDriver.instance.WriteGuiMsg("Other Player Disconnected! ", 10f, false, Color.red); HOST = true; }); // sioCom.Instance.Close(); SceneManager.LoadScene("Lobby");
         }
 
 

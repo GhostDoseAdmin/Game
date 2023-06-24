@@ -61,14 +61,16 @@ namespace GameManager
 
         private void Update()
         {
-     
-            //QUIT/MENU - CURSOR
-            if (Input.GetKeyUp(KeyCode.Escape))
-            {
-                TryQuitBtn();
-            }
-            if (quitUI.activeSelf) { WriteGuiMsg("Are you sure you want to quit?", 0.1f, false, Color.yellow); }
 
+            //QUIT/MENU - CURSOR
+            if (SceneManager.GetActiveScene().name != "Lobby")
+            {
+                if (Input.GetKeyUp(KeyCode.Escape))
+                {
+                    TryQuitBtn();
+                }
+                if (quitUI.activeSelf) { WriteGuiMsg("Are you sure you want to quit?", 0.1f, false, Color.yellow); }
+            }
             //GAME TIMER
             if (NetworkDriver.instance.GAMESTARTED)
             {
