@@ -16,6 +16,7 @@ public class ColdSpot : Item
     public int session;
     private float effectStartSize;
     public GameObject Trigger;
+    public GameObject indicator;
     private bool exposed;
     public int questionIndexYoungEvilMurderGender;
 
@@ -40,7 +41,8 @@ public class ColdSpot : Item
         if (decay) { 
             effect.transform.localScale = Vector3.Lerp(effect.transform.localScale, effect.transform.localScale * 0.5f, Time.deltaTime * 1);
             Vector3 currPos = transform.position;            currPos.y += 0.025f;            transform.position = currPos;
-            if (effect.transform.localScale.x < 0.01f) { 
+            if (effect.transform.localScale.x < 0.01f) {
+                indicator.SetActive(false);
                 effect.SetActive(false); decay = false; exposed = false;
                 if (NetworkDriver.instance.HOST) { Invoke("InvokeRespawn", respawnTimer); }
                 // this.gameObject.SetActive(false); 
@@ -92,6 +94,7 @@ public class ColdSpot : Item
     public void InvokeRespawn()    {        Respawn(null);    }
     public void Respawn(GameObject givenDestination)
     {
+        indicator.SetActive(true);
         int randomSpot = Random.Range(0, locations.Count);
         if (givenDestination == null) { transform.position = locations[randomSpot].transform.position; }
         else { transform.position = givenDestination.transform.position; }//FROM HOST

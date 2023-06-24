@@ -66,6 +66,7 @@ namespace GameManager
             {
                 TryQuitBtn();
             }
+            if (quitUI.activeSelf) { WriteGuiMsg("Are you sure you want to quit?", 0.1f, false, Color.yellow); }
 
             //GAME TIMER
             if (NetworkDriver.instance.GAMESTARTED)
