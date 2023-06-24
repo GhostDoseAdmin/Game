@@ -160,9 +160,9 @@ public class PlayerController : MonoBehaviour
 
     void Start()
 	{
-       
-        //GetComponent<WeaponParameters>().EnableInventoryPistol();
 
+        //GetComponent<WeaponParameters>().EnableInventoryPistol();
+        GameDriver.instance.gearuicam.SetActive(true);
         anim = GetComponent<Animator>();
     }
     #endregion

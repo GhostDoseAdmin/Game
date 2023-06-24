@@ -53,11 +53,14 @@ public class K2 : MonoBehaviour
         closestEnemy = null;
         foreach (GameObject obj in enemies)
         {
-            if (obj.transform.GetChild(0).GetComponent<Outline>().OutlineWidth > 0.1f) { 
-                enemyNum++; 
-                if(Vector3.Distance(obj.transform.position, this.gameObject.transform.position)< closestDist)
+            if(obj != null) {
+                if (obj.transform.GetChild(0).GetComponent<Outline>().OutlineWidth > 0.1f)
                 {
-                    closestEnemy = obj;
+                    enemyNum++;
+                    if (Vector3.Distance(obj.transform.position, this.gameObject.transform.position) < closestDist)
+                    {
+                        closestEnemy = obj;
+                    }
                 }
 
             }
