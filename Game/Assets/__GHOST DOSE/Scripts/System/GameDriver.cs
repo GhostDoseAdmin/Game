@@ -71,6 +71,10 @@ namespace GameManager
                 }
                 if (quitUI.activeSelf) { WriteGuiMsg("Are you sure you want to quit?", 0.1f, false, Color.yellow); }
             }
+            //else
+            {
+                //GameObject.Find("Quit_btn").SetActive(false);
+            }
             //GAME TIMER
             if (NetworkDriver.instance.GAMESTARTED)
             {
