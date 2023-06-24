@@ -197,7 +197,7 @@ namespace NetworkSystem
                         pingTimer = Time.time; sioCom.Instance.Emit("ping", JsonConvert.SerializeObject(dict), false); //Debug.Log("PINGING");
                     }
                 }
-                GameDriver.instance.WriteGuiMsg("IN ROOM " + ROOM, 9999f, false, Color.magenta);
+               // GameDriver.instance.WriteGuiMsg("IN ROOM " + ROOM, 9999f, false, Color.magenta);
             });
 
             //-----------------PING----------------->
@@ -671,7 +671,7 @@ namespace NetworkSystem
         {
             DestroyImmediate(GameObject.Find("Player").transform.parent.gameObject);
             SceneManager.LoadScene("Lobby");
-            DestroyImmediate(gameObject);
+            DestroyImmediate(this.gameObject);
         }
 
     }

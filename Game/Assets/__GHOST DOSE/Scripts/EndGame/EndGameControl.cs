@@ -15,10 +15,12 @@ public class EndGameControl : MonoBehaviour
     void Start()
     {
         //test
-       // NetworkDriver.instance.LEVELINDEX = 1;
-       // NetworkDriver.instance.timeElapsed = 50;
-       // NetworkDriver.instance.GetComponent<RigManager>().leveldata[NetworkDriver.instance.LEVELINDEX] = 999;
-       if(NetworkDriver.instance.lostGame)
+        // NetworkDriver.instance.LEVELINDEX = 1;
+        // NetworkDriver.instance.timeElapsed = 50;
+        // NetworkDriver.instance.GetComponent<RigManager>().leveldata[NetworkDriver.instance.LEVELINDEX] = 999;
+        levelData = "level" + NetworkDriver.instance.LEVELINDEX + "speed";
+
+        if (NetworkDriver.instance.lostGame)
         {
             missionFailed.SetActive(true);
             highScore.SetActive(false);
@@ -32,8 +34,6 @@ public class EndGameControl : MonoBehaviour
             Debug.Log("LEVEL SCORE " + PREVSPEEDSCORE);
             elapsedTime.GetComponent<TextMeshPro>().text = "TIME: " + NetworkDriver.instance.timeElapsed.ToString("F2") + " s";
             highScore.GetComponent<TextMeshPro>().text = "Highscore: " + PREVSPEEDSCORE.ToString("F2") + " s";
-
-            levelData = "level" + NetworkDriver.instance.LEVELINDEX + "speed";
 
             //New highscore
             if (NetworkDriver.instance.timeElapsed < PREVSPEEDSCORE)

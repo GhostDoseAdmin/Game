@@ -195,20 +195,7 @@ public class Camera_Controller : MonoBehaviour
         }
 
 
-        if (Input.GetKeyUp(KeyCode.Escape) && !NetworkDriver.instance.isMobile)
-        {
-            if (!UnityEngine.Cursor.visible)
-            {
-                UnityEngine.Cursor.visible = true;
-                UnityEngine.Cursor.lockState = CursorLockMode.None;
-            }
-            else
-            {
-                UnityEngine.Cursor.lockState = CursorLockMode.Locked;
-                UnityEngine.Cursor.visible = false;
-            }
 
-        }
 
         //----------FIX Z AXIS AFTER FLINCH-----
         if (!NetworkDriver.instance.isMobile)
