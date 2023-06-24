@@ -403,7 +403,7 @@ public class ShootingSystem : MonoBehaviour
                                 if (hit.collider.gameObject.layer == LayerMask.NameToLayer("Enemy"))
                                 {
                                     if (hit.collider.gameObject.GetComponentInParent<Teleport>() != null && hit.collider.gameObject.GetComponentInParent<Teleport>().teleport != 0) { continue; }
-                                    if (hit.collider.gameObject.GetComponentInParent<NPCController>().dead) { GameDriver.instance.WriteGuiMsg("ENEMY DAED", 1f, false, Color.red); continue; }
+                                    if (hit.collider.gameObject.GetComponentInParent<NPCController>().dead) { continue; }
 
                                     closestTarget = target; closestDistance = targetDistance;
 
