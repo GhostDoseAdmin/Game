@@ -41,6 +41,9 @@ namespace InteractionSystem
         [Space(10)]
         public KeyCode meshRender;
 
+        [Header("ESCAPE BUTTON")]
+        [Space(10)]
+        public KeyCode escapeQuitMenu;
 
         public static InputManager instance;
         private void Awake()

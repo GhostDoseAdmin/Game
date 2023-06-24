@@ -42,6 +42,8 @@ namespace GameManager
         public Image DemonScreamerUI;
         Vector3 playerStartPos;
         public TextMeshProUGUI TimeElapsedUI;
+        public TextMeshProUGUI QuitBtnText;
+        public GameObject quitUI;
 
         //public NetworkDriver ND;
 
@@ -58,9 +60,15 @@ namespace GameManager
 
         private void Update()
         {
+     
+            //QUIT/MENU - CURSOR
+            if (Input.GetKeyUp(KeyCode.Escape))
+            {
+                TryQuitBtn();
+            }
 
             //GAME TIMER
-            if(NetworkDriver.instance.GAMESTARTED)
+            if (NetworkDriver.instance.GAMESTARTED)
             {
                 // Calculate the elapsed time in minutes and seconds
                 float elapsedSeconds = Time.time - NetworkDriver.instance.startTime;
@@ -127,12 +135,19 @@ namespace GameManager
                 otherUserName.GetComponent<RectTransform>().position = screenPosition;
             } 
         }
-
+        void Start()
+        {
+            //QUIT BUTTON
+            if (NetworkDriver.instance.isMobile)
+            {
+                QuitBtnText.text = "QUIT";
+            }
+        }
         void Awake()
         {
 
-            //CREATE RIG FROM LOBYS
-            if (NetworkDriver.instance)
+                //CREATE RIG FROM LOBYS
+                if (NetworkDriver.instance)
             {
                 GameObject[] prefabs = Resources.LoadAll<GameObject>("Prefabs/Rigs");
                 //MY RIG
@@ -331,7 +346,36 @@ namespace GameManager
             systemConsole.GetComponent<TextMeshProUGUI>().text = msg;
             systemConsole.GetComponent<TextMeshProUGUI>().color = color;
         }
-
+        private void InvokeTryQuit()
+        {
+            Invoke("TryQuitBtn",1f);
+        }
+        public void TryQuitBtn()
+        {
+            Debug.Log("TRY QUIT");
+            if (quitUI.activeSelf) {
+                if (!NetworkDriver.instance.isMobile)
+                {
+                    UnityEngine.Cursor.visible = false;
+                    UnityEngine.Cursor.lockState = CursorLockMode.Locked;
+                }
+                quitUI.SetActive(false); 
+                return; 
+            }
+            else {
+                if (!NetworkDriver.instance.isMobile)
+                {
+                    UnityEngine.Cursor.visible = true;
+                    UnityEngine.Cursor.lockState = CursorLockMode.None;
+                }
+                quitUI.SetActive(true); 
+                return; 
+            }
+        }
+        public void QuitBtn()
+        {
+            NetworkDriver.instance.ResetGame();
+        }
         private void StopMSG() { systemConsole.GetComponent<TextMeshProUGUI>().text = ""; loadingIcon.SetActive(false); }
     }
 }
