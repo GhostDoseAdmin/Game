@@ -8,6 +8,7 @@ using Newtonsoft.Json;
 using NetworkSystem;
 using UnityEngine.AI;
 using static UnityEngine.GraphicsBuffer;
+using TMPro;
 
 public class VictimControl : Item
 {
@@ -83,9 +84,10 @@ public class VictimControl : Item
     void Update()
     {
         //CANDLES
-        if(candleCount>6) { candleCount = 6; }
+        GameDriver.instance.candleUI.GetComponent<TextMeshProUGUI>().text = candleCount.ToString() + "/6";
+        if (candleCount>6) { candleCount = 6; }
         for (int i = 0; i < candleCount; i++) {
-           candles[i].SetActive(true); 
+           candles[i].SetActive(true);
         }
 
         //START EFFECT
