@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.40180418, g: 0.4773016, b: 0.5361181, a: 1}
+  m_IndirectSpecularColor: {r: 0.40253955, g: 0.4780897, b: 0.53803056, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -17497,12 +17497,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0cd44c1031e13a943bb63640046fad76, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_UiScaleMode: 0
+  m_UiScaleMode: 1
   m_ReferencePixelsPerUnit: 100
   m_ScaleFactor: 1
-  m_ReferenceResolution: {x: 800, y: 600}
+  m_ReferenceResolution: {x: 1920, y: 1080}
   m_ScreenMatchMode: 0
-  m_MatchWidthOrHeight: 0
+  m_MatchWidthOrHeight: 0.5
   m_PhysicalUnit: 3
   m_FallbackScreenDPI: 96
   m_DefaultSpriteDPI: 96
@@ -66886,6 +66886,7 @@ MonoBehaviour:
   ClientFlashLight: {fileID: 0}
   gearuicam: {fileID: 0}
   gearuik2: {fileID: 0}
+  candleUI: {fileID: 0}
   loadingIcon: {fileID: 8284366207522097302}
   systemConsole: {fileID: 2012727466595077775}
 --- !u!1 &5398469344788947032
