@@ -14,6 +14,7 @@ public class Person : MonoBehaviour
     public GameObject deathWeap;
     public GameObject whiteLight;
     public GameObject darkLight;
+    public GameObject horns;
 
     public void Start()
     {
@@ -31,7 +32,12 @@ public class Person : MonoBehaviour
 
     public void UpdateTraits()
     {
-        if (isEvil) { eyes.GetComponent<SkinnedMeshRenderer>().materials[0].SetColor("_Color", Color.red); } else { eyes.GetComponent<SkinnedMeshRenderer>().materials[0].SetColor("_Color", Color.white); }
+        if (isEvil) {
+            eyes.GetComponent<SkinnedMeshRenderer>().materials[0].SetColor("_Color", Color.red); 
+        } else {
+            horns.SetActive(false);
+            eyes.GetComponent<SkinnedMeshRenderer>().materials[0].SetColor("_Color", Color.white); 
+        }
         if (isMurdered) { deathWeap.SetActive(true); } else { deathWeap.SetActive(false); }
     }
 
