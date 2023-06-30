@@ -335,6 +335,8 @@ public class PlayerController : MonoBehaviour
 			//MOVE
 			walk = gamePad.joystick.Vertical; strafe = gamePad.joystick.Horizontal;
             joyMagnitude =  Mathf.Sqrt(Mathf.Pow(walk, 2) + Mathf.Pow(strafe, 2));
+
+			//if (!gamePad.camSup.AIMMODE) { targetPosVec = targetPos.position + Vector3.up; }
 		
 		}
        

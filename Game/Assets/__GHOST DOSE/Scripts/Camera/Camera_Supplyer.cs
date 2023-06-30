@@ -181,6 +181,7 @@ public class Camera_Supplyer : MonoBehaviour
                             cameraController.desiredDistance = 7f;
                             //move targlook in position of joystick relative to cam
                             Player.targetPos.position = Player.transform.position + (Camera.main.transform.forward * Player.gamePad.joystick.Vertical + Camera.main.transform.right * Player.gamePad.joystick.Horizontal).normalized * 5f;
+                            Player.targetPos.position = new Vector3(Player.targetPos.position.x, Player.transform.position.y, Player.targetPos.position.z) + Vector3.up;
                         }
                     }
                     //ACTIVATE AIM MODE

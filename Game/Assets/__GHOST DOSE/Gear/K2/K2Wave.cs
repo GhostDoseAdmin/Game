@@ -1,7 +1,7 @@
 
 using UnityEngine;
 using InteractionSystem;
-
+using NetworkSystem;
 
 public class K2Wave : MonoBehaviour
 {
@@ -20,7 +20,10 @@ public class K2Wave : MonoBehaviour
         hud.transform.localScale = Vector3.one*40;
             // transform.localScale = Vector3.Lerp(transform.localScale, transform.localScale * 0.0001f, Time.deltaTime * 1);
         GetComponent<Shockwave>().NewShockwave(startPoint, 2);//3
-        if (!isClient) { direction = (GameObject.Find("Player").GetComponent<ShootingSystem>().targetLook.transform.position - GameObject.Find("PlayerCamera").transform.position).normalized; }
+        if (!isClient) { 
+            direction = (GameObject.Find("Player").GetComponent<ShootingSystem>().targetLook.transform.position - GameObject.Find("PlayerCamera").transform.position).normalized; 
+            if(NetworkDriver.instance.isMobile) { direction = (GameObject.Find("Player").GetComponent<ShootingSystem>().targetLook.transform.position - GameObject.Find("Player").transform.position).normalized; }
+        }
         else { direction = (GameObject.Find("Client").GetComponent<ClientPlayerController>().targetPos.transform.position - GameObject.Find("Client").transform.position).normalized; }
 
         startPoint = transform.position;
