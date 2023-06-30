@@ -639,9 +639,9 @@ namespace NetworkSystem
             timeElapsed = Time.time -startTime;
             GameObject.Find("PlayerCamera").transform.SetParent(GameDriver.instance.gameObject.transform);
 
-            if (SceneManager.GetActiveScene().name == "DarkEchoes" || SceneManager.GetActiveScene().name == "Experiment") { LEVELINDEX = 1; }
-            if (SceneManager.GetActiveScene().name == "Forsaken") { LEVELINDEX = 2; }
-            if (SceneManager.GetActiveScene().name == "HollowAngel") { LEVELINDEX = 3; }
+            if (SceneManager.GetActiveScene().name.Contains("DarkEchoes") || SceneManager.GetActiveScene().name == "Experiment") { LEVELINDEX = 1; }
+            if (SceneManager.GetActiveScene().name.Contains("Forsaken") ){ LEVELINDEX = 3; }
+            if (SceneManager.GetActiveScene().name.Contains("HollowAngel") ) { LEVELINDEX = 2; }
 
             SceneManager.LoadScene("EndGame");
 

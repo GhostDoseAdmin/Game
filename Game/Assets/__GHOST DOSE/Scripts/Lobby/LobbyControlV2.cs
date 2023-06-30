@@ -27,7 +27,8 @@ public class LobbyControlV2 : MonoBehaviour
     public GameObject otherUserName;
     public GameObject lobbyMenu;
     public GameObject Carousel;
-    
+    public GPButton switchBro;
+
     private float timer = 0f;
     private float rotDuration = 1f;
     private bool foundRoom = false;
@@ -245,16 +246,16 @@ public class LobbyControlV2 : MonoBehaviour
             if (Time.time > timer + rotDuration)
             {
                 //SELECT BRO
-                if (Input.GetMouseButtonDown(0))
+                if (Input.GetMouseButtonDown(0) || switchBro.GetComponent<GPButton>().buttonPressed)
                 {
                     RaycastHit hit;
                     Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
 
-                    if (Physics.Raycast(ray, out hit))
+                    if (Physics.Raycast(ray, out hit) || switchBro.GetComponent<GPButton>().buttonPressed)
                     {
 
                         GameObject clickedObject = hit.collider.gameObject.transform.parent.gameObject;
-                        if (clickedObject.name == "TRAVIS" || clickedObject.name == "WESTIN")
+                        if (clickedObject.name == "TRAVIS" || clickedObject.name == "WESTIN" || switchBro.GetComponent<GPButton>().buttonPressed)
                         {
                             //if (clickedObject.name == "TRAVIS") { NetworkDriver.instance.isTRAVIS = true; }
                             //else { NetworkDriver.instance.isTRAVIS = false; }

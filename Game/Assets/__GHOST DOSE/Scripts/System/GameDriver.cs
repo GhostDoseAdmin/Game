@@ -43,7 +43,7 @@ namespace GameManager
         Vector3 playerStartPos;
         public TextMeshProUGUI TimeElapsedUI;
         public TextMeshProUGUI QuitBtnText;
-        public GameObject quitUI;
+        public GameObject quitUI, infoUI;
 
         //public NetworkDriver ND;
 
@@ -61,6 +61,7 @@ namespace GameManager
 
         private void Update()
         {
+            //INFO MENU
 
             //QUIT/MENU - CURSOR
             if (SceneManager.GetActiveScene().name != "Lobby")
@@ -354,9 +355,19 @@ namespace GameManager
             systemConsole.GetComponent<TextMeshProUGUI>().text = msg;
             systemConsole.GetComponent<TextMeshProUGUI>().color = color;
         }
-        private void InvokeTryQuit()
+
+        public void InfoButton()
         {
-            Invoke("TryQuitBtn",1f);
+            if (infoUI.activeSelf)
+            {
+                infoUI.SetActive(false);
+                return;
+            }
+            else
+            {
+                infoUI.SetActive(true);
+                return;
+            }
         }
         public void TryQuitBtn()
         {
