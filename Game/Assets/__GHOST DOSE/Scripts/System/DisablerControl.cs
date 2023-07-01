@@ -68,7 +68,7 @@ public class DisablerControl : MonoBehaviour
                         emitDisableObjects.Add(enemy);
                     }
                     //-------------REACTIVATE------------------
-                    if (closestPlayerDist <= disableDistance && !enemy.activeSelf)
+                    if (closestPlayerDist <= disableDistance && !enemy.activeSelf && !enemy.GetComponent<NPCController>().dead)
                     {
                         if (!enemy.gameObject.activeSelf)
                         {

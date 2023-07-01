@@ -217,6 +217,8 @@ public class LobbyControlV2 : MonoBehaviour
         otherLEVEL = level;
         GameDriver.instance.WriteGuiMsg(NetworkDriver.instance.otherUSERNAME + " selected level " + otherLEVEL, 5f, false, Color.yellow);
     }
+    
+   
     public void Update()
     {
 
@@ -246,16 +248,16 @@ public class LobbyControlV2 : MonoBehaviour
             if (Time.time > timer + rotDuration)
             {
                 //SELECT BRO
-                if (Input.GetMouseButtonDown(0) || switchBro.GetComponent<GPButton>().buttonPressed)
+                if (Input.GetMouseButtonDown(0) || switchBro.buttonReleased)
                 {
                     RaycastHit hit;
                     Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
 
-                    if (Physics.Raycast(ray, out hit) || switchBro.GetComponent<GPButton>().buttonPressed)
+                    if (Physics.Raycast(ray, out hit) || switchBro.buttonReleased)
                     {
-
-                        GameObject clickedObject = hit.collider.gameObject.transform.parent.gameObject;
-                        if (clickedObject.name == "TRAVIS" || clickedObject.name == "WESTIN" || switchBro.GetComponent<GPButton>().buttonPressed)
+                        GameObject clickedObject = null;
+                        if (hit.collider != null) { clickedObject = hit.collider.gameObject.transform.parent.gameObject; }
+                        if (  (clickedObject != null && (clickedObject.name == "TRAVIS" || clickedObject.name == "WESTIN") ) || switchBro.buttonReleased)
                         {
                             //if (clickedObject.name == "TRAVIS") { NetworkDriver.instance.isTRAVIS = true; }
                             //else { NetworkDriver.instance.isTRAVIS = false; }

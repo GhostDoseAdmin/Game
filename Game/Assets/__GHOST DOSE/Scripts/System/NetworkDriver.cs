@@ -271,7 +271,7 @@ namespace NetworkSystem
             sioCom.Instance.On("player_action", (payload) =>
             {
                 if (!OTHERS_SCENE_READY && SCENE_READY) { OTHERS_SCENE_READY = true; UpdateGameState(); } 
-                //Debug.Log("PLAYER ACTION" + payload);
+               // Debug.Log("PLAYER ACTION" + payload);
                 //GameDriver.instance.WriteGuiMsg("OTHER PLAYER LOADED - GAME START" + GameDriver.instance.GAMESTART + " opl " + otherPlayerLoaded, 999f, false, Color.white);
                 if (OTHERS_SCENE_READY && SCENE_READY)
                 {

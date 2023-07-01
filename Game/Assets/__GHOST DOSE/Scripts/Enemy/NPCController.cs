@@ -654,7 +654,7 @@ public class NPCController : MonoBehaviour
                 GameObject death = Instantiate(Death, transform.position, transform.rotation);
                 if (Shadower) { death.GetComponent<EnemyDeath>().Shadower = true;  }
                 HIT_COL.GetComponent<SphereCollider>().enabled = false;
-                if (!canRespawn) { DestroyImmediate(this.gameObject); }
+                if (!canRespawn) { this.gameObject.SetActive(false); }
 
 
             }

@@ -1053,9 +1053,9 @@ RectTransform:
   m_LocalScale: {x: 0.0137665, y: 0.01376, z: 0.01376}
   m_ConstrainProportionsScale: 1
   m_Children:
-  - {fileID: 2255880847652124113}
   - {fileID: 1319621309}
   - {fileID: 1129547825}
+  - {fileID: 2255880847652124113}
   - {fileID: 1147491532}
   - {fileID: 889527474}
   - {fileID: 696829889}
@@ -11328,7 +11328,7 @@ RectTransform:
   - {fileID: 194132621}
   - {fileID: 122590478}
   m_Father: {fileID: 116675727}
-  m_RootOrder: 2
+  m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
@@ -12875,7 +12875,7 @@ RectTransform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 116675727}
-  m_RootOrder: 1
+  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 12.182, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
@@ -17887,6 +17887,7 @@ MonoBehaviour:
   otherUserName: {fileID: 493344921}
   lobbyMenu: {fileID: 116675723}
   Carousel: {fileID: 399807735}
+  switchBro: {fileID: 2255880847652124112}
   READY: 0
   otherREADY: 0
 --- !u!1 &1915061292
@@ -59834,7 +59835,7 @@ RectTransform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 116675727}
-  m_RootOrder: 0
+  m_RootOrder: 2
   m_LocalEulerAnglesHint: {x: 1.884, y: 15.131, z: -0.407}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
@@ -59854,7 +59855,7 @@ GameObject:
   - component: {fileID: 2255880847652124143}
   - component: {fileID: 2255880847652124112}
   m_Layer: 5
-  m_Name: Gear_Btn
+  m_Name: switchbro_Btn
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

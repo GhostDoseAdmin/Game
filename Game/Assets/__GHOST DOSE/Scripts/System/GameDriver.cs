@@ -62,7 +62,10 @@ namespace GameManager
         private void Update()
         {
             //INFO MENU
-
+            if (Input.GetKeyUp(KeyCode.I))
+            {
+                InfoButton();
+            }
             //QUIT/MENU - CURSOR
             if (SceneManager.GetActiveScene().name != "Lobby")
             {
