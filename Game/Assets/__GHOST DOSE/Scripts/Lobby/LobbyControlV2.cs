@@ -248,16 +248,16 @@ public class LobbyControlV2 : MonoBehaviour
             if (Time.time > timer + rotDuration)
             {
                 //SELECT BRO
-                if (Input.GetMouseButtonDown(0) || switchBro.buttonReleased)
+                if (Input.GetMouseButtonDown(0) || switchBro.buttonPressed)
                 {
                     RaycastHit hit;
                     Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
 
-                    if (Physics.Raycast(ray, out hit) || switchBro.buttonReleased)
+                    if (Physics.Raycast(ray, out hit) || switchBro.buttonPressed)
                     {
                         GameObject clickedObject = null;
                         if (hit.collider != null) { clickedObject = hit.collider.gameObject.transform.parent.gameObject; }
-                        if (  (clickedObject != null && (clickedObject.name == "TRAVIS" || clickedObject.name == "WESTIN") ) || switchBro.buttonReleased)
+                        if (  (clickedObject != null && (clickedObject.name == "TRAVIS" || clickedObject.name == "WESTIN") ) || switchBro.buttonPressed)
                         {
                             //if (clickedObject.name == "TRAVIS") { NetworkDriver.instance.isTRAVIS = true; }
                             //else { NetworkDriver.instance.isTRAVIS = false; }
