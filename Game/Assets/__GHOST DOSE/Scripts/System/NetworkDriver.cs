@@ -669,6 +669,9 @@ namespace NetworkSystem
 
         public void ResetGame()
         {
+            connected = false;
+            PING = 0;
+            sioCom.Instance.Close();
             DestroyImmediate(GameObject.Find("Player").transform.parent.gameObject);
             SceneManager.LoadScene("Lobby");
             DestroyImmediate(this.gameObject);
