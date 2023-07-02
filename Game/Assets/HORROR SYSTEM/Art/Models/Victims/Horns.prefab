@@ -62,7 +62,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 4cba7a03a52cfde48ab54494e4727c3e, type: 2}
+  - {fileID: 2100000, guid: 2c8601c7c3a75c84f91d10d0ce46f698, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -91,6 +91,10 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 6099356033785721304}
     m_Modifications:
+    - target: {fileID: 3343449400594373012, guid: 56ddbd96fc1c18e4e8f90c17dab7a135, type: 3}
+      propertyPath: m_Materials.Array.data[0]
+      value: 
+      objectReference: {fileID: 2100000, guid: 2c8601c7c3a75c84f91d10d0ce46f698, type: 2}
     - target: {fileID: 3847954194049022017, guid: 56ddbd96fc1c18e4e8f90c17dab7a135, type: 3}
       propertyPath: m_Name
       value: Horn (1)
