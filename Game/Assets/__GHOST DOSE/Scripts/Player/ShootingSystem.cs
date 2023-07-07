@@ -220,9 +220,11 @@ public class ShootingSystem : MonoBehaviour
                             //used to emit answer
                             Damage = -1;
                         }
-
-                        if (NetworkDriver.instance.TWOPLAYER) { NetworkDriver.instance.sioCom.Instance.Emit("event", JsonConvert.SerializeObject(new { shoot = true, obj = target.name, dmg = Damage }), false); }
+                       
                     }
+                    string targName = "";
+                    if (target != null) { targName = target.name; }
+                    if (NetworkDriver.instance.TWOPLAYER) { NetworkDriver.instance.sioCom.Instance.Emit("event", JsonConvert.SerializeObject(new { shoot = true, obj = targName, dmg = Damage }), false); }
 
 
 

@@ -314,7 +314,8 @@ public class ClientPlayerController : MonoBehaviour
 				// SHOOT
                 if (triggerShoot)
                 {
-                    shootPoint.LookAt(targetPos);
+                Debug.Log("--------------------------------------------------------------------SHOOT CAM FLASH");
+                shootPoint.LookAt(targetPos);
                     anim.SetBool("Shoot", true);
                     //AudioManager.instance.Play("ShotCam");
                     muzzleFlash.Play();

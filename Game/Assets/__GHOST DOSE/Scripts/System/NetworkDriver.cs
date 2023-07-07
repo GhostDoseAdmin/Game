@@ -91,7 +91,7 @@ namespace NetworkSystem
                 sioCom.Instance.Close();
                 yield return new WaitForSeconds(1f); //refresh socket
                                                      //Debug.Log("attempting connection ");
-                sioCom.Instance.Connect("https://twrecks.io:8080", true);
+                sioCom.Instance.Connect("https://ghostdose.net:8080", true);
                 yield return new WaitForSeconds(1f);
             }
         }
@@ -292,20 +292,6 @@ namespace NetworkSystem
                     if (dict.ContainsKey("gear")) { if (GameDriver.instance.Client.GetComponent<ClientPlayerController>().gear != int.Parse(dict["gear"])) { GameDriver.instance.Client.GetComponent<ClientPlayerController>().ChangeGear(int.Parse(dict["gear"])); } }//gear changes
                     if (dict.ContainsKey("dmg")) { if (bool.Parse(dict["dmg"])) { GameDriver.instance.Client.GetComponent<ClientPlayerController>().Flinch(new Vector3(float.Parse(dict["fx"]), float.Parse(dict["fy"]), float.Parse(dict["fz"]))); } }
                     if (dict.ContainsKey("dg")) { GameDriver.instance.Client.GetComponent<ClientPlayerController>().dodge = int.Parse(dict["dg"]); }
-                }
-
-            });
-            //-----------------SHOOT  ----------------->
-            sioCom.Instance.On("shoot", (payload) =>
-            {
-                if (OTHERS_SCENE_READY && SCENE_READY)
-                {
-                    //Debug.Log(" RECEIVED SHOOT  " + payload);
-                    JObject data = JObject.Parse(payload);
-                    Dictionary<string, string> dict = data.ToObject<Dictionary<string, string>>();
-                    GameObject enemy = GameObject.Find(dict["name"]);
-
-
                 }
 
             });
