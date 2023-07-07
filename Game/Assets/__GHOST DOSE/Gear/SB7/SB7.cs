@@ -23,7 +23,7 @@ public class SB7 : MonoBehaviour
     private float question_delay = 5f;
     private bool askedQuestion;
     private AudioSource audioSourceVoices;
-    public int demon;
+    private float demonChance = 0.25f;
     // Start is called before the first frame update
     void Start()
     {
@@ -42,7 +42,7 @@ public class SB7 : MonoBehaviour
 
     private void OnDisable()
     {
-        demon = 0;
+        demonChance = 0f;
     }
     // Update is called once per frame
     void Update()
@@ -92,12 +92,12 @@ public class SB7 : MonoBehaviour
         audioSourceVoices.Play();
         
         Invoke("GetAnswer", 2f);
-        demon++;
+        demonChance += 0.25f;
     }
 
     void GetAnswer()
     {
-        if (demon >= 2 && Random.value < 0.5f)
+        if (Random.value < demonChance)
         {
             GameDriver.instance.DemonColdSpotScreamer();
             GameDriver.instance.Player.GetComponent<HealthSystem>().Health -= GameDriver.instance.Player.GetComponent<HealthSystem>().Health*0.5f;
@@ -111,7 +111,7 @@ public class SB7 : MonoBehaviour
             {
                 if (thisPlayer.GetComponent<PlayerController>().canFlinch)
                 {
-                    thisPlayer.GetComponent<HealthSystem>().HealthDamage((int)(thisPlayer.GetComponent<HealthSystem>().Health*0.5f), oppositeForce);
+                    thisPlayer.GetComponent<HealthSystem>().HealthDamage((int)(thisPlayer.GetComponent<HealthSystem>().Health*0.25f), oppositeForce);
                 }
 
             }

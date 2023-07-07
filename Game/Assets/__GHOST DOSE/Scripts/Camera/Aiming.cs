@@ -26,7 +26,7 @@ public class Aiming : MonoBehaviour {
 
 	public GameObject player;
 	private MobileController gamePad;
-
+	public bool aim;
 	void Start()
     {
 		isOuija = false;
@@ -52,7 +52,7 @@ public class Aiming : MonoBehaviour {
 			if (gear == 2) { zoom = 50; }
 			if (isOuija) { zoom = 20; }
 
-		bool aim = false;
+		aim = false;
 		if(!NetworkDriver.instance.isMobile)
 		{
             if (player.GetComponent<PlayerController>().gearAim == true) { aim = true; }
@@ -61,7 +61,6 @@ public class Aiming : MonoBehaviour {
 		else
 		{
 			if (GameDriver.instance.Player.GetComponent<PlayerController>().gamePad.camSup.AIMMODE && !GameDriver.instance.Player.GetComponent<PlayerController>().gamePad.camSup.CAMFIX) { aim = true; }
-           
             //crosshair.GetComponent<RectTransform>().position = Camera.main.WorldToScreenPoint(GameDriver.instance.Player.GetComponent<ShootingSystem>().targetLook.transform.position + Vector3.up);
 
         }

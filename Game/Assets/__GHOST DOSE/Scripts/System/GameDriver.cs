@@ -43,7 +43,7 @@ namespace GameManager
         Vector3 playerStartPos;
         public TextMeshProUGUI TimeElapsedUI;
         public TextMeshProUGUI QuitBtnText;
-        public GameObject quitUI, infoUI;
+        public GameObject quitUI, infoUI, thisLevel, thisUser;
 
         //public NetworkDriver ND;
 

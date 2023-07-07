@@ -53,7 +53,7 @@ public class Camera_Supplyer : MonoBehaviour
 
     public bool forceCharacterDirection = false;
 
-    private Camera_Controller cameraController;
+    public Camera_Controller cameraController;
     private RectTransform gamePad;
 
     private PlayerController Player;

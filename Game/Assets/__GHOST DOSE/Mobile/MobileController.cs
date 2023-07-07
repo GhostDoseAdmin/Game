@@ -26,13 +26,6 @@ public class MobileController : MonoBehaviour
     void Update()
     {
 
-        //AIM
-        if (joystickAim.GetComponent<GPButton>().buttonPressed)
-        {
-            //FindValidTarget(10);
-
-            //if (!aimer.AIMING) { aimer.EnableAimer(); }
-        }
         //INTERACT
         if(canPickUp)
         {
