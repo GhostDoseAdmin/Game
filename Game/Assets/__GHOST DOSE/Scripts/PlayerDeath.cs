@@ -42,9 +42,9 @@ public class PlayerDeath : MonoBehaviour
     }
     public void Update()
     {
+        if (reviveIndicator.activeSelf) { GameDriver.instance.WriteGuiMsg("REVIVING", 1f, false, Color.green); }
         if (reviveIndicator)
         {
-            GameDriver.instance.WriteGuiMsg("REVIVING", 5f, false, Color.green);
             if (reviveIndicator.GetComponent<Animator>().GetCurrentAnimatorClipInfo(0).Length > 0 && reviveIndicator.GetComponent<Animator>().GetCurrentAnimatorClipInfo(0)[0].clip.name=="reviveDoneAni") 
             {
                 Debug.Log("Player REVIVED");

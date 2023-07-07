@@ -110,6 +110,7 @@ namespace GameManager
                 {
                     if (Player!=null && Player.GetComponent<HealthSystem>().Health <= 0)
                     {
+                        Debug.Log("------------------------------------DEAD");
                         NetworkDriver.instance.lostGame = true;
                         WriteGuiMsg("Investigation Failed", 1f, false, Color.red);
                         Invoke("LostGame", 5f);
