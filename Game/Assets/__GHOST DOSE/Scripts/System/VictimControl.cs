@@ -84,9 +84,9 @@ public class VictimControl : Item
     void Update()
     {
         //CANDLES
-        GameDriver.instance.candleUI.GetComponent<TextMeshProUGUI>().text = candleCount.ToString() + "/6";
-        if (candleCount>6) { candleCount = 6; }
-        for (int i = 0; i < candleCount; i++) {
+        GameDriver.instance.candleUI.GetComponent<TextMeshProUGUI>().text = candleCount.ToString() + "/12";
+        if (candleCount>12) { candleCount = 12; }
+        for (int i = 0; i < candleCount*0.5; i++) {
            candles[i].SetActive(true);
         }
 
@@ -104,6 +104,18 @@ public class VictimControl : Item
 
             main.transform.Rotate(0f, 5f * Time.deltaTime, 0f);
 
+            //FORCE AIM MOBILE
+            if (NetworkDriver.instance.isMobile)
+            {
+                GameDriver.instance.Player.GetComponent<ShootingSystem>().aiming.GetComponent<Aiming>().aim = true;
+                GameDriver.instance.Player.GetComponent<PlayerController>().gamePad.camSup.AIMMODE = true;
+                GameDriver.instance.Player.GetComponent<PlayerController>().gamePad.camSup.cameraController.desiredDistance = 3f;
+                GameDriver.instance.Player.GetComponent<PlayerController>().gamePad.camSup.yAngleLimitMin = 80f;
+                GameDriver.instance.Player.GetComponent<PlayerController>().gamePad.camSup.yAngleLimitMax = 110f;
+                GameDriver.instance.Player.GetComponent<PlayerController>().gamePad.camSup.forceCharacterDirection = true;
+                GameDriver.instance.Player.GetComponent<PlayerController>().gearAim = true;
+            }
+
             //ELEVATE DEAD
             if (main.transform.position.y < mainStartPos.y + 3)
             {
@@ -118,8 +130,9 @@ public class VictimControl : Item
             else { canTest = true; }
             //KEEP IN CIRCLE
             if (Vector3.Distance(GameDriver.instance.Player.transform.position, transform.position) > 3) { GameDriver.instance.Player.transform.position = Vector3.Lerp(GameDriver.instance.Player.transform.position, transform.position, 0.02f); }
-            
+
         }
+        else { GameDriver.instance.Player.GetComponent<PlayerController>().gamePad.camSup.forceCharacterDirection = false; }
 
 
        //ZOZO SPAWN
@@ -275,7 +288,7 @@ public class VictimControl : Item
     {
         if (!zozo)
         {
-            if (candleCount >= 6)
+            if (candleCount >= 12)
             {
                 if (GameDriver.instance.Player.GetComponent<HealthSystem>().Health <= 0){ playerOn = true;}
                 if (GameDriver.instance.Client.GetComponent<ClientPlayerController>().hp <= 0) { clientOn = true; }
@@ -296,6 +309,7 @@ public class VictimControl : Item
         startCircle = true;
         AudioManager.instance.Play("creepywhisper", null);
         GameDriver.instance.WriteGuiMsg("Beware: Don't summon ZOZO", 5f, false, Color.yellow);
+        Invoke("ShootPrompt",5f);
         trigger.SetActive(false);
         if (NetworkDriver.instance.TWOPLAYER && !otherPlayer) { NetworkDriver.instance.sioCom.Instance.Emit("event", JsonConvert.SerializeObject($"{{'obj':'{gameObject.name}','type':'update','event':'startcircle'}}"), false); }
         GameDriver.instance.Player.GetComponent<Animator>().SetBool("ouija", true);
@@ -303,7 +317,10 @@ public class VictimControl : Item
         GameDriver.instance.Player.GetComponent<ShootingSystem>().crosshairs.SetActive(false);
         if (NetworkDriver.instance.TWOPLAYER) { GameDriver.instance.Client.GetComponent<Animator>().SetBool("ouija", true); }
     }
-
+    void ShootPrompt()
+    {
+        GameDriver.instance.WriteGuiMsg("Shoot the correct lost soul", 10f, false, Color.yellow);
+    }
     public void testAnswer(GameObject victim)
     {
        //SetSpiritsFree(); return;

@@ -355,7 +355,7 @@ public class ShootingSystem : MonoBehaviour
         }
         else
         {
-            Damage = 30;
+            Damage = 100;
             target = targ;
         }
     }
@@ -395,7 +395,7 @@ public class ShootingSystem : MonoBehaviour
                             if (hit.collider.gameObject.layer == LayerMask.NameToLayer("Default")) { continue; }
                             
                             float angleThreshold = 30f; // Set the angle threshold in degrees
-                            if (!GetComponent<PlayerController>().gamePad.camSup.AIMMODE) { angleThreshold = 60f; }
+                            if (!GetComponent<PlayerController>().gamePad.camSup.AIMMODE) { angleThreshold = 60f; }//in platform mode
                             Vector3 targetDirection = target.transform.position - transform.position;
                             float angle = Vector3.Angle(transform.forward, targetDirection);
 
