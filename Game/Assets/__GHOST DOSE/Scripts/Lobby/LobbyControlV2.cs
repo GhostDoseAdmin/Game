@@ -222,8 +222,9 @@ public class LobbyControlV2 : MonoBehaviour
     public void Update()
     {
 
-        //GameDriver.instance.WriteGuiMsg("ROOM " + NetworkDriver.instance.ROOM, 999f, true, Color.magenta);
-
+        //-----USERNAME AND LEVEL UI--------
+        if (GameDriver.instance.thisLevel != null && GameObject.Find("LevelPanel")==null) { GameDriver.instance.thisLevel.GetComponent<TextMeshPro>().text = LEVEL; }
+        if (GameDriver.instance.thisUser != null) { GameDriver.instance.thisUser.GetComponent<TextMeshPro>().text = NetworkDriver.instance.USERNAME; }
         //--------------NEXT SCENE-------------------
         if (READY && otherREADY) { LoadScene(); }
 
