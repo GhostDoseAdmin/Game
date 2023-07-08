@@ -342,6 +342,13 @@ public class VictimControl : Item
     }
     public void revertGear()
     {
+        if(NetworkDriver.instance.isMobile)
+        {
+            GameDriver.instance.Player.GetComponent<ShootingSystem>().aiming.GetComponent<Aiming>().aim = false;
+            GameDriver.instance.Player.GetComponent<PlayerController>().gamePad.camSup.AIMMODE = false;
+            GameDriver.instance.Player.GetComponent<PlayerController>().gamePad.camSup.forceCharacterDirection = false;
+        }
+
         //GameDriver.instance.Player.GetComponent<ShootingSystem>().aiming.zoom = GameDriver.instance.Player.GetComponent<ShootingSystem>().aiming.startZoom;
         GameDriver.instance.Player.GetComponent<ShootingSystem>().planchette.SetActive(false);
         //GameDriver.instance.Player.GetComponent<ShootingSystem>().crosshairs.SetActive(true);

@@ -364,15 +364,21 @@ namespace GameManager
         {
             if (infoUI.activeSelf)
             {
-                UnityEngine.Cursor.visible = false;
-                UnityEngine.Cursor.lockState = CursorLockMode.Locked;
+                if (!NetworkDriver.instance.isMobile)
+                {
+                    UnityEngine.Cursor.visible = false;
+                    UnityEngine.Cursor.lockState = CursorLockMode.Locked;
+                }
                 infoUI.SetActive(false);
                 return;
             }
             else
             {
-                UnityEngine.Cursor.visible = true;
-                UnityEngine.Cursor.lockState = CursorLockMode.None;
+                if (!NetworkDriver.instance.isMobile)
+                {
+                    UnityEngine.Cursor.visible = true;
+                    UnityEngine.Cursor.lockState = CursorLockMode.None;
+                }
                 infoUI.SetActive(true);
                 return;
             }
