@@ -33,7 +33,8 @@ public class Person : MonoBehaviour
     public void UpdateTraits()
     {
         if (isEvil) {
-            eyes.GetComponent<SkinnedMeshRenderer>().materials[0].SetColor("_Color", Color.red); 
+            eyes.GetComponent<SkinnedMeshRenderer>().materials[0].SetColor("_Color", Color.red);
+            horns.SetActive(true);
         } else {
             horns.SetActive(false);
             eyes.GetComponent<SkinnedMeshRenderer>().materials[0].SetColor("_Color", Color.white); 
