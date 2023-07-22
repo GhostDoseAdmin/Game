@@ -65,6 +65,7 @@ public class EndGameControl : MonoBehaviour
         //LEADERBOARD POPULATES IN NETWORK DRIVER!!!
         if(!hasRetrievedLeaderboard)
         {
+            NetworkDriver.instance.getLeaderboard = true;
             leaderBoardPanel.SetActive(true);
             NetworkDriver.instance.sioCom.Instance.Emit("get_leaderboard", levelData , true);
             hasRetrievedLeaderboard = true;

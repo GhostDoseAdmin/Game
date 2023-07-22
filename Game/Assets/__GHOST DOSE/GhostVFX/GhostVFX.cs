@@ -39,6 +39,7 @@ public class GhostVFX : MonoBehaviour
 
     private int updateCall;
 
+    private bool camflashplayer, camflashclient;
     public void Awake()
     {
         Shadower = GetComponent<NPCController>().Shadower;
@@ -132,11 +133,12 @@ public class GhostVFX : MonoBehaviour
             updateCall = 0;
             if (Application.isPlaying)
             {
+                camflashplayer = false; camflashclient = false;
                 PlayerLight = GameDriver.instance.Player.GetComponent<PlayerController>().currLight;
                 ClientLight = GameDriver.instance.Client.GetComponent<ClientPlayerController>().currLight;
 
-                if (GameObject.Find("CamFlashPlayer") != null) { PlayerLight = GameObject.Find("CamFlashPlayer"); }
-                if (GameObject.Find("CamFlashClient") != null) { ClientLight = GameObject.Find("CamFlashClient"); }
+                if (GameObject.Find("CamFlashPlayer") != null) { PlayerLight = GameObject.Find("CamFlashPlayer"); camflashplayer = true; }
+                if (GameObject.Find("CamFlashClient") != null) { ClientLight = GameObject.Find("CamFlashClient"); camflashclient = true; }
             }
             visibilitySet = false;
             //-------------------DEATH LIGHT UP ENEMY-----------------------------
@@ -196,6 +198,7 @@ public class GhostVFX : MonoBehaviour
                     material.SetVector("_PlayerLightDirection", -lightSource.transform.forward);
                     material.SetFloat("_PlayerLightAngle", spotAngle);
                     material.SetFloat("_PlayerStrengthScalarLight", 40);//20
+                    if (camflashplayer) { material.SetFloat("_PlayerStrengthScalarLight", 100); }
                     //if (!GetComponent<NPCController>().ZOZO) { material.SetFloat("_PlayerStrengthScalarLight", 20); }
                     //else { material.SetFloat("_PlayerStrengthScalarLight", 5); }
                     material.SetFloat("_PlayerLightRange", lightSource.range);
@@ -221,7 +224,8 @@ public class GhostVFX : MonoBehaviour
                     material.SetVector("_ClientLightPosition", lightSource.transform.position);
                     material.SetVector("_ClientLightDirection", -lightSource.transform.forward);
                     material.SetFloat("_ClientLightAngle", spotAngle);
-                    material.SetFloat("_PlayerStrengthScalarLight", 40);//20
+                    material.SetFloat("_ClientStrengthScalarLight", 40);//20
+                    if (camflashclient) { material.SetFloat("_ClientStrengthScalarLight", 100); }
                     //if (!GetComponent<NPCController>().ZOZO) { material.SetFloat("_ClientStrengthScalarLight", 20); }
                     //else { material.SetFloat("_ClientStrengthScalarLight", 5); }
                     material.SetFloat("_ClientLightRange", lightSource.range);
@@ -239,7 +243,17 @@ public class GhostVFX : MonoBehaviour
                 //if (death) { visible = true; visibilitySet = true; Fade(true, 5f, 1); }
                 invisible = false;
                 {
-                    if (visible) { if (GetComponent<ZozoControl>() == null) { Fade(true, 0.5f); } else { Fade(true, 2f); }  }
+                    float fadeinfactor = 1;
+                    if(camflashplayer || camflashclient) { fadeinfactor = 2; }//accelerate visiblity from camflashes
+                    if (visible) { 
+                        if (GetComponent<ZozoControl>() == null) { 
+                            Fade(true, fadeinfactor * 0.5f); //inverse relationship for shadowers
+                        } 
+                        else {//ZOZO FADE
+                            if (!NetworkDriver.instance.TWOPLAYER) { fadeinfactor *=2f; }//single player zozo easier to kill
+                            Fade(true, fadeinfactor * 2f); //higher value, fades OUT faster, easier to kill
+                        }  
+                    }
                     else { Fade(false, 1f); }//fadeout
                 }// DEATH FADE
                  //else { Fade(false, 10f, 0); }
@@ -352,7 +366,7 @@ public class GhostVFX : MonoBehaviour
             if (hit.collider.GetComponentInParent<NPCController>().gameObject == this.gameObject)
             {
                 targetHit = true;
-                if(GetComponent<ZozoControl>() != null) { GetComponent<ZozoControl>().ZOZOFlinch(); }
+                if(GetComponent<ZozoControl>() != null) { if (camflashplayer || camflashclient) { GetComponent<ZozoControl>().ZOZOFlinch(); } }
                 //FLICKER
                 if (GetComponent<Animator>().GetCurrentAnimatorClipInfo(0).Length > 0 && GetComponent<Animator>().GetCurrentAnimatorClipInfo(0)[0].clip.name == "agro" && light.GetComponent<GhostLight>() != null) { if (light.GetComponent<GhostLight>().canFlicker) { light.GetComponent<GhostLight>().InvokeFlicker(1f); } }
                 break;

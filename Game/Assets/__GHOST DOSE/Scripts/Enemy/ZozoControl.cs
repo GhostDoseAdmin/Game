@@ -164,7 +164,7 @@ public class ZozoControl : MonoBehaviour
         if (GetComponent<Animator>().GetCurrentAnimatorClipInfo(0).Length > 0 && GetComponent<Animator>().GetCurrentAnimatorClipInfo(0)[0].clip.name != "agro" && !GetComponent<NPCController>().zozoLaser && zozoCanFlinsh && !GetComponent<Animator>().GetBool("Attack")) // && !animEnemy.GetCurrentAnimatorStateInfo(0).IsName("Attack")
         {
             zozoCanFlinsh = false;
-            Invoke("zozoFlinchReset",5f);
+            Invoke("zozoFlinchReset",1f);//flinch cooldown
             GetComponent<Animator>().Play("React");
             AudioManager.instance.Play("zozoflinch", null);
         }

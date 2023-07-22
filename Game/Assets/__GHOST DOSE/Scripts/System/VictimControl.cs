@@ -50,6 +50,7 @@ public class VictimControl : Item
     private bool fadeMusicOut;
     public bool canTest;
     public float zozoTimer;
+    private int maxCandles = 6;
     // Start is called before the first frame update
     void Start()
     {
@@ -64,6 +65,9 @@ public class VictimControl : Item
         zozoEffectEndStartSize = zozoEffectEnd.transform.localScale;
         ZOZOstartPos = ZOZO.transform.position;
         ZOZOstartRot = ZOZO.transform.rotation;
+
+
+
     }
     private void LateUpdate()
     {
@@ -84,9 +88,13 @@ public class VictimControl : Item
     void Update()
     {
         //CANDLES
-        GameDriver.instance.candleUI.GetComponent<TextMeshProUGUI>().text = candleCount.ToString() + "/12";
-        if (candleCount>12) { candleCount = 12; }
-        for (int i = 0; i < candleCount*0.5; i++) {
+        if (NetworkDriver.instance.TWOPLAYER) { maxCandles = 12; }
+        else { maxCandles = 6; }
+        GameDriver.instance.candleUI.GetComponent<TextMeshProUGUI>().text = candleCount.ToString() + "/" + maxCandles.ToString();
+        if (candleCount> maxCandles) { candleCount = maxCandles; }
+        float pentaCandles = candleCount;
+        if (NetworkDriver.instance.TWOPLAYER) { pentaCandles = candleCount * 0.5f; }
+        for (int i = 0; i < pentaCandles; i++) {
            candles[i].SetActive(true);
         }
 
@@ -288,7 +296,7 @@ public class VictimControl : Item
     {
         if (!zozo)
         {
-            if (candleCount >= 12)
+            if (candleCount >= maxCandles)
             {
                 if (GameDriver.instance.Player.GetComponent<HealthSystem>().Health <= 0){ playerOn = true;}
                 if (GameDriver.instance.Client.GetComponent<ClientPlayerController>().hp <= 0) { clientOn = true; }

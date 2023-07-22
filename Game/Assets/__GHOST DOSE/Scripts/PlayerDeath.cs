@@ -71,5 +71,5 @@ public class PlayerDeath : MonoBehaviour
         {
             reviveIndicator.SetActive(false);
         }
-    }
+    } 
 }

@@ -54,6 +54,7 @@ namespace NetworkSystem
         public bool FORCEMOBILE;
         public bool lostGame = false;
         private bool hasEverConnected = false;
+        public bool getLeaderboard = false; //used to determine if this client was the one that sent the request
         public void Awake()
         {
             Debug.Log("-----------------------NETWORK DRIVER");
@@ -116,18 +117,18 @@ namespace NetworkSystem
                     //sioCom.Instance.Emit("join", GameDriver.instance.ROOM, true); //PlayerPrefs.GetString("room")
                 }
             });
-            Invoke("ConnectionTimeout",10f);
+            Invoke("ConnectionTimeout", 10f);
             //-----------------CHECK USERNAME ----------------->
             sioCom.Instance.On("check_username", (payload) =>
             {
-                if (payload == "None") {  GameObject.Find("LoginControl").GetComponent<LoginControl>().NoUserFound(); }
+                if (payload == "None") { GameObject.Find("LoginControl").GetComponent<LoginControl>().NoUserFound(); }
                 else { GameObject.Find("LoginControl").GetComponent<LoginControl>().UserFound(); }
             });
             //-----------------CONFIRMED SAVED ----------------->
             sioCom.Instance.On("save_user", (payload) =>
             {
                 if (payload == "success") { GameObject.Find("LoginControl").GetComponent<LoginControl>().SavingSuccess(); }
-                else {  GameObject.Find("LoginControl").GetComponent<LoginControl>().SavingFailed(); }
+                else { GameObject.Find("LoginControl").GetComponent<LoginControl>().SavingFailed(); }
             });
             //-----------------LOGIN ----------------->
             sioCom.Instance.On("login", (payload) =>
@@ -155,20 +156,23 @@ namespace NetworkSystem
             //-----------------GET LEADERBOARD ----------------->
             sioCom.Instance.On("get_leaderboard", (payload) =>
             {
-                GameObject list = GameObject.Find("PlayerScoreList");
-                Debug.Log("RECEIVING LEADERBOARD " + payload);
-                JArray jsonArray = JArray.Parse(payload);
-                // DATA FORMAT AS -->> array of dicts -->>[{"username":"user1","leveldata":2.12},{"username":"tt","leveldata":2.853588}] 
-                int place = 1;
-                foreach (JObject obj in jsonArray)
+                if (getLeaderboard)
                 {
-                    Dictionary<string, string> dict = obj.ToObject<Dictionary<string, string>>();
-                    GameObject playerScoresItem = Instantiate(PlayerScores, list.transform);
-                    playerScoresItem.transform.GetChild(0).GetComponent<TextMeshPro>().text = place.ToString() +") " + dict["username"] + " : " + dict["leveldata"] + " seconds";
-                    place++;
+                    GameObject list = GameObject.Find("PlayerScoreList");
+                    Debug.Log("RECEIVING LEADERBOARD " + payload);
+                    JArray jsonArray = JArray.Parse(payload);
+                    // DATA FORMAT AS -->> array of dicts -->>[{"username":"user1","leveldata":2.12},{"username":"tt","leveldata":2.853588}] 
+                    Debug.Log(list.name);
+                    int place = 1;
+                    foreach (JObject obj in jsonArray)
+                    {
+                        Dictionary<string, string> dict = obj.ToObject<Dictionary<string, string>>();
+                        GameObject playerScoresItem = Instantiate(PlayerScores, list.transform);
+                        playerScoresItem.transform.GetChild(0).GetComponent<TextMeshPro>().text = place.ToString() + ") " + dict["username"] + " : " + dict["leveldata"] + " seconds";
+                        place++;
 
+                    }
                 }
-
             });
             //-----------------JOIN ROOM----------------->
             sioCom.Instance.On("join", (payload) =>
@@ -197,14 +201,14 @@ namespace NetworkSystem
                         pingTimer = Time.time; sioCom.Instance.Emit("ping", JsonConvert.SerializeObject(dict), false); //Debug.Log("PINGING");
                     }
                 }
-               // GameDriver.instance.WriteGuiMsg("IN ROOM " + ROOM, 9999f, false, Color.magenta);
+                // GameDriver.instance.WriteGuiMsg("IN ROOM " + ROOM, 9999f, false, Color.magenta);
             });
 
             //-----------------PING----------------->
             sioCom.Instance.On("pong", (payload) =>
             {
                 //GameDriver.instance.WriteGuiMsg("Waiting for another player", 10f, false, Color.white);
-                 Debug.Log("PONG RECEIVED " + payload);
+                Debug.Log("PONG RECEIVED " + payload);
                 if (PING == 0) { PING = Time.time - pingTimer; Debug.Log("MY PING IS " + PING); }
                 JObject data = JObject.Parse(payload);
                 Dictionary<string, string> dict = data.ToObject<Dictionary<string, string>>();
@@ -227,14 +231,14 @@ namespace NetworkSystem
                         //im host
                         if (float.Parse(dict["ping"]) > PING) {
                             Debug.Log("SENDING PING");
-                            sioCom.Instance.Emit("host", JsonConvert.SerializeObject(new { host = sioCom.Instance.SocketID }), false); 
-                        
+                            sioCom.Instance.Emit("host", JsonConvert.SerializeObject(new { host = sioCom.Instance.SocketID }), false);
+
                         }
                         //they are host
                         else { if (!NETWORK_TEST) { HOST = false; }
                             Debug.Log("SENDING PING");
-                            sioCom.Instance.Emit("host", JsonConvert.SerializeObject(new { host = dict["sid"] }), false); 
-                        
+                            sioCom.Instance.Emit("host", JsonConvert.SerializeObject(new { host = dict["sid"] }), false);
+
                         }
                     }
                 }
@@ -248,13 +252,13 @@ namespace NetworkSystem
 
                 TWOPLAYER = true;
                 if (!NETWORK_TEST) { if (dict["host"] != sioCom.Instance.SocketID) { HOST = false; } }
-                if (SceneManager.GetActiveScene().name != "Lobby") { 
+                if (SceneManager.GetActiveScene().name != "Lobby") {
                     UpdateGameState();
                     //OTHERS_SCENE_READY = true; 
                     //SCENE_READY = true; 
                 }
                 sioCom.Instance.Emit("event", JsonConvert.SerializeObject(new { username = USERNAME }), false);
-                if (SceneManager.GetActiveScene().name == "Lobby") { 
+                if (SceneManager.GetActiveScene().name == "Lobby") {
                     GameObject.Find("LobbyManager").GetComponent<LobbyControlV2>().EmitSkin();
                     GameObject.Find("LobbyManager").GetComponent<LobbyControlV2>().EmitLevel();
                 }
@@ -270,15 +274,15 @@ namespace NetworkSystem
             //-----------------PLAYER ACTION ----------------->
             sioCom.Instance.On("player_action", (payload) =>
             {
-                if (!OTHERS_SCENE_READY && SCENE_READY) { OTHERS_SCENE_READY = true; UpdateGameState(); } 
-               // Debug.Log("PLAYER ACTION" + payload);
+                if (!OTHERS_SCENE_READY && SCENE_READY) { OTHERS_SCENE_READY = true; UpdateGameState(); }
+                // Debug.Log("PLAYER ACTION" + payload);
                 //GameDriver.instance.WriteGuiMsg("OTHER PLAYER LOADED - GAME START" + GameDriver.instance.GAMESTART + " opl " + otherPlayerLoaded, 999f, false, Color.white);
                 if (OTHERS_SCENE_READY && SCENE_READY)
                 {
                     //if (!otherPlayerLoaded) { otherPlayerLoaded = true; UpdateGameState(); }
-                    
+
                     JObject data = JObject.Parse(payload);
-                   
+
                     Dictionary<string, string> dict = data.ToObject<Dictionary<string, string>>();
                     GameDriver.instance.Client.GetComponent<ClientPlayerController>().targetPos.position = new Vector3(float.Parse(dict["ax"]), float.Parse(dict["ay"]), float.Parse(dict["az"]));
                     if (dict.ContainsKey("x")) { GameDriver.instance.Client.GetComponent<ClientPlayerController>().destination = new Vector3(float.Parse(dict["x"]), float.Parse(dict["y"]), float.Parse(dict["z"])); }
@@ -317,18 +321,18 @@ namespace NetworkSystem
                     StopCoroutine(waitForZozoActive());
                     StartCoroutine(waitForZozoActive());
                 }
-               // else { GameDriver.instance.GetComponentInChildren<VictimControl>().ZOZO.GetComponent<ZozoControl>().blocked = true; GameDriver.instance.GetComponentInChildren<VictimControl>().ZOZO.GetComponent<ZozoControl>().StopLaser(); }
-                
+                // else { GameDriver.instance.GetComponentInChildren<VictimControl>().ZOZO.GetComponent<ZozoControl>().blocked = true; GameDriver.instance.GetComponentInChildren<VictimControl>().ZOZO.GetComponent<ZozoControl>().StopLaser(); }
+
             });
             IEnumerator waitForZozoActive()
             {
-                
+
                 while (!LevelManager.GetComponentInChildren<VictimControl>().ZOZO.activeSelf)
                 {
                     Debug.Log("WAIT FOR ACTIVE");
                     yield return new WaitForSeconds(0.2f);
                 }
-               LevelManager.GetComponentInChildren<VictimControl>().ZOZO.GetComponent<ZozoControl>().ChargeLaser(true);
+                LevelManager.GetComponentInChildren<VictimControl>().ZOZO.GetComponent<ZozoControl>().ChargeLaser(true);
             }
             //-----------------EVENT  ----------------->
             sioCom.Instance.On("event", (payload) =>
@@ -340,13 +344,13 @@ namespace NetworkSystem
                 if (dict.ContainsKey("username")) { otherUSERNAME = dict["username"]; }
                 if (dict.ContainsKey("skin")) { GameObject.Find("LobbyManager").GetComponent<LobbyControlV2>().UpdateOtherRig(dict["skin"]); otherIsTravis = bool.Parse(dict["isTRAVIS"]); }
                 if (dict.ContainsKey("level")) { GameObject.Find("LobbyManager").GetComponent<LobbyControlV2>().UpdateOtherLevel(dict["level"]); }
-                if (dict.ContainsKey("ready")) { GameObject.Find("LobbyManager").GetComponent<LobbyControlV2>().OtherReady();}
+                if (dict.ContainsKey("ready")) { GameObject.Find("LobbyManager").GetComponent<LobbyControlV2>().OtherReady(); }
                 //LOADS GAME SCENE
-                if (dict.ContainsKey("otherssceneready")) { 
+                if (dict.ContainsKey("otherssceneready")) {
                     Debug.Log("---YOUR SCENE IS READY");
                     //OTHERS_SCENE_READY = true;
                     //if (SceneManager.GetActiveScene().name != "Lobby") { UpdateGameState();  } 
-                    } 
+                }
 
                 if (SCENE_READY)
                 {
@@ -366,6 +370,7 @@ namespace NetworkSystem
                         Destroy(otherPlayerDeath);
                         GameDriver.instance.Client.SetActive(true);
                         GameDriver.instance.Client.GetComponent<ClientPlayerController>().hp = 99999;
+                        GameDriver.instance.reviveIndicator.SetActive(false);
                     }
                     //ENEMY
                     if (dict.ContainsKey("zap")) {
@@ -393,7 +398,7 @@ namespace NetworkSystem
                         if (dict["event"] == "setfree") { obj.GetComponent<VictimControl>().SetSpiritsFree(); }
                         if (dict["event"] == "summon") { obj.GetComponent<VictimControl>().SummonZozo(); }
                         if (dict["event"] == "zozo") { obj.GetComponent<VictimControl>().DestroyZozo(); }
-                        
+
                         if (dict["event"] == "pickup")
                         {
                             if (obj != null)
@@ -424,11 +429,11 @@ namespace NetworkSystem
             //-----------------TELEPORT  ----------------->
             sioCom.Instance.On("teleport", (payload) =>
             {
-            if (OTHERS_SCENE_READY && SCENE_READY)
-            {
-                JObject data = JObject.Parse(payload);
-                Dictionary<string, string> dict = data.ToObject<Dictionary<string, string>>();
-                Debug.Log("RECEIVING TELEPORT " + data);
+                if (OTHERS_SCENE_READY && SCENE_READY)
+                {
+                    JObject data = JObject.Parse(payload);
+                    Dictionary<string, string> dict = data.ToObject<Dictionary<string, string>>();
+                    Debug.Log("RECEIVING TELEPORT " + data);
                     foreach (GameObject enemy in GameDriver.instance.GetComponent<DisablerControl>().enemyObjects)
                     {
                         if (enemy.name == dict["obj"])
@@ -464,7 +469,7 @@ namespace NetworkSystem
                             {
                                 //--------ACTIVE-----------
                                 //if (obj.Value["ax"] != null) { enemy.SetActive(bool.Parse(obj.Value["ax"])); }
-                                if (!enemy.activeSelf) {  enemy.SetActive(true); } //if (!enemy.tag.Contains("ZOZO")){
+                                if (!enemy.activeSelf) { enemy.SetActive(true); } //if (!enemy.tag.Contains("ZOZO")){
                                 enemy.GetComponent<NPCController>().active_timer = timer_delay * 5;//DISABLE IF NO MESSAGES BEYOND 0.6s
                                                                                                    //--------POSITION---------
                                 Vector3 targPos;
@@ -515,7 +520,9 @@ namespace NetworkSystem
             //--------------DISCONNECT-----------------
             sioCom.Instance.On("disconnect", (payload) => { Debug.LogWarning("Disconnected: " + payload); });
             //--------------PLAYER DISCONNECT-----------------
-            sioCom.Instance.On("player_disconnect", (payload) => { if (SceneManager.GetActiveScene().name == "Lobby") { GameObject.Find("LobbyManager").GetComponent<LobbyControlV2>().LeaveRoom(); } GameDriver.instance.WriteGuiMsg("Other Player Disconnected! ", 10f, false, Color.red); HOST = true; }); // sioCom.Instance.Close(); SceneManager.LoadScene("Lobby");
+            sioCom.Instance.On("player_disconnect", (payload) => { if (SceneManager.GetActiveScene().name == "Lobby") { GameObject.Find("LobbyManager").GetComponent<LobbyControlV2>().LeaveRoom(); }
+            if (SceneManager.GetActiveScene().name != "EndGame") { GameDriver.instance.WriteGuiMsg("Other Player Disconnected! ", 10f, false, Color.red); HOST = true; }
+            });
         }
 
 

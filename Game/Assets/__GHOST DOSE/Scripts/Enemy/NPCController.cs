@@ -148,7 +148,7 @@ public class NPCController : MonoBehaviour
     public Vector3 serverPosition;
     public float active_timer;
     void Update()
-    {
+    { 
         //DEBUG ZAP --TURN OFF ZAP
         if (animEnemy.GetCurrentAnimatorClipInfo(0).Length > 0 && animEnemy.GetCurrentAnimatorClipInfo(0)[0].clip.name != "zapAni" && zapActive) { zapActive = false; }
         //CLIENT ZAP
@@ -159,6 +159,7 @@ public class NPCController : MonoBehaviour
                 animEnemy.Play("zapAni");
             }
         }
+        if(dead) { zapActive = false; }
 
 
         //---CLIENT SIDE PREDICTION--close position gap
@@ -652,6 +653,7 @@ public class NPCController : MonoBehaviour
                 this.gameObject.transform.GetChild(0).GetComponent<SkinnedMeshRenderer>().enabled = false;
                 this.gameObject.transform.GetChild(0).GetComponent<Outline>().OutlineWidth = 0;
                 GameObject death = Instantiate(Death, transform.position, transform.rotation);
+                death.transform.localScale = transform.localScale;
                 if (Shadower) { death.GetComponent<EnemyDeath>().Shadower = true;  }
                 HIT_COL.GetComponent<SphereCollider>().enabled = false;
                 if (!canRespawn) { this.gameObject.SetActive(false); }
