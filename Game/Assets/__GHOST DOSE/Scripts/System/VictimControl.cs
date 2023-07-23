@@ -378,13 +378,17 @@ public class VictimControl : Item
         //UNLOCK MAIN TUNNEL DOOR
         GetComponentInParent<OuijaSessionControl>().MainTunnelExitDoors[GetComponentInParent<OuijaSessionControl>().currentSession].GetComponent<Door>().isNeedKey = false;
         GetComponentInParent<OuijaSessionControl>().MainTunnelExitDoors[GetComponentInParent<OuijaSessionControl>().currentSession].transform.GetChild(0).gameObject.SetActive(false);//TURN OFF EFFECT
-       Invoke("NextSession",120f);
+       //Invoke("NextSession",120f);
+       Invoke("EndGame",120f);
     }
-
-    public void NextSession()
+    public void EndGame()
+    {
+        NetworkDriver.instance.EndGame();
+    }
+    /*public void NextSession()
     {
         GameObject.Find("OuijaBoardManager").GetComponent<OuijaSessionControl>().NextSession();
-    }
+    }*/
     public void SummonZozo()
     {
         revertGear();
