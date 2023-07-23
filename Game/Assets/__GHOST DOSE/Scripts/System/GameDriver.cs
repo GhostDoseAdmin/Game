@@ -151,10 +151,8 @@ namespace GameManager
         void Start()
         {
             //QUIT BUTTON
-            if (NetworkDriver.instance.isMobile)
-            {
-                QuitBtnText.text = "QUIT";
-            }
+            if (NetworkDriver.instance.isMobile) { QuitBtnText.text = "MENU"; }
+            else { QuitBtnText.text = "MENU (ESC)"; }
         }
         void Awake()
         {
