@@ -73,7 +73,7 @@ namespace GameManager
                 {
                     TryQuitBtn();
                 }
-                if (quitUI.activeSelf) { WriteGuiMsg("Are you sure you want to quit?", 0.1f, false, Color.yellow); }
+                //if (quitUI.activeSelf) { WriteGuiMsg("Are you sure you want to quit?", 0.1f, false, Color.yellow); }
             }
             //else
             {
