@@ -5917,9 +5917,9 @@ RectTransform:
   - {fileID: 7840773084513824432}
   - {fileID: 3206017185648782589}
   - {fileID: 80994944349006721}
+  - {fileID: 2082483578388045507}
   - {fileID: 5704802127723641469}
   - {fileID: 1961791684834656888}
-  - {fileID: 2082483578388045507}
   - {fileID: 6143848533224151396}
   m_Father: {fileID: 578956745906852459}
   m_RootOrder: 8
@@ -7344,7 +7344,7 @@ RectTransform:
   - {fileID: 4958532036471478954}
   - {fileID: 7270599565127647425}
   m_Father: {fileID: 1960097159701177889}
-  m_RootOrder: 11
+  m_RootOrder: 9
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
@@ -13516,7 +13516,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 8423642865024781937}
         m_TargetAssemblyTypeName: GameManager.GameDriver, Assembly-CSharp
-        m_MethodName: CancelQuitBtn
+        m_MethodName: TryQuitBtn
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -13559,7 +13559,7 @@ RectTransform:
   m_Children:
   - {fileID: 4213007170562409284}
   m_Father: {fileID: 1960097159701177889}
-  m_RootOrder: 9
+  m_RootOrder: 10
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
@@ -14181,7 +14181,7 @@ RectTransform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 1960097159701177889}
-  m_RootOrder: 10
+  m_RootOrder: 11
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
