@@ -68,7 +68,7 @@ public class LobbyControlV2 : MonoBehaviour
         {
             forsakenbg.SetActive(true);
         }
-        if (LEVEL.Contains("SaintNicholas"))
+        if (LEVEL.Contains("Saint"))
         {
             saintnickbg.SetActive(true);
         }
