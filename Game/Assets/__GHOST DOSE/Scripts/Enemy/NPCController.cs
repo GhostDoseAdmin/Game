@@ -5,6 +5,7 @@ using Newtonsoft.Json;
 using System.Collections;
 using System.Collections.Generic;
 using TMPro.Examples;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.AI;
 
@@ -464,14 +465,14 @@ public class NPCController : MonoBehaviour
             //ALERTS
             if (distance <= 5)
             {
-                if (Player.GetComponent<Animator>().GetFloat("Walk") > 0 || Player.GetComponent<Animator>().GetFloat("Strafe") > 0) { alertLevelPlayer += 2; }
-                if (Client.GetComponent<Animator>().GetFloat("Walk") > 0 || Client.GetComponent<Animator>().GetFloat("Strafe") > 0) { alertLevelClient += 2; }
+                if ((Player.GetComponent<Animator>().GetFloat("Walk") > 0 || Player.GetComponent<Animator>().GetFloat("Strafe") > 0) && (Mathf.Abs(Player.transform.position.y - transform.position.y) <= 2)) { alertLevelPlayer += 2; }
+                if ((Client.GetComponent<Animator>().GetFloat("Walk") > 0 || Client.GetComponent<Animator>().GetFloat("Strafe") > 0) && (Mathf.Abs(Client.transform.position.y - transform.position.y) <= 2)) { alertLevelClient += 2; }
             }
             if (distance <= 7)
             {
 
-                if (closestPlayer == Player.transform) { if (Player.GetComponent<Animator>().GetBool("Running")) { range = startRange + 2; persist = startPersist * 2; alertLevelPlayer += 6; } }
-                if (closestPlayer == Client.transform) { if (Client.GetComponent<Animator>().GetBool("Running")) { range = startRange + 2; persist = startPersist * 2; alertLevelPlayer += 6; } }
+                if ((closestPlayer == Player.transform) && (Mathf.Abs(Player.transform.position.y - transform.position.y) <= 2)) { if (Player.GetComponent<Animator>().GetBool("Running")) { range = startRange + 2; persist = startPersist * 2; alertLevelPlayer += 6; } }
+                if ((closestPlayer == Client.transform) && (Mathf.Abs(Client.transform.position.y - transform.position.y) <= 2)) { if (Client.GetComponent<Animator>().GetBool("Running")) { range = startRange + 2; persist = startPersist * 2; alertLevelPlayer += 6; } }
             }
             if (animEnemy.GetCurrentAnimatorClipInfo(0).Length > 0 && animEnemy.GetCurrentAnimatorClipInfo(0)[0].clip.name == "lookAroundAni") { range = 8 ;angleView = 50; } // range = startRange +1 ;angleView = 50;
 
