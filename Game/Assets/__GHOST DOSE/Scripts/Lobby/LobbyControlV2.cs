@@ -35,15 +35,43 @@ public class LobbyControlV2 : MonoBehaviour
     private bool lookingForPlayer;
     public bool READY = false;
     public bool otherREADY = false;
+
+    public GameObject defaultbg, darkechosbg, hollowangelbg, forsakenbg, saintnickbg;
     public void Start()
     {
         NetworkDriver.instance.isTRAVIS = true;
     }
-
+    private void removeBackgrounds()
+    {
+        defaultbg.SetActive(false);
+        darkechosbg.SetActive(false);
+        hollowangelbg.SetActive(false);
+        forsakenbg.SetActive(false);
+        saintnickbg.SetActive(false);
+    }
     public void SelectLevel(string level)
     {
         LEVEL = level;
         levelName.GetComponent<TextMeshPro>().text = level;
+
+        
+        removeBackgrounds();
+
+        if (LEVEL.Contains("DarkEchoes")) {
+            darkechosbg.SetActive(true);
+        }
+        if (LEVEL.Contains("HollowAngel"))
+        {
+            hollowangelbg.SetActive(true);
+        }
+        if (LEVEL.Contains("Forsaken"))
+        {
+            forsakenbg.SetActive(true);
+        }
+        if (LEVEL.Contains("SaintNicholas"))
+        {
+            saintnickbg.SetActive(true);
+        }
     }
 
 
@@ -104,6 +132,10 @@ public class LobbyControlV2 : MonoBehaviour
     }
     public void LeaveRoom()
     {
+        removeBackgrounds();
+        defaultbg.SetActive(true);
+        
+
         //roomNameField.SetActive(true);
         //findRoomButton.SetActive(true);
         lobbyMenuCanvas.SetActive(false);

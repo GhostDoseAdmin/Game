@@ -635,6 +635,7 @@ namespace NetworkSystem
             if (SceneManager.GetActiveScene().name.Contains("DarkEchoes") || SceneManager.GetActiveScene().name == "Experiment") { LEVELINDEX = 1; }
             if (SceneManager.GetActiveScene().name.Contains("Forsaken") ){ LEVELINDEX = 3; }
             if (SceneManager.GetActiveScene().name.Contains("HollowAngel") ) { LEVELINDEX = 2; }
+            if (SceneManager.GetActiveScene().name.Contains("Saint")) { LEVELINDEX = 4; }
 
             SceneManager.LoadScene("EndGame");
 
