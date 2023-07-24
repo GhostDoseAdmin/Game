@@ -360,8 +360,9 @@ namespace NetworkSystem
                     if (dict.ContainsKey("shoot")) {
                         if (int.Parse(dict["dmg"]) != -1)
                         {
+                            Debug.Log(" SHOOT EVENT  " + payload);
                             GameDriver.instance.Client.GetComponent<ClientPlayerController>().triggerShoot = true;//shoot ani
-                            if (obj != null) { obj.GetComponent<NPCController>().TakeDamage(int.Parse(dict["dmg"]), true); } //do flinch
+                            if (obj != null && obj.GetComponent<NPCController>()!=null) { obj.GetComponent<NPCController>().TakeDamage(int.Parse(dict["dmg"]), true); } //do flinch
                         }
                         else { LevelManager.GetComponentInChildren<VictimControl>().testAnswer(obj); }
                     }
