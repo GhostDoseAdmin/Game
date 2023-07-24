@@ -2,6 +2,7 @@
 using UnityEngine;
 using InteractionSystem;
 using NetworkSystem;
+using GameManager;
 
 public class K2Wave : MonoBehaviour
 {
@@ -77,26 +78,30 @@ public class K2Wave : MonoBehaviour
 
         //Debug.Log("------------------------------------------COLLIDING" + other.name);
         if (!other.gameObject.isStatic) { GetComponent<Shockwave>().NewShockwave(closestPoint, 2); }//2
-        //GHOSTS
-        if (other.gameObject.GetComponentInParent<GhostVFX>()!=null)
+        if ((!isClient && Mathf.Abs(GameDriver.instance.Player.transform.position.y - other.gameObject.transform.position.y) <= 2) || (isClient && Mathf.Abs(GameDriver.instance.Client.transform.position.y - other.gameObject.transform.position.y) <= 2))
         {
-
-            if ((other.gameObject.GetComponentInParent<Teleport>().teleport==0)) {
-                other.gameObject.GetComponentInParent<NPCController>().activateOutline = true;
-            }
-        }
-        //COLD SPOT
-        if (other.gameObject.transform.parent != null && !isClient)
-        {
-            if (other.gameObject.transform.parent.GetComponent<ColdSpot>() != null)
+            //GHOSTS
+            if (other.gameObject.GetComponentInParent<GhostVFX>() != null)
             {
-                other.gameObject.transform.parent.GetComponent<ColdSpot>().Exposed(false);
+
+                if ((other.gameObject.GetComponentInParent<Teleport>().teleport == 0))
+                {
+                    other.gameObject.GetComponentInParent<NPCController>().activateOutline = true;
+                }
             }
+            //COLD SPOT
+            if (other.gameObject.transform.parent != null && !isClient)
+            {
+                if (other.gameObject.transform.parent.GetComponent<ColdSpot>() != null)
+                {
+                    other.gameObject.transform.parent.GetComponent<ColdSpot>().Exposed(false);
+                }
+            }
+            //MEDKIT
+            if (other.GetComponentInParent<FirstAidKit>() != null) { other.GetComponentInParent<Outline>().OutlineWidth = 10; }
+            if (other.GetComponentInParent<Battery>() != null) { other.GetComponentInParent<Outline>().OutlineWidth = 10; }
+            if (other.GetComponentInParent<Candle>() != null) { other.GetComponentInParent<Outline>().OutlineWidth = 10; }
         }
-        //MEDKIT
-        if (other.GetComponentInParent<FirstAidKit>() != null) { other.GetComponentInParent<Outline>().OutlineWidth = 10; }
-        if (other.GetComponentInParent<Battery>() != null) { other.GetComponentInParent<Outline>().OutlineWidth = 10; }
-        if (other.GetComponentInParent<Candle>() != null) { other.GetComponentInParent<Outline>().OutlineWidth = 10; }
     }
 
 

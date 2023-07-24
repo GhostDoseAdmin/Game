@@ -437,7 +437,7 @@ public class VictimControl : Item
        zozoDummy.SetActive(false);
         zozoEnd = true;
         zozoFXendOn = false;
-        GameDriver.instance.WriteGuiMsg("Keep ZOZO in the light!", 10f, false, Color.yellow);
+        GameDriver.instance.WriteGuiMsg("Keep ZOZO in the light!", 60f, false, Color.yellow);
         Invoke("CanDestroyZozo", zozoTimer);//-------------HOW LONG ZOZO ALIVE
 
     }
