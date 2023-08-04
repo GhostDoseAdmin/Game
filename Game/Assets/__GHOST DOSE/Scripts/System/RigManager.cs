@@ -24,6 +24,8 @@ public class RigManager : MonoBehaviour
     public int[] lvl1SpeedTeirs;
     public int[] lvl2SpeedTeirs;
     public int[] lvl3SpeedTeirs;
+    public int[] lvl4SpeedTeirs;
+
     public List<GameObject> travLevel1RewardRigs;
     public List<GameObject> travLevel2RewardRigs;
     public List<GameObject> travLevel3RewardRigs;
@@ -307,7 +309,7 @@ public class RigManager : MonoBehaviour
                 //CHECK TEIRS
                 for (int j = 0; j < lvl4SpeedTeirs.Length; j++)
                 {
-                    if (speed <= lvl4peedTeirs[j] && prevSpeed > lvl4SpeedTeirs[j])
+                    if (speed <= lvl4SpeedTeirs[j] && prevSpeed > lvl4SpeedTeirs[j])
                     {
                         updatedList.Add(travLevel4RewardRigs[j]);
                         updatedList.Add(wesLevel4RewardRigs[j]);
