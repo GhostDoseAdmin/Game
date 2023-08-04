@@ -379,7 +379,7 @@ public class VictimControl : Item
         GetComponentInParent<OuijaSessionControl>().MainTunnelExitDoors[GetComponentInParent<OuijaSessionControl>().currentSession].GetComponent<Door>().isNeedKey = false;
         GetComponentInParent<OuijaSessionControl>().MainTunnelExitDoors[GetComponentInParent<OuijaSessionControl>().currentSession].transform.GetChild(0).gameObject.SetActive(false);//TURN OFF EFFECT
        //Invoke("NextSession",120f);
-       Invoke("EndGame",120f);
+       Invoke("EndGame",30f);
     }
     public void EndGame()
     {
