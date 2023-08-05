@@ -55,6 +55,8 @@ namespace NetworkSystem
         public bool lostGame = false;
         private bool hasEverConnected = false;
         public bool getLeaderboard = false; //used to determine if this client was the one that sent the request
+
+        public bool VIBRATE;
         public void Awake()
         {
             Debug.Log("-----------------------NETWORK DRIVER");

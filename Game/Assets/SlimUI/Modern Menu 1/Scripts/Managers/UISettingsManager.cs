@@ -2,6 +2,7 @@
 using System.Collections;
 using UnityEngine.UI;
 using TMPro;
+using NetworkSystem;
 
 namespace SlimUI.ModernMenu{
 	public class UISettingsManager : MonoBehaviour {
@@ -92,11 +93,13 @@ namespace SlimUI.ModernMenu{
 
 			// check tool tip value
 			if(PlayerPrefs.GetInt("ToolTips")==0){
-				tooltipstext.GetComponent<TMP_Text>().text = "off";
+				tooltipstext.GetComponent<TMP_Text>().text = "on";
+				NetworkDriver.instance.VIBRATE = true; 
 			}
 			else{
-				tooltipstext.GetComponent<TMP_Text>().text = "on";
-			}
+				tooltipstext.GetComponent<TMP_Text>().text = "off";
+                NetworkDriver.instance.VIBRATE = false;
+            }
 
 			// check shadow distance/enabled
 			if(platform == Platform.Desktop){

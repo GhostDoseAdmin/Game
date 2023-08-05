@@ -274,7 +274,7 @@ public class Camera_Controller : MonoBehaviour
         if (shake) {
             if (NetworkDriver.instance.isMobile) {
                 #if UNITY_IPHONE || UNITY_ANDROID
-                Handheld.Vibrate(); 
+                if (NetworkDriver.instance.VIBRATE) { Handheld.Vibrate(); }
                 #endif
             }
             else { GetComponent<Camera>().fieldOfView = GetComponent<Camera>().fieldOfView + (UnityEngine.Random.Range(-shakeMagnitude, shakeMagnitude) * 5f); }
