@@ -210,7 +210,9 @@ public class ShootingSystem : MonoBehaviour
                         if ((target.GetComponent<GhostVFX>() != null) && target.GetComponent<Teleport>().teleport == 0) // && isVisible 
                         {
                             if (target.GetComponent<NPCController>().animEnemy.GetCurrentAnimatorClipInfo(0).Length > 0 && target.GetComponent<NPCController>().animEnemy.GetCurrentAnimatorClipInfo(0)[0].clip.name == "agro") { Damage = 20; }
-                            if (isHeadshot) { Damage = headShotDamage; if (NetworkDriver.instance.isMobile) { Damage = headShotDamage*2; } }
+                            if (isHeadshot) { Damage = headShotDamage; 
+                                if (NetworkDriver.instance.isMobile && !NetworkDriver.instance.TWOPLAYER) { Damage = headShotDamage*2; } 
+                            }
                             //Debug.Log("---------------------------------------" + damage);
                             target.GetComponent<NPCController>().TakeDamage(Damage, false);
                         }

@@ -38,7 +38,7 @@ RenderSettings:
   m_ReflectionIntensity: 1
   m_CustomReflection: {fileID: 0}
   m_Sun: {fileID: 0}
-  m_IndirectSpecularColor: {r: 0.40253955, g: 0.4780897, b: 0.53803056, a: 1}
+  m_IndirectSpecularColor: {r: 0.40180418, g: 0.4773016, b: 0.5361181, a: 1}
   m_UseRadianceAmbientProbe: 0
 --- !u!157 &3
 LightmapSettings:
@@ -8176,6 +8176,7 @@ MonoBehaviour:
   currLight: {fileID: 0}
   audioSource: {fileID: 0}
   audioSource2: {fileID: 0}
+  audioSource3: {fileID: 0}
   audioSourceSpeech: {fileID: 0}
   doubleTapTimeThreshold: 0.3
   stick: {fileID: 0}
@@ -11798,7 +11799,7 @@ GameObject:
   - component: {fileID: 999788126}
   - component: {fileID: 999788125}
   m_Layer: 0
-  m_Name: Text (1)
+  m_Name: text
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -11811,17 +11812,17 @@ RectTransform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 999788123}
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalRotation: {x: 9.3132235e-10, y: -0.000000029802315, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0.00080428185}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 575543859764612937}
-  m_RootOrder: 9
+  m_Father: {fileID: 576458196229146047}
+  m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
-  m_AnchoredPosition: {x: 887, y: -69}
+  m_AnchoredPosition: {x: 49.000122, y: -34.999916}
   m_SizeDelta: {x: 461, y: 66.99}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &999788125
@@ -33742,7 +33743,7 @@ GameObject:
   - component: {fileID: 393024330333277013}
   - component: {fileID: 392939401108267817}
   m_Layer: 5
-  m_Name: ToolTip_Btn
+  m_Name: Vibrate_Btn
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -34419,7 +34420,7 @@ GameObject:
   - component: {fileID: 573155387647953815}
   - component: {fileID: 393213958512084027}
   m_Layer: 0
-  m_Name: tooltiptext
+  m_Name: vibetext
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -39233,8 +39234,8 @@ MonoBehaviour:
     m_PersistentCalls:
       m_Calls:
       - m_Target: {fileID: 393724385758079017}
-        m_TargetAssemblyTypeName: 
-        m_MethodName: ToolTips
+        m_TargetAssemblyTypeName: SlimUI.ModernMenu.UISettingsManager, Assembly-CSharp
+        m_MethodName: Vibrate
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -47083,6 +47084,7 @@ MonoBehaviour:
   cameraeffectstext: {fileID: 352425327680404809}
   showhudtext: {fileID: 352877196335811507}
   tooltipstext: {fileID: 352454018412309629}
+  vibratetext: {fileID: 352454018412309629}
   difficultynormaltext: {fileID: 353392371753612047}
   difficultynormaltextLINE: {fileID: 353259668124432453}
   difficultyhardcoretext: {fileID: 352565567114824933}
@@ -57109,7 +57111,7 @@ RectTransform:
   - {fileID: 575555568000293601}
   - {fileID: 576321356347590171}
   m_Father: {fileID: 575543859764612937}
-  m_RootOrder: 10
+  m_RootOrder: 9
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
@@ -58067,7 +58069,6 @@ RectTransform:
   - {fileID: 575804590222497139}
   - {fileID: 575590219908438595}
   - {fileID: 576458196229146047}
-  - {fileID: 999788124}
   - {fileID: 574967821500408041}
   - {fileID: 575862669190594415}
   - {fileID: 576308803120153769}
@@ -58524,7 +58525,7 @@ RectTransform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 575543859764612937}
-  m_RootOrder: 15
+  m_RootOrder: 14
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
@@ -58585,7 +58586,7 @@ RectTransform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 576458196229146047}
-  m_RootOrder: 0
+  m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
@@ -59384,7 +59385,7 @@ RectTransform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 575543859764612937}
-  m_RootOrder: 16
+  m_RootOrder: 15
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
@@ -59768,7 +59769,7 @@ RectTransform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 575543859764612937}
-  m_RootOrder: 11
+  m_RootOrder: 10
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 90.00001}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
@@ -60911,7 +60912,7 @@ RectTransform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 575543859764612937}
-  m_RootOrder: 12
+  m_RootOrder: 11
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
@@ -60931,7 +60932,7 @@ RectTransform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 575543859764612937}
-  m_RootOrder: 14
+  m_RootOrder: 13
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
@@ -60992,7 +60993,7 @@ RectTransform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 575543859764612937}
-  m_RootOrder: 13
+  m_RootOrder: 12
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
@@ -61053,7 +61054,7 @@ RectTransform:
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 575543859764612937}
-  m_RootOrder: 17
+  m_RootOrder: 16
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 1}
   m_AnchorMax: {x: 0, y: 1}
@@ -61664,6 +61665,7 @@ RectTransform:
   m_LocalScale: {x: 1.0000007, y: 1, z: 1.0000007}
   m_ConstrainProportionsScale: 0
   m_Children:
+  - {fileID: 999788124}
   - {fileID: 575644631429552103}
   m_Father: {fileID: 575543859764612937}
   m_RootOrder: 8
@@ -71927,6 +71929,10 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 6244167314045643158, guid: 366ba93baf22d714daf3c414440615bd, type: 3}
     - target: {fileID: 4600351335788548323, guid: 4d61142dc0de3be4e9e386ae8f2458c4, type: 3}
+      propertyPath: VIBRATE
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4600351335788548323, guid: 4d61142dc0de3be4e9e386ae8f2458c4, type: 3}
       propertyPath: isMobile
       value: 0
       objectReference: {fileID: 0}
@@ -75050,6 +75056,7 @@ MonoBehaviour:
   currLight: {fileID: 0}
   audioSource: {fileID: 0}
   audioSource2: {fileID: 0}
+  audioSource3: {fileID: 0}
   audioSourceSpeech: {fileID: 0}
   doubleTapTimeThreshold: 0.3
   stick: {fileID: 0}
@@ -75401,6 +75408,7 @@ MonoBehaviour:
   currLight: {fileID: 0}
   audioSource: {fileID: 0}
   audioSource2: {fileID: 0}
+  audioSource3: {fileID: 0}
   audioSourceSpeech: {fileID: 0}
   doubleTapTimeThreshold: 0.3
   stick: {fileID: 0}

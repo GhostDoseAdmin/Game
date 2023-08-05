@@ -3,6 +3,7 @@ using UnityEngine;
 using InteractionSystem;
 using NetworkSystem;
 using GameManager;
+using static UnityEngine.GraphicsBuffer;
 
 public class K2Wave : MonoBehaviour
 {
@@ -12,6 +13,7 @@ public class K2Wave : MonoBehaviour
     public GameObject K2Source;
     public GameObject hud;
     private AudioSource audio;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -92,9 +94,12 @@ public class K2Wave : MonoBehaviour
             //COLD SPOT
             if (other.gameObject.transform.parent != null && !isClient)
             {
-                if (other.gameObject.transform.parent.GetComponent<ColdSpot>() != null)
+                if (Vector3.Distance(startPoint,other.gameObject.transform.position)<3)
                 {
-                    other.gameObject.transform.parent.GetComponent<ColdSpot>().Exposed(false);
+                        if (other.gameObject.transform.parent.GetComponent<ColdSpot>() != null)
+                        {
+                            other.gameObject.transform.parent.GetComponent<ColdSpot>().Exposed(false);
+                        }
                 }
             }
             //MEDKIT
