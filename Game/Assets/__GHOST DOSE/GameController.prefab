@@ -2265,6 +2265,8 @@ MonoBehaviour:
   gamePad: {fileID: 80994945764019513}
   currLight: {fileID: 0}
   audioSource: {fileID: 0}
+  audioSource2: {fileID: 0}
+  audioSource3: {fileID: 0}
   audioSourceSpeech: {fileID: 0}
   doubleTapTimeThreshold: 0.3
   stick: {fileID: 3802063595043796119}
@@ -3855,6 +3857,8 @@ MonoBehaviour:
   gamePad: {fileID: 80994945764019513}
   currLight: {fileID: 0}
   audioSource: {fileID: 0}
+  audioSource2: {fileID: 0}
+  audioSource3: {fileID: 0}
   audioSourceSpeech: {fileID: 0}
   doubleTapTimeThreshold: 0.3
   stick: {fileID: 3802063595043796119}
@@ -8077,7 +8081,7 @@ MonoBehaviour:
     source: {fileID: 0}
   - name: switchgear
     clip: {fileID: 8300000, guid: 43915247a9af8b5458117be534317950, type: 3}
-    volume: 1
+    volume: 0.25
     volumeVariance: 0
     pitch: 1
     pitchVariance: 0
