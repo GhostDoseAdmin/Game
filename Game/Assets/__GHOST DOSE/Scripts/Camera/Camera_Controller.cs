@@ -272,7 +272,7 @@ public class Camera_Controller : MonoBehaviour
 
 
         if (shake) {
-            if (NetworkDriver.instance.isMobile) {
+                if (NetworkDriver.instance.isMobile) {
                 #if UNITY_IPHONE || UNITY_ANDROID
                 if (NetworkDriver.instance.VIBRATE) { Handheld.Vibrate(); }
                 #endif

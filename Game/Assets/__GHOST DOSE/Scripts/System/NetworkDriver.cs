@@ -56,7 +56,7 @@ namespace NetworkSystem
         private bool hasEverConnected = false;
         public bool getLeaderboard = false; //used to determine if this client was the one that sent the request
 
-        public bool VIBRATE = true;
+        public bool VIBRATE;
         public void Awake()
         {
             Debug.Log("-----------------------NETWORK DRIVER");
@@ -72,6 +72,8 @@ namespace NetworkSystem
         public void Start()
         {
             StartCoroutine(connectSIO());
+            if (PlayerPrefs.GetInt("Vibrate") == 0) { VIBRATE = true; } else { VIBRATE = false; }
+            
             //FindObjectsOfType<GameDriver>(true)[0].gameObject.SetActive(true);
         }
 

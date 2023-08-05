@@ -36,7 +36,7 @@ namespace SlimUI.ModernMenu{
 
 		[Header("GAME SETTINGS")]
 		public GameObject showhudtext;
-		public GameObject tooltipstext;
+		public GameObject tooltipstext, vibratetext;
 		public GameObject difficultynormaltext;
 		public GameObject difficultynormaltextLINE;
 		public GameObject difficultyhardcoretext;
@@ -94,15 +94,27 @@ namespace SlimUI.ModernMenu{
 			// check tool tip value
 			if(PlayerPrefs.GetInt("ToolTips")==0){
 				tooltipstext.GetComponent<TMP_Text>().text = "on";
-				NetworkDriver.instance.VIBRATE = true; 
+				
 			}
 			else{
 				tooltipstext.GetComponent<TMP_Text>().text = "off";
-                NetworkDriver.instance.VIBRATE = false;
             }
 
-			// check shadow distance/enabled
-			if(platform == Platform.Desktop){
+
+            // check tool tip value
+            if (PlayerPrefs.GetInt("Vibrate") == 0)
+            {
+                vibratetext.GetComponent<TMP_Text>().text = "on";
+
+            }
+            else
+            {
+                vibratetext.GetComponent<TMP_Text>().text = "off";
+            }
+
+
+            // check shadow distance/enabled
+            if (platform == Platform.Desktop){
 				if(PlayerPrefs.GetInt("Shadows") == 0){
 					QualitySettings.shadowCascades = 0;
 					QualitySettings.shadowDistance = 0;
@@ -278,14 +290,29 @@ namespace SlimUI.ModernMenu{
 			if(PlayerPrefs.GetInt("ToolTips")==0){
 				PlayerPrefs.SetInt("ToolTips",1);
 				tooltipstext.GetComponent<TMP_Text>().text = "on";
-			}
+            }
 			else if(PlayerPrefs.GetInt("ToolTips")==1){
 				PlayerPrefs.SetInt("ToolTips",0);
 				tooltipstext.GetComponent<TMP_Text>().text = "off";
-			}
+            }
 		}
 
-		public void NormalDifficulty (){
+        public void Vibrate()
+        {
+            if (PlayerPrefs.GetInt("Vibrate") == 0)
+            {
+                PlayerPrefs.SetInt("Vibrate", 1);
+                vibratetext.GetComponent<TMP_Text>().text = "off";
+                NetworkDriver.instance.VIBRATE = false;
+            }
+            else if (PlayerPrefs.GetInt("Vibrate") == 1)
+            {
+                PlayerPrefs.SetInt("Vibrate", 0);
+                vibratetext.GetComponent<TMP_Text>().text = "on";
+                NetworkDriver.instance.VIBRATE = true;
+            }
+        }
+        public void NormalDifficulty (){
 			difficultyhardcoretextLINE.gameObject.SetActive(false);
 			difficultynormaltextLINE.gameObject.SetActive(true);
 			PlayerPrefs.SetInt("NormalDifficulty",1);
