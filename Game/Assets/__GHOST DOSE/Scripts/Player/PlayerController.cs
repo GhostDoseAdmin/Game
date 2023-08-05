@@ -103,7 +103,8 @@ public class PlayerController : MonoBehaviour
 
 	public GameObject currLight;
 	public AudioSource audioSource;
-	public AudioSource audioSourceSpeech;
+    public AudioSource audioSource2;
+    public AudioSource audioSourceSpeech;
 
     #region Start
 
@@ -112,6 +113,8 @@ public class PlayerController : MonoBehaviour
     {
         audioSource = gameObject.AddComponent<AudioSource>();
         audioSource.spatialBlend = 1.0f;
+        audioSource2 = gameObject.AddComponent<AudioSource>();
+        audioSource2.spatialBlend = 1.0f;
         audioSourceSpeech = gameObject.AddComponent<AudioSource>();
         audioSourceSpeech.spatialBlend = 1.0f;
 
@@ -483,9 +486,9 @@ public class PlayerController : MonoBehaviour
 					}
 					//------Q
 					else { sb7 = false; }
-
-					if (gear == 1) { GameDriver.instance.gearuicam.SetActive(true); GameDriver.instance.gearuik2.SetActive(false); camera.SetActive(true); k2.SetActive(false); camInventory.SetActive(false); k2Inventory.SetActive(true); }
-					if (gear == 2) { GameDriver.instance.gearuik2.SetActive(true); GameDriver.instance.gearuicam.SetActive(false); camera.SetActive(false); k2.SetActive(true); camInventory.SetActive(true); k2Inventory.SetActive(false); }
+                    AudioManager.instance.Play("switchgear", audioSource2);
+                    if (gear == 1) { AudioManager.instance.Play("switchcam", audioSource); GameDriver.instance.gearuicam.SetActive(true); GameDriver.instance.gearuik2.SetActive(false); camera.SetActive(true); k2.SetActive(false); camInventory.SetActive(false); k2Inventory.SetActive(true); }
+					if (gear == 2) { AudioManager.instance.Play("switchk2", audioSource); GameDriver.instance.gearuik2.SetActive(true); GameDriver.instance.gearuicam.SetActive(false); camera.SetActive(false); k2.SetActive(true); camInventory.SetActive(true); k2Inventory.SetActive(false); }
 
                     if (gear == 0) { AudioManager.instance.Play("sb7sweep", audioSource); }
                     else { AudioManager.instance.StopPlaying("sb7sweep", audioSource); }
