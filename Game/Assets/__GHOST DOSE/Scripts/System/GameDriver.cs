@@ -40,7 +40,7 @@ namespace GameManager
 
         public GameObject reviveIndicator;
         public Image DemonScreamerUI;
-        Vector3 playerStartPos;
+        public Vector3 playerStartPos;
         public TextMeshProUGUI TimeElapsedUI;
         public TextMeshProUGUI QuitBtnText;
         public GameObject quitUI, infoUI, thisLevel, thisUser;
