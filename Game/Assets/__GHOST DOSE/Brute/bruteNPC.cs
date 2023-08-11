@@ -7,7 +7,14 @@ public class bruteNPC : MonoBehaviour
 {
     AudioSource audioSource1, audioSource2;
     public Sound[] footSteps;
+    private void Awake()
+    {
+        audioSource1 = gameObject.AddComponent<AudioSource>();
+        audioSource1.spatialBlend = 1.0f;
+        audioSource2 = gameObject.AddComponent<AudioSource>();
+        audioSource2.spatialBlend = 1.0f;
 
+    }
     public void TriggerFootstepRightBrute()
     {
         if (GetComponent<Animator>().GetCurrentAnimatorClipInfo(0).Length > 0 && GetComponent<Animator>().GetCurrentAnimatorClipInfo(0)[0].clip.name == "bruteWalk")
