@@ -18,20 +18,24 @@ public class Zap : MonoBehaviour
 
     private void Update()
     {
-        if (Instance == null && GetComponentInParent<NPCController>().zapActive)
+        if(!GetComponentInParent<NPCController>().brute)
         {
-            Instance = Instantiate(Prefabs[0], FirePoint.transform.position, FirePoint.transform.rotation);
-            Instance.transform.parent = transform;
-            LaserScript = Instance.GetComponent<Hovl_Laser>();
-            LaserScript2 = Instance.GetComponent<Hovl_Laser2>();
+            if (Instance == null && GetComponentInParent<NPCController>().zapActive)
+            {
+                Instance = Instantiate(Prefabs[0], FirePoint.transform.position, FirePoint.transform.rotation);
+                Instance.transform.parent = transform;
+                LaserScript = Instance.GetComponent<Hovl_Laser>();
+                LaserScript2 = Instance.GetComponent<Hovl_Laser2>();
+            }
+
+            if (Instance != null && !GetComponentInParent<NPCController>().zapActive)
+            {
+                if (LaserScript) LaserScript.DisablePrepare();
+                if (LaserScript2) LaserScript2.DisablePrepare();
+                Destroy(Instance, 1);
+            }
         }
 
-        if (Instance != null && !GetComponentInParent<NPCController>().zapActive)
-        {
-            if (LaserScript) LaserScript.DisablePrepare();
-            if (LaserScript2) LaserScript2.DisablePrepare();
-            Destroy(Instance, 1);
-        }
     }
 
 
