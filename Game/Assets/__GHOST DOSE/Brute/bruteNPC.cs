@@ -10,7 +10,7 @@ public class bruteNPC : MonoBehaviour
 
     public void TriggerFootstepRightBrute()
     {
-        if (GetComponent<Animator>().GetCurrentAnimatorClipInfo(0).Length > 0 && GetComponent<Animator>().GetCurrentAnimatorClipInfo(0)[0].clip.name == "WalkZozo")
+        if (GetComponent<Animator>().GetCurrentAnimatorClipInfo(0).Length > 0 && GetComponent<Animator>().GetCurrentAnimatorClipInfo(0)[0].clip.name == "bruteWalk")
         {
             audioSource1.clip = footSteps[Random.Range(0, footSteps.Length)].clip;
             audioSource1.volume = 2f;
@@ -21,7 +21,8 @@ public class bruteNPC : MonoBehaviour
     }
     public void TriggerFootstepLeftBrute()
     {
-        if (GetComponent<Animator>().GetCurrentAnimatorClipInfo(0).Length > 0 && GetComponent<Animator>().GetCurrentAnimatorClipInfo(0)[0].clip.name == "WalkZozo")
+        Debug.Log("");
+        if (GetComponent<Animator>().GetCurrentAnimatorClipInfo(0).Length > 0 && GetComponent<Animator>().GetCurrentAnimatorClipInfo(0)[0].clip.name == "bruteWalk")
         {
             audioSource2.clip = footSteps[Random.Range(0, footSteps.Length)].clip;
             audioSource2.volume = 2f;
