@@ -394,12 +394,16 @@ public class NPCController : MonoBehaviour
             }
         }
     }
-    public void TriggerZapOn() { zapActive = true; }
+    public void TriggerZapOn() { zapActive = true;
+
+        if (brute) { AudioManager.instance.Play("BruteJump", audioSource); }
+    }
     public void TriggerZapOff() { zapActive = false;
         if (brute) {
             GameObject bruteExplo = Instantiate(bruteExplosion);
             bruteExplo.transform.position = this.gameObject.transform.position;
             bruteExplo.GetComponent<bruteExplosion>().main = this.gameObject;
+            AudioManager.instance.Play("BruteSlam", audioSource);
 
         }
     }
@@ -607,6 +611,7 @@ public class NPCController : MonoBehaviour
 
     public void TriggerHitEnable()
     {
+        if (brute) { AudioManager.instance.Play("BruteAttack", audioSource); }
         HIT_COL.GetComponent<SphereCollider>().enabled = true;
 
     }
@@ -633,7 +638,7 @@ public class NPCController : MonoBehaviour
                 if (!otherPlayer) { target = Player.transform; } else { target = Client.transform; }
                 follow = persist;
             }
-            if (!ZOZO) { AudioManager.instance.Play("Agro", null); }
+            if (!ZOZO) { AudioManager.instance.Play("Agro", null); if (brute) { AudioManager.instance.Play("BruteAgro", audioSource); } }
             else { AudioManager.instance.Play("zozoAgro", null); }
             if (healthEnemy > 0) { animEnemy.Play("agro"); } 
             GameObject.Find("PlayerCamera").GetComponent<Camera_Controller>().InvokeShake(1f, 1f);
