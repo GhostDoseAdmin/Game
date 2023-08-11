@@ -55,6 +55,7 @@ public class NPCController : MonoBehaviour
     private bool canZap;
     public int zapRange;
     private bool zaps;
+    public bool brute;
 
     [HideInInspector] public int startHealth;
 
@@ -97,6 +98,8 @@ public class NPCController : MonoBehaviour
     GameObject PlayerWP, ClientWP;
     public GameObject prev_dest;
     public Transform prev_targ;
+    public GameObject bruteExplosion;
+
     private void Awake()
     {
         destination = this.gameObject;
@@ -149,18 +152,47 @@ public class NPCController : MonoBehaviour
     public Vector3 serverPosition;
     public float active_timer;
     void Update()
-    { 
-        //DEBUG ZAP --TURN OFF ZAP
-        if (animEnemy.GetCurrentAnimatorClipInfo(0).Length > 0 && animEnemy.GetCurrentAnimatorClipInfo(0)[0].clip.name != "zapAni" && zapActive) { zapActive = false; }
-        //CLIENT ZAP
-        zapClient--;
-        if (zapClient > 0) {
-            if (animEnemy.GetCurrentAnimatorClipInfo(0).Length > 0 && animEnemy.GetCurrentAnimatorClipInfo(0)[0].clip.name != "zapAni")
+    {
+        if (!brute)
+        {
+            //DEBUG ZAP --TURN OFF ZAP
+            if (animEnemy.GetCurrentAnimatorClipInfo(0).Length > 0 && animEnemy.GetCurrentAnimatorClipInfo(0)[0].clip.name != "zapAni" && zapActive) { zapActive = false; }
+            //CLIENT ZAP
+            zapClient--;
+            if (zapClient > 0)
             {
-                animEnemy.Play("zapAni");
+                if (animEnemy.GetCurrentAnimatorClipInfo(0).Length > 0 && animEnemy.GetCurrentAnimatorClipInfo(0)[0].clip.name != "zapAni")
+                {
+                    animEnemy.Play("zapAni");
+                }
+            }
+            if (dead) { zapActive = false; }
+        }
+        else
+        //BRUTE JUMP
+        {
+            //DEBUG ZAP --TURN OFF ZAP
+            if (animEnemy.GetCurrentAnimatorClipInfo(0).Length > 0 && animEnemy.GetCurrentAnimatorClipInfo(0)[0].clip.name != "bruteJump" && zapActive) { zapActive = false; }
+            //CLIENT ZAP
+            zapClient--;
+            if (zapClient > 0)
+            {
+                if (animEnemy.GetCurrentAnimatorClipInfo(0).Length > 0 && animEnemy.GetCurrentAnimatorClipInfo(0)[0].clip.name != "bruteJump")
+                {
+                    animEnemy.Play("bruteJump");
+                }
+            }
+            if (dead) { zapActive = false; }
+
+            if (zapActive)
+            {
+                if (target != null)
+                {
+                    transform.position = Vector3.Lerp(transform.position, target.transform.position, 2 * Time.deltaTime);
+                }
+
             }
         }
-        if(dead) { zapActive = false; }
 
 
         //---CLIENT SIDE PREDICTION--close position gap
@@ -363,13 +395,21 @@ public class NPCController : MonoBehaviour
         }
     }
     public void TriggerZapOn() { zapActive = true; }
-    public void TriggerZapOff() { zapActive = false; }
+    public void TriggerZapOff() { zapActive = false;
+        if (brute) {
+            GameObject bruteExplo = Instantiate(bruteExplosion);
+            bruteExplo.transform.position = this.gameObject.transform.position;
+            bruteExplo.GetComponent<bruteExplosion>().main = this.gameObject;
+
+        }
+    }
     public void ZapReset() { canZap = true; }
 
     public int zapClient;
     public void Zap()
     {
-        animEnemy.Play("zapAni"); canZap = false; Invoke("ZapReset", 8f);
+        animEnemy.Play("zapAni"); canZap = false;
+        if (!brute) { Invoke("ZapReset", 8f); }{ Invoke("ZapReset", 1f); }//COOL DOWN FOR JUMP AND ZAP
         if (NetworkDriver.instance.HOST && NetworkDriver.instance.TWOPLAYER) { NetworkDriver.instance.sioCom.Instance.Emit("event", JsonConvert.SerializeObject(new { obj = this.gameObject.name, zap = true }), false); }
     }
     public void Attack()
@@ -403,13 +443,28 @@ public class NPCController : MonoBehaviour
         //ZAP
         if (NetworkDriver.instance.HOST)
         {
-            if (distance <= zapRange && canZap && zaps) //&& distance > range
+            if(!brute)
             {
-                if (canZap)
+                if (distance <= zapRange && canZap && zaps) //&& distance > range
                 {
-                    Zap();
+                    if (canZap)
+                    {
+                        Zap();
+                    }
                 }
             }
+            if(brute)
+            {
+                if (distance > zapRange && canZap && zaps) //&& distance > range
+                {
+                    if (canZap)
+                    {
+                        Zap();
+                    }
+                }
+
+            }
+
         }
         if (!zozoLaser && !zapActive)
         {
@@ -463,7 +518,8 @@ public class NPCController : MonoBehaviour
             range = startRange;
             persist = startPersist;
 
-            if (canZap && zaps) { range = zapRange; }
+            if (canZap && zaps && !brute) { range = zapRange; }
+
 
             //ALERTS
             if (distance <= 5)
