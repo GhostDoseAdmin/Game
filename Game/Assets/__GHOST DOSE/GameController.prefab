@@ -6756,6 +6756,7 @@ MonoBehaviour:
   theirRig: {fileID: 0}
   reviveIndicator: {fileID: 33442856670618140}
   DemonScreamerUI: {fileID: 836032936764139852}
+  playerStartPos: {x: 0, y: 0, z: 0}
   TimeElapsedUI: {fileID: 7342212008351466101}
   QuitBtnText: {fileID: 8718805461979956967}
   quitUI: {fileID: 4807637275987220383}
@@ -6823,7 +6824,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.2424594, y: 0.2424594}
   m_AnchorMax: {x: 0.7575406, y: 0.7575406}
-  m_AnchoredPosition: {x: -5.585327, y: 39}
+  m_AnchoredPosition: {x: -5.585449, y: 39}
   m_SizeDelta: {x: -773.64264, y: -202.71155}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &643384019354192373
@@ -7720,7 +7721,7 @@ MonoBehaviour:
     mixerGroup: {fileID: 0}
     source: {fileID: 0}
   - name: Wander3
-    clip: {fileID: 8300000, guid: f38a470983f45ee4aaab9f886cda5169, type: 3}
+    clip: {fileID: 8300000, guid: 482d41212e2f30540b0b49cb4818c280, type: 3}
     volume: 0.4
     volumeVariance: 0
     pitch: 1
@@ -8081,6 +8082,42 @@ MonoBehaviour:
     source: {fileID: 0}
   - name: switchgear
     clip: {fileID: 8300000, guid: 43915247a9af8b5458117be534317950, type: 3}
+    volume: 0.25
+    volumeVariance: 0
+    pitch: 1
+    pitchVariance: 0
+    loop: 0
+    mixerGroup: {fileID: 0}
+    source: {fileID: 0}
+  - name: BruteSmash
+    clip: {fileID: 8300000, guid: 8bdae1c0f272b2941affe28b672b6de9, type: 3}
+    volume: 0.25
+    volumeVariance: 0
+    pitch: 1
+    pitchVariance: 0
+    loop: 0
+    mixerGroup: {fileID: 0}
+    source: {fileID: 0}
+  - name: BruteAgro
+    clip: {fileID: 8300000, guid: 9881131b44da3044d9d7a6c50772564c, type: 3}
+    volume: 0.25
+    volumeVariance: 0
+    pitch: 1
+    pitchVariance: 0
+    loop: 0
+    mixerGroup: {fileID: 0}
+    source: {fileID: 0}
+  - name: BruteJump
+    clip: {fileID: 8300000, guid: 9abe74ebb46f4ef499c0ce5a0b5c04d6, type: 3}
+    volume: 0.25
+    volumeVariance: 0
+    pitch: 1
+    pitchVariance: 0
+    loop: 0
+    mixerGroup: {fileID: 0}
+    source: {fileID: 0}
+  - name: BruteAttack
+    clip: {fileID: 8300000, guid: 811f9510efa19c344b7052aad556e76f, type: 3}
     volume: 0.25
     volumeVariance: 0
     pitch: 1
