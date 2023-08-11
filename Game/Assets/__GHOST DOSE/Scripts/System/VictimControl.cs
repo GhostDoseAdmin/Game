@@ -150,7 +150,12 @@ public class VictimControl : Item
             //Expand Dome
             if (effectDome.transform.localScale.x < 12) { effectDome.transform.localScale = Vector3.Lerp(effectDome.transform.localScale, effectDome.transform.localScale * 3f, Time.deltaTime * 1); }
             //KEEP IN DOME
-            if (Vector3.Distance(GameDriver.instance.Player.transform.position, transform.position) > 12) { GameDriver.instance.Player.transform.position = Vector3.Lerp(GameDriver.instance.Player.transform.position, transform.position, 0.02f); }
+            if (Vector3.Distance(GameDriver.instance.Player.transform.position, ZOZO.transform.position) > 12) { 
+                GameDriver.instance.Player.transform.position = Vector3.Lerp(GameDriver.instance.Player.transform.position, transform.position, 0.02f); 
+            
+            }
+            if (Vector3.Distance(GameDriver.instance.Player.transform.position, transform.position) > 14) { GameDriver.instance.Player.transform.position = transform.position; }
+
             //ARISE GATE
             if (zozoSpawn.transform.position.y < zozoSpawnStartPos.y + 6.5)
             {
@@ -190,7 +195,6 @@ public class VictimControl : Item
                 currPos.y += 5f * Time.deltaTime; 
                 main.transform.position = currPos;
                 main.transform.Rotate(0f, 5f * Time.deltaTime, 0f);
-
             }
             else {//DONE ARISING
                 foreach (GameObject victim in Victims) { 
@@ -255,8 +259,10 @@ public class VictimControl : Item
             //KEEP IN DOME
             Vector3 ZOZOpos2d = new Vector3(ZOZO.transform.position.x, GameDriver.instance.Player.transform.position.y, ZOZO.transform.position.z);
             if (Vector3.Distance(GameDriver.instance.Player.transform.position, ZOZO.transform.position) > 12) { GameDriver.instance.Player.transform.position = Vector3.Lerp(GameDriver.instance.Player.transform.position, ZOZOpos2d, 0.02f); }
-            //if (Vector3.Distance(GameDriver.instance.Player.transform.position, ZOZO.transform.position) > 12) { GameDriver.instance.Player.GetComponent<Rigidbody>().AddForce((ZOZOpos2d - GameDriver.instance.Player.transform.position).normalized * 1000, ForceMode.Acceleration); }
-            effectDome.transform.position = ZOZO.transform.position;
+            if (Vector3.Distance(GameDriver.instance.Player.transform.position, ZOZO.transform.position) > 14) { GameDriver.instance.Player.transform.position = ZOZO.transform.position; }
+
+                //if (Vector3.Distance(GameDriver.instance.Player.transform.position, ZOZO.transform.position) > 12) { GameDriver.instance.Player.GetComponent<Rigidbody>().AddForce((ZOZOpos2d - GameDriver.instance.Player.transform.position).normalized * 1000, ForceMode.Acceleration); }
+                effectDome.transform.position = ZOZO.transform.position;
         }
         if (!zozo){if (effectDome.transform.localScale.x > 0.01) { effectDome.transform.localScale = Vector3.Lerp(effectDome.transform.localScale, effectDome.transform.localScale * 0.0007f, Time.deltaTime * 1); }        }
 
