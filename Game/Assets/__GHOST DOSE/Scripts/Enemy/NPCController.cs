@@ -173,14 +173,14 @@ public class NPCController : MonoBehaviour
         //BRUTE JUMP
         {
             //DEBUG ZAP --TURN OFF ZAP
-            if (animEnemy.GetCurrentAnimatorClipInfo(0).Length > 0 && animEnemy.GetCurrentAnimatorClipInfo(0)[0].clip.name != "bruteJump" && zapActive) { zapActive = false; }
+            if (animEnemy.GetCurrentAnimatorClipInfo(0).Length > 0 && animEnemy.GetCurrentAnimatorClipInfo(0)[0].clip.name != "zapAni" && zapActive) { zapActive = false; }
             //CLIENT ZAP
             zapClient--;
             if (zapClient > 0)
             {
-                if (animEnemy.GetCurrentAnimatorClipInfo(0).Length > 0 && animEnemy.GetCurrentAnimatorClipInfo(0)[0].clip.name != "bruteJump")
+                if (animEnemy.GetCurrentAnimatorClipInfo(0).Length > 0 && animEnemy.GetCurrentAnimatorClipInfo(0)[0].clip.name != "zapAni")
                 {
-                    animEnemy.Play("bruteJump");
+                    animEnemy.Play("zapAni");
                 }
             }
             if (dead) { zapActive = false; }
