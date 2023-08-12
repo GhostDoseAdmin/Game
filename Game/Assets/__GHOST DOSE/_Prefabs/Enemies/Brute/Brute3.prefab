@@ -3192,13 +3192,13 @@ MonoBehaviour:
   Death: {fileID: 4998802808730338702, guid: 45291e0866f48db498d8dac4d6ca5c0a, type: 3}
   Shadower: 1
   ZOZO: 0
-  healthEnemy: 2000
+  healthEnemy: 500
   range: 15
   startRange: 0
   angleView: 180
   startAngleView: 0
-  hitRange: 5
-  chaseSpeed: 1
+  hitRange: 2
+  chaseSpeed: 0.1
   spawnTimer: 0
   damage: 100
   force: 1500
@@ -3312,7 +3312,7 @@ NavMeshAgent:
   m_AutoBraking: 1
   m_AutoRepath: 1
   m_Height: 1.68
-  m_BaseOffset: -0.1
+  m_BaseOffset: -0.3
   m_WalkableMask: 4294967295
   m_ObstacleAvoidanceType: 4
 --- !u!114 &9007058715893886659
