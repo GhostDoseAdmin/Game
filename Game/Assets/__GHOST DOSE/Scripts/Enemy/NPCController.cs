@@ -626,7 +626,8 @@ public class NPCController : MonoBehaviour
         if (animEnemy.GetCurrentAnimatorClipInfo(0).Length>0 && animEnemy.GetCurrentAnimatorClipInfo(0)[0].clip.name != "agro" && distance>=hitRange+0.5f && canFlinch) // && !animEnemy.GetCurrentAnimatorStateInfo(0).IsName("Attack")
         {
             //Debug.Log("-----------------------------FLINCH");
-            animEnemy.Play("React");
+            if (!teddy) { animEnemy.Play("React"); }
+            if (teddy && canAttack) { animEnemy.Play("React"); }
         }
     }
 
@@ -659,6 +660,8 @@ public class NPCController : MonoBehaviour
         {
             onlyOnceThisFrame = true;
            
+            if(teddy && !canAttack) { return; }
+
             if (damageAmount > 5 && damageAmount<=100) { AudioManager.instance.Play("enemyflinchimpact", audioSource); }
             if (damageAmount > 100) { AudioManager.instance.Play("headshot", null); Debug.Log("---------------------------------------" + damageAmount); }
             //if (animEnemy.GetCurrentAnimatorClipInfo(0)[0].clip!= null && animEnemy.GetCurrentAnimatorClipInfo(0)[0].clip.name != "agro" && GetComponent<Teleport>().teleport==0) { healthEnemy -= damageAmount; }
