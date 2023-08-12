@@ -279,7 +279,7 @@ public class NPCController : MonoBehaviour
     public void AI()
     {
         if (GetComponent<Teleport>().teleport > 0) {return; }
-        if (teddy) { alerted = false; }
+        if (teddy) { alerted = false; alertLevelPlayer = 0; alertLevelClient = 0; }
 
         if (target != null) { hasLooked = true; Attack();         }
         //-------------------------WAY POINTS ------------------------
