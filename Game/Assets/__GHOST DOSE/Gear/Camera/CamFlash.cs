@@ -17,7 +17,7 @@ public class CamFlash : MonoBehaviour
         yield return new WaitForSeconds(0.5f);
         this.gameObject.GetComponent<Light>().spotAngle = 0; //cleanup for ghostVFX - resets material to previous state
         yield return new WaitForSeconds(0.1f);
-        //Destroy(obj);
+        Destroy(obj);
     }
 
     public void Start()
@@ -87,7 +87,7 @@ public class CamFlash : MonoBehaviour
                         if (ghost.gameObject.GetComponent<Teleport>().teleport == 0 && ghost.healthEnemy > 0)
                         {
                             int damage = 0;
-                            //if (shotgun) { damage = 5000; }
+                            if (shotgun) { damage = 5000; }
                             ghost.TakeDamage(damage, isClient);
                         }
                         //ghost.agro = true;
