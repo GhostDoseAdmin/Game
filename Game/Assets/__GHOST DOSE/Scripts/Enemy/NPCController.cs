@@ -404,7 +404,7 @@ public class NPCController : MonoBehaviour
             GameObject bruteExplo = Instantiate(bruteExplosion);
             bruteExplo.transform.position = this.gameObject.transform.position;
             bruteExplo.GetComponent<bruteExplosion>().main = this.gameObject;
-            AudioManager.instance.Play("BruteSlam", audioSource);
+            //AudioManager.instance.Play("BruteSmash", audioSource);
 
         }
     }
@@ -721,7 +721,8 @@ public class NPCController : MonoBehaviour
                 GameObject death = Instantiate(Death, transform.position, transform.rotation);
                 death.transform.localScale = transform.localScale;
                 if (teddy) { death.transform.position = death.transform.position + Vector3.up; }
-                if (Shadower) { death.GetComponent<EnemyDeath>().Shadower = true;  }
+                //if (brute) { AudioManager.instance.Play("BruteSmash", null); }
+                if (!teddy && !brute) { if (Shadower) { death.GetComponent<EnemyDeath>().Shadower = true; } }
                 HIT_COL.GetComponent<SphereCollider>().enabled = false;
                 if (!canRespawn) { this.gameObject.SetActive(false); }
 

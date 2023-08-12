@@ -7,10 +7,16 @@ public class bruteExplosion : MonoBehaviour
 {
 
     public GameObject main;
+    AudioSource audioSource1;
     // Start is called before the first frame update
+    private void Awake()
+    {
+        audioSource1 = gameObject.AddComponent<AudioSource>();
+        audioSource1.spatialBlend = 1.0f;
+    }
     void Start()
     {
-        
+        AudioManager.instance.Play("BruteSmash", audioSource1);
     }
 
     // Update is called once per frame
@@ -33,14 +39,14 @@ public class bruteExplosion : MonoBehaviour
             {
                 if (other.gameObject.GetComponent<PlayerController>().canFlinch)
                 {
-                    AudioManager.instance.Play("EnemyHit", main.GetComponent<NPCController>().audioSource);
+                    //AudioManager.instance.Play("EnemyHit", main.GetComponent<NPCController>().audioSource);
                     other.gameObject.GetComponent<HealthSystem>().HealthDamage(main.GetComponent<NPCController>().damage, oppositeForce);
                 }
 
             }
             if (other.gameObject.name == "Client")
             {
-                AudioManager.instance.Play("EnemyHit", main.GetComponent<NPCController>().audioSource);
+               // AudioManager.instance.Play("EnemyHit", main.GetComponent<NPCController>().audioSource);
                 other.gameObject.GetComponent<ClientPlayerController>().Flinch(oppositeForce);
             }
         }
