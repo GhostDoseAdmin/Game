@@ -204,13 +204,14 @@ public class NPCController : MonoBehaviour
             //if (target == null) { transform.position = Vector3.Lerp(transform.position, destination.transform.position, Time.deltaTime / timeToTravel); }
 
             if (Vector3.Distance(transform.position, serverPosition) > 0.2f) { transform.position = Vector3.Lerp(transform.position, serverPosition, 0.02f); }
-            if (Vector3.Distance(transform.position, serverPosition) > 3.5f) {
-                transform.position = serverPosition; 
 
+            if (!teddy && !brute) { if (Vector3.Distance(transform.position, serverPosition) > 3.5f) { transform.position = serverPosition; } }
+            if (teddy || brute)
+            {
+                if (Vector3.Distance(transform.position, serverPosition) > 5f) { transform.position = serverPosition; }
             }
-
-            //-------------ACTIVE TIMER------------
-            active_timer -= Time.deltaTime;
+                //-------------ACTIVE TIMER------------
+                active_timer -= Time.deltaTime;
             if (active_timer <= 0)
             {
                this.gameObject.SetActive(false);
