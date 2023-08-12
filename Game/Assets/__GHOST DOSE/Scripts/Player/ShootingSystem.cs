@@ -67,7 +67,7 @@ public class ShootingSystem : MonoBehaviour
     public Aiming aiming;
     public GameObject target;
     public int Damage = 40;
-
+    public bool shotGun = false;
 
     public static ShootingSystem instance;
     private static utilities util;
@@ -237,7 +237,7 @@ public class ShootingSystem : MonoBehaviour
                     //---POINT FLASH IN DIRECTION OF THE SHOT
                     Quaternion newYRotation = Quaternion.Euler(0f, shootPoint.rotation.eulerAngles.y, 0f);
                     newFlash.transform.rotation = newYRotation;
-
+                    newFlash.GetComponent<CamFlash>().shotgun = shotGun;
                     camera.fieldOfView = 40;//40
                     shootTimer = Time.time;//cooldown
 

@@ -55,6 +55,7 @@ public class PlayerController : MonoBehaviour
     public bool changingGear;
 	public bool throwing = false;
 	public bool emitGear;
+	
 	//public float shotDmg;
 	//public string shotName="";
 	//public bool emitShoot;
