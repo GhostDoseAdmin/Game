@@ -279,7 +279,7 @@ public class NPCController : MonoBehaviour
     public void AI()
     {
         if (GetComponent<Teleport>().teleport > 0) {return; }
-
+        if (teddy) { alerted = false; }
 
         if (target != null) { hasLooked = true; Attack();         }
         //-------------------------WAY POINTS ------------------------
@@ -292,7 +292,7 @@ public class NPCController : MonoBehaviour
             GetComponent<NavMeshAgent>().stoppingDistance = 0;
             animEnemy.SetBool("Attack", false);
             animEnemy.SetBool("Run", false);
-           
+            
             if (prevAlerted != alerted && alerted) { AudioManager.instance.Play("enemyalert", audioSource);}
             prevAlerted = alerted;
             alerted = false;
