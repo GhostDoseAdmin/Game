@@ -2,11 +2,12 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using GameManager;
-
+using InteractionSystem;
 public class bruteNPC : MonoBehaviour
 {
     AudioSource audioSource1, audioSource2;
     public Sound[] footSteps;
+    private bool bruteMusic;
     private void Awake()
     {
         audioSource1 = gameObject.AddComponent<AudioSource>();
@@ -15,6 +16,17 @@ public class bruteNPC : MonoBehaviour
         audioSource2.spatialBlend = 1.0f;
 
     }
+
+    public void Update()
+    {
+        if(GetComponent<NPCController>().closestPlayer!=null && !bruteMusic && Vector3.Distance(transform.position, GetComponent<NPCController>().closestPlayer.transform.position) <15) {
+            bruteMusic = true;
+            AudioManager.instance.Play("BruteMusic", null);
+        }
+    }
+
+
+
     public void TriggerFootstepRightBrute()
     {
         if (GetComponent<Animator>().GetCurrentAnimatorClipInfo(0).Length > 0 && GetComponent<Animator>().GetCurrentAnimatorClipInfo(0)[0].clip.name == "bruteWalk")

@@ -11,13 +11,13 @@ public class CamFlash : MonoBehaviour
     private List<NPCController> ghostObjects;
     public bool isClient;
     private AudioSource audioSource;
-
+    public bool shotgun;
     IEnumerator DestroyAfterDelay(GameObject obj)
     {
         yield return new WaitForSeconds(0.5f);
         this.gameObject.GetComponent<Light>().spotAngle = 0; //cleanup for ghostVFX - resets material to previous state
         yield return new WaitForSeconds(0.1f);
-        Destroy(obj);
+        //Destroy(obj);
     }
 
     public void Start()
@@ -64,14 +64,14 @@ public class CamFlash : MonoBehaviour
             float distanceToObject = Vector3.Distance(ghost.gameObject.transform.position + Vector3.up * hitHeight, spotlight.transform.position);
             bool inRange = distanceToObject <= spotlight.range;
             Vector3 directionToObject = (ghost.gameObject.transform.position + Vector3.up * hitHeight - spotlight.transform.position).normalized;
-            Debug.DrawLine(spotlight.transform.position, ghost.gameObject.transform.position + Vector3.up * hitHeight, Color.blue);
+            Debug.DrawLine(spotlight.transform.position, ghost.gameObject.transform.position + Vector3.up * hitHeight, Color.magenta);
             float angleToObject = Vector3.Angle(spotlight.transform.forward, directionToObject);
             bool inCone = angleToObject <= adjustedSpotAngle * 0.5f;
 
             //CHECK FOR OBSTRUCTION
             if (inCone && inRange)
             {
-                LayerMask mask = 1 << LayerMask.NameToLayer("Default") | 1 << LayerMask.NameToLayer("Enemy");
+                /*LayerMask mask = 1 << LayerMask.NameToLayer("Default") | 1 << LayerMask.NameToLayer("Enemy");
                 hitHeight = 1.3f; // adjust the hit height 
                 Vector3 targPos = new Vector3(ghost.gameObject.transform.position.x, ghost.gameObject.transform.position.y + hitHeight, ghost.gameObject.transform.position.z);
                 Ray ray = new Ray(spotlight.transform.position, (targPos - spotlight.transform.position).normalized);
@@ -79,14 +79,17 @@ public class CamFlash : MonoBehaviour
                 Vector3 endPoint = ray.GetPoint(distance);
                 Debug.DrawLine(spotlight.transform.position, endPoint, Color.yellow);
                 RaycastHit hit;
-                if (Physics.Linecast(spotlight.transform.position, endPoint, out hit, mask.value))
+                if (Physics.Linecast(spotlight.transform.position, endPoint, out hit, mask.value))*/
                 {
 
-                    if (FindEnemyMain(hit.collider.gameObject.transform) == ghost.gameObject)
+                    //if (FindEnemyMain(hit.collider.gameObject.transform) == ghost.gameObject)
                     {
                         if (ghost.gameObject.GetComponent<Teleport>().teleport == 0 && ghost.healthEnemy > 0)
-                            // Debug.Log("ENYM HIT -------------------------------------------------------");
-                        ghost.TakeDamage(0, isClient);
+                        {
+                            int damage = 0;
+                            //if (shotgun) { damage = 5000; }
+                            ghost.TakeDamage(damage, isClient);
+                        }
                         //ghost.agro = true;
                         //ghost.range = ghost.range * 2;
                     }
