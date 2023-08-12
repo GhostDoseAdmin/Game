@@ -27,6 +27,7 @@ public class NPCController : MonoBehaviour
     [Header("ENEMY PARAMETRS")]
     [Space(10)]
     public bool Shadower;
+    public bool teddy;
     public bool ZOZO;
     public int healthEnemy = 100;
     public int range;
@@ -719,6 +720,7 @@ public class NPCController : MonoBehaviour
                 this.gameObject.transform.GetChild(0).GetComponent<Outline>().OutlineWidth = 0;
                 GameObject death = Instantiate(Death, transform.position, transform.rotation);
                 death.transform.localScale = transform.localScale;
+                if (teddy) { death.transform.position = death.transform.position + Vector3.up; }
                 if (Shadower) { death.GetComponent<EnemyDeath>().Shadower = true;  }
                 HIT_COL.GetComponent<SphereCollider>().enabled = false;
                 if (!canRespawn) { this.gameObject.SetActive(false); }
