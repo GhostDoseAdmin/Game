@@ -10,10 +10,15 @@ public class laserGrid : MonoBehaviour
     // Start is called before the first frame update
     public bool isClient;
     private AudioSource audioSource;
+    public GameObject laserGridProj;
 
 
     public List<NPCController> enemyEmitList = new List<NPCController>();
 
+    public void Start()
+    {
+        
+    }
 
     IEnumerator DestroyAfterDelay()
     {
@@ -21,9 +26,27 @@ public class laserGrid : MonoBehaviour
         Result();
     }
 
-    private void OnEnable()
+    public void Shoot()
     {
         StartCoroutine(DestroyAfterDelay());
+        enemyEmitList.Clear();
+        GetComponent<Light>().enabled = true;
+        //--------------LASERGRID PROJ----------------- laserGrid->ZozoLaser->Hovl_Laser
+        GameObject laserGridProjObj = Instantiate(laserGridProj);
+        ZozoLaser[] lasers = laserGridProjObj.GetComponentsInChildren<ZozoLaser>();
+        foreach (ZozoLaser laserorigin in lasers)
+        {
+            laserorigin.laserGridOrigin = this.GetComponent<laserGrid>();
+        }
+        //laserGridProjObj.transform.parent = transform;
+        laserGridProjObj.transform.position = transform.position;
+        laserGridProjObj.transform.rotation = transform.rotation;
+        //newFlash.name = "CamFlashPlayer";
+        //---POINT FLASH IN DIRECTION OF THE SHOT
+        //Quaternion newYRotation = Quaternion.Euler(0f, shootPoint.rotation.eulerAngles.y, 0f);
+        //newFlash.transform.rotation = newYRotation;
+
+
     }
     // Function to add an object to the list if it doesn't exist already
     public void AddEnemyToEmitList(NPCController objectToAdd)
@@ -37,7 +60,7 @@ public class laserGrid : MonoBehaviour
 
     public void Result()
     {
-
+        GetComponent<Light>().enabled = false;
 
         foreach (NPCController enemy in enemyEmitList)
         {
@@ -55,7 +78,7 @@ public class laserGrid : MonoBehaviour
         }
 
         enemyEmitList.Clear();
-        this.gameObject.SetActive(false);
+        //this.gameObject.SetActive(false);
     }
 
 }

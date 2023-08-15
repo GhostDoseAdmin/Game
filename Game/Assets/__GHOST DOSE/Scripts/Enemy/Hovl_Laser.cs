@@ -30,6 +30,7 @@ public class Hovl_Laser : MonoBehaviour
     private float collideDelay = 1f;
     private AudioSource laserSound;
     public bool LASERGRID = false;
+    private float laserGridOpacity = 0.5f;
     void Start ()
     {
         //Get LineRender and ParticleSystem components from current prefab;  
@@ -40,20 +41,39 @@ public class Hovl_Laser : MonoBehaviour
         laserSound.spatialBlend = 1.0f;
         laserSound.volume = 10f;
         if (!LASERGRID) { AudioManager.instance.Play("zozolasersound", laserSound); }
-        //if (Laser.material.HasProperty("_SpeedMainTexUVNoiseZW")) LaserStartSpeed = Laser.material.GetVector("_SpeedMainTexUVNoiseZW");
-        //Save [1] and [3] textures speed
-        //{ DISABLED AFTER UPDATE}
-        //LaserSpeed = LaserStartSpeed;
+        else {//LASERGRID
+            GetComponent<LineRenderer>().materials[0].SetFloat("_Opacity", laserGridOpacity);
+            foreach (ParticleSystem ps in Hit)
+            {
+                ParticleSystem.MainModule mainModule = ps.main;
+                mainModule.startSize = new ParticleSystem.MinMaxCurve(0.025f);
+            }
+            StartCoroutine(DestroyAfterDelay());
+
+        }
     }
 
+    //DESTROY LASERGRID
+    IEnumerator DestroyAfterDelay()
+    {
+        yield return new WaitForSeconds(0.5f);
+        Destroy(GetComponentInParent<ZozoLaser>().gameObject);
+    }
     void Update()
     {
 
-
-            //if (Laser.material.HasProperty("_SpeedMainTexUVNoiseZW")) Laser.material.SetVector("_SpeedMainTexUVNoiseZW", LaserSpeed);
-            //SetVector("_TilingMainTexUVNoiseZW", Length); - old code, _TilingMainTexUVNoiseZW no more exist
-            Laser.material.SetTextureScale("_MainTex", new Vector2(Length[0], Length[1]));                    
+        Laser.material.SetTextureScale("_MainTex", new Vector2(Length[0], Length[1]));                    
         Laser.material.SetTextureScale("_Noise", new Vector2(Length[2], Length[3]));
+
+
+        //FADE LASER GRID LASER
+        if(LASERGRID)
+        {
+            laserGridOpacity -= 0.05f;
+            GetComponent<LineRenderer>().materials[0].SetFloat("_Opacity", laserGridOpacity);
+        }
+
+
         //To set LineRender position
         if (Laser != null && UpdateSaver == false)
         {
@@ -92,7 +112,7 @@ public class Hovl_Laser : MonoBehaviour
                     if (LASERGRID)
                     {
                         NPCController target = hit.collider.gameObject.GetComponentInParent<NPCController>();
-                        if (target != null) { GetComponentInParent<laserGrid>().AddEnemyToEmitList(target); }
+                        if (target != null) { GetComponentInParent<ZozoLaser>().laserGridOrigin.AddEnemyToEmitList(target); }
                     }
                 if (hit.collider.gameObject.name == "Player" && Time.time > collideTimer + collideDelay)
                 {

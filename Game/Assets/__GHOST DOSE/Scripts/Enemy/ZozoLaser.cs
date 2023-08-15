@@ -15,6 +15,7 @@ public class ZozoLaser : MonoBehaviour
     private Hovl_Laser LaserScript;
     private Hovl_Laser2 LaserScript2;
     public bool laserGrid = false;
+    public laserGrid laserGridOrigin;
 
     private void Update()
     {

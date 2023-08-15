@@ -258,8 +258,8 @@ public class ShootingSystem : MonoBehaviour
                     }
                     if(GEAR==4)
                     {
-                       
-                        laserGrid.SetActive(true);
+
+                        laserGrid.GetComponent<laserGrid>().Shoot(); //SetActive(true);
                     }
 
                     camera.fieldOfView = 40;//40
