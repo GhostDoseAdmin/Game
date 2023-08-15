@@ -106,7 +106,7 @@ public class ClientPlayerController : MonoBehaviour
     public Transform shootPoint;
 	public bool flashlighton =false;
     public GameObject currLight;//tracks current light source
-	public GameObject camFlash;
+	public GameObject camFlash, laserGridProj;
     private GameObject SB7;
     public GameObject death;
     public float targWalk;

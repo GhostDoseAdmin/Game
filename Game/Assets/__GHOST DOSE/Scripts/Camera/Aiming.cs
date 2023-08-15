@@ -15,7 +15,7 @@ public class Aiming : MonoBehaviour {
 	public int height = 40;
 	[Header("Sight size in width")]
 	public int width = 40;
-	public GameObject crosshair;
+	public GameObject crosshair, gridcrosshair;
     public GameObject K2;
 	public int gear;
 	public bool isOuija;
@@ -77,7 +77,12 @@ public class Aiming : MonoBehaviour {
 			//if (Input.GetMouseButton(1))
 			{
 				isZoomed = 1;
-				if (gear == 1) { crosshair.SetActive(true); }
+				if (gear == 1 || gear==4) { 
+					crosshair.SetActive(true);
+					if (gear == 1) { crosshair.transform.localScale = new Vector3(0.4f, 0.4f, 0.4f); }
+					if (gear == 4)  { gridcrosshair.SetActive(true); crosshair.transform.localScale = new Vector3(1.4f, 1.4f, 1.4f); }
+				
+				}
 				if (gear == 2) { K2.SetActive(true); }
             }
 			if (isZoomed == 1 )
@@ -90,6 +95,7 @@ public class Aiming : MonoBehaviour {
         {
 			isZoomed = 0;
             crosshair.SetActive(false);
+            gridcrosshair.SetActive(false);
             K2.SetActive(false);
         }
 		if (isZoomed == 0)

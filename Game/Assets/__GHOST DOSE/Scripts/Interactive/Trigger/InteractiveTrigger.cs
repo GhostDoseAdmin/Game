@@ -74,7 +74,7 @@ public class InteractiveTrigger : MonoBehaviour
             allowInteraction = false;
             interact.SetActive(false);
             interactiveObject.GetComponent<Item>().playerOn = false;
-            if (GameDriver.instance.Player.GetComponent<PlayerController>().sb7) { GameDriver.instance.Player.GetComponent<PlayerController>().ChangeGear(true); }
+            if (GameDriver.instance.Player.GetComponent<PlayerController>().sb7) { GameDriver.instance.Player.GetComponent<PlayerController>().ChangeGear(true, false); }
         }
         if (other.gameObject.name == "Client") { interactiveObject.GetComponent<Item>().clientOn = false; }
     }

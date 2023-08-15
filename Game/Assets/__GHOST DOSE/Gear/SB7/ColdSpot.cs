@@ -80,7 +80,7 @@ public class ColdSpot : Item
             GetComponentInParent<ColdSpotControl>().hasDoneSession = true;
             Trigger.transform.localScale = new Vector3(5f, 5f, 5f);
             //START UP SPIRITBOX
-            GameDriver.instance.Player.GetComponent<PlayerController>().ChangeGear(true);
+            GameDriver.instance.Player.GetComponent<PlayerController>().ChangeGear(true, false);
         }
 
     }

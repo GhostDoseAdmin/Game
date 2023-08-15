@@ -29,6 +29,7 @@ public class Hovl_Laser : MonoBehaviour
     private float collideTimer;
     private float collideDelay = 1f;
     private AudioSource laserSound;
+    public bool LASERGRID = false;
     void Start ()
     {
         //Get LineRender and ParticleSystem components from current prefab;  
@@ -38,7 +39,7 @@ public class Hovl_Laser : MonoBehaviour
         laserSound = HitEffect.gameObject.AddComponent<AudioSource>();
         laserSound.spatialBlend = 1.0f;
         laserSound.volume = 10f;
-        AudioManager.instance.Play("zozolasersound", laserSound);
+        if (!LASERGRID) { AudioManager.instance.Play("zozolasersound", laserSound); }
         //if (Laser.material.HasProperty("_SpeedMainTexUVNoiseZW")) LaserStartSpeed = Laser.material.GetVector("_SpeedMainTexUVNoiseZW");
         //Save [1] and [3] textures speed
         //{ DISABLED AFTER UPDATE}
@@ -47,7 +48,6 @@ public class Hovl_Laser : MonoBehaviour
 
     void Update()
     {
-
 
 
             //if (Laser.material.HasProperty("_SpeedMainTexUVNoiseZW")) Laser.material.SetVector("_SpeedMainTexUVNoiseZW", LaserSpeed);
@@ -64,7 +64,8 @@ public class Hovl_Laser : MonoBehaviour
             RaycastHit hit; //DELETE THIS IF YOU WANT USE LASERS IN 2D
            //ADD THIS IF YOU WANNT TO USE LASERS IN 2D: RaycastHit2D hit = Physics2D.Raycast(transform.position, transform.forward, MaxLength);       
             LayerMask mask = 1 << LayerMask.NameToLayer("Default") | 1 << LayerMask.NameToLayer("Player");
-            if (Physics.Raycast(transform.position, transform.TransformDirection(Vector3.forward), out hit, MaxLength, mask))//CHANGE THIS IF YOU WANT TO USE LASERRS IN 2D: if (hit.collider != null)
+                if (LASERGRID) { mask = 1 << LayerMask.NameToLayer("Default") | 1 << LayerMask.NameToLayer("Enemy"); }
+                    if (Physics.Raycast(transform.position, transform.TransformDirection(Vector3.forward), out hit, MaxLength, mask))//CHANGE THIS IF YOU WANT TO USE LASERRS IN 2D: if (hit.collider != null)
             {
                 //End laser position if collides with object
                 Laser.SetPosition(1, hit.point);
@@ -82,11 +83,17 @@ public class Hovl_Laser : MonoBehaviour
                 //Texture tiling
                 Length[0] = MainTextureLength * (Vector3.Distance(transform.position, hit.point));
                 Length[2] = NoiseTextureLength * (Vector3.Distance(transform.position, hit.point));
-                //Texture speed balancer {DISABLED AFTER UPDATE}
-                //LaserSpeed[0] = (LaserStartSpeed[0] * 4) / (Vector3.Distance(transform.position, hit.point));
-                //LaserSpeed[2] = (LaserStartSpeed[2] * 4) / (Vector3.Distance(transform.position, hit.point));
-                //Destroy(hit.transform.gameObject); // destroy the object hit
-                //hit.collider.SendMessage("SomeMethod"); // example
+                    //Texture speed balancer {DISABLED AFTER UPDATE}
+                    //LaserSpeed[0] = (LaserStartSpeed[0] * 4) / (Vector3.Distance(transform.position, hit.point));
+                    //LaserSpeed[2] = (LaserStartSpeed[2] * 4) / (Vector3.Distance(transform.position, hit.point));
+                    //Destroy(hit.transform.gameObject); // destroy the object hit
+                    //hit.collider.SendMessage("SomeMethod"); // example
+                    //-----------------LASER GRID----------------------------------
+                    if (LASERGRID)
+                    {
+                        NPCController target = hit.collider.gameObject.GetComponentInParent<NPCController>();
+                        if (target != null) { GetComponentInParent<laserGrid>().AddEnemyToEmitList(target); }
+                    }
                 if (hit.collider.gameObject.name == "Player" && Time.time > collideTimer + collideDelay)
                 {
                     Vector3 oppositeForce = GetComponentInParent<NPCController>().transform.forward * GetComponentInParent<NPCController>().laserForce;

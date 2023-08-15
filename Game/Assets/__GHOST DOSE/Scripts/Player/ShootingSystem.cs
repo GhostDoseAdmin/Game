@@ -38,7 +38,7 @@ public class ShootingSystem : MonoBehaviour
     private Image headShotIndicatorUI;
     private Image flashLightIndicatorUI;
     private Image focusIndicatorUI;
-    public Image camBatteryUI;
+    public Image camBatteryUI, gridBatteryUI;
 
     [Header("PISTOL SOUNDS")]
     [Space(10)]
@@ -65,17 +65,20 @@ public class ShootingSystem : MonoBehaviour
     public bool isHeadshot;
     private Camera camera;
     public Aiming aiming;
-    public GameObject target;
+    public GameObject target, laserGrid;
     public int Damage = 40;
     public bool shotGun = false;
 
     public static ShootingSystem instance;
     private static utilities util;
+    public int GEAR;
 
     public void RigShooter()
     {
         util = new utilities();
-
+        laserGrid = GetComponentInChildren<laserGrid>().gameObject;
+        laserGrid.SetActive(false);
+        gridBatteryUI = GameObject.Find("grid_battery_ui").GetComponent<Image>();
         camBatteryUI = GameObject.Find("cam_battery_ui").GetComponent<Image>();
         shootPoint = util.FindChildObject(this.gameObject.transform, "ShootPoint").transform;
         muzzleFlash = util.FindChildObject(this.gameObject.transform, "MuzzleFlashEffect").GetComponent<ParticleSystem>();
@@ -115,13 +118,21 @@ public class ShootingSystem : MonoBehaviour
         else { aiming.isOuija = false; }
        
     }
+    public void SwitchGear(int gear)
+    {
+        GEAR = gear;
+        gridBatteryUI.transform.parent.gameObject.SetActive(false);
+        laserGrid.SetActive(false);
+        if (GEAR == 4) {gridBatteryUI.transform.parent.gameObject.SetActive(true); laserGrid.SetActive(true); }
+    }
 
-    public void Aiming(int gear)
+
+    public void Aiming()
     {
         //UPDATE AIMER
-        aiming.gear = gear;
+        aiming.gear = GEAR;
 
-        if (gear == 1)
+        if (GEAR == 1 || GEAR == 4)
         {
             //RESET UI
             enemyIndicatorUI.color = Color.white;
@@ -167,7 +178,7 @@ public class ShootingSystem : MonoBehaviour
 
             if (!NetworkDriver.instance.isMobile) { crosshairs.GetComponent<Animator>().speed = (camera.fieldOfView - aiming.zoom) * 3; }//ANIMATE FOCUS INDICATOR
         }
-        if (gear == 2)
+        if (GEAR == 2)
         {
 
         }
@@ -185,9 +196,14 @@ public class ShootingSystem : MonoBehaviour
             //Debug.Log("TARGET " + target);
             //---------------------CAN SHOOT------------------------------------
             //if (Mathf.Approximately(Mathf.Round(camera.fieldOfView * 10) / 10f, aiming.zoom))//if current zoom is close to target zoom
+            if (GetComponent<PlayerController>().gear == 1) { shootCoolDown = 0.7f; }//CAMERA PROPERTIES
+            if (GetComponent<PlayerController>().gear == 4) { shootCoolDown = 1f; } //LASER GRID
+
+
+            Debug.Log("----------------------------------------BANG");
             {
                 //OUT OF BATTERY
-                if(Time.time > shootTimer + shootCoolDown && camBatteryUI.fillAmount <= 0)
+                if(Time.time > shootTimer + shootCoolDown && ((camBatteryUI.fillAmount <= 0 && GEAR == 1) || (gridBatteryUI.fillAmount <= 0 && GEAR == 4)))
                 {
                     string audioString;
                     if (NetworkDriver.instance.isTRAVIS) { audioString = "travbattery"; }
@@ -196,12 +212,13 @@ public class ShootingSystem : MonoBehaviour
                     shootTimer = Time.time;//cooldown
                 }
 
-                if (Time.time > shootTimer + shootCoolDown && camBatteryUI.fillAmount > 0)
+                if (Time.time > shootTimer + shootCoolDown && ((camBatteryUI.fillAmount > 0 && GEAR == 1) || (gridBatteryUI.fillAmount > 0 && GEAR == 4)))
                 {
                     canShoot = true;
                     GameObject victimManager = GameObject.Find("OuijaBoardManager").GetComponent<OuijaSessionControl>().OuijaSessions[GameObject.Find("OuijaBoardManager").GetComponent<OuijaSessionControl>().currentSession];
                     //AudioManager.instance.Play("ShotCam");
-                    camBatteryUI.fillAmount -= 0.1f;
+                    if (GEAR == 1) { camBatteryUI.fillAmount -= 0.1f; }
+                    //if (GEAR == 4) { gridBatteryUI.fillAmount -= 0.5f; }
                     muzzleFlash.Play();
                     Shell.Play();
                     //DO DAMAGE
@@ -229,15 +246,22 @@ public class ShootingSystem : MonoBehaviour
                     if (NetworkDriver.instance.TWOPLAYER) { NetworkDriver.instance.sioCom.Instance.Emit("event", JsonConvert.SerializeObject(new { shoot = true, obj = targName, dmg = Damage }), false); }
 
 
+                    if(GEAR==1)
+                    {
+                        //--------------FLASH-----------------
+                        GameObject newFlash = Instantiate(camFlash);
+                        newFlash.transform.position = shootPoint.position;
+                        newFlash.name = "CamFlashPlayer";
+                        //---POINT FLASH IN DIRECTION OF THE SHOT
+                        Quaternion newYRotation = Quaternion.Euler(0f, shootPoint.rotation.eulerAngles.y, 0f);
+                        newFlash.transform.rotation = newYRotation;
+                    }
+                    if(GEAR==4)
+                    {
+                       
+                        laserGrid.SetActive(true);
+                    }
 
-                    //--------------FLASH-----------------
-                    GameObject newFlash = Instantiate(camFlash);
-                    newFlash.transform.position = shootPoint.position;
-                    newFlash.name = "CamFlashPlayer";
-                    //---POINT FLASH IN DIRECTION OF THE SHOT
-                    Quaternion newYRotation = Quaternion.Euler(0f, shootPoint.rotation.eulerAngles.y, 0f);
-                    newFlash.transform.rotation = newYRotation;
-                    newFlash.GetComponent<CamFlash>().shotgun = shotGun;
                     camera.fieldOfView = 40;//40
                     shootTimer = Time.time;//cooldown
 
@@ -355,7 +379,7 @@ public class ShootingSystem : MonoBehaviour
             }
 
         }
-        else
+        else//FALL BACK TO EASYTARGET
         {
             Damage = 100;
             target = targ;

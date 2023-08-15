@@ -42,9 +42,10 @@ public class PlayerController : MonoBehaviour
 	public bool is_FlashlightAim = false;
 
 	//-------GEAR
-     private float gear_delay = 1f;//0.25
+     private float gear_delay = 0.5f;//0.25
     private float gear_timer = 0.0f;//USED FOR EMITS
-    public int gear = 1; //0 = cam 1=ks 2=rem
+    public bool hasGrid, hasRem = false;
+    public int gear = 1; //0 = SB7 1=cam 2=k2 3=rem
     public bool gearAim;
 	public GameObject k2;
 	public GameObject camera;
@@ -78,6 +79,7 @@ public class PlayerController : MonoBehaviour
 	Vector3 targetPosVec;
 	float walk = 0f;
 	float strafe = 0f;
+	
 	//public bool emitPos;
     //public GameDriver GD;
     private float emit_timer = 0.0f;//USED FOR EMITS
@@ -188,7 +190,7 @@ public class PlayerController : MonoBehaviour
 			if (currentAni != "dodgeRightAni" && currentAni != "dodgeLeftAni" )
 			{
 				Running();
-				ChangeGear(false);
+				ChangeGear(false, false);
 				Throwing();
 				GearAim();
 				CheckFlashlight();
@@ -450,25 +452,27 @@ public class PlayerController : MonoBehaviour
     public void EndThrow()	{		throwing = false; }//ANIMATION EVENT
 
    
-	public void ChangeGear(bool triggerSb7)
+	public void ChangeGear(bool triggerSb7, bool bypass)
 	{
-		//END OF GEAR CHANGE
-		//if (Mathf.Abs(Time.time - gear_timer) < 0.001f)
-		//if (!changeGearThisFrame)
-		{
+        //END OF GEAR CHANGE
+        //0 =SB7 1=CAM 2=K2 3=REM 4=GRID
+        {
 
             if (Time.time > gear_timer)
 			{
 				changingGear = false;
 				//START OF GEARCHANGE
-				if (((Input.GetKeyDown(InputManager.instance.gear) && !NetworkDriver.instance.isMobile) || (NetworkDriver.instance.isMobile && GameDriver.instance.Player.GetComponent<PlayerController>().gamePad.gearBTN.buttonReleased)) || (triggerSb7 && !sb7) || (triggerSb7 && sb7))
+				if ((((Input.GetKeyDown(InputManager.instance.gear) && !NetworkDriver.instance.isMobile) || (NetworkDriver.instance.isMobile && GameDriver.instance.Player.GetComponent<PlayerController>().gamePad.gearBTN.buttonReleased)) || (triggerSb7 && !sb7) || (triggerSb7 && sb7)) || bypass)
 				{
 
 					emitGear = true;
 					anim.SetBool("GetGear", true);
                     SB7.SetActive(false);
                     gear += 1;
-					if (gear > 2) { gear = 1; }
+                    if (!hasRem && gear == 3) { gear += 1; }
+                    if (!hasGrid && gear == 4) { gear += 1; }
+                    if (gear > 4) { gear = 1; }
+					
 					//-----E
 					if (triggerSb7)
 					{
@@ -490,12 +494,14 @@ public class PlayerController : MonoBehaviour
 					//------Q
 					else { sb7 = false; }
                     AudioManager.instance.Play("switchgear", audioSource2);
-                    if (gear == 1) { AudioManager.instance.Play("switchcam", audioSource3); GameDriver.instance.gearuicam.SetActive(true); GameDriver.instance.gearuik2.SetActive(false); camera.SetActive(true); k2.SetActive(false); camInventory.SetActive(false); k2Inventory.SetActive(true); }
-					if (gear == 2) { AudioManager.instance.Play("switchk2", audioSource3); GameDriver.instance.gearuik2.SetActive(true); GameDriver.instance.gearuicam.SetActive(false); camera.SetActive(false); k2.SetActive(true); camInventory.SetActive(true); k2Inventory.SetActive(false); }
+                    GameDriver.instance.gearuicam.SetActive(false); GameDriver.instance.gearuik2.SetActive(false); k2.SetActive(false); camera.SetActive(false); camInventory.SetActive(false); k2Inventory.SetActive(false);
+                    if (gear == 1) { AudioManager.instance.Play("switchcam", audioSource3); GameDriver.instance.gearuicam.SetActive(true);  camera.SetActive(true);  k2Inventory.SetActive(true); }
+					if (gear == 2) { AudioManager.instance.Play("switchk2", audioSource3); GameDriver.instance.gearuik2.SetActive(true);  k2.SetActive(true); camInventory.SetActive(true);  }
 
                     if (gear == 0) { AudioManager.instance.Play("sb7sweep", audioSource); }
                     else { AudioManager.instance.StopPlaying("sb7sweep", audioSource); }
 
+					GetComponent<ShootingSystem>().SwitchGear(gear);
                     gear_timer = Time.time + gear_delay;//cooldown
 				}
 			}
@@ -565,14 +571,14 @@ public class PlayerController : MonoBehaviour
 					newHandWeight = 1f;
 
                    // if (anim.GetBool("ouija")) { newHandWeight = 0f; anim.SetBool("Pistol", true); gearAim = false; }
-                    GetComponent<ShootingSystem>().Aiming(gear);
+                    GetComponent<ShootingSystem>().Aiming();
 
                 //-------------------------------SHOOTING -----------------------------------
 				if (!NetworkDriver.instance.isMobile)
 				{
 					if (Input.GetMouseButtonDown(0))
 					{
-						if (gear == 1) { anim.SetBool("Shoot", true); GetComponent<ShootingSystem>().Shoot(); AudioManager.instance.StopPlaying("camfocus", audioSource); }
+						if (gear == 1 || gear==4) { anim.SetBool("Shoot", true); GetComponent<ShootingSystem>().Shoot(); AudioManager.instance.StopPlaying("camfocus", audioSource); }
 						if (gear == 3) { anim.SetBool("Throw", true); throwing = true; }
 
 					}
@@ -590,7 +596,7 @@ public class PlayerController : MonoBehaviour
 				//--------------------------MOBILE SHOOTING--------------------------------
             if (NetworkDriver.instance.isMobile && gamePad.joystickAim.GetComponent<GPButton>().buttonReleased) //&& ((GetComponent<ShootingSystem>().target!=null && gamePad.camSup.AIMMODE)|| !gamePad.camSup.AIMMODE)
             {
-                if (gear == 1) { anim.SetBool("Shoot", true); GetComponent<ShootingSystem>().Shoot(); AudioManager.instance.StopPlaying("camfocus", audioSource); }
+                if (gear == 1 || gear==4) { anim.SetBool("Shoot", true); GetComponent<ShootingSystem>().Shoot(); AudioManager.instance.StopPlaying("camfocus", audioSource); }
                 if (gear == 3) { anim.SetBool("Throw", true); throwing = true; }
             }
 
@@ -656,7 +662,7 @@ public class PlayerController : MonoBehaviour
         //-----------------  STANCES --------------------------------
         Transform stanceRH = null;
         Transform stanceLH = null;
-			if (gear == 1)
+			if (gear == 1 || gear==4)
 			{
 				stanceRH = rightHandTargetCam;
 				stanceLH = leftHandTargetCam;
