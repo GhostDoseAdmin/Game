@@ -184,7 +184,7 @@ public class ShootingSystem : MonoBehaviour
             if (!NetworkDriver.instance.isMobile) { crosshairs.GetComponent<Animator>().speed = (camera.fieldOfView - aiming.zoom) * 3; }//ANIMATE FOCUS INDICATOR
         }
         //REM POD
-        if (GEAR == 3)
+        /*if (GEAR == 3)
         {
             Vector3 startPoint = GetComponent<PlayerController>().rightHand.transform.position;
             Vector3 direction = (targetLook.position - startPoint).normalized;
@@ -214,7 +214,7 @@ public class ShootingSystem : MonoBehaviour
 
                 }
             }
-        }
+        }*/
 
         //Debug.Log(isEnemy.ToString() + isVisible.ToString() + isHeadshot.ToString());
     }
