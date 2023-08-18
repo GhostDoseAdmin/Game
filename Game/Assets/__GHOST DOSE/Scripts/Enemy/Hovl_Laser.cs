@@ -57,6 +57,7 @@ public class Hovl_Laser : MonoBehaviour
     IEnumerator DestroyAfterDelay()
     {
         yield return new WaitForSeconds(0.5f);
+        GetComponentInParent<ZozoLaser>().laserGridOrigin.flash.SetActive(false);
         Destroy(GetComponentInParent<ZozoLaser>().gameObject);
     }
     void Update()
@@ -103,11 +104,9 @@ public class Hovl_Laser : MonoBehaviour
                 //Texture tiling
                 Length[0] = MainTextureLength * (Vector3.Distance(transform.position, hit.point));
                 Length[2] = NoiseTextureLength * (Vector3.Distance(transform.position, hit.point));
-                    //Texture speed balancer {DISABLED AFTER UPDATE}
-                    //LaserSpeed[0] = (LaserStartSpeed[0] * 4) / (Vector3.Distance(transform.position, hit.point));
-                    //LaserSpeed[2] = (LaserStartSpeed[2] * 4) / (Vector3.Distance(transform.position, hit.point));
-                    //Destroy(hit.transform.gameObject); // destroy the object hit
-                    //hit.collider.SendMessage("SomeMethod"); // example
+
+
+
                     //-----------------LASER GRID----------------------------------
                     if (LASERGRID)
                     {

@@ -399,7 +399,7 @@ namespace GameManager
                     UnityEngine.Cursor.visible = true;
                     UnityEngine.Cursor.lockState = CursorLockMode.None;
                 }
-                quitUI.SetActive(true); 
+                //quitUI.SetActive(true); 
                 return; 
             }
         }

@@ -154,6 +154,7 @@ public class NPCController : MonoBehaviour
     public float active_timer;
     void Update()
     {
+
         if (!brute)
         {
             //DEBUG ZAP --TURN OFF ZAP
@@ -485,7 +486,7 @@ public class NPCController : MonoBehaviour
                     GetComponent<NavMeshAgent>().speed = chaseSpeed;//DOESNT AFFECT THIS
                     if (agro) { GetComponent<NavMeshAgent>().speed = chaseSpeed * 2; }
                 }
-                if (animEnemy.GetCurrentAnimatorClipInfo(0).Length>0 && animEnemy.GetCurrentAnimatorClipInfo(0)[0].clip.name == "agro") { GetComponent<NavMeshAgent>().speed = 0; }
+                if (animEnemy.GetCurrentAnimatorClipInfo(0).Length>0 && (animEnemy.GetCurrentAnimatorClipInfo(0)[0].clip.name == "agro" || animEnemy.GetCurrentAnimatorClipInfo(0)[0].clip.name == "ReactV2")) { GetComponent<NavMeshAgent>().speed = 0; }
                 //GetComponent<NavMeshAgent>().enabled = true;
                 navmesh.isStopped = false;
 
@@ -622,21 +623,27 @@ public class NPCController : MonoBehaviour
         HIT_COL.GetComponent<SphereCollider>().enabled = false;
     }
 
-    private void Flinch()
+    private void Flinch(bool hard)
     {
-        if (animEnemy.GetCurrentAnimatorClipInfo(0).Length>0 && animEnemy.GetCurrentAnimatorClipInfo(0)[0].clip.name != "agro" && distance>=hitRange+0.5f && canFlinch) // && !animEnemy.GetCurrentAnimatorStateInfo(0).IsName("Attack")
+        if (!hard)
         {
-            //Debug.Log("-----------------------------FLINCH");
-            if (!teddy) { animEnemy.Play("React"); }
-            if (teddy && canAttack) { animEnemy.Play("React"); }
+            if ((animEnemy.GetCurrentAnimatorClipInfo(0).Length > 0 && animEnemy.GetCurrentAnimatorClipInfo(0)[0].clip.name != "agro" && distance >= hitRange + 0.5f && canFlinch)) // && !animEnemy.GetCurrentAnimatorStateInfo(0).IsName("Attack")
+            {
+                //Debug.Log("-----------------------------FLINCH");
+                if (!teddy) { animEnemy.Play("React"); }
+                if (teddy && canAttack) { animEnemy.Play("React"); }
+            }
         }
+        else { animEnemy.Play("ReactV2");  }
+
     }
 
     private void Agro(bool otherPlayer)
     {
         if (!agro)
         {
-            if (NetworkDriver.instance.HOST)
+           
+            //if (NetworkDriver.instance.HOST)
             {   //AQUIRE TARGET
                 if (!otherPlayer) { target = Player.transform; } else { target = Client.transform; }
                 follow = persist;
@@ -671,11 +678,14 @@ public class NPCController : MonoBehaviour
             if (!otherPlayer) { transform.LookAt(Player.transform); alertLevelPlayer = unawareness * 2; } else { transform.LookAt(Client.transform); alertLevelClient = unawareness * 2; }
 
             //CAMSHOT
-            if (damageAmount <= 0) { range += 2; angleView = startAngleView + 30; Flinch(); }
+            if (damageAmount <= 0) { range += 2; angleView = startAngleView + 30; Flinch(false); }
             //--------AGRO-----------
             if (damageAmount > 0)
             {
-                if (agro) { Flinch(); }
+               // if (agro) { 
+                   // Flinch(false);
+                //}
+                if (damageAmount > 60) { Flinch(true); } else { Flinch(false); }
                 Agro(otherPlayer);
 
             }

@@ -12,7 +12,7 @@ public class ShootingSystem : MonoBehaviour
 {
     [Header("CAMERA PARAMETERS")]
     [Space(10)]
-    public GameObject camFlash;
+    public GameObject camFlash, remPodTarget;
     public Transform shootPoint;
     public Transform targetLook;
     public float distance;
@@ -66,18 +66,21 @@ public class ShootingSystem : MonoBehaviour
     private Camera camera;
     public Aiming aiming;
     public GameObject target, laserGrid;
+    public RemPod remPod;
     public int Damage = 40;
     public bool shotGun = false;
 
     public static ShootingSystem instance;
     private static utilities util;
     public int GEAR;
-
+    private int range;
+    private int recoil = 40;
     public void RigShooter()
     {
         util = new utilities();
         laserGrid = GetComponentInChildren<laserGrid>().gameObject;
         laserGrid.SetActive(false);
+        remPod = GetComponentInChildren<RemPod>();
         gridBatteryUI = GameObject.Find("grid_battery_ui").GetComponent<Image>();
         camBatteryUI = GameObject.Find("cam_battery_ui").GetComponent<Image>();
         shootPoint = util.FindChildObject(this.gameObject.transform, "ShootPoint").transform;
@@ -120,10 +123,12 @@ public class ShootingSystem : MonoBehaviour
     }
     public void SwitchGear(int gear)
     {
+        range = 20; 
+        recoil = 40; //based on the zoom value of field angle
         GEAR = gear;
         gridBatteryUI.transform.parent.gameObject.SetActive(false);
         laserGrid.SetActive(false);
-        if (GEAR == 4) {gridBatteryUI.transform.parent.gameObject.SetActive(true); laserGrid.SetActive(true); }
+        if (GEAR == 4) { range = 10; gridBatteryUI.transform.parent.gameObject.SetActive(true); laserGrid.SetActive(true); recoil = 75; }
     }
 
 
@@ -150,9 +155,9 @@ public class ShootingSystem : MonoBehaviour
             if (!NetworkDriver.instance.isMobile)
             {
                 //TARGET PARAMS
-                targetParams(20); //GetComponent<FlashlightSystem>().FlashLight.range
+                targetParams(range); //GetComponent<FlashlightSystem>().FlashLight.range
             }
-            else { targetParamsMobile(20); }
+            else { targetParamsMobile(range); }
             if (isVisible)
             {
                 if (target != null) { 
@@ -178,9 +183,37 @@ public class ShootingSystem : MonoBehaviour
 
             if (!NetworkDriver.instance.isMobile) { crosshairs.GetComponent<Animator>().speed = (camera.fieldOfView - aiming.zoom) * 3; }//ANIMATE FOCUS INDICATOR
         }
-        if (GEAR == 2)
+        //REM POD
+        if (GEAR == 3)
         {
+            Vector3 startPoint = GetComponent<PlayerController>().rightHand.transform.position;
+            Vector3 direction = (targetLook.position - startPoint).normalized;
 
+            Debug.DrawLine(startPoint, startPoint + direction * 10, Color.red);
+            if (!GetComponent<PlayerController>().throwing)
+            {
+                LayerMask mask = LayerMask.GetMask("Default"); // Use LayerMask.GetMask to create a LayerMask
+                RaycastHit hit;
+
+                if (Physics.Raycast(startPoint, direction, out hit, 10, mask))
+                {
+                    Vector3 newPosition;
+                    Debug.Log("--------------------------HITTING OBJECT " + hit.collider.name);
+                    if (hit.collider != null)
+                    {
+                        // Make sure to calculate the position relative to the remPod's transform
+                        //newPosition = remPod.transform.InverseTransformPoint(hit.point);
+                        newPosition = hit.point;
+                    }
+                    else
+                    {//fallback to end of ray
+                        newPosition = direction * 10;
+
+                    }
+                    remPod.remPodTarget.transform.position = newPosition;
+
+                }
+            }
         }
 
         //Debug.Log(isEnemy.ToString() + isVisible.ToString() + isHeadshot.ToString());
@@ -199,9 +232,7 @@ public class ShootingSystem : MonoBehaviour
             if (GetComponent<PlayerController>().gear == 1) { shootCoolDown = 0.7f; }//CAMERA PROPERTIES
             if (GetComponent<PlayerController>().gear == 4) { shootCoolDown = 1f; } //LASER GRID
 
-
-            Debug.Log("----------------------------------------BANG");
-            {
+            
                 //OUT OF BATTERY
                 if(Time.time > shootTimer + shootCoolDown && ((camBatteryUI.fillAmount <= 0 && GEAR == 1) || (gridBatteryUI.fillAmount <= 0 && GEAR == 4)))
                 {
@@ -211,6 +242,7 @@ public class ShootingSystem : MonoBehaviour
                     AudioManager.instance.Play(audioString, GameDriver.instance.Player.GetComponent<PlayerController>().audioSourceSpeech);
                     shootTimer = Time.time;//cooldown
                 }
+
 
                 if (Time.time > shootTimer + shootCoolDown && ((camBatteryUI.fillAmount > 0 && GEAR == 1) || (gridBatteryUI.fillAmount > 0 && GEAR == 4)))
                 {
@@ -222,29 +254,30 @@ public class ShootingSystem : MonoBehaviour
                     muzzleFlash.Play();
                     Shell.Play();
                     //DO DAMAGE
-                    if (target != null)
-                    {
-                        if ((target.GetComponent<GhostVFX>() != null) && target.GetComponent<Teleport>().teleport == 0) // && isVisible 
+                    if (GEAR != 4) {
+                        if (target != null)
                         {
-                            if (target.GetComponent<NPCController>().animEnemy.GetCurrentAnimatorClipInfo(0).Length > 0 && target.GetComponent<NPCController>().animEnemy.GetCurrentAnimatorClipInfo(0)[0].clip.name == "agro") { Damage = 20; }
-                            if (isHeadshot) { Damage = headShotDamage; 
-                                if (NetworkDriver.instance.isMobile && !NetworkDriver.instance.TWOPLAYER) { Damage = headShotDamage*2; } 
+                            if ((target.GetComponent<GhostVFX>() != null) && target.GetComponent<Teleport>().teleport == 0) // && isVisible 
+                            {
+                                if (target.GetComponent<NPCController>().animEnemy.GetCurrentAnimatorClipInfo(0).Length > 0 && target.GetComponent<NPCController>().animEnemy.GetCurrentAnimatorClipInfo(0)[0].clip.name == "agro") { Damage = 20; }
+                                if (isHeadshot) { Damage = headShotDamage;
+                                    if (NetworkDriver.instance.isMobile && !NetworkDriver.instance.TWOPLAYER) { Damage = headShotDamage * 2; }
+                                }
+                                //Debug.Log("---------------------------------------" + damage);
+                                target.GetComponent<NPCController>().TakeDamage(Damage, false);
                             }
-                            //Debug.Log("---------------------------------------" + damage);
-                            target.GetComponent<NPCController>().TakeDamage(Damage, false);
-                        }
-                        if (target != null && target.tag == "Victim")
-                        {
-                            victimManager.GetComponent<VictimControl>().testAnswer(target);
-                            //used to emit answer
-                            Damage = -1;
-                        }
-                       
-                    }
-                    string targName = "";
-                    if (target != null) { targName = target.name; }
-                    if (NetworkDriver.instance.TWOPLAYER) { NetworkDriver.instance.sioCom.Instance.Emit("event", JsonConvert.SerializeObject(new { shoot = true, obj = targName, dmg = Damage }), false); }
+                            if (target != null && target.tag == "Victim")
+                            {
+                                victimManager.GetComponent<VictimControl>().testAnswer(target);
+                                //used to emit answer
+                                Damage = -1;
+                            }
 
+                        }
+                        string targName = "";
+                        if (target != null) { targName = target.name; }
+                        if (NetworkDriver.instance.TWOPLAYER) { NetworkDriver.instance.sioCom.Instance.Emit("event", JsonConvert.SerializeObject(new { shoot = true, obj = targName, dmg = Damage }), false); }
+                    }
 
                     if(GEAR==1)
                     {
@@ -259,10 +292,10 @@ public class ShootingSystem : MonoBehaviour
                     if(GEAR==4)
                     {
 
-                        laserGrid.GetComponent<laserGrid>().Shoot(); //SetActive(true);
+                        laserGrid.GetComponent<laserGrid>().Shoot(false); //SetActive(true);
                     }
 
-                    camera.fieldOfView = 40;//40
+                    camera.fieldOfView = recoil;//40
                     shootTimer = Time.time;//cooldown
 
                 }
@@ -272,7 +305,7 @@ public class ShootingSystem : MonoBehaviour
 
                 }
 
-            }
+            
             
 
 

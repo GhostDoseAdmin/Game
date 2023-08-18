@@ -455,7 +455,44 @@ namespace NetworkSystem
                     }
                 }
             });
+            //--------------------GROUP DAMAGE ENEMIES--------------------
+            //enemyObject.SetActive(bool.Parse(obj.Value["active"]));
+            sioCom.Instance.On("laser_grid", (payload) =>
+            {
+                if (OTHERS_SCENE_READY && SCENE_READY)
+                {
 
+                    GameDriver.instance.Client.GetComponentInChildren<laserGrid>().Shoot(true);
+                    GameDriver.instance.Client.GetComponent<ClientPlayerController>().triggerShoot = true;
+
+                    JObject data = JObject.Parse(payload);
+                    Debug.Log("laser grid-------------------------------------- " + data);
+                    //Debug.Log("SYNCING " + data);
+                    Dictionary<string, Dictionary<string, string>> dict = data.ToObject<Dictionary<string, Dictionary<string, string>>>();
+                    // Log the object positions to the console
+                    foreach (KeyValuePair<string, Dictionary<string, string>> obj in dict)
+                    {
+                        //search list of enemies for corresopnding obj
+                        foreach (GameObject enemy in GameDriver.instance.GetComponent<DisablerControl>().enemyObjects)
+                        {
+                            if (enemy.name == obj.Key)
+                            {
+                                //--------ACTIVE-----------
+                                //if (obj.Value["ax"] != null) { enemy.SetActive(bool.Parse(obj.Value["ax"])); }
+                                if (!enemy.activeSelf) { enemy.SetActive(true); } //if (!enemy.tag.Contains("ZOZO")){
+                                enemy.GetComponent<NPCController>().active_timer = timer_delay * 5;//DISABLE IF NO MESSAGES BEYOND 0.6s
+
+                                //--------TARGET-----------
+                                if (obj.Value.ContainsKey("dmg"))
+                                {
+                                    enemy.GetComponent<NPCController>().TakeDamage(int.Parse(obj.Value["dmg"]), true);
+                                }
+                            }
+                        }
+                    }
+                }
+
+            });
             //--------------------SYNC ENEMIES--------------------
             //enemyObject.SetActive(bool.Parse(obj.Value["active"]));
             sioCom.Instance.On("sync", (payload) =>
@@ -567,7 +604,7 @@ namespace NetworkSystem
                 }
 
 
-
+                Debug.Log("SYNCING ----------------------------------------------");
                 if (syncObjects.Count > 0) { sioCom.Instance.Emit("sync", JsonConvert.SerializeObject(syncObjects), false); }
                 timer = Time.time;//cooldown
             }
