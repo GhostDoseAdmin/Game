@@ -244,21 +244,24 @@ public class ClientPlayerController : MonoBehaviour
 	{
 
         //THROWING
-        if (gear == 3) { handWeight = 1f; }
-        if (!anim.GetBool("Throw") && throwing)
+        if (gear == 3)
         {
-            throwing = false;
+            handWeight = 1f;
+            if (!anim.GetBool("Throw") && throwing)
+            {
+                throwing = false;
+            }
+            if (throwing)
+            {
+                anim.SetBool("Throw", false);
+                //gearAim = true;
+                anim.SetBool("Pistol", true);
+            }
+            if (anim.GetBool("Throw"))
+            {
+                handWeight = 0f;
+            }
         }
-        if(throwing)
-        {
-            anim.SetBool("Throw", false);
-            //gearAim = true;
-            anim.SetBool("Pistol", true);
-        }
-        if (anim.GetBool("Throw")){
-            handWeight = 0f;
-        }
-      
 
 
         if (anim.GetCurrentAnimatorClipInfo(0).Length > 0) { currentAni = anim.GetCurrentAnimatorClipInfo(0)[0].clip.name; }
