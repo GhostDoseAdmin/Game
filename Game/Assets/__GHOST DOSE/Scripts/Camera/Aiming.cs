@@ -48,8 +48,10 @@ public class Aiming : MonoBehaviour {
 	void Update()
 	{
 
-            if (gear == 1) { zoom = 35; }
-			if (gear == 2) { zoom = 50; }
+            if (gear == 1) { zoom = 35; } //cam
+		    if (gear == 2) { zoom = 50; } //k2
+			if (gear == 3) { zoom = 70; }
+			if (gear == 4) { zoom = 70; } //laser
 			if (isOuija) { zoom = 20; }
 
 		aim = false;
@@ -77,7 +79,8 @@ public class Aiming : MonoBehaviour {
 			//if (Input.GetMouseButton(1))
 			{
 				isZoomed = 1;
-				if (gear == 1 || gear==4) { 
+				if (gear == 3) { isZoomed = 0; }
+				if (gear == 1 || gear==4 || gear==3) { 
 					crosshair.SetActive(true);
 					if (gear == 1) { crosshair.transform.localScale = new Vector3(0.4f, 0.4f, 0.4f); }
 					if (gear == 4)  { gridcrosshair.SetActive(true); crosshair.transform.localScale = new Vector3(1.4f, 1.4f, 1.4f); }
@@ -91,7 +94,6 @@ public class Aiming : MonoBehaviour {
 			}
 		}
 		else
-
         {
 			isZoomed = 0;
             crosshair.SetActive(false);

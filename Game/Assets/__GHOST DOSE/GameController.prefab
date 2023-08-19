@@ -2373,6 +2373,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   camFlash: {fileID: 3510080714569787843, guid: b2226ed1030613f4f9ab94f202190b1c, type: 3}
+  remPodTarget: {fileID: 5342004553445350650, guid: bfbb0aaf8422b884facfa5ba204dfbf7, type: 3}
   shootPoint: {fileID: 0}
   targetLook: {fileID: 80994944848585469}
   distance: 100
@@ -2396,14 +2397,15 @@ MonoBehaviour:
   noAmmo: EmptyGun
   muzzleFlash: {fileID: 0}
   Shell: {fileID: 0}
-  laserGrid: {fileID: 7267230419624661161, guid: a49cb82b877862148b13a4eedb25190c, type: 3}
   headShotDamage: 100
   isVisible: 0
   isHeadshot: 0
   aiming: {fileID: 0}
   target: {fileID: 0}
+  laserGrid: {fileID: 7267230419624661161, guid: a49cb82b877862148b13a4eedb25190c, type: 3}
   Damage: 40
   shotGun: 0
+  GEAR: 0
   canShoot: 0
 --- !u!54 &80994945419842350
 Rigidbody:
@@ -3970,6 +3972,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   camFlash: {fileID: 3510080714569787843, guid: b2226ed1030613f4f9ab94f202190b1c, type: 3}
+  remPodTarget: {fileID: 5342004553445350650, guid: bfbb0aaf8422b884facfa5ba204dfbf7, type: 3}
   shootPoint: {fileID: 0}
   targetLook: {fileID: 80994944848585469}
   distance: 100
@@ -3993,14 +3996,15 @@ MonoBehaviour:
   noAmmo: EmptyGun
   muzzleFlash: {fileID: 0}
   Shell: {fileID: 0}
-  laserGrid: {fileID: 7267230419624661161, guid: a49cb82b877862148b13a4eedb25190c, type: 3}
   headShotDamage: 100
   isVisible: 0
   isHeadshot: 0
   aiming: {fileID: 0}
   target: {fileID: 0}
+  laserGrid: {fileID: 7267230419624661161, guid: a49cb82b877862148b13a4eedb25190c, type: 3}
   Damage: 40
   shotGun: 0
+  GEAR: 0
   canShoot: 0
 --- !u!54 &80994946202897755
 Rigidbody:

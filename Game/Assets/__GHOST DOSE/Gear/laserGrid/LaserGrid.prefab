@@ -49,6 +49,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   isClient: 0
   laserGridProj: {fileID: 7267230419624661161, guid: 8f477f5d3d83b3240862b4f6d313c7ea, type: 3}
+  flash: {fileID: 4632753080538234849}
   enemyEmitList: []
 --- !u!108 &2635370764149325040
 Light:
@@ -257,6 +258,10 @@ PrefabInstance:
       propertyPath: m_Layer
       value: 2
       objectReference: {fileID: 0}
+    - target: {fileID: 2634812428178584647, guid: 9d9452b8eeb7fc946a4c7d136db1845a, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 2636751694576647653, guid: 9d9452b8eeb7fc946a4c7d136db1845a, type: 3}
       propertyPath: m_Layer
       value: 2
@@ -267,6 +272,11 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 9d9452b8eeb7fc946a4c7d136db1845a, type: 3}
+--- !u!1 &4632753080538234849 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 2634812428178584647, guid: 9d9452b8eeb7fc946a4c7d136db1845a, type: 3}
+  m_PrefabInstance: {fileID: 7267230419627379622}
+  m_PrefabAsset: {fileID: 0}
 --- !u!4 &4636960836069651951 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 2631132150465429065, guid: 9d9452b8eeb7fc946a4c7d136db1845a, type: 3}

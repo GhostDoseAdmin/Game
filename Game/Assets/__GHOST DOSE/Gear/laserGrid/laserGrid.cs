@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using UnityEngine;
 using static UnityEngine.GraphicsBuffer;
 using InteractionSystem;
+using Newtonsoft.Json;
+using NetworkSystem;
 
 //[ExecuteInEditMode]
 public class laserGrid : MonoBehaviour
@@ -10,8 +12,8 @@ public class laserGrid : MonoBehaviour
     // Start is called before the first frame update
     public bool isClient;
     private AudioSource audioSource;
-    public GameObject laserGridProj;
-
+    public GameObject laserGridProj, flash;
+    private bool OTHERPLAYER = false;
 
     public List<NPCController> enemyEmitList = new List<NPCController>();
 
@@ -26,11 +28,13 @@ public class laserGrid : MonoBehaviour
         Result();
     }
 
-    public void Shoot()
+    public void Shoot(bool otherPlayer)
     {
+        OTHERPLAYER = otherPlayer;
         StartCoroutine(DestroyAfterDelay());
         enemyEmitList.Clear();
         GetComponent<Light>().enabled = true;
+        flash.SetActive(true);
         //--------------LASERGRID PROJ----------------- laserGrid->ZozoLaser->Hovl_Laser
         GameObject laserGridProjObj = Instantiate(laserGridProj);
         ZozoLaser[] lasers = laserGridProjObj.GetComponentsInChildren<ZozoLaser>();
@@ -61,22 +65,44 @@ public class laserGrid : MonoBehaviour
     public void Result()
     {
         GetComponent<Light>().enabled = false;
-
-        foreach (NPCController enemy in enemyEmitList)
+        
+        if (!OTHERPLAYER)
         {
+            Dictionary<string, Dictionary<string, string>> dmgObjs = new Dictionary<string, Dictionary<string, string>>();
 
-            // Calculate the distance between the shooter and the target
-            float distance = Vector3.Distance(transform.position, enemy.transform.position);
+            //ADD TARGET FROM CROSSHAIR
+            NPCController crosshairTarget = null;
+            if (GetComponentInParent<ShootingSystem>().target != null && GetComponentInParent<ShootingSystem>().target.GetComponent<NPCController>()!=null) { crosshairTarget = GetComponentInParent<ShootingSystem>().target.GetComponent<NPCController>(); }
+            if(crosshairTarget != null) { AddEnemyToEmitList(crosshairTarget); }
 
-            // Calculate the normalized distance between 0 and 1
-            float normalizedDistance = Mathf.Clamp01(distance / 10);
+            foreach (NPCController enemy in enemyEmitList)
+            {
 
-            // Calculate the damage based on the normalized distance
-            float calculatedDamage = Mathf.Lerp(50, 150, normalizedDistance);
+                // Calculate the distance between the shooter and the target
+                float distance = Vector3.Distance(transform.position, enemy.transform.position);
 
-            enemy.TakeDamage((int)calculatedDamage, false);
+                // Calculate the normalized distance between 0 and 1
+                float normalizedDistance = Mathf.Clamp01(distance / 10);
+
+                // Calculate the damage based on the normalized distance
+                float calculatedDamage = Mathf.Lerp(99, 20, normalizedDistance);
+
+                enemy.TakeDamage((int)calculatedDamage, false);
+                Debug.Log("------------------------ LASERGRID " + enemy.gameObject.name + " DAMAGE " + (int)calculatedDamage);
+
+                //Network
+                Dictionary<string, string> dmgDict = new Dictionary<string, string>();
+                dmgDict.Add("dmg", ((int)calculatedDamage).ToString());
+                dmgObjs.Add(enemy.gameObject.name, dmgDict);
+
+            }
+
+            NetworkDriver.instance.sioCom.Instance.Emit("laser_grid", JsonConvert.SerializeObject(dmgObjs), false);
+
         }
 
+
+       
         enemyEmitList.Clear();
         //this.gameObject.SetActive(false);
     }

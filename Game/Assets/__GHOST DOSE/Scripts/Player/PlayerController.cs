@@ -442,13 +442,16 @@ public class PlayerController : MonoBehaviour
 		if(throwing)
 		{
             anim.SetBool("Throw", false);
-            gearAim = true;
+            //gearAim = true;
             anim.SetBool("Pistol", true);
             newHandWeight = 1f;
 
         }
 	}
-    public void ThrowRemPod()	{		Debug.Log("--------------------------------THROWING ---------------------------------"); }//ANIMATION EVENT
+    public void ThrowRemPod()
+    {       //ANIMATION EVENT
+		GetComponent<ShootingSystem>().remPod.Release();
+    }
     public void EndThrow()	{		throwing = false; }//ANIMATION EVENT
 
    
@@ -536,9 +539,10 @@ public class PlayerController : MonoBehaviour
 
         if (!changingGear)
 		{
+
             if (gear == 3 || gear==0) //SPIRIT BOX AND REM
             {
-				gearAim = true;
+				if (gear == 0) { gearAim = true; }
                 anim.SetBool("Pistol", true);
 				newHandWeight = 1f;
             }
@@ -550,7 +554,7 @@ public class PlayerController : MonoBehaviour
                     if (is_FlashlightAim)
 					{
 						anim.SetBool("Flashlight", false);
-						if (gear == 1)
+						if (gear == 1 || gear==4)
 						{
 							gameObject.GetComponent<FlashlightSystem>().handFlashlight.SetActive(false);
 							gameObject.GetComponent<FlashlightSystem>().FlashLight.enabled = false;
@@ -579,7 +583,7 @@ public class PlayerController : MonoBehaviour
 					if (Input.GetMouseButtonDown(0))
 					{
 						if (gear == 1 || gear==4) { anim.SetBool("Shoot", true); GetComponent<ShootingSystem>().Shoot(); AudioManager.instance.StopPlaying("camfocus", audioSource); }
-						if (gear == 3) { anim.SetBool("Throw", true); throwing = true; }
+						if (gear == 3) { anim.SetBool("Throw", true); GetComponentInChildren<RemPod>().StartThrow(); throwing = true;  }
 
 					}
 					else if (Input.GetMouseButtonUp(0))
@@ -597,7 +601,7 @@ public class PlayerController : MonoBehaviour
             if (NetworkDriver.instance.isMobile && gamePad.joystickAim.GetComponent<GPButton>().buttonReleased) //&& ((GetComponent<ShootingSystem>().target!=null && gamePad.camSup.AIMMODE)|| !gamePad.camSup.AIMMODE)
             {
                 if (gear == 1 || gear==4) { anim.SetBool("Shoot", true); GetComponent<ShootingSystem>().Shoot(); AudioManager.instance.StopPlaying("camfocus", audioSource); }
-                if (gear == 3) { anim.SetBool("Throw", true); throwing = true; }
+                if (gear == 3) { anim.SetBool("Throw", true); GetComponentInChildren<RemPod>().StartThrow(); throwing = true;  }
             }
 
 				handWeight = Mathf.Lerp(handWeight, newHandWeight, Time.deltaTime * handSpeed);
@@ -653,7 +657,7 @@ public class PlayerController : MonoBehaviour
 
 	void OnAnimatorIK()
 	{
-		if ((is_FlashlightAim || gearAim) && !anim.GetBool("ouija"))
+		if ((is_FlashlightAim || gearAim || gear==3) && !anim.GetBool("ouija"))
 		{
 			anim.SetLookAtWeight(lookIKWeight, bodyWeight);
 			anim.SetLookAtPosition(targetPosVec);
@@ -679,7 +683,7 @@ public class PlayerController : MonoBehaviour
 			}
         if (stanceRH != null && !throwing)
         {
-            if (gearAim)
+            if (gearAim || gear==3)
 			{
 				//Debug.Log("-----------------------------GEART AIM -------------------------------------");
 				anim.SetIKPositionWeight(AvatarIKGoal.RightHand, handWeight);

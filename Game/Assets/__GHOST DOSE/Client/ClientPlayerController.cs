@@ -107,7 +107,7 @@ public class ClientPlayerController : MonoBehaviour
 	public bool flashlighton =false;
     public GameObject currLight;//tracks current light source
 	public GameObject camFlash, laserGridProj;
-    private GameObject SB7;
+    private GameObject SB7, laserGrid;
     public GameObject death;
     public float targWalk;
     public float targStrafe;
@@ -141,6 +141,7 @@ public class ClientPlayerController : MonoBehaviour
         util = new utilities();
 
         //Debug.Log("Setting up Player References");
+        laserGrid = GetComponentInChildren<laserGrid>().gameObject;
         rightHandTargetCam = util.FindChildObject(this.gameObject.transform, "RHTargetCam").transform;
         rightHandTargetK2 = util.FindChildObject(this.gameObject.transform, "RHTargetK2").transform;
         rightHandTargetREM = util.FindChildObject(this.gameObject.transform, "RHTargetREM").transform;
@@ -271,12 +272,14 @@ public class ClientPlayerController : MonoBehaviour
 	{
 
         gear = nextGear;
-
         //START OF GEARCHANGE
         anim.SetBool("GetGear", true);
-        if (gear == 1){camera.SetActive(true); k2.SetActive(false); camInventory.SetActive(false); k2Inventory.SetActive(true); SB7.SetActive(false); }
-		if (gear == 2){camera.SetActive(false); k2.SetActive(true); camInventory.SetActive(true); k2Inventory.SetActive(false); SB7.SetActive(false); }
-        if (gear == 0) { camera.SetActive(false); k2.SetActive(false); camInventory.SetActive(true); k2Inventory.SetActive(true); SB7.SetActive(true); }
+        k2.SetActive(false); camera.SetActive(false); camInventory.SetActive(false); k2Inventory.SetActive(false); SB7.SetActive(false); laserGrid.SetActive(false);
+        if (gear == 0) { SB7.SetActive(true); }
+        if (gear == 1) { camera.SetActive(true); }
+        if (gear == 2) { k2.SetActive(true); }
+        if (gear == 4) { laserGrid.SetActive(true); }
+
 
             gearAim = false;
 			throwing = false;
@@ -300,12 +303,13 @@ public class ClientPlayerController : MonoBehaviour
     }
 
 
-	void Attack()
+
+    void Attack()
 	{
         anim.SetBool("GetGear", false);
         if (aim || gear==0)
 			{
-
+            if (gear == 0) { SB7.SetActive(true); }
                 gearAim = true;
 				anim.SetBool("Pistol", true);
 				newHandWeight = 1f;
@@ -314,22 +318,25 @@ public class ClientPlayerController : MonoBehaviour
 				// SHOOT
                 if (triggerShoot)
                 {
-                Debug.Log("--------------------------------------------------------------------SHOOT CAM FLASH");
-                shootPoint.LookAt(targetPos);
+
+                    //Debug.Log("--------------------------------------------------------------------SHOOT CAM FLASH");
+                    shootPoint.LookAt(targetPos);
                     anim.SetBool("Shoot", true);
-                    //AudioManager.instance.Play("ShotCam");
-                    muzzleFlash.Play();
-                    Shell.Play();
+                        if (gear==1)
+                        {
+                            //AudioManager.instance.Play("ShotCam");
+                            muzzleFlash.Play();
+                            Shell.Play();
 
-					//--------------------------FLASH-------------------------------------
-					 GameObject newFlash = Instantiate(camFlash);
-					newFlash.transform.position = shootPoint.position;
-                    newFlash.name = "CamFlashClient";
-                    newFlash.GetComponent<CamFlash>().isClient = true;
-                    //---POINT FLASH IN DIRECTION OF THE SHOT
-                    Quaternion newYRotation = Quaternion.Euler(0f, shootPoint.rotation.eulerAngles.y, 0f);
-					newFlash.transform.rotation = newYRotation;
-
+                            //--------------------------FLASH-------------------------------------
+                            GameObject newFlash = Instantiate(camFlash);
+                            newFlash.transform.position = shootPoint.position;
+                            newFlash.name = "CamFlashClient";
+                            newFlash.GetComponent<CamFlash>().isClient = true;
+                            //---POINT FLASH IN DIRECTION OF THE SHOT
+                            Quaternion newYRotation = Quaternion.Euler(0f, shootPoint.rotation.eulerAngles.y, 0f);
+                            newFlash.transform.rotation = newYRotation;
+                        }
 					triggerShoot = false;
 
                 }
@@ -416,7 +423,7 @@ public class ClientPlayerController : MonoBehaviour
         //-----------------  STANCES --------------------------------
         Transform stanceRH = null;
         Transform stanceLH = null;
-        if (gear == 1)
+        if (gear == 1 || gear == 4)
         {
             stanceRH = rightHandTargetCam;
             stanceLH = leftHandTargetCam;
