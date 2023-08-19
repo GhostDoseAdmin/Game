@@ -331,7 +331,7 @@ public class ClientPlayerController : MonoBehaviour
             {
                 if (gear == 0) { SB7.SetActive(true); gearAim = true; }
                 anim.SetBool("Pistol", true);
-                newHandWeight = 1f;
+                newHandWeight = 0f;
                 canShoot = true;
 
                 // SHOOT
@@ -370,7 +370,7 @@ public class ClientPlayerController : MonoBehaviour
                 gearAim = false;
                 anim.SetBool("Pistol", false);
                 anim.SetBool("Shoot", false);
-                newHandWeight = 0f;
+                newHandWeight = 1f;
                 canShoot = false;
 
             }
