@@ -255,7 +255,7 @@ public class ShootingSystem : MonoBehaviour
                     muzzleFlash.Play();
                     Shell.Play();
                     //DO DAMAGE
-                    if (GEAR != 4) {
+                    if (GEAR != 4 && GEAR!=3) {
                         if (target != null)
                         {
                             if ((target.GetComponent<GhostVFX>() != null) && target.GetComponent<Teleport>().teleport == 0) // && isVisible 
