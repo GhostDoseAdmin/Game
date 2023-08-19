@@ -2403,6 +2403,7 @@ MonoBehaviour:
   aiming: {fileID: 0}
   target: {fileID: 0}
   laserGrid: {fileID: 7267230419624661161, guid: a49cb82b877862148b13a4eedb25190c, type: 3}
+  remPod: {fileID: 0}
   Damage: 40
   shotGun: 0
   GEAR: 0
@@ -4002,6 +4003,7 @@ MonoBehaviour:
   aiming: {fileID: 0}
   target: {fileID: 0}
   laserGrid: {fileID: 7267230419624661161, guid: a49cb82b877862148b13a4eedb25190c, type: 3}
+  remPod: {fileID: 0}
   Damage: 40
   shotGun: 0
   GEAR: 0
@@ -8154,6 +8156,51 @@ MonoBehaviour:
     source: {fileID: 0}
   - name: TeddyMusic
     clip: {fileID: 8300000, guid: 6ba8e989f98f86342b276a6fb4cf72de, type: 3}
+    volume: 1
+    volumeVariance: 0
+    pitch: 1
+    pitchVariance: 0
+    loop: 0
+    mixerGroup: {fileID: 0}
+    source: {fileID: 0}
+  - name: EMPThrow
+    clip: {fileID: 8300000, guid: ea941b88709c18e4685c1f356a5c97ff, type: 3}
+    volume: 1
+    volumeVariance: 0
+    pitch: 1
+    pitchVariance: 0
+    loop: 0
+    mixerGroup: {fileID: 0}
+    source: {fileID: 0}
+  - name: EMPHit
+    clip: {fileID: 8300000, guid: 0a72477664aaab24dba74976e8fe1ec5, type: 3}
+    volume: 1
+    volumeVariance: 0
+    pitch: 1
+    pitchVariance: 0
+    loop: 0
+    mixerGroup: {fileID: 0}
+    source: {fileID: 0}
+  - name: EMPSwitch
+    clip: {fileID: 8300000, guid: 32576f74d3f7e8740b94bc819645233c, type: 3}
+    volume: 1
+    volumeVariance: 0
+    pitch: 1
+    pitchVariance: 0
+    loop: 0
+    mixerGroup: {fileID: 0}
+    source: {fileID: 0}
+  - name: GridShoot
+    clip: {fileID: 8300000, guid: ec57ff87b48030042ae29c577e363fd1, type: 3}
+    volume: 1
+    volumeVariance: 0
+    pitch: 1
+    pitchVariance: 0
+    loop: 0
+    mixerGroup: {fileID: 0}
+    source: {fileID: 0}
+  - name: GridSwitch
+    clip: {fileID: 8300000, guid: 749239680c7b22044bc46b27d8641b22, type: 3}
     volume: 1
     volumeVariance: 0
     pitch: 1
