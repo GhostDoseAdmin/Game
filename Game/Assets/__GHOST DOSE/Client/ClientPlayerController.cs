@@ -307,11 +307,10 @@ public class ClientPlayerController : MonoBehaviour
     void Attack()
 	{
         anim.SetBool("GetGear", false);
-        if (aim || gear==0)
+        if (aim || gear==0 || gear==3)
 			{
-            if (gear == 0) { SB7.SetActive(true); }
-                gearAim = true;
-				anim.SetBool("Pistol", true);
+            if (gear == 0) { SB7.SetActive(true); gearAim = true; }
+                 anim.SetBool("Pistol", true);
 				newHandWeight = 1f;
 				canShoot = true;
 
@@ -440,7 +439,7 @@ public class ClientPlayerController : MonoBehaviour
         }
         if (stanceRH != null && !throwing)
         {
-            if (gearAim)
+            if (gearAim || gear == 3)
             {
                 //Debug.Log("-----------------------------GEART AIM -------------------------------------");
                 anim.SetIKPositionWeight(AvatarIKGoal.RightHand, handWeight);

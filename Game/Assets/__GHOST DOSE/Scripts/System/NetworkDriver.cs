@@ -378,7 +378,7 @@ namespace NetworkSystem
                     }
                     if (dict.ContainsKey("remrelease"))
                     {
-                       // GameDriver.instance.Client.GetComponentInChildren<RemPod>().Release(new Vector3(float.Parse(dict["x"]), float.Parse(dict["y"]), float.Parse(dict["z"])));
+                        GameDriver.instance.Client.GetComponentInChildren<RemPod>().ReleaseClient(new Vector3(float.Parse(dict["x"]), float.Parse(dict["y"]), float.Parse(dict["z"])));
                     }
                         if (dict.ContainsKey("revive"))
                     {
