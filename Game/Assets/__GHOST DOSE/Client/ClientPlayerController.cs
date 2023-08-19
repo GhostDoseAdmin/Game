@@ -264,7 +264,7 @@ public class ClientPlayerController : MonoBehaviour
             anim.SetIKPositionWeight(AvatarIKGoal.RightHand, 1);
             anim.SetIKPosition(AvatarIKGoal.RightHand, rightHandTargetREM.position);
 
-
+            anim.SetBool("Pistol", true);
             if (!anim.GetBool("Throw") && throwing)
             {
                 throwing = false;
@@ -273,7 +273,7 @@ public class ClientPlayerController : MonoBehaviour
             {
                 anim.SetBool("Throw", false);
                 //gearAim = true;
-                anim.SetBool("Pistol", true);
+                //anim.SetBool("Pistol", true);
             }
             if (anim.GetBool("Throw"))
             {
