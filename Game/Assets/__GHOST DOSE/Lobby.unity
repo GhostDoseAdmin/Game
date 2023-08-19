@@ -149,7 +149,7 @@ RectTransform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1267924}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: 0, y: 0, z: -0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -158,7 +158,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -0, y: 24}
+  m_AnchoredPosition: {x: -0, y: -4}
   m_SizeDelta: {x: 200, y: 50}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1267926
@@ -181,22 +181,27 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: "https://youtube.com/@GhostDose\n\n\"sneakers\" (https://skfb.ly/oqwND)
-    by abazibiz is licensed under Creative Commons Attribution (http://creativecommons.org/licenses/by/4.0/).\r\n\r\n\"4(3)Pentagrams\"
+  m_text: "https://youtube.com/@GhostDose\n-\"sneakers\" (https://skfb.ly/oqwND)
+    by abazibiz is licensed under Creative Commons Attribution (http://creativecommons.org/licenses/by/4.0/).\r\n-\"4(3)Pentagrams\"
     (https://skfb.ly/6WQUX) by EVAI is licensed under Creative Commons Attribution
-    (http://creativecommons.org/licenses/by/4.0/).\r\n\r\n\"Lowpoly Candle\" (https://skfb.ly/6RIZP)
-    by matoteus is licensed under Creative Commons Attribution (http://creativecommons.org/licenses/by/4.0/).\r\n\r\n\"Candles
+    (http://creativecommons.org/licenses/by/4.0/).\r\n-\"Lowpoly Candle\" (https://skfb.ly/6RIZP)
+    by matoteus is licensed under Creative Commons Attribution (http://creativecommons.org/licenses/by/4.0/).\r\n-\"Candles
     Asset Pack\" (https://skfb.ly/owIDw) by Em Marshall is licensed under Creative
-    Commons Attribution (http://creativecommons.org/licenses/by/4.0/).\r\n\r\n\"Secondary
+    Commons Attribution (http://creativecommons.org/licenses/by/4.0/).\r\n-\"Secondary
     forms [Backpack] [XYZ HOMEWORK]\" (https://skfb.ly/6W8uG) by YuryTheCreator is
-    licensed under Creative Commons Attribution (http://creativecommons.org/licenses/by/4.0/).\r\n\r\n\"Free
+    licensed under Creative Commons Attribution (http://creativecommons.org/licenses/by/4.0/).\r\n-\"Free
     - Man Armor - Full Body\" (https://skfb.ly/ovPBU) by Kaan Tezcan is licensed
-    under Creative Commons Attribution (http://creativecommons.org/licenses/by/4.0/).\r\n\r\n\"Black
+    under Creative Commons Attribution (http://creativecommons.org/licenses/by/4.0/).\r\n-\"Black
     Demon\" (https://skfb.ly/6S99Y) by simonemaccari is licensed under Creative Commons
-    Attribution (http://creativecommons.org/licenses/by/4.0/).\n\n\"The Batman 2022
+    Attribution (http://creativecommons.org/licenses/by/4.0/)\n-\"The Batman 2022
     3d model reworked\" (https://skfb.ly/oGwMN) by CVRxEarth is licensed under Creative
-    Commons Attribution (http://creativecommons.org/licenses/by/4.0/).\n\nAvaturn
-    \r\nhttps://hub.avaturn.me/\r\n"
+    Commons Attribution (http://creativecommons.org/licenses/by/4.0/).\n-\"Laser
+    Rifle, sci-fi weapon FREE download\" (https://skfb.ly/6WXrs) by Fred Drabble
+    is licensed under Creative Commons Attribution (http://creativecommons.org/licenses/by/4.0/).\r\n-\"Fujifilm
+    X-T2 camera\" (https://skfb.ly/orJyZ) by Sander_Casier is licensed under Creative
+    Commons Attribution (http://creativecommons.org/licenses/by/4.0/).\n-\"EMP Grenade\"
+    (https://skfb.ly/6szxn) by RazorRaptor is licensed under Creative Commons Attribution
+    (http://creativecommons.org/licenses/by/4.0/).\n-Avaturn \r\nhttps://hub.avaturn.me/\r\n"
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
@@ -8010,6 +8015,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   camFlash: {fileID: 0}
+  remPodTarget: {fileID: 0}
   shootPoint: {fileID: 0}
   targetLook: {fileID: 5055496212584770184}
   distance: 100
@@ -8039,6 +8045,7 @@ MonoBehaviour:
   aiming: {fileID: 0}
   target: {fileID: 0}
   laserGrid: {fileID: 0}
+  remPod: {fileID: 0}
   Damage: 40
   shotGun: 0
   GEAR: 0
@@ -43694,7 +43701,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 1, g: 0.6862745, b: 0, a: 1}
+  m_Color: {r: 0, g: 0.6677432, b: 1, a: 1}
   m_RaycastTarget: 0
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -74848,6 +74855,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   camFlash: {fileID: 0}
+  remPodTarget: {fileID: 0}
   shootPoint: {fileID: 0}
   targetLook: {fileID: 5055496212584770184}
   distance: 100
@@ -74877,6 +74885,7 @@ MonoBehaviour:
   aiming: {fileID: 0}
   target: {fileID: 0}
   laserGrid: {fileID: 0}
+  remPod: {fileID: 0}
   Damage: 40
   shotGun: 0
   GEAR: 0
@@ -77083,6 +77092,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   camFlash: {fileID: 0}
+  remPodTarget: {fileID: 0}
   shootPoint: {fileID: 0}
   targetLook: {fileID: 2223322645071695633}
   distance: 100
@@ -77112,6 +77122,7 @@ MonoBehaviour:
   aiming: {fileID: 0}
   target: {fileID: 0}
   laserGrid: {fileID: 0}
+  remPod: {fileID: 0}
   Damage: 40
   shotGun: 0
   GEAR: 0
