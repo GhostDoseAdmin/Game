@@ -19,7 +19,8 @@ public class laserGrid : MonoBehaviour
 
     public void Start()
     {
-        
+        audioSource = gameObject.AddComponent<AudioSource>();
+        audioSource.spatialBlend = 1.0f;
     }
 
     IEnumerator DestroyAfterDelay()
@@ -31,6 +32,8 @@ public class laserGrid : MonoBehaviour
     public void Shoot(bool otherPlayer)
     {
         OTHERPLAYER = otherPlayer;
+
+        AudioManager.instance.Play("GridShoot", audioSource);
         StartCoroutine(DestroyAfterDelay());
         enemyEmitList.Clear();
         GetComponent<Light>().enabled = true;

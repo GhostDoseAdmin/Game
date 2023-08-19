@@ -24,7 +24,7 @@ public class RemExplo : MonoBehaviour
 
         audioSource = gameObject.AddComponent<AudioSource>();
         audioSource.spatialBlend = 1.0f;
-        AudioManager.instance.Play("EMPHit", audioSource);
+        AudioManager.instance.Play("EMPHit", null);
         Invoke("Electric", 0.5f);
     }
 
