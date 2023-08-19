@@ -242,6 +242,20 @@ public class ClientPlayerController : MonoBehaviour
     #region Update
     void Update() 
 	{
+
+        //THROWING
+        if (!anim.GetBool("Throw") && throwing)
+        {
+            throwing = false;
+        }
+        if(throwing)
+        {
+            anim.SetBool("Throw", false);
+            //gearAim = true;
+            anim.SetBool("Pistol", true);
+            newHandWeight = 1f;
+        }
+
         if (anim.GetCurrentAnimatorClipInfo(0).Length > 0) { currentAni = anim.GetCurrentAnimatorClipInfo(0)[0].clip.name; }
         if (currentAni != "dodgeRightAni" && currentAni != "dodgeLeftAni")
         {
@@ -257,12 +271,8 @@ public class ClientPlayerController : MonoBehaviour
         //SET CURRENT LIGHT SOURCE FOR CLIENT
         if (GetComponent<ClientFlashlightSystem>().FlashLight.GetComponent<Light>().enabled) { currLight = GetComponent<ClientFlashlightSystem>().FlashLight.gameObject; }
         else if (GetComponent<ClientFlashlightSystem>().WeaponLight.enabled) { currLight = GetComponent<ClientFlashlightSystem>().WeaponLight.gameObject; }
-
-       
-
     }
     #endregion
-
     public void TriggerCanFlinch()
     {
         canFlinch = !canFlinch;
