@@ -7,7 +7,7 @@ using NetworkSystem;
 public class RemExplo : MonoBehaviour
 {
     public List<NPCController> enemyEmitList = new List<NPCController>();
-
+    public GameObject exploElectricFex;
     // Start is called before the first frame update
     public void AddEnemyToEmitList(NPCController objectToAdd)
     {
@@ -22,9 +22,11 @@ public class RemExplo : MonoBehaviour
     void Update()
     {
         transform.localScale = Vector3.Lerp(transform.localScale, transform.localScale * 5f, Time.deltaTime * 1);
-        if (transform.localScale.x < -10f)
+        if (transform.localScale.x < -5f)
         {
             Result();
+            GameObject remExploInst = Instantiate(exploElectricFex);
+            remExploInst.transform.position = transform.position + Vector3.up;
             Destroy(this.gameObject);
         }
     }

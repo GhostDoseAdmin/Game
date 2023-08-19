@@ -17,7 +17,14 @@ public class RemPod : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        if(GetComponentInParent<PlayerController>() != null) {
+            if (GetComponentInParent<PlayerController>().gearAim)
+            {
+                remPodTarget.GetComponent<MeshRenderer>().enabled = true;
+            }
+            else { remPodTarget.GetComponent<MeshRenderer>().enabled = true; }
         
+        }
     }
 
     public void StartThrow()
