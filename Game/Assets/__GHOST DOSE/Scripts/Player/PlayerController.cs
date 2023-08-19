@@ -450,8 +450,7 @@ public class PlayerController : MonoBehaviour
 	}
     public void ThrowRemPod()
     {       //ANIMATION EVENT
-		GetComponent<ShootingSystem>().remPod.Throw();
-        throwing = true;
+		GetComponent<ShootingSystem>().remPod.Release();
     }
     public void EndThrow()	{		throwing = false; }//ANIMATION EVENT
 
@@ -584,7 +583,7 @@ public class PlayerController : MonoBehaviour
 					if (Input.GetMouseButtonDown(0))
 					{
 						if (gear == 1 || gear==4) { anim.SetBool("Shoot", true); GetComponent<ShootingSystem>().Shoot(); AudioManager.instance.StopPlaying("camfocus", audioSource); }
-						if (gear == 3) { anim.SetBool("Throw", true); throwing = true;  }
+						if (gear == 3) { anim.SetBool("Throw", true); GetComponentInChildren<RemPod>().StartThrow(); throwing = true;  }
 
 					}
 					else if (Input.GetMouseButtonUp(0))
@@ -602,7 +601,7 @@ public class PlayerController : MonoBehaviour
             if (NetworkDriver.instance.isMobile && gamePad.joystickAim.GetComponent<GPButton>().buttonReleased) //&& ((GetComponent<ShootingSystem>().target!=null && gamePad.camSup.AIMMODE)|| !gamePad.camSup.AIMMODE)
             {
                 if (gear == 1 || gear==4) { anim.SetBool("Shoot", true); GetComponent<ShootingSystem>().Shoot(); AudioManager.instance.StopPlaying("camfocus", audioSource); }
-                if (gear == 3) { anim.SetBool("Throw", true);  }
+                if (gear == 3) { anim.SetBool("Throw", true); GetComponentInChildren<RemPod>().StartThrow(); throwing = true;  }
             }
 
 				handWeight = Mathf.Lerp(handWeight, newHandWeight, Time.deltaTime * handSpeed);

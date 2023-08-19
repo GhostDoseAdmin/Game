@@ -98,8 +98,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 71daa4049af7c9342b9ab869679e7d07, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  target: {fileID: 0}
+  target: {x: 0, y: 0, z: 0}
   travelTime: 2
+  remExplo: {fileID: 3555316627680468844, guid: b554d5ad02648924880b3d6290ad4897, type: 3}
 --- !u!135 &7196797637011219075
 SphereCollider:
   m_ObjectHideFlags: 0

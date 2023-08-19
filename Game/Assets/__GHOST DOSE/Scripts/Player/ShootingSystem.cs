@@ -184,21 +184,22 @@ public class ShootingSystem : MonoBehaviour
             if (!NetworkDriver.instance.isMobile) { crosshairs.GetComponent<Animator>().speed = (camera.fieldOfView - aiming.zoom) * 3; }//ANIMATE FOCUS INDICATOR
         }
         //REM POD
-        /*if (GEAR == 3)
+        if (GEAR == 3)
         {
-            Vector3 startPoint = GetComponent<PlayerController>().rightHand.transform.position;
-            Vector3 direction = (targetLook.position - startPoint).normalized;
 
-            Debug.DrawLine(startPoint, startPoint + direction * 10, Color.red);
             if (!GetComponent<PlayerController>().throwing)
             {
                 LayerMask mask = LayerMask.GetMask("Default"); // Use LayerMask.GetMask to create a LayerMask
                 RaycastHit hit;
+                Vector3 startPoint = GameObject.Find("PlayerCamera").transform.position;
+                Vector3 direction = (targetLook.position - startPoint).normalized;
+
+                Debug.DrawLine(startPoint, startPoint + direction * 10, Color.red);
 
                 if (Physics.Raycast(startPoint, direction, out hit, 10, mask))
                 {
                     Vector3 newPosition;
-                    Debug.Log("--------------------------HITTING OBJECT " + hit.collider.name);
+                    //Debug.Log("--------------------------HITTING OBJECT " + hit.collider.name);
                     if (hit.collider != null)
                     {
                         // Make sure to calculate the position relative to the remPod's transform
@@ -214,7 +215,7 @@ public class ShootingSystem : MonoBehaviour
 
                 }
             }
-        }*/
+        }
 
         //Debug.Log(isEnemy.ToString() + isVisible.ToString() + isHeadshot.ToString());
     }

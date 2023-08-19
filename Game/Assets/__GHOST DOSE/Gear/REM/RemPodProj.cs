@@ -11,6 +11,8 @@ public class RemPodProj : MonoBehaviour
     private float currentTime = 0f;
     private float archHeight = 1f;
 
+    public GameObject remExplo;
+
     private void Start()
     {
         initialPosition = transform.position;
@@ -39,9 +41,11 @@ public class RemPodProj : MonoBehaviour
         // If the travel is done, reset the time
         if (currentTime >= travelTime)
         {
+            GameObject remExploInst = Instantiate(remExplo);
+            remExploInst.transform.position = transform.position;
             Destroy(gameObject);
             //transform.position = target.position;
-            currentTime = 0f;
+            //currentTime = 0f;
         }
     }
 }

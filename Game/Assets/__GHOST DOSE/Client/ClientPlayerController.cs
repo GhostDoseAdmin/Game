@@ -303,7 +303,8 @@ public class ClientPlayerController : MonoBehaviour
     }
 
 
-	void Attack()
+
+    void Attack()
 	{
         anim.SetBool("GetGear", false);
         if (aim || gear==0)
