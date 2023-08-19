@@ -373,6 +373,7 @@ namespace NetworkSystem
                     //REM POD
                     if (dict.ContainsKey("remthrow"))
                     {
+                        GameDriver.instance.Client.GetComponent<Animator>().SetBool("Throw", true);
                         GameDriver.instance.Client.GetComponent<ClientPlayerController>().throwing = true;
 
                     }
@@ -380,7 +381,7 @@ namespace NetworkSystem
                     {
                         GameDriver.instance.Client.GetComponentInChildren<RemPod>().ReleaseClient(new Vector3(float.Parse(dict["x"]), float.Parse(dict["y"]), float.Parse(dict["z"])));
                     }
-                    if (dict.ContainsKey("revive"))
+                     if (dict.ContainsKey("revive"))
                     {
                         Destroy(otherPlayerDeath);
                         GameDriver.instance.Client.SetActive(true);

@@ -317,36 +317,38 @@ public class ClientPlayerController : MonoBehaviour
     void Attack()
 	{
         anim.SetBool("GetGear", false);
-        if (aim || gear==0 || gear==3)
-			{
-            if (gear == 0) { SB7.SetActive(true); gearAim = true; }
-                 anim.SetBool("Pistol", true);
-				newHandWeight = 1f;
-				canShoot = true;
+        if (gear != 3)
+        {
+            if (aim || gear == 0)
+            {
+                if (gear == 0) { SB7.SetActive(true); gearAim = true; }
+                anim.SetBool("Pistol", true);
+                newHandWeight = 1f;
+                canShoot = true;
 
-				// SHOOT
+                // SHOOT
                 if (triggerShoot)
                 {
 
                     //Debug.Log("--------------------------------------------------------------------SHOOT CAM FLASH");
                     shootPoint.LookAt(targetPos);
                     anim.SetBool("Shoot", true);
-                        if (gear==1)
-                        {
-                            //AudioManager.instance.Play("ShotCam");
-                            muzzleFlash.Play();
-                            Shell.Play();
+                    if (gear == 1)
+                    {
+                        //AudioManager.instance.Play("ShotCam");
+                        muzzleFlash.Play();
+                        Shell.Play();
 
-                            //--------------------------FLASH-------------------------------------
-                            GameObject newFlash = Instantiate(camFlash);
-                            newFlash.transform.position = shootPoint.position;
-                            newFlash.name = "CamFlashClient";
-                            newFlash.GetComponent<CamFlash>().isClient = true;
-                            //---POINT FLASH IN DIRECTION OF THE SHOT
-                            Quaternion newYRotation = Quaternion.Euler(0f, shootPoint.rotation.eulerAngles.y, 0f);
-                            newFlash.transform.rotation = newYRotation;
-                        }
-					triggerShoot = false;
+                        //--------------------------FLASH-------------------------------------
+                        GameObject newFlash = Instantiate(camFlash);
+                        newFlash.transform.position = shootPoint.position;
+                        newFlash.name = "CamFlashClient";
+                        newFlash.GetComponent<CamFlash>().isClient = true;
+                        //---POINT FLASH IN DIRECTION OF THE SHOT
+                        Quaternion newYRotation = Quaternion.Euler(0f, shootPoint.rotation.eulerAngles.y, 0f);
+                        newFlash.transform.rotation = newYRotation;
+                    }
+                    triggerShoot = false;
 
                 }
                 else // if (Input.GetMouseButtonUp(0))
@@ -355,15 +357,16 @@ public class ClientPlayerController : MonoBehaviour
                 }
 
             }
-			else 
-			{
+            else
+            {
                 gearAim = false;
-				anim.SetBool("Pistol", false);
-				anim.SetBool("Shoot", false);
-				newHandWeight = 0f;
-				canShoot = false;
+                anim.SetBool("Pistol", false);
+                anim.SetBool("Shoot", false);
+                newHandWeight = 0f;
+                canShoot = false;
 
-			}
+            }
+        }
 			handWeight = Mathf.Lerp(handWeight, newHandWeight, Time.deltaTime * handSpeed);
         if (anim.GetBool("ouija")) { handWeight = 0f; anim.SetBool("Pistol", true); gear = 1; ouija.SetActive(true); camera.SetActive(false); k2.SetActive(false); camInventory.SetActive(true); k2Inventory.SetActive(true); } else { ouija.SetActive(false); }
 
