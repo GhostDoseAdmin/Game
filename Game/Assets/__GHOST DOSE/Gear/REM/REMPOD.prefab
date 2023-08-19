@@ -101,6 +101,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   remPodTarget: {fileID: 3513310244060350063}
   remPodProj: {fileID: 7196797637011219073, guid: 17c383a25688995478a5b30c8889608b, type: 3}
+  remProjInstance: {fileID: 0}
+  remExploInstance: {fileID: 0}
+  remPodSkin: {fileID: 2123235337720216336}
 --- !u!135 &6108553295518526557
 SphereCollider:
   m_ObjectHideFlags: 0
@@ -186,6 +189,11 @@ PrefabInstance:
 --- !u!4 &1602419342147772842 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: c92157600d9826843ae2a46705edc46d, type: 3}
+  m_PrefabInstance: {fileID: 1276302771000411713}
+  m_PrefabAsset: {fileID: 0}
+--- !u!1 &2123235337720216336 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 919132149155446097, guid: c92157600d9826843ae2a46705edc46d, type: 3}
   m_PrefabInstance: {fileID: 1276302771000411713}
   m_PrefabAsset: {fileID: 0}
 --- !u!1001 &8855015695425231509
