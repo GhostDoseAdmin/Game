@@ -3,15 +3,18 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using NetworkSystem;
+using InteractionSystem;
 public class RemPod : MonoBehaviour
 {
 
     public GameObject remPodTarget, remPodProj;
     Vector3 target;
+    //public AudioSource audioSource;
     // Start is called before the first frame update
     void Start()
     {
-        
+        //audioSource = gameObject.AddComponent<AudioSource>();
+       // audioSource.spatialBlend = 1.0f;
     }
 
     // Update is called once per frame
@@ -29,6 +32,7 @@ public class RemPod : MonoBehaviour
 
     public void StartThrow()
     {
+       // AudioManager.instance.Play("EMPThrow", audioSource);
         target = remPodTarget.transform.position;
         if (NetworkDriver.instance.TWOPLAYER) { 
             NetworkDriver.instance.sioCom.Instance.Emit("event", JsonConvert.SerializeObject(new { remthrow = true}), false);

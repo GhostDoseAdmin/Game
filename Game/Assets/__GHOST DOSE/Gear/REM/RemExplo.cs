@@ -3,11 +3,12 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using NetworkSystem;
-
+using InteractionSystem;
 public class RemExplo : MonoBehaviour
 {
     public List<NPCController> enemyEmitList = new List<NPCController>();
     public GameObject exploElectricFex;
+    public AudioSource audioSource;
     // Start is called before the first frame update
     public void AddEnemyToEmitList(NPCController objectToAdd)
     {
@@ -18,6 +19,22 @@ public class RemExplo : MonoBehaviour
         }
     }
 
+    private void Start()
+    {
+
+        audioSource = gameObject.AddComponent<AudioSource>();
+        audioSource.spatialBlend = 1.0f;
+        AudioManager.instance.Play("EMPHit", audioSource);
+        Invoke("Electric", 0.5f);
+    }
+
+    void Electric()
+    {
+        GameObject remExploInst = Instantiate(exploElectricFex);
+        remExploInst.transform.position = transform.position + (Vector3.up * 3);
+    }
+
+
     // Update is called once per frame
     void Update()
     {
@@ -25,8 +42,6 @@ public class RemExplo : MonoBehaviour
         if (transform.localScale.x < -5f)
         {
             Result();
-            GameObject remExploInst = Instantiate(exploElectricFex);
-            remExploInst.transform.position = transform.position + Vector3.up;
             Destroy(this.gameObject);
         }
     }

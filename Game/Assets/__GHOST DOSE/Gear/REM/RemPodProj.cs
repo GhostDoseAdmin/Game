@@ -1,7 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
+using InteractionSystem;
 public class RemPodProj : MonoBehaviour
 {
     public Vector3 target; // The target destination
@@ -12,11 +12,15 @@ public class RemPodProj : MonoBehaviour
     private float archHeight = 1f;
 
     public GameObject remExplo;
-
+    public AudioSource audioSource;
     private void Start()
     {
         initialPosition = transform.position;
         travelTime = Vector3.Distance(initialPosition, target)*0.1f;
+
+        audioSource = gameObject.AddComponent<AudioSource>();
+        audioSource.spatialBlend = 1.0f;
+        AudioManager.instance.Play("EMPThrow", audioSource);
     }
 
     private void Update()
