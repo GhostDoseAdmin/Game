@@ -242,28 +242,6 @@ public class ClientPlayerController : MonoBehaviour
     #region Update
     void Update() 
 	{
-
-        //THROWING
-        if (gear == 3)
-        {
-            handWeight = 1f;
-            if (!anim.GetBool("Throw") && throwing)
-            {
-                throwing = false;
-            }
-            if (throwing)
-            {
-                anim.SetBool("Throw", false);
-                //gearAim = true;
-                anim.SetBool("Pistol", true);
-            }
-            if (anim.GetBool("Throw"))
-            {
-                handWeight = 0f;
-            }
-        }
-
-
         if (anim.GetCurrentAnimatorClipInfo(0).Length > 0) { currentAni = anim.GetCurrentAnimatorClipInfo(0)[0].clip.name; }
         if (currentAni != "dodgeRightAni" && currentAni != "dodgeLeftAni")
         {
@@ -279,8 +257,34 @@ public class ClientPlayerController : MonoBehaviour
         //SET CURRENT LIGHT SOURCE FOR CLIENT
         if (GetComponent<ClientFlashlightSystem>().FlashLight.GetComponent<Light>().enabled) { currLight = GetComponent<ClientFlashlightSystem>().FlashLight.gameObject; }
         else if (GetComponent<ClientFlashlightSystem>().WeaponLight.enabled) { currLight = GetComponent<ClientFlashlightSystem>().WeaponLight.gameObject; }
+
+        //THROWING
+        if (gear == 3)
+        {
+            anim.SetIKPositionWeight(AvatarIKGoal.RightHand, 1);
+            anim.SetIKPosition(AvatarIKGoal.RightHand, rightHandTargetREM.position);
+
+
+            if (!anim.GetBool("Throw") && throwing)
+            {
+                throwing = false;
+            }
+            if (throwing)
+            {
+                anim.SetBool("Throw", false);
+                //gearAim = true;
+                anim.SetBool("Pistol", true);
+            }
+            if (anim.GetBool("Throw"))
+            {
+                anim.SetIKPositionWeight(AvatarIKGoal.RightHand, 0);
+            }
+          
+        }
+
     }
     #endregion
+
     public void TriggerCanFlinch()
     {
         canFlinch = !canFlinch;
@@ -325,13 +329,14 @@ public class ClientPlayerController : MonoBehaviour
     void Attack()
 	{
         anim.SetBool("GetGear", false);
-        if (gear != 3)
+        if (gear != 3)//REM POD
         {
             if (aim || gear == 0)
             {
-                if (gear == 0) { SB7.SetActive(true); gearAim = true; }
+                if (gear == 0) { SB7.SetActive(true); }
+                gearAim = true;
                 anim.SetBool("Pistol", true);
-                newHandWeight = 0f;
+                newHandWeight = 1f;
                 canShoot = true;
 
                 // SHOOT
@@ -370,12 +375,12 @@ public class ClientPlayerController : MonoBehaviour
                 gearAim = false;
                 anim.SetBool("Pistol", false);
                 anim.SetBool("Shoot", false);
-                newHandWeight = 1f;
+                newHandWeight = 0f;
                 canShoot = false;
 
             }
+            handWeight = Mathf.Lerp(handWeight, newHandWeight, Time.deltaTime * handSpeed);
         }
-			handWeight = Mathf.Lerp(handWeight, newHandWeight, Time.deltaTime * handSpeed);
         if (anim.GetBool("ouija")) { handWeight = 0f; anim.SetBool("Pistol", true); gear = 1; ouija.SetActive(true); camera.SetActive(false); k2.SetActive(false); camInventory.SetActive(true); k2Inventory.SetActive(true); } else { ouija.SetActive(false); }
 
 
@@ -433,8 +438,9 @@ public class ClientPlayerController : MonoBehaviour
 
     void OnAnimatorIK()
     {
+        if (gear == 3) { return; }
 
-        if ((is_FlashlightAim || gearAim || gear == 3) && !anim.GetBool("ouija"))
+        if (is_FlashlightAim || gearAim)
         {
             anim.SetLookAtWeight(lookIKWeight, bodyWeight);
             anim.SetLookAtPosition(targetPosVec);
@@ -453,16 +459,12 @@ public class ClientPlayerController : MonoBehaviour
             stanceRH = rightHandTargetK2;
             stanceLH = leftHandTargetK2;
         }
-        if (gear == 3)
+        if (stanceRH != null)
         {
-            stanceRH = rightHandTargetREM;
-            stanceLH = leftHandTargetREM;
-        }
-        if (stanceRH != null && !throwing)
-        {
-            if (gearAim || gear == 3)
+            if (gearAim)
             {
                 //Debug.Log("-----------------------------GEART AIM -------------------------------------");
+
                 anim.SetIKPositionWeight(AvatarIKGoal.RightHand, handWeight);
                 anim.SetIKPosition(AvatarIKGoal.RightHand, stanceRH.position);
 
