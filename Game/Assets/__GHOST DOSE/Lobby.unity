@@ -8026,6 +8026,7 @@ MonoBehaviour:
   planchette: {fileID: 0}
   K2: {fileID: 0}
   camBatteryUI: {fileID: 0}
+  gridBatteryUI: {fileID: 0}
   pickUp: PickUp
   shootSound: ShotPistol
   reloadSound: ReloadPistol
@@ -8037,7 +8038,10 @@ MonoBehaviour:
   isHeadshot: 0
   aiming: {fileID: 0}
   target: {fileID: 0}
+  laserGrid: {fileID: 0}
   Damage: 40
+  shotGun: 0
+  GEAR: 0
   canShoot: 0
 --- !u!114 &692362297
 MonoBehaviour:
@@ -8151,6 +8155,8 @@ MonoBehaviour:
   handSpeed: 60
   is_Flashlight: 1
   is_FlashlightAim: 0
+  hasGrid: 0
+  hasRem: 0
   gear: 1
   gearAim: 0
   k2: {fileID: 0}
@@ -66364,6 +66370,7 @@ MonoBehaviour:
   height: 40
   width: 40
   crosshair: {fileID: 0}
+  gridcrosshair: {fileID: 0}
   K2: {fileID: 0}
   gear: 0
   isOuija: 0
@@ -74857,6 +74864,7 @@ MonoBehaviour:
   planchette: {fileID: 0}
   K2: {fileID: 0}
   camBatteryUI: {fileID: 0}
+  gridBatteryUI: {fileID: 0}
   pickUp: PickUp
   shootSound: ShotPistol
   reloadSound: ReloadPistol
@@ -74868,7 +74876,10 @@ MonoBehaviour:
   isHeadshot: 0
   aiming: {fileID: 0}
   target: {fileID: 0}
+  laserGrid: {fileID: 0}
   Damage: 40
+  shotGun: 0
+  GEAR: 0
   canShoot: 0
 --- !u!114 &5055496213087247194
 MonoBehaviour:
@@ -75031,6 +75042,8 @@ MonoBehaviour:
   handSpeed: 60
   is_Flashlight: 1
   is_FlashlightAim: 0
+  hasGrid: 0
+  hasRem: 0
   gear: 1
   gearAim: 0
   k2: {fileID: 0}
@@ -75348,6 +75361,7 @@ MonoBehaviour:
   height: 40
   width: 40
   crosshair: {fileID: 0}
+  gridcrosshair: {fileID: 0}
   K2: {fileID: 0}
   gear: 0
   isOuija: 0
@@ -75383,6 +75397,8 @@ MonoBehaviour:
   handSpeed: 60
   is_Flashlight: 1
   is_FlashlightAim: 0
+  hasGrid: 0
+  hasRem: 0
   gear: 1
   gearAim: 0
   k2: {fileID: 0}
@@ -75677,6 +75693,7 @@ MonoBehaviour:
   theirRig: {fileID: 0}
   reviveIndicator: {fileID: 0}
   DemonScreamerUI: {fileID: 0}
+  playerStartPos: {x: 0, y: 0, z: 0}
   TimeElapsedUI: {fileID: 0}
   QuitBtnText: {fileID: 0}
   quitUI: {fileID: 0}
@@ -77082,6 +77099,7 @@ MonoBehaviour:
   planchette: {fileID: 0}
   K2: {fileID: 0}
   camBatteryUI: {fileID: 0}
+  gridBatteryUI: {fileID: 0}
   pickUp: PickUp
   shootSound: ShotPistol
   reloadSound: ReloadPistol
@@ -77093,7 +77111,10 @@ MonoBehaviour:
   isHeadshot: 0
   aiming: {fileID: 0}
   target: {fileID: 0}
+  laserGrid: {fileID: 0}
   Damage: 40
+  shotGun: 0
+  GEAR: 0
   canShoot: 0
 --- !u!54 &8185797812273735707
 Rigidbody:
