@@ -29,13 +29,18 @@ public class RemPod : MonoBehaviour
         }
        
     }
-
+    public void ReleaseClient(Vector3 targetClient)
+    {
+        GameObject remProj = Instantiate(remPodProj);
+        remProj.transform.position = this.transform.position;
+        remProj.GetComponent<RemPodProj>().target = targetClient;
+    }
     public void Release() //Vector3 othersTarget
     {
         GameObject remProj = Instantiate(remPodProj);
         remProj.transform.position = this.transform.position;
         remProj.GetComponent<RemPodProj>().target = target;
        // if(othersTarget!=null) { remProj.GetComponent<RemPodProj>().target = othersTarget; }
-       // if (othersTarget == null) { NetworkDriver.instance.sioCom.Instance.Emit("event", JsonConvert.SerializeObject($"{{'remrelease':'true','x':'{target.x}','y':'{target.y}','z':'{target.z}'}}"), false); }
+       NetworkDriver.instance.sioCom.Instance.Emit("event", JsonConvert.SerializeObject($"{{'remrelease':'true','x':'{target.x}','y':'{target.y}','z':'{target.z}'}}"), false); 
     }
 }
