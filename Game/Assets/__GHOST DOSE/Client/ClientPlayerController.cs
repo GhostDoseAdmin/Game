@@ -423,7 +423,7 @@ public class ClientPlayerController : MonoBehaviour
     void OnAnimatorIK()
     {
 
-        if (is_FlashlightAim || gearAim)
+        if ((is_FlashlightAim || gearAim || gear == 3) && !anim.GetBool("ouija"))
         {
             anim.SetLookAtWeight(lookIKWeight, bodyWeight);
             anim.SetLookAtPosition(targetPosVec);
