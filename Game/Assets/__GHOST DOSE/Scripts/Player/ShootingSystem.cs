@@ -82,6 +82,7 @@ public class ShootingSystem : MonoBehaviour
         laserGrid.SetActive(false);
         remPod = GetComponentInChildren<RemPod>();
         gridBatteryUI = GameObject.Find("grid_battery_ui").GetComponent<Image>();
+        gridBatteryUI.transform.parent.gameObject.SetActive(false);
         camBatteryUI = GameObject.Find("cam_battery_ui").GetComponent<Image>();
         shootPoint = util.FindChildObject(this.gameObject.transform, "ShootPoint").transform;
         muzzleFlash = util.FindChildObject(this.gameObject.transform, "MuzzleFlashEffect").GetComponent<ParticleSystem>();

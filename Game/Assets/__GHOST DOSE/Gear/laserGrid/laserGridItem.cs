@@ -24,6 +24,7 @@ public class laserGridItem : Item
     {
 
         //HealthSystem.kitinstance.CollectKit(this.kit);
+        GameObject.Find("Player").GetComponent<ShootingSystem>().gridBatteryUI.fillAmount = 1;
         NetworkDriver.instance.sioCom.Instance.Emit("event", JsonConvert.SerializeObject($"{{'obj':'{gameObject.name}','type':'grid','event':'pickup','pass':'none'}}"), false);
         GameDriver.instance.Player.GetComponent<PlayerController>().hasGrid = true;
         GameDriver.instance.Player.GetComponent<PlayerController>().gear = 3;//changes to grid +1
