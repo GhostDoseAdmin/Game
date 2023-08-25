@@ -20,6 +20,7 @@ public class laserGrid : MonoBehaviour
     public void Start()
     {
         audioSource = gameObject.AddComponent<AudioSource>();
+        audioSource.playOnAwake = false;
         audioSource.spatialBlend = 1.0f;
     }
 
