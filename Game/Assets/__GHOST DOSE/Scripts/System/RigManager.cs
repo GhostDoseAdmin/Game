@@ -100,6 +100,8 @@ public class RigManager : MonoBehaviour
             if (ouija != null) { ouija.SetActive(false); }
             GameObject sb7 = util.FindChildObject(playerProp.transform, "SB7");
             if (sb7 != null) { sb7.SetActive(false); }
+            GameObject laserGrid = util.FindChildObject(playerProp.transform, "LaserGrid");
+            if (laserGrid != null) { laserGrid.SetActive(false); }
 
             StartCoroutine(util.ReactivateAnimator(playerProp));
         }

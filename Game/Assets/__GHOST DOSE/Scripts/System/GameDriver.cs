@@ -151,8 +151,11 @@ namespace GameManager
         void Start()
         {
             //QUIT BUTTON
-            if (NetworkDriver.instance.isMobile) { QuitBtnText.text = "MENU"; }
-            else { QuitBtnText.text = "MENU (ESC)"; }
+            if (SceneManager.GetActiveScene().name != "Lobby")
+            {
+                if (NetworkDriver.instance.isMobile) { QuitBtnText.text = "MENU"; }
+                else { QuitBtnText.text = "MENU (ESC)"; }
+            }
         }
         void Awake()
         {
@@ -399,7 +402,7 @@ namespace GameManager
                     UnityEngine.Cursor.visible = true;
                     UnityEngine.Cursor.lockState = CursorLockMode.None;
                 }
-                //quitUI.SetActive(true); 
+                quitUI.SetActive(true); 
                 return; 
             }
         }
