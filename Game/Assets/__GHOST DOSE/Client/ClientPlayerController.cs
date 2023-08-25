@@ -242,6 +242,9 @@ public class ClientPlayerController : MonoBehaviour
     #region Update
     void Update() 
 	{
+        //LASERGRID DEBUG
+        if (gear != 4) { laserGrid.SetActive(false); }
+
         if (anim.GetCurrentAnimatorClipInfo(0).Length > 0) { currentAni = anim.GetCurrentAnimatorClipInfo(0)[0].clip.name; }
         if (currentAni != "dodgeRightAni" && currentAni != "dodgeLeftAni")
         {
