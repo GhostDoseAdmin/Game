@@ -11,7 +11,7 @@ public class RemPodProj : MonoBehaviour
     private float currentTime = 0f;
     private float archHeight = 1f;
 
-    public GameObject remExplo;
+    public GameObject remExplo, remPod;
     public AudioSource audioSource;
     private void Start()
     {
@@ -46,6 +46,7 @@ public class RemPodProj : MonoBehaviour
         if (currentTime >= travelTime)
         {
             GameObject remExploInst = Instantiate(remExplo);
+            remPod.GetComponent<RemPod>().remExploInstance = remExploInst;
             remExploInst.transform.position = transform.position;
             Destroy(gameObject);
             //transform.position = target.position;

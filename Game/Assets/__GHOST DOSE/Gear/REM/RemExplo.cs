@@ -48,7 +48,7 @@ public class RemExplo : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        Debug.Log("---------------------------COLLIDING EXPLO" + other.gameObject.name);
+        //Debug.Log("---------------------------COLLIDING EXPLO" + other.gameObject.name);
         if (other.gameObject.GetComponentInParent<NPCController>() != null)
         {
             AddEnemyToEmitList(other.GetComponentInParent<NPCController>());
