@@ -84,7 +84,7 @@ public class Aiming : MonoBehaviour {
 					crosshair.SetActive(true);
 					
 					if (gear == 1) { crosshair.transform.localScale = new Vector3(0.4f, 0.4f, 0.4f); }
-					if (gear == 4)  { gridcrosshair.SetActive(true); crosshair.transform.localScale = new Vector3(1.4f, 1.4f, 1.4f); }
+					if (gear == 4)  { gridcrosshair.SetActive(true); crosshair.transform.localScale = new Vector3(1f, 1f, 1f); }
 				
 				}
 				if (gear == 2) { K2.SetActive(true); }
