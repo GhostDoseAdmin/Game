@@ -251,7 +251,7 @@ public class ShootingSystem : MonoBehaviour
                     GameObject victimManager = GameObject.Find("OuijaBoardManager").GetComponent<OuijaSessionControl>().OuijaSessions[GameObject.Find("OuijaBoardManager").GetComponent<OuijaSessionControl>().currentSession];
                     //AudioManager.instance.Play("ShotCam");
                     if (GEAR == 1) { camBatteryUI.fillAmount -= 0.1f; }
-                    //if (GEAR == 4) { gridBatteryUI.fillAmount -= 0.5f; }
+                    if (GEAR == 4) { gridBatteryUI.fillAmount -= 0.2f; }
                     muzzleFlash.Play();
                     Shell.Play();
                     //DO DAMAGE
