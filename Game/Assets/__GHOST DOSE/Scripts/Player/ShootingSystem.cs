@@ -126,9 +126,10 @@ public class ShootingSystem : MonoBehaviour
         range = 20; 
         recoil = 40; //based on the zoom value of field angle
         GEAR = gear;
+        camBatteryUI.transform.parent.gameObject.SetActive(true);
         gridBatteryUI.transform.parent.gameObject.SetActive(false);
         laserGrid.SetActive(false);
-        if (GEAR == 4) { range = 10; gridBatteryUI.transform.parent.gameObject.SetActive(true); laserGrid.SetActive(true); recoil = 75; }
+        if (GEAR == 4) { camBatteryUI.transform.parent.gameObject.SetActive(false); range = 10; gridBatteryUI.transform.parent.gameObject.SetActive(true); laserGrid.SetActive(true); recoil = 75; }
     }
 
 
@@ -251,7 +252,7 @@ public class ShootingSystem : MonoBehaviour
                     GameObject victimManager = GameObject.Find("OuijaBoardManager").GetComponent<OuijaSessionControl>().OuijaSessions[GameObject.Find("OuijaBoardManager").GetComponent<OuijaSessionControl>().currentSession];
                     //AudioManager.instance.Play("ShotCam");
                     if (GEAR == 1) { camBatteryUI.fillAmount -= 0.1f; }
-                    //if (GEAR == 4) { gridBatteryUI.fillAmount -= 0.5f; }
+                    if (GEAR == 4) { gridBatteryUI.fillAmount -= 0.2f; }
                     muzzleFlash.Play();
                     Shell.Play();
                     //DO DAMAGE

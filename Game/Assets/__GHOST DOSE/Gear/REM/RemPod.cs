@@ -46,6 +46,7 @@ public class RemPod : MonoBehaviour
         //HIDE target
         if (GetComponentInParent<ClientPlayerController>() != null)
         {
+            remPodTarget.GetComponent<MeshRenderer>().enabled = false;
             if (GetComponentInParent<ClientPlayerController>().gear == 3)
             {
                 //HIDE REMPOD
