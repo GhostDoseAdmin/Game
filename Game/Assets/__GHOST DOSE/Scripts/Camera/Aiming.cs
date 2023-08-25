@@ -66,8 +66,8 @@ public class Aiming : MonoBehaviour {
             //crosshair.GetComponent<RectTransform>().position = Camera.main.WorldToScreenPoint(GameDriver.instance.Player.GetComponent<ShootingSystem>().targetLook.transform.position + Vector3.up);
 
         }
+        //Debug.Log("-------------------------CROSS HAIRS " + crosshair.activeSelf);
 
-       
         /*if (NetworkDriver.instance.isMobile && gamePad.aimer.AIMING && GameDriver.instance.Player.GetComponent<ShootingSystem>().target!=null && GameDriver.instance.Player.GetComponent<PlayerController>().gamePad.aimer.crossHairTarg) { 
 			aim = true;
             crosshair.GetComponent<RectTransform>().position = Camera.main.WorldToScreenPoint(GameDriver.instance.Player.GetComponent<ShootingSystem>().target.transform.position + Vector3.up);
@@ -82,6 +82,7 @@ public class Aiming : MonoBehaviour {
 				if (gear == 3) { isZoomed = 0; }
 				if (gear == 1 || gear==4 || gear==3) { 
 					crosshair.SetActive(true);
+					
 					if (gear == 1) { crosshair.transform.localScale = new Vector3(0.4f, 0.4f, 0.4f); }
 					if (gear == 4)  { gridcrosshair.SetActive(true); crosshair.transform.localScale = new Vector3(1.4f, 1.4f, 1.4f); }
 				
@@ -104,5 +105,7 @@ public class Aiming : MonoBehaviour {
 		{
 			if (!NetworkDriver.instance.isMobile) { GetComponent<Camera>().fieldOfView = Mathf.Lerp(GetComponent<Camera>().fieldOfView, normal, Time.deltaTime * smoothZoom); }
 		}
-	}
+
+       
+    }
 }

@@ -507,7 +507,7 @@ public class PlayerController : MonoBehaviour
                     if (gear == 0) { AudioManager.instance.Play("sb7sweep", audioSource); }
                     else { AudioManager.instance.StopPlaying("sb7sweep", audioSource); }
 
-					GetComponent<ShootingSystem>().SwitchGear(gear);
+					GetComponent<ShootingSystem>().SwitchGear();
                     gear_timer = Time.time + gear_delay;//cooldown
 				}
 			}

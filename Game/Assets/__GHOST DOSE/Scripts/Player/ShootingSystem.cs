@@ -72,7 +72,7 @@ public class ShootingSystem : MonoBehaviour
 
     public static ShootingSystem instance;
     private static utilities util;
-    public int GEAR;
+    //public int GEAR =1;
     private int range;
     private int recoil = 40;
     public void RigShooter()
@@ -111,6 +111,9 @@ public class ShootingSystem : MonoBehaviour
 
     public void Update()
     {
+        //UPDATE AIMER
+        aiming.gear = GetComponent<PlayerController>().gear;
+
         //CheckShoot();
         ReloadAmmo();
         if (GetComponent<Animator>().GetBool("ouija"))
@@ -121,24 +124,22 @@ public class ShootingSystem : MonoBehaviour
         else { aiming.isOuija = false; }
        
     }
-    public void SwitchGear(int gear)
+    public void SwitchGear()
     {
         range = 20; 
         recoil = 40; //based on the zoom value of field angle
-        GEAR = gear;
         camBatteryUI.transform.parent.gameObject.SetActive(true);
         gridBatteryUI.transform.parent.gameObject.SetActive(false);
         laserGrid.SetActive(false);
-        if (GEAR == 4) { camBatteryUI.transform.parent.gameObject.SetActive(false); range = 10; gridBatteryUI.transform.parent.gameObject.SetActive(true); laserGrid.SetActive(true); recoil = 75; }
+        if (GetComponent<PlayerController>().gear == 4) { camBatteryUI.transform.parent.gameObject.SetActive(false); range = 10; gridBatteryUI.transform.parent.gameObject.SetActive(true); laserGrid.SetActive(true); recoil = 75; }
     }
 
 
     public void Aiming()
     {
-        //UPDATE AIMER
-        aiming.gear = GEAR;
 
-        if (GEAR == 1 || GEAR == 4)
+
+        if (GetComponent<PlayerController>().gear == 1 || GetComponent<PlayerController>().gear == 4)
         {
             //RESET UI
             enemyIndicatorUI.color = Color.white;
@@ -185,7 +186,7 @@ public class ShootingSystem : MonoBehaviour
             if (!NetworkDriver.instance.isMobile) { crosshairs.GetComponent<Animator>().speed = (camera.fieldOfView - aiming.zoom) * 3; }//ANIMATE FOCUS INDICATOR
         }
         //REM POD
-        if (GEAR == 3)
+        if (GetComponent<PlayerController>().gear == 3)
         {
 
             if (!GetComponent<PlayerController>().throwing)
@@ -236,7 +237,7 @@ public class ShootingSystem : MonoBehaviour
 
             
                 //OUT OF BATTERY
-                if(Time.time > shootTimer + shootCoolDown && ((camBatteryUI.fillAmount <= 0 && GEAR == 1) || (gridBatteryUI.fillAmount <= 0 && GEAR == 4)))
+                if(Time.time > shootTimer + shootCoolDown && ((camBatteryUI.fillAmount <= 0 && GetComponent<PlayerController>().gear == 1) || (gridBatteryUI.fillAmount <= 0 && GetComponent<PlayerController>().gear == 4)))
                 {
                     string audioString;
                     if (NetworkDriver.instance.isTRAVIS) { audioString = "travbattery"; }
@@ -246,17 +247,17 @@ public class ShootingSystem : MonoBehaviour
                 }
 
 
-                if (Time.time > shootTimer + shootCoolDown && ((camBatteryUI.fillAmount > 0 && GEAR == 1) || (gridBatteryUI.fillAmount > 0 && GEAR == 4)))
+                if (Time.time > shootTimer + shootCoolDown && ((camBatteryUI.fillAmount > 0 && GetComponent<PlayerController>().gear == 1) || (gridBatteryUI.fillAmount > 0 && GetComponent<PlayerController>().gear == 4)))
                 {
                     canShoot = true;
                     GameObject victimManager = GameObject.Find("OuijaBoardManager").GetComponent<OuijaSessionControl>().OuijaSessions[GameObject.Find("OuijaBoardManager").GetComponent<OuijaSessionControl>().currentSession];
                     //AudioManager.instance.Play("ShotCam");
-                    if (GEAR == 1) { camBatteryUI.fillAmount -= 0.1f; }
-                    if (GEAR == 4) { gridBatteryUI.fillAmount -= 0.2f; }
+                    if (GetComponent<PlayerController>().gear == 1) { camBatteryUI.fillAmount -= 0.1f; }
+                    if (GetComponent<PlayerController>().gear == 4) { gridBatteryUI.fillAmount -= 0.2f; }
                     muzzleFlash.Play();
                     Shell.Play();
                     //DO DAMAGE
-                    if (GEAR != 4 && GEAR!=3) {
+                    if (GetComponent<PlayerController>().gear != 4 && GetComponent<PlayerController>().gear != 3) {
                         if (target != null)
                         {
                             if ((target.GetComponent<GhostVFX>() != null) && target.GetComponent<Teleport>().teleport == 0) // && isVisible 
@@ -281,7 +282,7 @@ public class ShootingSystem : MonoBehaviour
                         if (NetworkDriver.instance.TWOPLAYER) { NetworkDriver.instance.sioCom.Instance.Emit("event", JsonConvert.SerializeObject(new { shoot = true, obj = targName, dmg = Damage }), false); }
                     }
 
-                    if(GEAR==1)
+                    if(GetComponent<PlayerController>().gear == 1)
                     {
                         //--------------FLASH-----------------
                         GameObject newFlash = Instantiate(camFlash);
@@ -291,7 +292,7 @@ public class ShootingSystem : MonoBehaviour
                         Quaternion newYRotation = Quaternion.Euler(0f, shootPoint.rotation.eulerAngles.y, 0f);
                         newFlash.transform.rotation = newYRotation;
                     }
-                    if(GEAR==4)
+                    if(GetComponent<PlayerController>().gear == 4)
                     {
 
                         laserGrid.GetComponent<laserGrid>().Shoot(false); //SetActive(true);
