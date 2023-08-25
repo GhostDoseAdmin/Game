@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using NetworkSystem;
 using InteractionSystem;
+using GameManager;
 public class RemExplo : MonoBehaviour
 {
     public List<NPCController> enemyEmitList = new List<NPCController>();
@@ -75,6 +76,10 @@ public class RemExplo : MonoBehaviour
             }
 
             NetworkDriver.instance.sioCom.Instance.Emit("rem_pod", JsonConvert.SerializeObject(dmgObjs), false);
+
+            GameDriver.instance.Player.GetComponent<PlayerController>().hasRem = false;
+            GameDriver.instance.Player.GetComponent<PlayerController>().gear = 0;//changes to 0 +1
+            GameDriver.instance.Player.GetComponent<PlayerController>().ChangeGear(false, true);
 
         }
     }
