@@ -73,7 +73,7 @@ public class ShootingSystem : MonoBehaviour
     public static ShootingSystem instance;
     private static utilities util;
     //public int GEAR =1;
-    private int range;
+    private int range = 20;
     private int recoil = 40;
     public void RigShooter()
     {
@@ -319,6 +319,7 @@ public class ShootingSystem : MonoBehaviour
     }
     public void targetParams(float distance)
     {
+        //Debug.Log("----------------------------------TARGET PARAMS " );
         isHeadshot = false;
         isVisible = false;
         target = null;
