@@ -423,6 +423,7 @@ namespace NetworkSystem
                                 if (dict["type"] == "med") { obj.GetComponent<FirstAidKit>().DestroyWithSound(true); }
                                 if (dict["type"] == "bat") { obj.GetComponent<Battery>().DestroyWithSound(true); }
                                 if (dict["type"] == "grid") { obj.GetComponent<laserGridItem>().DestroyWithSound(true); }
+                                if (dict["type"] == "rem") { obj.GetComponent<remPodItem>().DestroyWithSound(true); }
                                 if (dict["type"] == "cand") { obj.GetComponent<Candle>().DestroyWithSound(true); LevelManager.GetComponentInChildren<VictimControl>().candleCount++; }
                             }
                             else { if (dict["type"] == "key") { KeyInventory.instance.RemoveKey(dict["pass"]); } }//local player already picked up
