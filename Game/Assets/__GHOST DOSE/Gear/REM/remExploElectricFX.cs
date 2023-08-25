@@ -17,7 +17,7 @@ public class remExploElectricFX : MonoBehaviour
     void Update()
     {
         transform.localScale = Vector3.Lerp(transform.localScale, transform.localScale * 3f, Time.deltaTime * 1);
-        if (transform.localScale.x < -100f)
+        if (transform.localScale.x > 50)
         {
             Destroy(this.gameObject);
         }

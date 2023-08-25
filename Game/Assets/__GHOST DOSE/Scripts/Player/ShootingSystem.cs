@@ -126,9 +126,10 @@ public class ShootingSystem : MonoBehaviour
         range = 20; 
         recoil = 40; //based on the zoom value of field angle
         GEAR = gear;
+        camBatteryUI.transform.parent.gameObject.SetActive(true);
         gridBatteryUI.transform.parent.gameObject.SetActive(false);
         laserGrid.SetActive(false);
-        if (GEAR == 4) { range = 10; gridBatteryUI.transform.parent.gameObject.SetActive(true); laserGrid.SetActive(true); recoil = 75; }
+        if (GEAR == 4) { camBatteryUI.transform.parent.gameObject.SetActive(false); range = 10; gridBatteryUI.transform.parent.gameObject.SetActive(true); laserGrid.SetActive(true); recoil = 75; }
     }
 
 
