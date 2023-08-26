@@ -7,22 +7,22 @@ public class bruteExplosion : MonoBehaviour
 {
 
     public GameObject main;
-    AudioSource audioSource1;
+    //AudioSource audioSource1;
     // Start is called before the first frame update
     private void Awake()
     {
-        audioSource1 = gameObject.AddComponent<AudioSource>();
-        audioSource1.spatialBlend = 1.0f;
+        //audioSource1 = gameObject.AddComponent<AudioSource>();
+        //audioSource1.spatialBlend = 1.0f;
     }
     void Start()
     {
-        AudioManager.instance.Play("BruteSmash", audioSource1);
+        AudioManager.instance.Play("BruteSmash", null);
     }
 
     // Update is called once per frame
     void Update()
     {
-        transform.localScale = Vector3.Lerp(transform.localScale, transform.localScale * 5f, Time.deltaTime * 1);
+        transform.localScale = Vector3.Lerp(transform.localScale, transform.localScale * 2f, Time.deltaTime * 1);
         if (transform.localScale.x > 12)
         {
             Destroy(this.gameObject);

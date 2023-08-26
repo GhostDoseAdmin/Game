@@ -15,6 +15,7 @@ public class EnemyDeath : MonoBehaviour
     private bool end;
     public AudioSource audioSource;
     public bool brute = false;
+    public GameObject main;
 
     // Start is called before the first frame update
     void Start()
@@ -23,7 +24,7 @@ public class EnemyDeath : MonoBehaviour
         audioSource = gameObject.AddComponent<AudioSource>();
         audioSource.spatialBlend = 1.0f;
         AudioManager.instance.Play("EnemyDeath", audioSource);
-
+        if (brute) { AudioManager.instance.Play("BruteDeath", audioSource); }
         Invoke("Explode", 2f);
         end = false;
 
@@ -57,6 +58,7 @@ public class EnemyDeath : MonoBehaviour
         }
         else {
             GameObject explosion = Instantiate(explo, transform.position, transform.rotation);
+            explosion.GetComponent<bruteExplosion>().main = main;
             explosion.transform.localScale = transform.localScale;
         }
 
