@@ -685,7 +685,7 @@ public class NPCController : MonoBehaviour
                // if (agro) { 
                    // Flinch(false);
                 //}
-                if (damageAmount > 60) { Flinch(true); } else { Flinch(false); }
+                if (damageAmount > 60) { if (!brute) { Flinch(true); } else { Flinch(false); } } else { Flinch(false); }
                 Agro(otherPlayer);
 
             }
@@ -721,11 +721,6 @@ public class NPCController : MonoBehaviour
                 dead = true;
                 GetComponent<Teleport>().teleport = 0;
                 GetComponent<Teleport>().canTeleport = true;
-                if (NetworkDriver.instance.HOST)
-                {
-                    GetComponent<Teleport>().CheckTeleport(true, true);
-                    GetComponent<Teleport>().Invoke("Respawn", spawnTimer);
-                }
                 zapActive = false;
                 agro = false;
                 target = null;
@@ -739,6 +734,12 @@ public class NPCController : MonoBehaviour
                 if (!teddy && !brute) { if (Shadower) { death.GetComponent<EnemyDeath>().Shadower = true; } }
                 HIT_COL.GetComponent<SphereCollider>().enabled = false;
                 if (!canRespawn) { this.gameObject.SetActive(false); }
+
+                if (NetworkDriver.instance.HOST)
+                {
+                    GetComponent<Teleport>().CheckTeleport(true, true);
+                    GetComponent<Teleport>().Invoke("Respawn", spawnTimer);
+                }
 
 
             }

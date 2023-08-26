@@ -244,7 +244,14 @@ public class ShootingSystem : MonoBehaviour
                     if (NetworkDriver.instance.isTRAVIS) { audioString = "travbattery"; }
                     else { audioString = "wesbattery"; }
                     AudioManager.instance.Play(audioString, GameDriver.instance.Player.GetComponent<PlayerController>().audioSourceSpeech);
-                    shootTimer = Time.time;//cooldown
+
+                //AUTO SWITCH TO CAM
+                if(GetComponent<PlayerController>().gear == 4)
+                {
+                    GameDriver.instance.Player.GetComponent<PlayerController>().gear = 0;//changes to grid +1
+                    GameDriver.instance.Player.GetComponent<PlayerController>().ChangeGear(false, true);
+                }
+                shootTimer = Time.time;//cooldown
                 }
 
 

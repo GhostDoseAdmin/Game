@@ -22,13 +22,15 @@ public class remPodItem : Item
 
     public override void ActivateObject(bool otherPlayer)
     {
-
-        //HealthSystem.kitinstance.CollectKit(this.kit);
-        NetworkDriver.instance.sioCom.Instance.Emit("event", JsonConvert.SerializeObject($"{{'obj':'{gameObject.name}','type':'rem','event':'pickup','pass':'none'}}"), false);
-        GameDriver.instance.Player.GetComponent<PlayerController>().hasRem = true;
-        GameDriver.instance.Player.GetComponent<PlayerController>().gear = 2;//changes to grid +1
-        GameDriver.instance.Player.GetComponent<PlayerController>().ChangeGear(false, true);
-        DestroyWithSound(false);
+        if (!GameDriver.instance.Player.GetComponent<PlayerController>().hasRem)
+        {
+            //HealthSystem.kitinstance.CollectKit(this.kit);
+            NetworkDriver.instance.sioCom.Instance.Emit("event", JsonConvert.SerializeObject($"{{'obj':'{gameObject.name}','type':'rem','event':'pickup','pass':'none'}}"), false);
+            GameDriver.instance.Player.GetComponent<PlayerController>().hasRem = true;
+            GameDriver.instance.Player.GetComponent<PlayerController>().gear = 2;//changes to grid +1
+            GameDriver.instance.Player.GetComponent<PlayerController>().ChangeGear(false, true);
+            DestroyWithSound(false);
+        }
     }
 
 
