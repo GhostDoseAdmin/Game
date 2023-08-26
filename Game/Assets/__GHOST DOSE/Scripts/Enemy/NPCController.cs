@@ -732,6 +732,7 @@ public class NPCController : MonoBehaviour
                 if (teddy) { death.transform.position = death.transform.position + Vector3.up; }
                 //if (brute) { AudioManager.instance.Play("BruteSmash", null); }
                 if (!teddy && !brute) { if (Shadower) { death.GetComponent<EnemyDeath>().Shadower = true; } }
+                death.GetComponent<EnemyDeath>().brute = brute;
                 HIT_COL.GetComponent<SphereCollider>().enabled = false;
                 if (!canRespawn) { this.gameObject.SetActive(false); }
 
