@@ -77,6 +77,7 @@ public class RemPod : MonoBehaviour
     {
         GameObject remProj = Instantiate(remPodProj);
         remProjInstance = remProj;
+        remProj.GetComponent<RemPodProj>().isClients = true;
         remProj.GetComponent<RemPodProj>().remPod = this.gameObject;
         remProj.transform.position = this.transform.position;
         remProj.GetComponent<RemPodProj>().target = targetClient;

@@ -10,6 +10,7 @@ public class RemExplo : MonoBehaviour
     public List<NPCController> enemyEmitList = new List<NPCController>();
     public GameObject exploElectricFex;
     public AudioSource audioSource;
+    public bool isClients = false;
     // Start is called before the first frame update
     public void AddEnemyToEmitList(NPCController objectToAdd)
     {
@@ -59,7 +60,7 @@ public class RemExplo : MonoBehaviour
     public void Result()
     {
 
-       // if (!OTHERPLAYER)
+        if (!isClients)
         {
             Dictionary<string, Dictionary<string, string>> dmgObjs = new Dictionary<string, Dictionary<string, string>>();
 

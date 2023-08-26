@@ -106,6 +106,8 @@ public class K2Wave : MonoBehaviour
             if (other.GetComponentInParent<FirstAidKit>() != null) { other.GetComponentInParent<Outline>().OutlineWidth = 10; }
             if (other.GetComponentInParent<Battery>() != null) { other.GetComponentInParent<Outline>().OutlineWidth = 10; }
             if (other.GetComponentInParent<Candle>() != null) { other.GetComponentInParent<Outline>().OutlineWidth = 10; }
+            if (other.GetComponentInParent<remPodItem>() != null) { other.GetComponentInParent<Outline>().OutlineWidth = 10; }
+            if (other.GetComponentInParent<laserGridItem>() != null) { other.GetComponentInParent<Outline>().OutlineWidth = 10; }
         }
     }
 

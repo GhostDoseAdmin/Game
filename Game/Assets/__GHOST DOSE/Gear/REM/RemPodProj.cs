@@ -13,6 +13,8 @@ public class RemPodProj : MonoBehaviour
 
     public GameObject remExplo, remPod;
     public AudioSource audioSource;
+
+    public bool isClients=false;
     private void Start()
     {
         initialPosition = transform.position;
@@ -48,6 +50,7 @@ public class RemPodProj : MonoBehaviour
             GameObject remExploInst = Instantiate(remExplo);
             remPod.GetComponent<RemPod>().remExploInstance = remExploInst;
             remExploInst.transform.position = transform.position;
+            remExploInst.GetComponent<RemExplo>().isClients = isClients;
             Destroy(gameObject);
             //transform.position = target.position;
             //currentTime = 0f;
