@@ -22,14 +22,17 @@ public class laserGridItem : Item
 
     public override void ActivateObject(bool otherPlayer)
     {
+        if(GameObject.Find("Player").GetComponent<ShootingSystem>().gridBatteryUI.fillAmount<1 || !GameDriver.instance.Player.GetComponent<PlayerController>().hasGrid)
+        {
+            //HealthSystem.kitinstance.CollectKit(this.kit);
+            GameObject.Find("Player").GetComponent<ShootingSystem>().gridBatteryUI.fillAmount = 1;
+            NetworkDriver.instance.sioCom.Instance.Emit("event", JsonConvert.SerializeObject($"{{'obj':'{gameObject.name}','type':'grid','event':'pickup','pass':'none'}}"), false);
+            GameDriver.instance.Player.GetComponent<PlayerController>().hasGrid = true;
+            GameDriver.instance.Player.GetComponent<PlayerController>().gear = 3;//changes to grid +1
+            GameDriver.instance.Player.GetComponent<PlayerController>().ChangeGear(false, true);
+            DestroyWithSound(false);
+        }
 
-        //HealthSystem.kitinstance.CollectKit(this.kit);
-        GameObject.Find("Player").GetComponent<ShootingSystem>().gridBatteryUI.fillAmount = 1;
-        NetworkDriver.instance.sioCom.Instance.Emit("event", JsonConvert.SerializeObject($"{{'obj':'{gameObject.name}','type':'grid','event':'pickup','pass':'none'}}"), false);
-        GameDriver.instance.Player.GetComponent<PlayerController>().hasGrid = true;
-        GameDriver.instance.Player.GetComponent<PlayerController>().gear = 3;//changes to grid +1
-        GameDriver.instance.Player.GetComponent<PlayerController>().ChangeGear(false, true);
-        DestroyWithSound(false);
     }
 
 

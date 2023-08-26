@@ -198,7 +198,7 @@ public class Camera_Controller : MonoBehaviour
 
 
         //----------FIX Z AXIS AFTER FLINCH-----
-        if (!NetworkDriver.instance.isMobile)
+        /*if (!NetworkDriver.instance.isMobile)
         {
             if (player.GetComponent<PlayerController>().currentAni != null)
             {
@@ -219,7 +219,7 @@ public class Camera_Controller : MonoBehaviour
                     zAxisFixTimer -= Time.deltaTime;
                 }
             }
-        }
+        }*/
 
     }
 

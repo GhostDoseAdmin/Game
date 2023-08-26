@@ -40,7 +40,7 @@ public class RemExplo : MonoBehaviour
     void Update()
     {
         transform.localScale = Vector3.Lerp(transform.localScale, transform.localScale * 5f, Time.deltaTime * 1);
-        if (transform.localScale.x < -5f)
+        if (transform.localScale.x < -10f)
         {
             Result();
             Destroy(this.gameObject);

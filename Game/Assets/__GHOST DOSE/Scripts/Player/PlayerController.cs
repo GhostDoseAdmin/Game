@@ -473,7 +473,7 @@ public class PlayerController : MonoBehaviour
                     SB7.SetActive(false);
                     gear += 1;
                     if (!hasRem && gear == 3) { gear += 1; }
-                    if (!hasGrid && gear == 4) { gear += 1; }
+                    if ((!hasGrid || GetComponent<ShootingSystem>().gridBatteryUI.fillAmount <=0) && gear == 4) { gear += 1; }
                     if (gear > 4) { gear = 1; }
 					
 					//-----E
