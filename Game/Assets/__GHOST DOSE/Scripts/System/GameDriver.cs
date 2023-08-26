@@ -386,7 +386,7 @@ namespace GameManager
         }
         public void TryQuitBtn()
         {
-            Debug.Log("TRY QUIT");
+            //Debug.Log("TRY QUIT");
             if (quitUI.activeSelf) {
                 if (!NetworkDriver.instance.isMobile)
                 {

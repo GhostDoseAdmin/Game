@@ -86,7 +86,7 @@ public class Hovl_Laser : MonoBehaviour
            //ADD THIS IF YOU WANNT TO USE LASERS IN 2D: RaycastHit2D hit = Physics2D.Raycast(transform.position, transform.forward, MaxLength);       
             LayerMask mask = 1 << LayerMask.NameToLayer("Default") | 1 << LayerMask.NameToLayer("Player");
                 if (LASERGRID) { mask = 1 << LayerMask.NameToLayer("Default") | 1 << LayerMask.NameToLayer("Enemy"); }
-                    if (Physics.Raycast(transform.position, transform.TransformDirection(Vector3.forward), out hit, MaxLength, mask))//CHANGE THIS IF YOU WANT TO USE LASERRS IN 2D: if (hit.collider != null)
+            if (Physics.Raycast(transform.position, transform.TransformDirection(Vector3.forward), out hit, MaxLength, mask))//CHANGE THIS IF YOU WANT TO USE LASERRS IN 2D: if (hit.collider != null)
             {
                 //End laser position if collides with object
                 Laser.SetPosition(1, hit.point);
@@ -113,6 +113,7 @@ public class Hovl_Laser : MonoBehaviour
                         NPCController target = hit.collider.gameObject.GetComponentInParent<NPCController>();
                         if (target != null) { GetComponentInParent<ZozoLaser>().laserGridOrigin.AddEnemyToEmitList(target); }
                     }
+
                 if (hit.collider.gameObject.name == "Player" && Time.time > collideTimer + collideDelay)
                 {
                     Vector3 oppositeForce = GetComponentInParent<NPCController>().transform.forward * GetComponentInParent<NPCController>().laserForce;

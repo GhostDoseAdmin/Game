@@ -10,6 +10,7 @@ public class RemPod : MonoBehaviour
     public GameObject remPodTarget, remPodProj, remProjInstance, remExploInstance, remPodSkin;
     Vector3 target;
     private bool startThrow;
+    //private bool canThrow;
     //public AudioSource audioSource;
     // Start is called before the first frame update
     void Start()
@@ -65,14 +66,26 @@ public class RemPod : MonoBehaviour
     public void StartThrow()
     {
         // AudioManager.instance.Play("EMPThrow", audioSource);
-        startThrow = true;
-        target = remPodTarget.transform.position;
-        if (NetworkDriver.instance.TWOPLAYER) { 
-            NetworkDriver.instance.sioCom.Instance.Emit("event", JsonConvert.SerializeObject(new { remthrow = true}), false);
-            //NetworkDriver.instance.sioCom.Instance.Emit("event", JsonConvert.SerializeObject($"{{'rem':'true','x':'{target.x}','y':'{target.y}','z':'{target.z}'}}"), false);
+        if (!startThrow)
+        {
+            //canThrow = false;
+            //Invoke("ResetCanThrow",5f);
+            startThrow = true;
+            target = remPodTarget.transform.position;
+            if (NetworkDriver.instance.TWOPLAYER)
+            {
+                NetworkDriver.instance.sioCom.Instance.Emit("event", JsonConvert.SerializeObject(new { remthrow = true }), false);
+                //NetworkDriver.instance.sioCom.Instance.Emit("event", JsonConvert.SerializeObject($"{{'rem':'true','x':'{target.x}','y':'{target.y}','z':'{target.z}'}}"), false);
+            }
         }
+
        
     }
+   /* public void ResetCanThrow()
+    {
+        canThrow = true;
+    }*/
+
     public void ReleaseClient(Vector3 targetClient)
     {
         GameObject remProj = Instantiate(remPodProj);

@@ -467,8 +467,7 @@ public class PlayerController : MonoBehaviour
 				//START OF GEARCHANGE
 				if ((((Input.GetKeyDown(InputManager.instance.gear) && !NetworkDriver.instance.isMobile) || (NetworkDriver.instance.isMobile && GameDriver.instance.Player.GetComponent<PlayerController>().gamePad.gearBTN.buttonReleased)) || (triggerSb7 && !sb7) || (triggerSb7 && sb7)) || bypass)
 				{
-
-					emitGear = true;
+                    emitGear = true;
 					anim.SetBool("GetGear", true);
                     SB7.SetActive(false);
                     gear += 1;
@@ -502,7 +501,7 @@ public class PlayerController : MonoBehaviour
                     GameDriver.instance.gearuicam.SetActive(false); GameDriver.instance.gearuik2.SetActive(false);  k2.SetActive(false); camera.SetActive(false); camInventory.SetActive(false); k2Inventory.SetActive(false);
                     if (gear == 1) { AudioManager.instance.Play("switchcam", audioSource3); GameDriver.instance.gearuicam.SetActive(true);  camera.SetActive(true);  k2Inventory.SetActive(true); }
 					if (gear == 2) { AudioManager.instance.Play("switchk2", audioSource3); GameDriver.instance.gearuik2.SetActive(true);  k2.SetActive(true); camInventory.SetActive(true);  }
-                    if (gear == 3) { AudioManager.instance.Play("EMPSwitch", audioSource3); GetComponent<ShootingSystem>().remPod.gameObject.SetActive(true); }
+                    if (gear == 3) { AudioManager.instance.Play("EMPSwitch", audioSource3);  GetComponent<ShootingSystem>().remPod.gameObject.SetActive(true); }
                     if (gear == 4) { AudioManager.instance.Play("GridSwitch", audioSource3); } // GetComponent<ShootingSystem>()lasGrid.SetActive(true);
                     if (gear == 0) { AudioManager.instance.Play("sb7sweep", audioSource); }
                     else { AudioManager.instance.StopPlaying("sb7sweep", audioSource); }
@@ -536,7 +535,7 @@ public class PlayerController : MonoBehaviour
         anim.SetBool("GetGear", false);
     }
 
-	
+
     void GearAim()
 	{
 
@@ -586,7 +585,7 @@ public class PlayerController : MonoBehaviour
 					if (Input.GetMouseButtonDown(0))
 					{
 						if (gear == 1 || gear==4) { anim.SetBool("Shoot", true); GetComponent<ShootingSystem>().Shoot(); AudioManager.instance.StopPlaying("camfocus", audioSource); }
-						if (gear == 3) { anim.SetBool("Throw", true); GetComponentInChildren<RemPod>().StartThrow(); throwing = true;  }
+						if (gear == 3 && GetComponentInChildren<RemPod>().remPodSkin.activeSelf ) { anim.SetBool("Throw", true); GetComponentInChildren<RemPod>().StartThrow(); throwing = true;  }
 
 					}
 					else if (Input.GetMouseButtonUp(0))
@@ -604,7 +603,7 @@ public class PlayerController : MonoBehaviour
             if (NetworkDriver.instance.isMobile && gamePad.joystickAim.GetComponent<GPButton>().buttonReleased) //&& ((GetComponent<ShootingSystem>().target!=null && gamePad.camSup.AIMMODE)|| !gamePad.camSup.AIMMODE)
             {
                 if (gear == 1 || gear==4) { anim.SetBool("Shoot", true); GetComponent<ShootingSystem>().Shoot(); AudioManager.instance.StopPlaying("camfocus", audioSource); }
-                if (gear == 3) { anim.SetBool("Throw", true); GetComponentInChildren<RemPod>().StartThrow(); throwing = true;  }
+                if (gear == 3  && GetComponentInChildren<RemPod>().remPodSkin.activeSelf ) { anim.SetBool("Throw", true); GetComponentInChildren<RemPod>().StartThrow(); throwing = true;  }
             }
 
 				handWeight = Mathf.Lerp(handWeight, newHandWeight, Time.deltaTime * handSpeed);

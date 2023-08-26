@@ -59,6 +59,7 @@ public class EnemyDeath : MonoBehaviour
         else {
             GameObject explosion = Instantiate(explo, transform.position, transform.rotation);
             explosion.GetComponent<bruteExplosion>().main = main;
+            explosion.GetComponent<bruteExplosion>().death = true;
             explosion.transform.localScale = transform.localScale;
         }
 

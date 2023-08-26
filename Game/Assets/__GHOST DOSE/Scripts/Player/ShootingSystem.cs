@@ -75,7 +75,8 @@ public class ShootingSystem : MonoBehaviour
     //public int GEAR =1;
     private int range = 20;
     private int recoil = 40;
-    public void RigShooter()
+
+     public void RigShooter()
     {
         util = new utilities();
         laserGrid = GetComponentInChildren<laserGrid>().gameObject;
@@ -215,7 +216,6 @@ public class ShootingSystem : MonoBehaviour
 
                     }
                     remPod.remPodTarget.transform.position = newPosition;
-
                 }
             }
         }

@@ -19,24 +19,37 @@ public class ZozoLaser : MonoBehaviour
 
     private void Update()
     {
-        //if (!laserGrid)
+        //----------------------------SHOOT LASER-------------------------------------
+        if (laserGrid)
         {
-            if (Instance == null && (( !laserGrid && GetComponentInParent<ZozoControl>().laserActive) || laserGrid))
+            if (Instance == null)
+            {
+                Instance = Instantiate(Prefabs[0], FirePoint.transform.position, FirePoint.transform.rotation);
+                Instance.transform.parent = transform;
+                Instance.GetComponent<Hovl_Laser>().LASERGRID = laserGrid;
+                //LaserScript2 = Instance.GetComponent<Hovl_Laser2>();
+            }
+        }
+        else //-------------ZOZO/SHADOWER LASER------------------------
+        {
+            if (Instance == null && GetComponentInParent<ZozoControl>().laserActive)
             {
                 Instance = Instantiate(Prefabs[0], FirePoint.transform.position, FirePoint.transform.rotation);
                 Instance.transform.parent = transform;
                 LaserScript = Instance.GetComponent<Hovl_Laser>();
-                Instance.GetComponent<Hovl_Laser>().LASERGRID = laserGrid;
-                LaserScript2 = Instance.GetComponent<Hovl_Laser2>();
-            }
 
-            if (Instance == null && ((!laserGrid && GetComponentInParent<ZozoControl>().laserActive) || laserGrid))
+
+
+            }
+            //-----STOP LASER
+            if (!GetComponentInParent<ZozoControl>().laserActive)
             {
                 if (LaserScript) LaserScript.DisablePrepare();
-                if (LaserScript2) LaserScript2.DisablePrepare();
                 Destroy(Instance, 1);
             }
+
         }
+
     }
 
 

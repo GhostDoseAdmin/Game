@@ -154,7 +154,7 @@ public class NPCController : MonoBehaviour
     public float active_timer;
     void Update()
     {
-
+        //-------------------DEBUG TURNS OFF ANIMATION----------------------
         if (!brute)
         {
             //DEBUG ZAP --TURN OFF ZAP
@@ -174,8 +174,8 @@ public class NPCController : MonoBehaviour
         //BRUTE JUMP
         {
             //DEBUG ZAP --TURN OFF ZAP
-            if (animEnemy.GetCurrentAnimatorClipInfo(0).Length > 0 && animEnemy.GetCurrentAnimatorClipInfo(0)[0].clip.name != "zapAni" && zapActive) { zapActive = false; }
-            //CLIENT ZAP
+            //if (animEnemy.GetCurrentAnimatorClipInfo(0).Length > 0 && animEnemy.GetCurrentAnimatorClipInfo(0)[0].clip.name != "zapAni" && zapActive) { zapActive = false; }
+            //CLIENT FORE BRUTE JUMP
             zapClient--;
             if (zapClient > 0)
             {
@@ -185,12 +185,13 @@ public class NPCController : MonoBehaviour
                 }
             }
             if (dead) { zapActive = false; }
-
+            //-----------JUMP TO SPOT
             if (zapActive)
             {
                 if (target != null)
                 {
-                    transform.position = Vector3.Lerp(transform.position, target.transform.position, 2 * Time.deltaTime);
+                    Debug.Log("--------------------------------------------JUMPING");
+                    transform.position = Vector3.Lerp(transform.position, target.transform.position, 1 * Time.deltaTime);
                 }
 
             }
@@ -207,9 +208,13 @@ public class NPCController : MonoBehaviour
             if (Vector3.Distance(transform.position, serverPosition) > 0.2f) { transform.position = Vector3.Lerp(transform.position, serverPosition, 0.02f); }
 
             if (!teddy && !brute) { if (Vector3.Distance(transform.position, serverPosition) > 3.5f) { transform.position = serverPosition; } }
-            if (teddy || brute)
+            if (teddy)
             {
                 if (Vector3.Distance(transform.position, serverPosition) > 5f) { transform.position = serverPosition; }
+            }
+            if (brute)
+            {
+                if (!zapActive) { if (Vector3.Distance(transform.position, serverPosition) > 5f) { transform.position = serverPosition; } }
             }
                 //-------------ACTIVE TIMER------------
                 active_timer -= Time.deltaTime;
@@ -397,8 +402,8 @@ public class NPCController : MonoBehaviour
             }
         }
     }
-    public void TriggerZapOn() { zapActive = true;
-
+    public void TriggerZapOn() { 
+        zapActive = true;
         if (brute) { AudioManager.instance.Play("BruteJump", audioSource); }
     }
     public void TriggerZapOff() { zapActive = false;
@@ -431,7 +436,7 @@ public class NPCController : MonoBehaviour
 
         float distance = Vector3.Distance(transform.position, new Vector3(target.position.x, transform.position.y, target.position.z));//measured at same level Yaxis
          //-----------DISENGAGE--------------------
-         if (distance > 15 && !ZOZO && !agro){ Disengage(); }
+         if (distance > 15 && !ZOZO && !agro && !brute){ Disengage(); }
 
 
 
