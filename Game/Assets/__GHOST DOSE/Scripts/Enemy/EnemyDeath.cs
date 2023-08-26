@@ -14,25 +14,27 @@ public class EnemyDeath : MonoBehaviour
     public bool Shadower;
     private bool end;
     public AudioSource audioSource;
-
+    public bool brute = false;
 
     // Start is called before the first frame update
     void Start()
     {
-        transform.GetChild(0).GetComponent<SkinnedMeshRenderer>().materials[0].SetFloat("_Alpha", 0.5f);
-        transform.GetChild(0).GetComponent<SkinnedMeshRenderer>().materials[0].SetFloat("_EMFAlpha", 0.5f);
-        if (Shadower) { transform.GetChild(0).GetComponent<SkinnedMeshRenderer>().materials[0].SetFloat("_Shadower", 1f); }
 
         audioSource = gameObject.AddComponent<AudioSource>();
         audioSource.spatialBlend = 1.0f;
-
         AudioManager.instance.Play("EnemyDeath", audioSource);
 
         Invoke("Explode", 2f);
         end = false;
 
-        if(Shadower) {              effect_Shadower.SetActive(true);     }
-        else        {            effect.SetActive(true);        }
+        if (!brute)
+        {
+            transform.GetChild(0).GetComponent<SkinnedMeshRenderer>().materials[0].SetFloat("_Alpha", 0.5f);
+            transform.GetChild(0).GetComponent<SkinnedMeshRenderer>().materials[0].SetFloat("_EMFAlpha", 0.5f);
+            if (Shadower) { transform.GetChild(0).GetComponent<SkinnedMeshRenderer>().materials[0].SetFloat("_Shadower", 1f); }
+            if (Shadower) { effect_Shadower.SetActive(true); }
+            else { effect.SetActive(true); }
+        }
     }
 
     public void Update()
@@ -41,13 +43,23 @@ public class EnemyDeath : MonoBehaviour
         //GetComponent<GhostVFX>().Fade(false, 5f, 0);
 
         if (!end) { effect.transform.localScale = Vector3.Lerp(effect.transform.localScale, effect.transform.localScale * 1.5f, Time.deltaTime * 1); }
-        else { explo.transform.localScale = Vector3.Lerp(explo.transform.localScale, effect.transform.localScale * 0.001f, Time.deltaTime * 1); }//shrink explo
+        else {
+            if (!brute) { explo.transform.localScale = Vector3.Lerp(explo.transform.localScale, effect.transform.localScale * 0.001f, Time.deltaTime * 1); } //shrink explo
+        }
     }
 
     private void Explode()
     {
-        if (Shadower) { explo_Shadower.SetActive(true); }
-        else { explo.SetActive(true); }
+        if (!brute)
+        {
+            if (Shadower) { explo_Shadower.SetActive(true); }
+            else { explo.SetActive(true); }
+        }
+        else {
+            GameObject explosion = Instantiate(explo, transform.position, transform.rotation);
+            explosion.transform.localScale = transform.localScale;
+        }
+
         AudioManager.instance.Play("EnemyExplode", audioSource);
         Invoke("Finish", 1f);
         Invoke("StopMesh", 0.5f);
