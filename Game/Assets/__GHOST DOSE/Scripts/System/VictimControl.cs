@@ -269,7 +269,7 @@ public class VictimControl : Item
             if (!fadeMusicOut)
             {
                 if (Vector3.Distance(GameDriver.instance.Player.transform.position, ZOZO.transform.position) > 12) { GameDriver.instance.Player.transform.position = Vector3.Lerp(GameDriver.instance.Player.transform.position, ZOZOpos2d, 0.02f); }
-                if (Vector3.Distance(GameDriver.instance.Player.transform.position, ZOZO.transform.position) > 13) { GameDriver.instance.Player.transform.position = ZOZO.transform.position; }
+                if (Vector3.Distance(GameDriver.instance.Player.transform.position, ZOZO.transform.position) > 14) { GameDriver.instance.Player.transform.position = ZOZO.transform.position; }
 
             }
             //if (Vector3.Distance(GameDriver.instance.Player.transform.position, ZOZO.transform.position) > 12) { GameDriver.instance.Player.GetComponent<Rigidbody>().AddForce((ZOZOpos2d - GameDriver.instance.Player.transform.position).normalized * 1000, ForceMode.Acceleration); }
