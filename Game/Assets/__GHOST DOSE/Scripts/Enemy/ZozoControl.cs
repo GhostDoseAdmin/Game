@@ -12,7 +12,7 @@ using InteractionSystem;
 
 public class ZozoControl : MonoBehaviour
 {
-    AudioSource audioSource1, audioSource2;
+    AudioSource audioSource1, audioSource2, audioSourceSizzle;
     public Sound[] footSteps;
     public GameObject Head;
     public GameObject laserChargeVFX;
@@ -38,7 +38,9 @@ public class ZozoControl : MonoBehaviour
         audioSource1.spatialBlend = 1.0f;
         audioSource2 = gameObject.AddComponent<AudioSource>();
         audioSource2.spatialBlend = 1.0f;
-       
+        audioSourceSizzle = gameObject.AddComponent<AudioSource>();
+        audioSourceSizzle.spatialBlend = 1.0f;
+
     }
     // Start is called before the first frame update
     void Start()
@@ -57,12 +59,9 @@ public class ZozoControl : MonoBehaviour
     private float canLaserTimer;
     public void Update()
     {
-        /*if (Input.GetKeyUp(KeyCode.Escape)) 
-        {
-            canLaser = true;
-            ChargeLaser(false);
-            Debug.Log("------------TRIGGER LASER-------------------");
-        }*/
+
+
+        if (zozoSizzleFX.transform.localScale.x > 0) { zozoSizzleFX.transform.localScale = Vector3.Lerp(zozoSizzleFX.transform.localScale, zozoSizzleFX.transform.localScale * 0.05f, Time.deltaTime * 1); }
 
 
         //INITIATE LASER
@@ -160,15 +159,30 @@ public class ZozoControl : MonoBehaviour
     {
         zozoCanFlinsh = true;
     }
-    public void ZOZOFlinch()
+    public void ZOZOFlinch(bool hard)
     {
-        if (GetComponent<Animator>().GetCurrentAnimatorClipInfo(0).Length > 0 && GetComponent<Animator>().GetCurrentAnimatorClipInfo(0)[0].clip.name != "agro" && !GetComponent<NPCController>().zozoLaser && zozoCanFlinsh && !GetComponent<Animator>().GetBool("Attack")) // && !animEnemy.GetCurrentAnimatorStateInfo(0).IsName("Attack")
+        //Debug.Log("----------------------------------ZOZO FLINCHING-------------------------------");
+        zozoSizzleFX.transform.localScale = new Vector3(14f,14f,14f);
+        if (zozoSizzleFX.transform.localScale.x > 1)
         {
-            zozoCanFlinsh = false;
-            Invoke("zozoFlinchReset",1f);//flinch cooldown
-            GetComponent<Animator>().Play("React");
-            AudioManager.instance.Play("zozoflinch", null);
+            if (!audioSourceSizzle.isPlaying)
+            {
+                audioSourceSizzle.volume = 10f;
+                AudioManager.instance.Play("Sizzle", audioSourceSizzle);
+            }
         }
+
+        if (hard)
+        {
+            if (GetComponent<Animator>().GetCurrentAnimatorClipInfo(0).Length > 0 && GetComponent<Animator>().GetCurrentAnimatorClipInfo(0)[0].clip.name != "agro" && !GetComponent<NPCController>().zozoLaser && zozoCanFlinsh && !GetComponent<Animator>().GetBool("Attack")) // && !animEnemy.GetCurrentAnimatorStateInfo(0).IsName("Attack")
+            {
+                zozoCanFlinsh = false;
+                Invoke("zozoFlinchReset", 1f);//flinch cooldown
+                GetComponent<Animator>().Play("React");
+                AudioManager.instance.Play("zozoflinch", null);
+            }
+        }
+
     }
     public void TriggerCharge()//FROM ANIMATION, FOR EFFECTS
     {
