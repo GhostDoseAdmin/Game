@@ -55,7 +55,7 @@ namespace GameManager
 
         //[HideInInspector] public GameObject mySelectedRig;
         //[HideInInspector] public GameObject theirSelectedRig;
-        public GameObject gearuicam, gearuik2, candleUI;
+        public GameObject gearuicam, gearuik2, gearuiemp, gearuilaser, candleUI;
         
         private static utilities util;
 
