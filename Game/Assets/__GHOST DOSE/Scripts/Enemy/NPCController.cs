@@ -734,11 +734,11 @@ public class NPCController : MonoBehaviour
                 this.gameObject.transform.GetChild(0).GetComponent<Outline>().OutlineWidth = 0;
                 GameObject death = Instantiate(Death, transform.position, transform.rotation);
                 death.transform.localScale = transform.localScale;
-                death.GetComponent<EnemyDeath>().main = this.gameObject;
+                if (!teddy) { death.GetComponent<EnemyDeath>().main = this.gameObject; }
                 if (teddy) { death.transform.position = death.transform.position + Vector3.up; }
                 //if (brute) { AudioManager.instance.Play("BruteSmash", null); }
                 if (!teddy && !brute) { if (Shadower) { death.GetComponent<EnemyDeath>().Shadower = true; } }
-                death.GetComponent<EnemyDeath>().brute = brute;
+                if (!teddy) { death.GetComponent<EnemyDeath>().brute = brute; }
                 HIT_COL.GetComponent<SphereCollider>().enabled = false;
                 if (!canRespawn) { this.gameObject.SetActive(false); }
 
