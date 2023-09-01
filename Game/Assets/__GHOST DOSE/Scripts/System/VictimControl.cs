@@ -270,9 +270,9 @@ public class VictimControl : Item
             {
                 if (Vector3.Distance(GameDriver.instance.Player.transform.position, ZOZO.transform.position) > 12)
                 {
-                    Vector3 oppositeForce = ZOZO.transform.forward * 500f;
+                    Vector3 oppositeForce = ZOZO.transform.forward * 1f;
                     oppositeForce.y = 0f; // Set the y component to 0
-                    GameDriver.instance.Player.GetComponent<HealthSystem>().HealthDamage(10, -oppositeForce);
+                    GameDriver.instance.Player.GetComponent<HealthSystem>().HealthDamage(100, -oppositeForce);
                 }
                 //if (Vector3.Distance(GameDriver.instance.Player.transform.position, ZOZO.transform.position) > 12) { GameDriver.instance.Player.transform.position = Vector3.Lerp(GameDriver.instance.Player.transform.position, ZOZOpos2d, 0.02f); }
                 //if (Vector3.Distance(GameDriver.instance.Player.transform.position, ZOZO.transform.position) > 14) { GameDriver.instance.Player.transform.position = ZOZO.transform.position; }
