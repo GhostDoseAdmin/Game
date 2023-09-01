@@ -137,8 +137,10 @@ public class VictimControl : Item
             }
             else { canTest = true; }
             //KEEP IN CIRCLE
-            if (Vector3.Distance(GameDriver.instance.Player.transform.position, transform.position) > 3) { GameDriver.instance.Player.transform.position = Vector3.Lerp(GameDriver.instance.Player.transform.position, transform.position, 0.02f); }
-
+            if (ZOZO.activeSelf == false)
+            {
+                if (Vector3.Distance(GameDriver.instance.Player.transform.position, transform.position) > 3) { GameDriver.instance.Player.transform.position = Vector3.Lerp(GameDriver.instance.Player.transform.position, transform.position, 0.02f); }
+            }
         }
         else { GameDriver.instance.Player.GetComponent<PlayerController>().gamePad.camSup.forceCharacterDirection = false; }
 
@@ -150,12 +152,15 @@ public class VictimControl : Item
             //Expand Dome
             if (effectDome.transform.localScale.x < 12) { effectDome.transform.localScale = Vector3.Lerp(effectDome.transform.localScale, effectDome.transform.localScale * 3f, Time.deltaTime * 1); }
             //KEEP IN DOME
-            if (Vector3.Distance(GameDriver.instance.Player.transform.position, ZOZO.transform.position) > 12) { 
-                GameDriver.instance.Player.transform.position = Vector3.Lerp(GameDriver.instance.Player.transform.position, transform.position, 0.02f); 
-            
-            }
-            if (Vector3.Distance(GameDriver.instance.Player.transform.position, transform.position) > 14) { GameDriver.instance.Player.transform.position = transform.position; }
+            if (ZOZO.activeSelf == false)
+            {
+                if (Vector3.Distance(GameDriver.instance.Player.transform.position, ZOZO.transform.position) > 12)
+                {
+                    GameDriver.instance.Player.transform.position = Vector3.Lerp(GameDriver.instance.Player.transform.position, transform.position, 0.02f);
 
+                }
+                if (Vector3.Distance(GameDriver.instance.Player.transform.position, transform.position) > 14) { GameDriver.instance.Player.transform.position = transform.position; }
+            }
             //ARISE GATE
             if (zozoSpawn.transform.position.y < zozoSpawnStartPos.y + 6.5)
             {
@@ -167,11 +172,14 @@ public class VictimControl : Item
             {   //EXPAND
                 if (zozoSpawn.transform.localScale.x < 30) { zozoSpawn.transform.localScale = Vector3.Lerp(zozoSpawn.transform.localScale, zozoSpawn.transform.localScale * 1.05f, Time.deltaTime * 1); }
                 //PUSH AWAY PLAYER
-                if (Vector3.Distance(GameDriver.instance.Player.transform.position, transform.position) < 3)                {
-                GameDriver.instance.Player.transform.position = Vector3.Lerp(GameDriver.instance.Player.transform.position,
-                        GameDriver.instance.Player.transform.position + (GameDriver.instance.Player.transform.position - transform.position).normalized * 3, 4f * Time.deltaTime);
+                if(ZOZO.activeSelf == false)
+                {
+                    if (Vector3.Distance(GameDriver.instance.Player.transform.position, transform.position) < 3)
+                    {
+                        GameDriver.instance.Player.transform.position = Vector3.Lerp(GameDriver.instance.Player.transform.position,
+                                GameDriver.instance.Player.transform.position + (GameDriver.instance.Player.transform.position - transform.position).normalized * 3, 4f * Time.deltaTime);
+                    }
                 }
-
             }
             //WHITE RAYS MID EFFECT
            if (zozoEffectMid.activeSelf == true) { if (zozoEffectMid.transform.localScale.x < 20) { zozoEffectMid.transform.localScale = Vector3.Lerp(zozoEffectMid.transform.localScale, zozoEffectMid.transform.localScale * 1.5f, Time.deltaTime * 1); } }
@@ -261,7 +269,7 @@ public class VictimControl : Item
             if (!fadeMusicOut)
             {
                 if (Vector3.Distance(GameDriver.instance.Player.transform.position, ZOZO.transform.position) > 12) { GameDriver.instance.Player.transform.position = Vector3.Lerp(GameDriver.instance.Player.transform.position, ZOZOpos2d, 0.02f); }
-                if (Vector3.Distance(GameDriver.instance.Player.transform.position, ZOZO.transform.position) > 14) { GameDriver.instance.Player.transform.position = ZOZO.transform.position; }
+                if (Vector3.Distance(GameDriver.instance.Player.transform.position, ZOZO.transform.position) > 13) { GameDriver.instance.Player.transform.position = ZOZO.transform.position; }
 
             }
             //if (Vector3.Distance(GameDriver.instance.Player.transform.position, ZOZO.transform.position) > 12) { GameDriver.instance.Player.GetComponent<Rigidbody>().AddForce((ZOZOpos2d - GameDriver.instance.Player.transform.position).normalized * 1000, ForceMode.Acceleration); }
