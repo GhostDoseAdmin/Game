@@ -156,7 +156,7 @@ public class VictimControl : Item
             {
                 if (Vector3.Distance(GameDriver.instance.Player.transform.position, ZOZO.transform.position) > 12)
                 {
-                    GameDriver.instance.Player.transform.position = Vector3.Lerp(GameDriver.instance.Player.transform.position, transform.position, 0.02f);
+                    GameDriver.instance.Player.transform.position = Vector3.Lerp(GameDriver.instance.Player.transform.position, transform.position, 0.03f);
 
                 }
                 if (Vector3.Distance(GameDriver.instance.Player.transform.position, transform.position) > 14) { GameDriver.instance.Player.transform.position = transform.position; }
@@ -268,8 +268,12 @@ public class VictimControl : Item
             Vector3 ZOZOpos2d = new Vector3(ZOZO.transform.position.x, GameDriver.instance.Player.transform.position.y, ZOZO.transform.position.z);
             if (!fadeMusicOut)
             {
-                if (Vector3.Distance(GameDriver.instance.Player.transform.position, ZOZO.transform.position) > 12) { GameDriver.instance.Player.transform.position = Vector3.Lerp(GameDriver.instance.Player.transform.position, ZOZOpos2d, 0.02f); }
-                if (Vector3.Distance(GameDriver.instance.Player.transform.position, ZOZO.transform.position) > 14) { GameDriver.instance.Player.transform.position = ZOZO.transform.position; }
+                Vector3 oppositeForce = ZOZO.transform.forward * 500f;
+                oppositeForce.y = 0f; // Set the y component to 0
+                GameDriver.instance.Player.GetComponent<HealthSystem>().HealthDamage(10, -oppositeForce);
+
+                //if (Vector3.Distance(GameDriver.instance.Player.transform.position, ZOZO.transform.position) > 12) { GameDriver.instance.Player.transform.position = Vector3.Lerp(GameDriver.instance.Player.transform.position, ZOZOpos2d, 0.02f); }
+                //if (Vector3.Distance(GameDriver.instance.Player.transform.position, ZOZO.transform.position) > 14) { GameDriver.instance.Player.transform.position = ZOZO.transform.position; }
 
             }
             //if (Vector3.Distance(GameDriver.instance.Player.transform.position, ZOZO.transform.position) > 12) { GameDriver.instance.Player.GetComponent<Rigidbody>().AddForce((ZOZOpos2d - GameDriver.instance.Player.transform.position).normalized * 1000, ForceMode.Acceleration); }
