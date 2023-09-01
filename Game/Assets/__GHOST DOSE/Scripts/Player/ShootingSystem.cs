@@ -190,7 +190,7 @@ public class ShootingSystem : MonoBehaviour
         //REM POD
         if (GetComponent<PlayerController>().gear == 3)
         {
-
+            float distance = 20;
             if (!GetComponent<PlayerController>().throwing)
             {
                 LayerMask mask = LayerMask.GetMask("Default"); // Use LayerMask.GetMask to create a LayerMask
@@ -198,9 +198,9 @@ public class ShootingSystem : MonoBehaviour
                 Vector3 startPoint = GameObject.Find("PlayerCamera").transform.position;
                 Vector3 direction = (targetLook.position - startPoint).normalized;
 
-                Debug.DrawLine(startPoint, startPoint + direction * 10, Color.red);
+                Debug.DrawLine(startPoint, startPoint + direction * distance, Color.red);
 
-                if (Physics.Raycast(startPoint, direction, out hit, 10, mask))
+                if (Physics.Raycast(startPoint, direction, out hit, distance, mask))
                 {
                     Vector3 newPosition;
                     //Debug.Log("--------------------------HITTING OBJECT " + hit.collider.name);
@@ -212,7 +212,7 @@ public class ShootingSystem : MonoBehaviour
                     }
                     else
                     {//fallback to end of ray
-                        newPosition = direction * 10;
+                        newPosition = direction * distance;
 
                     }
                     remPod.remPodTarget.transform.position = newPosition;

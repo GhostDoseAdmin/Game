@@ -179,7 +179,6 @@ public class GhostVFX : MonoBehaviour
 
                 //ADD IN PLAYER LIGHT
                 lightSource = PlayerLight.GetComponent<Light>();
-                if (lightSource == null) { Debug.Log("------------------------------------CANNOT FIND PLAYER LIGHTSOURCE --------------------------------------------"); }
                 float spotAngle = lightSource.spotAngle;
                 if (!lightSource.enabled) { spotAngle = 0; }
                 else
@@ -348,6 +347,8 @@ public class GhostVFX : MonoBehaviour
 
     private bool InLineOfSight(Light light, bool ignoreShadow)
     {
+        if (light == null) { Debug.Log("------------------------------------CANNOT FIND LIGHTSOURCE --------------------------------------------"); }
+
         LayerMask mask = 1 << LayerMask.NameToLayer("Default") | 1 << LayerMask.NameToLayer("Enemy");
         if (!ignoreShadow){mask |= 1 << LayerMask.NameToLayer("ShadowBox"); }// INCLUDE SHADOW LAYER
 
