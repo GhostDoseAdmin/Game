@@ -321,33 +321,37 @@ public class GhostVFX : MonoBehaviour
     {
         Light closestLight = null;
         float closestDistance = Mathf.Infinity;
-        for (int i = 0; i < lights.Length; i++)
+        if (lights != null)
         {
-            if (IsObjectInLightCone(lights[i].GetComponent<Light>(), false))
-            { 
-                float distance = Vector3.Distance(transform.position, lights[i].transform.position);
-                if (distance < closestDistance)
+            for (int i = 0; i < lights.Length; i++)
+            {
+                if (IsObjectInLightCone(lights[i].GetComponent<Light>(), false))
                 {
-                    closestLight = lights[i].GetComponent<Light>();
-                    closestDistance = distance;
+                    float distance = Vector3.Distance(transform.position, lights[i].transform.position);
+                    if (distance < closestDistance)
+                    {
+                        closestLight = lights[i].GetComponent<Light>();
+                        closestDistance = distance;
+                    }
+                }
+            }
+            if (closestLight != null)
+            {
+
+                if (InLineOfSight(closestLight.GetComponent<Light>(), false))
+                {
+                    visibilitySet = true;
+                    if (!Shadower) { visible = true; }
+                    else { visible = false; } // shadower 
                 }
             }
         }
-        if (closestLight != null)
-        {
-            
-            if (InLineOfSight(closestLight.GetComponent<Light>(), false))
-            {
-                visibilitySet = true;
-                if (!Shadower) { visible = true; }
-                else { visible = false; } // shadower 
-            }
-        }
+        
+
     }
 
     private bool InLineOfSight(Light light, bool ignoreShadow)
     {
-        if (light == null) { Debug.Log("------------------------------------CANNOT FIND LIGHTSOURCE --------------------------------------------"); }
 
         LayerMask mask = 1 << LayerMask.NameToLayer("Default") | 1 << LayerMask.NameToLayer("Enemy");
         if (!ignoreShadow){mask |= 1 << LayerMask.NameToLayer("ShadowBox"); }// INCLUDE SHADOW LAYER
@@ -395,6 +399,8 @@ public class GhostVFX : MonoBehaviour
         bool inCone = angleToObject <= adjustedSpotAngle * 0.5f;
         //if (isPlayer && spotlight.gameObject.name == "player_light") { Debug.Log("IN CONE? " + inCone); }
         if (isPlayer && Shadower) { return inCone; }//fl effect on shadowers have no range
+
+        //if (spotlight == null || this.gameObject == null  || directionToObject==null) { Debug.Log("-------------------------------------------------------------NULL"); }
         return inRange && inCone;
     }
 
