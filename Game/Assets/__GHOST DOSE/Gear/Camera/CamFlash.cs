@@ -11,7 +11,7 @@ public class CamFlash : MonoBehaviour
     private List<NPCController> ghostObjects;
     public bool isClient;
     private AudioSource audioSource;
-    public bool shotgun;
+    //public bool shotgun;
     IEnumerator DestroyAfterDelay(GameObject obj)
     {
         yield return new WaitForSeconds(0.5f);
@@ -83,11 +83,13 @@ public class CamFlash : MonoBehaviour
                 {
 
                     //if (FindEnemyMain(hit.collider.gameObject.transform) == ghost.gameObject)
+                    if (Mathf.Abs(transform.position.y - ghost.gameObject.transform.position.y) <= 2)
                     {
                         if (ghost.gameObject.GetComponent<Teleport>().teleport == 0 && ghost.healthEnemy > 0)
                         {
                             int damage = 0;
-                            if (shotgun) { damage = 5000; }
+                            //if (shotgun) { damage = 5000; }
+                            //Debug.Log("-----------------------------------------------------------------SPOOKED ---------------------------------------------------");
                             ghost.TakeDamage(damage, isClient);
                         }
                         //ghost.agro = true;

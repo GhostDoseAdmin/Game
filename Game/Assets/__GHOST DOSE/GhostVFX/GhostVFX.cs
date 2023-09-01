@@ -179,6 +179,7 @@ public class GhostVFX : MonoBehaviour
 
                 //ADD IN PLAYER LIGHT
                 lightSource = PlayerLight.GetComponent<Light>();
+                if (lightSource == null) { Debug.Log("------------------------------------CANNOT FIND PLAYER LIGHTSOURCE --------------------------------------------"); }
                 float spotAngle = lightSource.spotAngle;
                 if (!lightSource.enabled) { spotAngle = 0; }
                 else
