@@ -39,7 +39,7 @@ public class GhostVFX : MonoBehaviour
 
     private int updateCall;
 
-    private bool camflashplayer, camflashclient;
+    public bool camflashplayer, camflashclient;
     public void Awake()
     {
         Shadower = GetComponent<NPCController>().Shadower;
@@ -372,7 +372,7 @@ public class GhostVFX : MonoBehaviour
             if (hit.collider.GetComponentInParent<NPCController>().gameObject == this.gameObject)
             {
                 targetHit = true;
-                if(GetComponent<ZozoControl>() != null) { if (camflashplayer || camflashclient) { GetComponent<ZozoControl>().ZOZOFlinch(); } }
+                if(GetComponent<ZozoControl>() != null) { GetComponent<ZozoControl>().ZOZOFlinch(false); if (camflashplayer || camflashclient) { GetComponent<ZozoControl>().ZOZOFlinch(true); } }
                 //FLICKER
                 if (GetComponent<Animator>().GetCurrentAnimatorClipInfo(0).Length > 0 && GetComponent<Animator>().GetCurrentAnimatorClipInfo(0)[0].clip.name == "agro" && light.GetComponent<GhostLight>() != null) { if (light.GetComponent<GhostLight>().canFlicker) { light.GetComponent<GhostLight>().InvokeFlicker(1f); } }
                 break;
