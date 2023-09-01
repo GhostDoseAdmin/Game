@@ -115,7 +115,7 @@ public class ZozoControl : MonoBehaviour
                 if (GameObject.Find("Hit") != null) { GameObject.Find("PlayerCamera").GetComponent<Camera_Controller>().InvokeShake(0.5f, Mathf.InverseLerp(20f, 0f, Vector3.Distance(GameDriver.instance.Player.transform.position, GameObject.Find("Hit").transform.position))); }
                 GameObject.Find("PlayerCamera").GetComponent<Camera_Controller>().InvokeShake(0.5f, Mathf.InverseLerp(20f, 0f, Vector3.Distance(GameDriver.instance.Player.transform.position, transform.position))); ;
 
-                transform.rotation = Quaternion.RotateTowards(transform.rotation, Quaternion.LookRotation(GetComponent<NPCController>().target.transform.position - transform.position), 50f * Time.deltaTime);
+                if (GetComponent<NPCController>().target) { transform.rotation = Quaternion.RotateTowards(transform.rotation, Quaternion.LookRotation(GetComponent<NPCController>().target.transform.position - transform.position), 50f * Time.deltaTime); }
                 //LASER BLOCKED
                 /*if (NetworkDriver.instance.HOST && hasTriedLaser)
                 {

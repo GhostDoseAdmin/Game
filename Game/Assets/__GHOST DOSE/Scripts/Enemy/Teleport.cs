@@ -86,7 +86,7 @@ public class Teleport : MonoBehaviour
             if (NetworkDriver.instance.HOST) { NetworkDriver.instance.sioCom.Instance.Emit("teleport", JsonConvert.SerializeObject($"{{'obj':'{gameObject.name}','tp':'1','x':'{transform.position.x}','y':'{transform.position.y}','z':'{transform.position.z}'}}"), false); }
             fadeTimer = Time.time;
             if (GetComponent<NPCController>().target != null) { target = GetComponent<NPCController>().target; }
-            if (target != null && GetComponent<NPCController>().healthEnemy>0) { AudioManager.instance.Play("Disappear", gameObject.GetComponent<NPCController>().audioSource); }
+            if (target != null && GetComponent<NPCController>().healthEnemy>0) { AudioManager.instance.Play("Disappear", null); }
             if (!NetworkDriver.instance.HOST) { GetComponent<NPCController>().enabled = false; }
             debugAttack = true;
             GetComponent<NavMeshAgent>().enabled = false;
