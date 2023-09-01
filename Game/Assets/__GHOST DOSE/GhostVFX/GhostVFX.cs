@@ -179,7 +179,6 @@ public class GhostVFX : MonoBehaviour
 
                 //ADD IN PLAYER LIGHT
                 lightSource = PlayerLight.GetComponent<Light>();
-                if (lightSource == null) { Debug.Log("------------------------------------CANNOT FIND PLAYER LIGHTSOURCE --------------------------------------------"); }
                 float spotAngle = lightSource.spotAngle;
                 if (!lightSource.enabled) { spotAngle = 0; }
                 else
@@ -348,6 +347,8 @@ public class GhostVFX : MonoBehaviour
 
     private bool InLineOfSight(Light light, bool ignoreShadow)
     {
+        if (light == null) { Debug.Log("------------------------------------CANNOT FIND LIGHTSOURCE --------------------------------------------"); }
+
         LayerMask mask = 1 << LayerMask.NameToLayer("Default") | 1 << LayerMask.NameToLayer("Enemy");
         if (!ignoreShadow){mask |= 1 << LayerMask.NameToLayer("ShadowBox"); }// INCLUDE SHADOW LAYER
 
@@ -355,8 +356,8 @@ public class GhostVFX : MonoBehaviour
         Vector3 targPos = new Vector3(HEAD.transform.position.x, HEAD.transform.position.y + hitHeight, HEAD.transform.position.z);
         Ray ray = new Ray(light.transform.position, (targPos - light.transform.position).normalized);
         float distance = Vector3.Distance(light.transform.position, targPos);
-        Vector3 endPoint = ray.GetPoint(distance);
-        Debug.DrawLine(light.transform.position, endPoint, UnityEngine.Color.blue);
+        //Vector3 endPoint = ray.GetPoint(distance);
+        //Debug.DrawLine(light.transform.position, endPoint, UnityEngine.Color.blue);
 
         // Perform the raycast, excluding the specified layers
         RaycastHit[] hits = Physics.RaycastAll(ray, distance, mask);
