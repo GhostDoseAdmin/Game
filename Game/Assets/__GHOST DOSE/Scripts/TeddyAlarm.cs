@@ -17,10 +17,11 @@ public class TeddyAlarm : MonoBehaviour
         if (!hasTriggered)
         {
 
-            AudioManager.instance.Play("TeddyMusic", null);
-
+           
             if (other.gameObject.name == "Player" || other.gameObject.name == "Client")
             {
+                AudioManager.instance.Play("TeddyMusic", null);
+
                 hasTriggered = true;
                 NPCController[] teddys = null;
                 teddys = FindObjectsOfType<NPCController>();
