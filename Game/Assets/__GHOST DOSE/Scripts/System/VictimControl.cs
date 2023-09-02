@@ -51,6 +51,7 @@ public class VictimControl : Item
     public bool canTest;
     public float zozoTimer;
     private int maxCandles = 6;
+    private bool canStopPlayer, canStopOther = true;
     // Start is called before the first frame update
     void Start()
     {
@@ -268,11 +269,29 @@ public class VictimControl : Item
             Vector3 ZOZOpos2d = new Vector3(ZOZO.transform.position.x, GameDriver.instance.Player.transform.position.y, ZOZO.transform.position.z);
             if (!fadeMusicOut)
             {
-                if (Vector3.Distance(GameDriver.instance.Player.transform.position, ZOZO.transform.position) > 12)
+                //if (!canStop)
                 {
-                    Vector3 oppositeForce = ZOZO.transform.forward * 1f;
+                    Vector3 oppositeForce = ZOZO.transform.forward * 200f;
                     oppositeForce.y = 0f; // Set the y component to 0
-                    GameDriver.instance.Player.GetComponent<HealthSystem>().HealthDamage(100, -oppositeForce);
+
+                    if (Vector3.Distance(GameDriver.instance.Player.transform.position, ZOZO.transform.position) > 12)
+                    {
+                        if(canStopPlayer)
+                        {
+                            canStopPlayer = false;
+                            Invoke("ResetCanStopPlayer", 3f);
+                            GameDriver.instance.Player.GetComponent<HealthSystem>().HealthDamage(100, -oppositeForce);
+                        }
+                    }
+                    if (Vector3.Distance(GameDriver.instance.Client.transform.position, ZOZO.transform.position) > 12)
+                    {
+                        if (canStopOther)
+                        {
+                            canStopOther = false;
+                            Invoke("ResetCanStopOther", 3f);
+                            GameDriver.instance.Client.GetComponent<ClientPlayerController>().Flinch(-oppositeForce);
+                        }
+                    }
                 }
                 //if (Vector3.Distance(GameDriver.instance.Player.transform.position, ZOZO.transform.position) > 12) { GameDriver.instance.Player.transform.position = Vector3.Lerp(GameDriver.instance.Player.transform.position, ZOZOpos2d, 0.02f); }
                 //if (Vector3.Distance(GameDriver.instance.Player.transform.position, ZOZO.transform.position) > 14) { GameDriver.instance.Player.transform.position = ZOZO.transform.position; }
@@ -312,6 +331,15 @@ public class VictimControl : Item
        // GameDriver.instance.WriteGuiMsg("RANDOM VICTIM " + ChosenVictim.name, 10f, false);
         if (NetworkDriver.instance.HOST && NetworkDriver.instance.TWOPLAYER && NetworkDriver.instance.OTHERS_SCENE_READY) { NetworkDriver.instance.sioCom.Instance.Emit("event", JsonConvert.SerializeObject($"{{'obj':'{ChosenVictim.name}','type':'update','event':'randomvictim'}}"), false); }
 
+    }
+    //CANSTOP
+    public void ResetCanStopPlayer()
+    {
+        canStopPlayer = true;
+    }
+    public void ResetCanStopOther()
+    {
+        canStopOther = true;
     }
 
     //START CIRCLE
