@@ -272,7 +272,7 @@ public class VictimControl : Item
             {
                 //if (!canStop)
                 {
-                    Vector3 oppositeForce = ZOZO.transform.forward * 0f;
+                    Vector3 oppositeForce = ZOZO.transform.forward * 200f;
                     oppositeForce.y = 0f; // Set the y component to 0
 
                     if (Vector3.Distance(GameDriver.instance.Player.transform.position, ZOZO.transform.position) > 12)
@@ -280,8 +280,8 @@ public class VictimControl : Item
                         if(canStopPlayer)
                         {
                             canStopPlayer = false;
-                            Invoke("ResetCanStopPlayer", 2f);
-                            GameDriver.instance.Player.GetComponent<HealthSystem>().HealthDamage(200, -oppositeForce);
+                            Invoke("ResetCanStopPlayer", 1f);
+                            GameDriver.instance.Player.GetComponent<HealthSystem>().HealthDamage(50, -oppositeForce);
                         }
                     }
                     if (Vector3.Distance(GameDriver.instance.Client.transform.position, ZOZO.transform.position) > 12)
@@ -289,7 +289,7 @@ public class VictimControl : Item
                         if (canStopOther)
                         {
                             canStopOther = false;
-                            Invoke("ResetCanStopOther", 2f);
+                            Invoke("ResetCanStopOther", 1f);
                             GameDriver.instance.Client.GetComponent<ClientPlayerController>().Flinch(-oppositeForce);
                         }
                     }
