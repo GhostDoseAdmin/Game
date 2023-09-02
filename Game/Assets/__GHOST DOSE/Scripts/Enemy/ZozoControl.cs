@@ -63,6 +63,7 @@ public class ZozoControl : MonoBehaviour
 
 
         if (zozoSizzleFX.transform.localScale.x > 0) { zozoSizzleFX.transform.localScale = Vector3.Lerp(zozoSizzleFX.transform.localScale, zozoSizzleFX.transform.localScale * 0.05f, Time.deltaTime * 1); }
+        if (zozoSizzleEnvFX.transform.localScale.x > 0) { zozoSizzleEnvFX.transform.localScale = Vector3.Lerp(zozoSizzleEnvFX.transform.localScale, zozoSizzleEnvFX.transform.localScale * 0.05f, Time.deltaTime * 1); }
 
 
         //INITIATE LASER
