@@ -244,12 +244,13 @@ public class GhostVFX : MonoBehaviour
                 invisible = false;
                 {
                     float fadeinfactor = 1;
-                    if(camflashplayer || camflashclient) { fadeinfactor = 1.25f; }//accelerate visiblity from camflashes
+                    if(camflashplayer || camflashclient) { fadeinfactor = 2; }//accelerate visiblity from camflashes
                     if (visible) { 
                         if (GetComponent<ZozoControl>() == null) { 
                             Fade(true, fadeinfactor * 0.5f); //inverse relationship for shadowers
                         } 
                         else {//ZOZO FADE
+                            fadeinfactor = 0.5f;
                             if (!NetworkDriver.instance.TWOPLAYER) { fadeinfactor *=2f; }//single player zozo easier to kill
                             Fade(true, fadeinfactor * 2f); //higher value, fades OUT faster, easier to kill
                         }  
