@@ -141,7 +141,7 @@ public class VictimControl : Item
             //KEEP IN CIRCLE
             if (ZOZO.activeSelf == false)
             {
-                if (Vector3.Distance(GameDriver.instance.Player.transform.position, transform.position) > 3) { GameDriver.instance.Player.transform.position = Vector3.Lerp(GameDriver.instance.Player.transform.position, transform.position, 0.04f); }
+                if (Vector3.Distance(GameDriver.instance.Player.transform.position, transform.position) > 3) { GameDriver.instance.Player.transform.position = Vector3.Lerp(GameDriver.instance.Player.transform.position, transform.position, 0.06f); }
             }
         }
         else { GameDriver.instance.Player.GetComponent<PlayerController>().gamePad.camSup.forceCharacterDirection = false; }
@@ -272,7 +272,7 @@ public class VictimControl : Item
             {
                 //if (!canStop)
                 {
-                    Vector3 oppositeForce = ZOZO.transform.forward * 500f;
+                    Vector3 oppositeForce = ZOZO.transform.forward * 1000f;
                     oppositeForce.y = 0f; // Set the y component to 0
 
                     if (Vector3.Distance(GameDriver.instance.Player.transform.position, ZOZO.transform.position) > 12)
@@ -280,7 +280,7 @@ public class VictimControl : Item
                         if(canStopPlayer)
                         {
                             canStopPlayer = false;
-                            Invoke("ResetCanStopPlayer", 3f);
+                            Invoke("ResetCanStopPlayer", 2f);
                             GameDriver.instance.Player.GetComponent<HealthSystem>().HealthDamage(200, -oppositeForce);
                         }
                     }
@@ -289,7 +289,7 @@ public class VictimControl : Item
                         if (canStopOther)
                         {
                             canStopOther = false;
-                            Invoke("ResetCanStopOther", 3f);
+                            Invoke("ResetCanStopOther", 2f);
                             GameDriver.instance.Client.GetComponent<ClientPlayerController>().Flinch(-oppositeForce);
                         }
                     }
