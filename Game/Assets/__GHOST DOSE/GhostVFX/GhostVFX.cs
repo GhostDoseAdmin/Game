@@ -183,7 +183,7 @@ public class GhostVFX : MonoBehaviour
                 if (!lightSource.enabled) { spotAngle = 0; }
                 else
                 { //flashlight enabled
-                    if (!InLineOfSight(lightSource, true)) { spotAngle = 0; }
+                    if (!InLineOfSight(lightSource, true, false)) { spotAngle = 0; }
                     //FLASHLIGHT OVERRIDES SHADOW AND ENVIORNMENT
                     else if (IsObjectInLightCone(lightSource, true))//directly under light source
                     {
@@ -211,7 +211,7 @@ public class GhostVFX : MonoBehaviour
                 if (!lightSource.enabled) { spotAngle = 0; }
                 else
                 {
-                    if (!InLineOfSight(lightSource, true)) { spotAngle = 0; }
+                    if (!InLineOfSight(lightSource, true, false)) { spotAngle = 0; }
                     //FLASHLIGHT OVERRIDES SHADOW AND ENVIORNMENT
                     else if (IsObjectInLightCone(lightSource, true))//directly under light source
                     {
@@ -339,7 +339,7 @@ public class GhostVFX : MonoBehaviour
             if (closestLight != null)
             {
 
-                if (InLineOfSight(closestLight.GetComponent<Light>(), false))
+                if (InLineOfSight(closestLight.GetComponent<Light>(), false, true))
                 {
                     visibilitySet = true;
                     if (!Shadower) { visible = true; }
@@ -351,7 +351,7 @@ public class GhostVFX : MonoBehaviour
 
     }
 
-    private bool InLineOfSight(Light light, bool ignoreShadow)
+    private bool InLineOfSight(Light light, bool ignoreShadow, bool env)
     {
 
         LayerMask mask = 1 << LayerMask.NameToLayer("Default") | 1 << LayerMask.NameToLayer("Enemy");
@@ -373,7 +373,7 @@ public class GhostVFX : MonoBehaviour
             if (hit.collider.GetComponentInParent<NPCController>().gameObject == this.gameObject)
             {
                 targetHit = true;
-                if(GetComponent<ZozoControl>() != null) { GetComponent<ZozoControl>().ZOZOFlinch(false); if (camflashplayer || camflashclient) { GetComponent<ZozoControl>().ZOZOFlinch(true); } }
+                if(GetComponent<ZozoControl>() != null) { GetComponent<ZozoControl>().ZOZOFlinch(false, env); if (camflashplayer || camflashclient) { GetComponent<ZozoControl>().ZOZOFlinch(true, env); } }
                 //FLICKER
                 if (GetComponent<Animator>().GetCurrentAnimatorClipInfo(0).Length > 0 && GetComponent<Animator>().GetCurrentAnimatorClipInfo(0)[0].clip.name == "agro" && light.GetComponent<GhostLight>() != null) { if (light.GetComponent<GhostLight>().canFlicker) { light.GetComponent<GhostLight>().InvokeFlicker(1f); } }
                 break;

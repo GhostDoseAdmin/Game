@@ -30,6 +30,7 @@ public class ZozoControl : MonoBehaviour
     private bool charging;
     private bool startCharging;
     public GameObject zozoSizzleFX, zozoSizzleEnvFX;
+    //public int HP = 1000;
     //private int laserBlocked;
     //public bool blocked = false;
     private void Awake()
@@ -159,11 +160,22 @@ public class ZozoControl : MonoBehaviour
     {
         zozoCanFlinsh = true;
     }
-    public void ZOZOFlinch(bool hard)
+    public void ZOZOFlinch(bool hard, bool env)
     {
         //Debug.Log("----------------------------------ZOZO FLINCHING-------------------------------");
-        zozoSizzleFX.transform.localScale = new Vector3(14f,14f,14f);
+        if (!env) { zozoSizzleFX.transform.localScale = new Vector3(14f, 14f, 14f); }
+        if (env) { zozoSizzleEnvFX.transform.localScale = new Vector3(14f, 14f, 14f); }
+
         if (zozoSizzleFX.transform.localScale.x > 1)
+        {
+            if (!audioSourceSizzle.isPlaying)
+            {
+                audioSourceSizzle.volume = 2f;
+                AudioManager.instance.Play("Sizzle", audioSourceSizzle);
+            }
+        }
+
+        if (zozoSizzleEnvFX.transform.localScale.x > 1)
         {
             if (!audioSourceSizzle.isPlaying)
             {
