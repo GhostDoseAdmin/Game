@@ -29,7 +29,7 @@ public class ZozoControl : MonoBehaviour
     public float laserCoolDown;
     private bool charging;
     private bool startCharging;
-    public GameObject zozoSizzleFX;
+    public GameObject zozoSizzleFX, zozoSizzleEnvFX;
     //private int laserBlocked;
     //public bool blocked = false;
     private void Awake()
