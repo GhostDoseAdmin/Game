@@ -51,7 +51,8 @@ public class VictimControl : Item
     public bool canTest;
     public float zozoTimer;
     private int maxCandles = 6;
-    private bool canStopPlayer, canStopOther = true;
+    private bool canStopPlayer = true;
+    private bool canStopOther = true;
     // Start is called before the first frame update
     void Start()
     {
