@@ -141,7 +141,7 @@ public class VictimControl : Item
             //KEEP IN CIRCLE
             if (ZOZO.activeSelf == false)
             {
-                if (Vector3.Distance(GameDriver.instance.Player.transform.position, transform.position) > 3) { GameDriver.instance.Player.transform.position = Vector3.Lerp(GameDriver.instance.Player.transform.position, transform.position, 0.02f); }
+                if (Vector3.Distance(GameDriver.instance.Player.transform.position, transform.position) > 3) { GameDriver.instance.Player.transform.position = Vector3.Lerp(GameDriver.instance.Player.transform.position, transform.position, 0.04f); }
             }
         }
         else { GameDriver.instance.Player.GetComponent<PlayerController>().gamePad.camSup.forceCharacterDirection = false; }
@@ -272,7 +272,7 @@ public class VictimControl : Item
             {
                 //if (!canStop)
                 {
-                    Vector3 oppositeForce = ZOZO.transform.forward * 200f;
+                    Vector3 oppositeForce = ZOZO.transform.forward * 500f;
                     oppositeForce.y = 0f; // Set the y component to 0
 
                     if (Vector3.Distance(GameDriver.instance.Player.transform.position, ZOZO.transform.position) > 12)
@@ -281,7 +281,7 @@ public class VictimControl : Item
                         {
                             canStopPlayer = false;
                             Invoke("ResetCanStopPlayer", 3f);
-                            GameDriver.instance.Player.GetComponent<HealthSystem>().HealthDamage(100, -oppositeForce);
+                            GameDriver.instance.Player.GetComponent<HealthSystem>().HealthDamage(200, -oppositeForce);
                         }
                     }
                     if (Vector3.Distance(GameDriver.instance.Client.transform.position, ZOZO.transform.position) > 12)
