@@ -683,14 +683,20 @@ public class NPCController : MonoBehaviour
             if (!otherPlayer) { transform.LookAt(Player.transform); alertLevelPlayer = unawareness * 2; } else { transform.LookAt(Client.transform); alertLevelClient = unawareness * 2; }
 
             //CAMSHOT
-            if (damageAmount <= 0) { range += 2; angleView = startAngleView + 30; Flinch(false); }
+            if (damageAmount <= 0) { range += 2; angleView = startAngleView + 30; if (!brute) { Flinch(false); } }
             //--------AGRO-----------
             if (damageAmount > 0)
             {
                // if (agro) { 
                    // Flinch(false);
                 //}
-                if (damageAmount > 60) { if (!brute) { Flinch(true); } else { Flinch(false); } } else { Flinch(false); }
+                if (damageAmount > 60) { //SHOTGUN & HEADSHOT
+                    if (!brute) { Flinch(true); } 
+                    else { Flinch(false); } 
+                } 
+                else { 
+                    if (!brute) { Flinch(false); } 
+                }
                 Agro(otherPlayer);
 
             }
