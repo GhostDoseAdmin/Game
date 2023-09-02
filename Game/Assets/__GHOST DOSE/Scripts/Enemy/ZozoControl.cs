@@ -165,7 +165,7 @@ public class ZozoControl : MonoBehaviour
     {
         //Debug.Log("----------------------------------ZOZO FLINCHING-------------------------------");
         if (!env) { zozoSizzleFX.transform.localScale = new Vector3(14f, 14f, 14f); }
-        if (env) { zozoSizzleEnvFX.transform.localScale = new Vector3(14f, 14f, 14f); }
+        if (env) { zozoSizzleEnvFX.transform.localScale = new Vector3(3f, 3f, 3f); }
 
         if (zozoSizzleFX.transform.localScale.x > 1)
         {
