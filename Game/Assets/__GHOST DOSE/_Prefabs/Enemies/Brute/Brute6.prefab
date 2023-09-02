@@ -559,6 +559,8 @@ MonoBehaviour:
   inShadow: 0
   invisible: 0
   HEAD: {fileID: 5011801356560146369}
+  camflashplayer: 0
+  camflashclient: 0
 --- !u!114 &878244703916540966
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1974,8 +1976,8 @@ CapsuleCollider:
   m_Material: {fileID: 0}
   m_IsTrigger: 1
   m_Enabled: 1
-  m_Radius: 0.2
-  m_Height: 1
+  m_Radius: 0.48
+  m_Height: 1.29
   m_Direction: 1
   m_Center: {x: 0, y: 0.12, z: 0}
 --- !u!1 &3485599316694444872
@@ -2315,7 +2317,7 @@ SphereCollider:
   m_IsTrigger: 1
   m_Enabled: 1
   serializedVersion: 2
-  m_Radius: 0.14
+  m_Radius: 0.24
   m_Center: {x: 0, y: 0.06, z: 0}
 --- !u!1 &5124560550303244452
 GameObject:
