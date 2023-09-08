@@ -327,6 +327,7 @@ public class NPCController : MonoBehaviour
                 if (alertLevelPlayer > 0)
                 {
                     alertLevelPlayer -= 1;
+                    if (!GameDriver.instance.Player.GetComponent<FlashlightSystem>().isFlashlightOn) { alertLevelPlayer -= 1; }
                     if (alertLevelPlayer > alertLevelClient && alertLevelPlayer > unawareness)
                     {
                         if (destination != PlayerWP) {
@@ -340,6 +341,7 @@ public class NPCController : MonoBehaviour
                 if (alertLevelClient > alertLevelPlayer && alertLevelClient > unawareness)
                 {
                     alertLevelClient -= 1;
+                    if (!GameDriver.instance.Client.GetComponent<ClientPlayerController>().flashlighton) { alertLevelClient -= 1; }
                     if (alertLevelClient > unawareness)
                     {
                         if (destination != ClientWP)
@@ -454,8 +456,8 @@ public class NPCController : MonoBehaviour
 
         float distance = Vector3.Distance(transform.position, new Vector3(target.position.x, transform.position.y, target.position.z));//measured at same level Yaxis
          //-----------DISENGAGE--------------------
-         if (distance > 15 && !ZOZO && !agro && !brute){ Disengage(); }
-
+         if (distance > 15 && !ZOZO && !agro && !brute){ Disengage(); return; }
+        if (teddy && distance > 5) { Disengage(); return; }
 
 
         //------PUSH PLAYER AWAY
