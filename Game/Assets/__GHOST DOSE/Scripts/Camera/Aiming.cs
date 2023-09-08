@@ -25,7 +25,7 @@ public class Aiming : MonoBehaviour {
 	private float isZoomed = 0;
 
 	public GameObject player;
-	private MobileController gamePad;
+	//private MobileController gamePad;
 	public bool aim;
 	void Start()
     {
@@ -37,7 +37,7 @@ public class Aiming : MonoBehaviour {
 
 		if (NetworkDriver.instance.isMobile)
 		{
-			gamePad = GameDriver.instance.Player.GetComponent<PlayerController>().gamePad;
+			//gamePad = GameDriver.instance.Player.GetComponent<PlayerController>().gamePad;
 			crosshair.GetComponent<RectTransform>().localScale = new Vector3(1, 1, 1);
 			crosshair.transform.GetChild(2).gameObject.SetActive(false);
             crosshair.transform.GetChild(3).gameObject.SetActive(false);
@@ -80,10 +80,10 @@ public class Aiming : MonoBehaviour {
 			{
 				isZoomed = 1;
 				if (gear == 3) { isZoomed = 0; }
-				if (gear == 1 || gear==4 || gear==3) { 
+				if (gear == 1 || gear==4 ) { //|| gear==3
 					crosshair.SetActive(true);
 					
-					if (gear == 1) { crosshair.transform.localScale = new Vector3(0.4f, 0.4f, 0.4f); }
+					if (gear == 1 && !NetworkDriver.instance.isMobile) { crosshair.transform.localScale = new Vector3(0.4f, 0.4f, 0.4f); }
 					if (gear == 4)  { gridcrosshair.SetActive(true); crosshair.transform.localScale = new Vector3(1f, 1f, 1f); }
 				
 				}

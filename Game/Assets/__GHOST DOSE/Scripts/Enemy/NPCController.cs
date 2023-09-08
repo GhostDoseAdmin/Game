@@ -131,6 +131,16 @@ public class NPCController : MonoBehaviour
         //closestPlayer = Client.transform;
         head = animEnemy.GetBoneTransform(HumanBodyBones.Head).transform;
 
+
+        //SINGLE PLAYER HANDICAP
+        if (!NetworkDriver.instance.TWOPLAYER)
+        {
+            if (teddy || brute)
+            {
+                healthEnemy = (int)(healthEnemy * 0.5f); 
+            }
+        }
+
         startHealth = healthEnemy;
         startAngleView = angleView;
         startRange = range;
@@ -148,12 +158,20 @@ public class NPCController : MonoBehaviour
         //Debug.Log("----------------------------------------" + HIT_COL.GetComponent<SphereCollider>().enabled);
         if (NetworkDriver.instance.isMobile) { head.GetComponent<SphereCollider>().radius = 0.28f; }
 
+
+
+
+
+
     }
 
     public Vector3 serverPosition;
     public float active_timer;
     void Update()
     {
+
+
+
         //-------------------DEBUG TURNS OFF ANIMATION----------------------
         if (!brute)
         {
