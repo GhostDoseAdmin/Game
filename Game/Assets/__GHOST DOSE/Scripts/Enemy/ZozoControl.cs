@@ -61,8 +61,9 @@ public class ZozoControl : MonoBehaviour
     private float canLaserTimer;
     public void Update()
     {
-        if (HP < 1000) { HP += 1; 
-            if (NetworkDriver.instance.TWOPLAYER) { HP += 0.5f; } 
+        if (HP < 1000) { 
+            HP += 1; 
+            //if (NetworkDriver.instance.TWOPLAYER) { HP += 0.5f; } 
         }
        
 
@@ -167,7 +168,7 @@ public class ZozoControl : MonoBehaviour
     }
     public void ZOZOFlinch(bool hard, bool env)
     {
-        HP -= 1;
+        HP -= 1.5f;
         //Debug.Log("----------------------------------ZOZO FLINCHING-------------------------------");
         if (!env) { zozoSizzleFX.transform.localScale = new Vector3(14f, 14f, 14f); }
         if (env) { zozoSizzleEnvFX.transform.localScale = new Vector3(14f, 14f, 14f); HP -= 4; }
