@@ -252,7 +252,7 @@ public class GhostVFX : MonoBehaviour
                             Fade(true, fadeinfactor * 0.5f); //inverse relationship for shadowers
                         } 
                         else {//ZOZO FADE
-                            fadeinfactor = 0.75f;//0.5
+                            fadeinfactor = 1f;//0.5-->0.75
                             if (!NetworkDriver.instance.TWOPLAYER) { fadeinfactor *=2f; }//single player zozo easier to kill
                             Fade(true, fadeinfactor * 2f); //higher value, fades OUT faster, easier to kill
                         }  
