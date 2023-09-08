@@ -187,9 +187,10 @@ public class GhostVFX : MonoBehaviour
                     //FLASHLIGHT OVERRIDES SHADOW AND ENVIORNMENT
                     else if (IsObjectInLightCone(lightSource, true))//directly under light source
                     {
-                        if (NetworkDriver.instance.HOST) { if (GetComponent<NPCController>() != null) { GetComponent<NPCController>().alertLevelPlayer += 4; } }
+                        if (NetworkDriver.instance.HOST) { if (GetComponent<NPCController>() != null) { GetComponent<NPCController>().alertLevelPlayer += 10; } } //4
                         if (!invisible) { TriggerWanderSound(); }
                         if (!Shadower) { visible = true; visibilitySet = true; } else { visible = false; visibilitySet = true; }
+                        GetComponentInChildren<Outline>().OutlineWidth = 4;
                     }
                 }
                 foreach (Material material in skin.GetComponent<SkinnedMeshRenderer>().materials)
@@ -215,8 +216,9 @@ public class GhostVFX : MonoBehaviour
                     //FLASHLIGHT OVERRIDES SHADOW AND ENVIORNMENT
                     else if (IsObjectInLightCone(lightSource, true))//directly under light source
                     {
-                        if (NetworkDriver.instance.HOST) { if (GetComponent<NPCController>() != null) { GetComponent<NPCController>().alertLevelClient += 4; } }
+                        if (NetworkDriver.instance.HOST) { if (GetComponent<NPCController>() != null) { GetComponent<NPCController>().alertLevelClient += 10; } }//4
                         if (!Shadower) { visible = true; visibilitySet = true; } else { visible = false; visibilitySet = true; }
+                        GetComponentInChildren<Outline>().OutlineWidth = 4;
                     }
                 }
                 foreach (Material material in skin.GetComponent<SkinnedMeshRenderer>().materials)
