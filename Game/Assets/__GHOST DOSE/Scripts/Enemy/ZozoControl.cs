@@ -168,7 +168,7 @@ public class ZozoControl : MonoBehaviour
     }
     public void ZOZOFlinch(bool hard, bool env)
     {
-        HP -= 1.5f;
+        HP -= 1.2f;
         //Debug.Log("----------------------------------ZOZO FLINCHING-------------------------------");
         if (!env) { zozoSizzleFX.transform.localScale = new Vector3(14f, 14f, 14f); }
         if (env) { zozoSizzleEnvFX.transform.localScale = new Vector3(14f, 14f, 14f); HP -= 4; }
