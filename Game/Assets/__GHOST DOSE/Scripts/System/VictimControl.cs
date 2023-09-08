@@ -306,7 +306,8 @@ public class VictimControl : Item
         //DESTROY ZOZO
         if (canDestroyZozo)
         {
-            if (ZOZO.GetComponent<Teleport>().teleport == 2)
+            //if (ZOZO.GetComponent<Teleport>().teleport == 2)
+            if(ZOZO.GetComponent<GhostVFX>().currentMaxAlpha[0]< 0.01f)
             {
                 canDestroyZozo = false;
                 if (NetworkDriver.instance.HOST) { Invoke("DestroyZozo", 0.5f);
