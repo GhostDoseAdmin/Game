@@ -62,6 +62,7 @@ public class ZozoControl : MonoBehaviour
     public void Update()
     {
         if (HP < 1000) { HP += 1; }
+        if (NetworkDriver.instance.TWOPLAYER) { HP += 1; }
 
         if (zozoSizzleFX.transform.localScale.x > 0) { zozoSizzleFX.transform.localScale = Vector3.Lerp(zozoSizzleFX.transform.localScale, zozoSizzleFX.transform.localScale * 0.05f, Time.deltaTime * 1); }
         if (zozoSizzleEnvFX.transform.localScale.x > 0) { zozoSizzleEnvFX.transform.localScale = Vector3.Lerp(zozoSizzleEnvFX.transform.localScale, zozoSizzleEnvFX.transform.localScale * 0.05f, Time.deltaTime * 1); }
@@ -164,7 +165,7 @@ public class ZozoControl : MonoBehaviour
     }
     public void ZOZOFlinch(bool hard, bool env)
     {
-        HP -= 2;
+        HP -= 1;
         //Debug.Log("----------------------------------ZOZO FLINCHING-------------------------------");
         if (!env) { zozoSizzleFX.transform.localScale = new Vector3(14f, 14f, 14f); }
         if (env) { zozoSizzleEnvFX.transform.localScale = new Vector3(14f, 14f, 14f); HP -= 4; }
