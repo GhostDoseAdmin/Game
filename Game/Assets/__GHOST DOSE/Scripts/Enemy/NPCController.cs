@@ -577,7 +577,7 @@ public class NPCController : MonoBehaviour
 
                 //Debug.DrawLine(head.position, closestPlayer.position + Vector3.up * 1.4f, Color.red); //1.6
 
-                if (angle <= angleView) // can u see target
+                if (angle <= angleView*0.5f) // can u see target
                 {
                    // Debug.Log("WITHIN ANGLE");
                     RaycastHit hit;
