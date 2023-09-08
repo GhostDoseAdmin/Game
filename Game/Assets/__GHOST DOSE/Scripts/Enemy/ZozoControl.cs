@@ -30,7 +30,7 @@ public class ZozoControl : MonoBehaviour
     private bool charging;
     private bool startCharging;
     public GameObject zozoSizzleFX, zozoSizzleEnvFX;
-    public int HP = 1000;
+    public float HP = 1000;
     //public int HP = 1000;
     //private int laserBlocked;
     //public bool blocked = false;
@@ -61,7 +61,9 @@ public class ZozoControl : MonoBehaviour
     private float canLaserTimer;
     public void Update()
     {
-        if (HP < 1000) { HP += 1; if (NetworkDriver.instance.TWOPLAYER) { HP += 1; } }
+        if (HP < 1000) { HP += 1; 
+            if (NetworkDriver.instance.TWOPLAYER) { HP += 0.5f; } 
+        }
        
 
         if (zozoSizzleFX.transform.localScale.x > 0) { zozoSizzleFX.transform.localScale = Vector3.Lerp(zozoSizzleFX.transform.localScale, zozoSizzleFX.transform.localScale * 0.05f, Time.deltaTime * 1); }
