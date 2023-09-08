@@ -27,6 +27,8 @@ public class VictimControl : Item
     public GameObject zozoDummy;
     public GameObject heaventVFX;
     public GameObject Pentagram;
+    public GameObject prefabZozoDeathExplo, electricityDeath;
+
     //public GameObject pentagramLight;
     Vector3 domeStartSize;
     Vector3 zozoSpawnStartPos;
@@ -307,12 +309,14 @@ public class VictimControl : Item
         if (canDestroyZozo)
         {
             //if (ZOZO.GetComponent<Teleport>().teleport == 2)
-            if(ZOZO.GetComponent<GhostVFX>().currentMaxAlpha[0]< 0.01f)
+            if(NetworkDriver.instance.HOST && ZOZO.GetComponent<ZozoControl>().HP<=0)
             {
+                //ZOZO.GetComponent<ZozoControl>().HP = -9999999;
                 canDestroyZozo = false;
-                if (NetworkDriver.instance.HOST) { Invoke("DestroyZozo", 0.5f);
+               // if (NetworkDriver.instance.HOST) { 
+                    Invoke("DestroyZozo", 0.5f);
                     if (NetworkDriver.instance.TWOPLAYER) { NetworkDriver.instance.sioCom.Instance.Emit("event", JsonConvert.SerializeObject($"{{'obj':'{gameObject.name}','type':'destroy','event':'zozo'}}"), false); } 
-                }
+               // }
             }
         }
 
@@ -483,7 +487,7 @@ public class VictimControl : Item
 
     public void SpawnZOZO()
     {
-        
+        ZOZO.GetComponent<ZozoControl>().HP = 1000;
         ZOZO.SetActive(true);
         //ZOZO.GetComponent<ZozoControl>().canLaser = true;
         //ZOZO.GetComponent<ZozoControl>().ChargeLaser();
@@ -501,6 +505,17 @@ public class VictimControl : Item
 
     public void DestroyZozo()
     {
+        GameObject explosion = Instantiate(prefabZozoDeathExplo, ZOZO.transform.position, ZOZO.transform.rotation);
+        explosion.GetComponent<bruteExplosion>().main = ZOZO;
+        explosion.GetComponent<bruteExplosion>().death = true;
+
+        GameObject electricDeath = Instantiate(electricityDeath, ZOZO.transform.position, ZOZO.transform.rotation);
+        electricDeath.transform.position = transform.position + (Vector3.up * 3);
+
+        AudioManager.instance.Play("EMPHit", null);
+        AudioManager.instance.Play("zozolaugh", null);
+
+        ZOZO.GetComponent<ZozoControl>().HP = -9999999;
         fadeMusicOut = true;
         //AudioManager.instance.StopPlaying("zozomusicloop", null);
         ZOZO.transform.GetChild(0).GetComponent<SkinnedMeshRenderer>().enabled = true;

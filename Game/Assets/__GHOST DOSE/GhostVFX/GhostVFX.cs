@@ -191,6 +191,11 @@ public class GhostVFX : MonoBehaviour
                         if (!invisible) { TriggerWanderSound(); }
                         if (!Shadower) { visible = true; visibilitySet = true; } else { visible = false; visibilitySet = true; }
                         GetComponentInChildren<Outline>().OutlineWidth = 4;
+                        /*if (GetComponent<ZozoControl>() != null)
+                        {
+                                GetComponent<ZozoControl>().HP -= 2;
+                                if (!NetworkDriver.instance.TWOPLAYER) { GetComponent<ZozoControl>().HP -= 2; }
+                        }*/
                     }
                 }
                 foreach (Material material in skin.GetComponent<SkinnedMeshRenderer>().materials)
@@ -219,6 +224,10 @@ public class GhostVFX : MonoBehaviour
                         if (NetworkDriver.instance.HOST) { if (GetComponent<NPCController>() != null) { GetComponent<NPCController>().alertLevelClient += 10; } }//4
                         if (!Shadower) { visible = true; visibilitySet = true; } else { visible = false; visibilitySet = true; }
                         GetComponentInChildren<Outline>().OutlineWidth = 4;
+                        /*if (GetComponent<ZozoControl>() != null)
+                        {
+                            GetComponent<ZozoControl>().HP -= 2;
+                        }*/
                     }
                 }
                 foreach (Material material in skin.GetComponent<SkinnedMeshRenderer>().materials)

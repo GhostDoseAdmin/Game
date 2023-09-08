@@ -30,6 +30,7 @@ public class ZozoControl : MonoBehaviour
     private bool charging;
     private bool startCharging;
     public GameObject zozoSizzleFX, zozoSizzleEnvFX;
+    public int HP = 1000;
     //public int HP = 1000;
     //private int laserBlocked;
     //public bool blocked = false;
@@ -60,7 +61,7 @@ public class ZozoControl : MonoBehaviour
     private float canLaserTimer;
     public void Update()
     {
-
+        if (HP < 1000) { HP += 1; }
 
         if (zozoSizzleFX.transform.localScale.x > 0) { zozoSizzleFX.transform.localScale = Vector3.Lerp(zozoSizzleFX.transform.localScale, zozoSizzleFX.transform.localScale * 0.05f, Time.deltaTime * 1); }
         if (zozoSizzleEnvFX.transform.localScale.x > 0) { zozoSizzleEnvFX.transform.localScale = Vector3.Lerp(zozoSizzleEnvFX.transform.localScale, zozoSizzleEnvFX.transform.localScale * 0.05f, Time.deltaTime * 1); }
@@ -163,9 +164,10 @@ public class ZozoControl : MonoBehaviour
     }
     public void ZOZOFlinch(bool hard, bool env)
     {
+        HP -= 2;
         //Debug.Log("----------------------------------ZOZO FLINCHING-------------------------------");
         if (!env) { zozoSizzleFX.transform.localScale = new Vector3(14f, 14f, 14f); }
-        if (env) { zozoSizzleEnvFX.transform.localScale = new Vector3(14f, 14f, 14f); }
+        if (env) { zozoSizzleEnvFX.transform.localScale = new Vector3(14f, 14f, 14f); HP -= 4; }
 
         if (zozoSizzleFX.transform.localScale.x > 1)
         {
@@ -187,6 +189,7 @@ public class ZozoControl : MonoBehaviour
 
         if (hard)
         {
+            HP -= 4;
             if (GetComponent<Animator>().GetCurrentAnimatorClipInfo(0).Length > 0 && GetComponent<Animator>().GetCurrentAnimatorClipInfo(0)[0].clip.name != "agro" && !GetComponent<NPCController>().zozoLaser && zozoCanFlinsh && !GetComponent<Animator>().GetBool("Attack")) // && !animEnemy.GetCurrentAnimatorStateInfo(0).IsName("Attack")
             {
                 zozoCanFlinsh = false;

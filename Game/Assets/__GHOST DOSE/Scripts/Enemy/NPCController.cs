@@ -640,6 +640,7 @@ public class NPCController : MonoBehaviour
     public void TriggerHitEnable()
     {
         if (brute) { AudioManager.instance.Play("BruteAttack", GetComponent<AudioSource>()); }
+        if (ZOZO) { AudioManager.instance.Play("zozoattack", null); }
         HIT_COL.GetComponent<SphereCollider>().enabled = true;
 
     }
