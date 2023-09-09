@@ -8,6 +8,7 @@ using UnityEngine;
 using GameManager;
 using InteractionSystem;
 using NetworkSystem;
+using UnityEditor.PackageManager;
 
 //[ExecuteInEditMode]
 public class GhostVFX : MonoBehaviour
@@ -191,15 +192,13 @@ public class GhostVFX : MonoBehaviour
                     //FLASHLIGHT OVERRIDES SHADOW AND ENVIORNMENT
                     else if (IsObjectInLightCone(lightSource, true))//directly under light source
                     {
-                        if (NetworkDriver.instance.HOST) { if (GetComponent<NPCController>() != null) { GetComponent<NPCController>().alertLevelPlayer += 10; } } //4
-                        if (!invisible) { TriggerWanderSound(); }
-                        if (!Shadower) { visible = true; visibilitySet = true; } else { visible = false; visibilitySet = true; }
-                        GetComponentInChildren<Outline>().OutlineWidth = 4;
-                        /*if (GetComponent<ZozoControl>() != null)
+                        if (GetComponent<NPCController>() != null && Mathf.Abs(GameDriver.instance.Player.transform.position.y - transform.position.y) <= 2)
                         {
-                                GetComponent<ZozoControl>().HP -= 2;
-                                if (!NetworkDriver.instance.TWOPLAYER) { GetComponent<ZozoControl>().HP -= 2; }
-                        }*/
+                            if (NetworkDriver.instance.HOST){ GetComponent<NPCController>().alertLevelPlayer += 10; }
+                            GetComponentInChildren<Outline>().OutlineWidth = 4; 
+                            if (!invisible) { TriggerWanderSound(); }
+                        }
+                        if (!Shadower) { visible = true; visibilitySet = true; } else { visible = false; visibilitySet = true; }
                     }
                 }
                 foreach (Material material in skin.GetComponent<SkinnedMeshRenderer>().materials)
@@ -225,13 +224,13 @@ public class GhostVFX : MonoBehaviour
                     //FLASHLIGHT OVERRIDES SHADOW AND ENVIORNMENT
                     else if (IsObjectInLightCone(lightSource, true))//directly under light source
                     {
-                        if (NetworkDriver.instance.HOST) { if (GetComponent<NPCController>() != null) { GetComponent<NPCController>().alertLevelClient += 10; } }//4
-                        if (!Shadower) { visible = true; visibilitySet = true; } else { visible = false; visibilitySet = true; }
-                        GetComponentInChildren<Outline>().OutlineWidth = 4;
-                        /*if (GetComponent<ZozoControl>() != null)
+                        if (GetComponent<NPCController>() != null && Mathf.Abs(GameDriver.instance.Client.transform.position.y - transform.position.y) <= 2)
                         {
-                            GetComponent<ZozoControl>().HP -= 2;
-                        }*/
+                            if (NetworkDriver.instance.HOST) { GetComponent<NPCController>().alertLevelClient += 10; }
+                            GetComponentInChildren<Outline>().OutlineWidth = 4;
+                        }
+
+                        if (!Shadower) { visible = true; visibilitySet = true; } else { visible = false; visibilitySet = true; }
                     }
                 }
                 foreach (Material material in skin.GetComponent<SkinnedMeshRenderer>().materials)
