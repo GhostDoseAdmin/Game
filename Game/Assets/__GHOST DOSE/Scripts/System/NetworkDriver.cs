@@ -426,7 +426,7 @@ namespace NetworkSystem
                                 if (dict["type"] == "rem") { obj.GetComponent<remPodItem>().DestroyWithSound(true); }
                                 if (dict["type"] == "cand") { obj.GetComponent<Candle>().DestroyWithSound(true); LevelManager.GetComponentInChildren<VictimControl>().candleCount++; }
                             }
-                            else { if (dict["type"] == "key") { KeyInventory.instance.RemoveKey(dict["pass"]); } }//local player already picked up
+                            //else { if (dict["type"] == "key") { KeyInventory.instance.RemoveKey(dict["pass"]); } }//local player already picked up
                         }
                         if (dict["type"] == "door")
                         {
