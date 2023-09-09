@@ -63,7 +63,7 @@ public class ZozoControl : MonoBehaviour
     {
         if (HP < 1000) { 
             HP += 1; 
-            //if (NetworkDriver.instance.TWOPLAYER) { HP += 0.5f; } 
+            if (!NetworkDriver.instance.TWOPLAYER) { HP -= 0.5f; } 
         }
        
 
