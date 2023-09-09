@@ -14,8 +14,8 @@ public class GhostVFX : MonoBehaviour
 {
 
     public bool Shadower;//SET BY NPC CONTROLLER
-    [HideInInspector] public GameObject PlayerLight;
-    [HideInInspector] public GameObject ClientLight;
+     public GameObject PlayerLight;
+    public GameObject ClientLight;
     private GameObject skin;
     Light[] envLights;
     [HideInInspector] public List<Light> LightSources;
@@ -124,22 +124,26 @@ public class GhostVFX : MonoBehaviour
         //Debug.Log("--------------------------------------------- LIGHT COUNT " + envLightCount);
     }
 
-    public void UpdateShaderValues()
+    public void Update()
     {
         updateCall++;
         //if (updateCall > 2)
         if ((updateCall > 1 && GeometryUtility.TestPlanesAABB(GeometryUtility.CalculateFrustumPlanes(Camera.main), skin.GetComponent<SkinnedMeshRenderer>().bounds)) || (GetComponent<Teleport>().teleport!=0))//
         {
             updateCall = 0;
-            if (Application.isPlaying)
+            
+            //if (Application.isPlaying)
             {
-                camflashplayer = false; camflashclient = false;
-                PlayerLight = GameDriver.instance.Player.GetComponent<PlayerController>().currLight;
-                ClientLight = GameDriver.instance.Client.GetComponent<ClientPlayerController>().currLight;
+                if (!camflashplayer) { PlayerLight = GameDriver.instance.Player.GetComponent<PlayerController>().currLight; }
+                if (!camflashclient) { ClientLight = GameDriver.instance.Client.GetComponent<ClientPlayerController>().currLight; }
 
-                if (GameObject.Find("CamFlashPlayer") != null) { PlayerLight = GameObject.Find("CamFlashPlayer"); camflashplayer = true; }
-                if (GameObject.Find("CamFlashClient") != null) { ClientLight = GameObject.Find("CamFlashClient"); camflashclient = true; }
+                //PlayerLight = GameDriver.instance.Player.GetComponent<PlayerController>().currLight;
+                //ClientLight = GameDriver.instance.Client.GetComponent<ClientPlayerController>().currLight;
+
+                //if (GameObject.Find("CamFlashPlayer") != null) { PlayerLight = GameObject.Find("CamFlashPlayer"); camflashplayer = true; }
+                //if (GameObject.Find("CamFlashClient") != null) { ClientLight = GameObject.Find("CamFlashClient"); camflashclient = true; }
             }
+            
             visibilitySet = false;
             //-------------------DEATH LIGHT UP ENEMY-----------------------------
             // if (death) { if (gameObject.tag != "Shadower") { PlayerLight = GetComponent<EnemyDeath>().light; } else { inShadow = true; }  }

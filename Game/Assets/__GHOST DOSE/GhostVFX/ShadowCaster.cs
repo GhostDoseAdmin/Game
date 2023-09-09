@@ -18,7 +18,7 @@ public class ShadowCaster : MonoBehaviour
         ghostVFXObjects = FindObjectsOfType<GhostVFX>();
     }
 
-    private void OnEnable() {
+    /*private void OnEnable() {
         UpdateResources();
     }
     
@@ -43,11 +43,11 @@ public class ShadowCaster : MonoBehaviour
             depthTarget.useMipMap = false;
             cam.targetTexture = depthTarget;
         }
-    }
+    }*/
 
     private void OnPostRender()
     {
-        var bias = new Matrix4x4() {
+       /* var bias = new Matrix4x4() {
             m00 = 0.5f, m01 = 0,    m02 = 0,    m03 = 0.5f,
             m10 = 0,    m11 = 0.5f, m12 = 0,    m13 = 0.5f,
             m20 = 0,    m21 = 0,    m22 = 0.5f, m23 = 0.5f,
@@ -61,12 +61,12 @@ public class ShadowCaster : MonoBehaviour
 
         Shader.SetGlobalMatrix("_ShadowMatrix", mtx);
         Shader.SetGlobalTexture("_ShadowTex", depthTarget);
-
+       */
 
         foreach (GhostVFX ghostVFX in ghostVFXObjects)
         {
             // Debug.Log("--------------------------------UPDATING SHADER INFO-----------------------------------");
-            if (ghostVFX != null) { ghostVFX.UpdateShaderValues(); }
+            //if (ghostVFX != null) { ghostVFX.UpdateShaderValues(); }
         }
 
     }

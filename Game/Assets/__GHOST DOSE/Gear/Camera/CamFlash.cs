@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using static UnityEngine.GraphicsBuffer;
 using InteractionSystem;
-
+using GameManager;
 //[ExecuteInEditMode]
 public class CamFlash : MonoBehaviour
 {
@@ -17,6 +17,21 @@ public class CamFlash : MonoBehaviour
         yield return new WaitForSeconds(0.5f);
         this.gameObject.GetComponent<Light>().spotAngle = 0; //cleanup for ghostVFX - resets material to previous state
         yield return new WaitForSeconds(0.1f);
+
+        foreach (NPCController ghost in ghostObjects)
+        {
+            if (!isClient)
+            {
+                ghost.GetComponent<GhostVFX>().PlayerLight = null;
+                ghost.GetComponent<GhostVFX>().camflashplayer = false;
+            }
+            else
+            {
+                ghost.GetComponent<GhostVFX>().ClientLight = null;
+                ghost.GetComponent<GhostVFX>().camflashclient = false;
+            }
+        }
+
         Destroy(obj);
     }
 
@@ -54,9 +69,12 @@ public class CamFlash : MonoBehaviour
         }
 
 
-
         foreach (NPCController ghost in ghostObjects)
         {
+
+            if (!isClient) { ghost.GetComponent<GhostVFX>().PlayerLight = this.gameObject; ghost.GetComponent<GhostVFX>().camflashplayer = true; }
+            else { ghost.GetComponent<GhostVFX>().ClientLight = this.gameObject; ghost.GetComponent<GhostVFX>().camflashclient = true; }
+
             Light spotlight = GetComponent<Light>();
             //CHECK FOR IN CONE OF LIGHT
             float adjustedSpotAngle = spotlight.spotAngle;
