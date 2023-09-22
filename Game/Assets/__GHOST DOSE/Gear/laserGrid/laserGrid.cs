@@ -89,7 +89,7 @@ public class laserGrid : MonoBehaviour
                 float normalizedDistance = Mathf.Clamp01(distance / 10);
 
                 // Calculate the damage based on the normalized distance
-                float calculatedDamage = Mathf.Lerp(250, 50, normalizedDistance);
+                float calculatedDamage = Mathf.Lerp(200, 50, normalizedDistance);
 
                 enemy.TakeDamage((int)calculatedDamage, false);
                 Debug.Log("------------------------ LASERGRID " + enemy.gameObject.name + " DAMAGE " + (int)calculatedDamage);
