@@ -873,8 +873,8 @@ MonoBehaviour:
             m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
             m_IntArgument: 0
             m_FloatArgument: 0
-            m_StringArgument: 'Unlock Skin: Panda/Kitty (Time: 25 mins)                                   
-              Unlock Skin: Gas Mask (Time: 10 mins)'
+            m_StringArgument: 'Unlock Skin: Sweater (Time: 20 mins)                                          
+              Unlock Skin: GasMask (Time: 10 mins)'
             m_BoolArgument: 0
           m_CallState: 2
 --- !u!114 &41802747
@@ -71813,7 +71813,7 @@ PrefabInstance:
       objectReference: {fileID: 1254628644858567362, guid: 8ded8fff5528fef49a4e632291f0592a, type: 3}
     - target: {fileID: 4600351335788548322, guid: 4d61142dc0de3be4e9e386ae8f2458c4, type: 3}
       propertyPath: lvl1SpeedTeirs.Array.data[0]
-      value: 1500
+      value: 1200
       objectReference: {fileID: 0}
     - target: {fileID: 4600351335788548322, guid: 4d61142dc0de3be4e9e386ae8f2458c4, type: 3}
       propertyPath: lvl1SpeedTeirs.Array.data[1]
@@ -75704,6 +75704,7 @@ MonoBehaviour:
   playerUI: {fileID: 4347751126184553571}
   GamePlayManager: {fileID: 0}
   otherUserName: {fileID: 0}
+  otherKills: {fileID: 0}
   travisBasic: {fileID: 0}
   westinBasic: {fileID: 0}
   myRig: {fileID: 0}
@@ -75719,6 +75720,7 @@ MonoBehaviour:
   thisLevel: {fileID: 1211865224}
   thisUser: {fileID: 1494408856}
   KILLS: 0
+  OTHER_KILLS: 0
   PlayerWeapLight: {fileID: 0}
   PlayerFlashLight: {fileID: 0}
   ClientWeapLight: {fileID: 0}
