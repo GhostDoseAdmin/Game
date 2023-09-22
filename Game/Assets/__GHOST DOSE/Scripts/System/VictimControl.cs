@@ -453,7 +453,12 @@ public class VictimControl : Item
         zozoDummy.transform.GetChild(0).GetComponent<SkinnedMeshRenderer>().materials[0].SetFloat("_Alpha", 0f);
         zozoDummy.transform.GetChild(0).GetComponent<SkinnedMeshRenderer>().materials[0].SetFloat("_EMFAlpha", 0.3f);
         for (int i = 0; i < candles.Count; i++) { candles[i].SetActive(false); }
-        candleCount = 0;
+        //candleCount = 0;
+        if (candleCount > 0) { candleCount -= 3; }
+        if (candleCount > 0)
+        {
+            if (NetworkDriver.instance.TWOPLAYER) { candleCount -= 3; }
+        }
         zozo = true;
         startCircle = false;
         AudioManager.instance.Play("enterzozomusic", null);
