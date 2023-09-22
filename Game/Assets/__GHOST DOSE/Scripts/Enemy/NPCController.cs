@@ -749,7 +749,7 @@ public class NPCController : MonoBehaviour
                     AudioManager.instance.Play(audioString + i.ToString(), thisPlayerSource);
                     //Debug.Log("PLAYING AUDIO " + audioString + i.ToString());
                 }
-                if(!otherPlayer) { GameDriver.instance.KILLS += 1; }
+                if (!otherPlayer) { GameDriver.instance.KILLS += 1; } else { GameDriver.instance.OTHER_KILLS += 1; }
                 dead = true;
                 GetComponent<Teleport>().teleport = 0;
                 GetComponent<Teleport>().canTeleport = true;
