@@ -8,7 +8,7 @@ using UnityEngine;
 using GameManager;
 using InteractionSystem;
 using NetworkSystem;
-using UnityEditor.PackageManager;
+
 
 //[ExecuteInEditMode]
 public class GhostVFX : MonoBehaviour

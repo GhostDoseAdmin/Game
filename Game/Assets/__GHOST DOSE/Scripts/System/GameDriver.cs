@@ -30,7 +30,7 @@ namespace GameManager
         //public GameObject loginCanvas;
         public GameObject playerUI;
         public GameObject GamePlayManager;
-        public GameObject otherUserName;
+        public GameObject otherUserName,otherKills;
 
         public GameObject travisBasic;
         public GameObject westinBasic;
@@ -45,6 +45,7 @@ namespace GameManager
         public TextMeshProUGUI QuitBtnText;
         public GameObject quitUI, infoUI, thisLevel, thisUser;
         public int KILLS = 0;
+        public int OTHER_KILLS = 0;
         //public NetworkDriver ND;
 
         //GHOST EFFECT LIGHT REFS
@@ -93,6 +94,7 @@ namespace GameManager
                 // Update the TextMeshProUGUI element
                 TimeElapsedUI.text = formattedTime;
                 killcountUI.text = "CAPTURES: " + KILLS.ToString();
+                if (NetworkDriver.instance.TWOPLAYER) { otherKills.GetComponent<TextMeshProUGUI>().text =OTHER_KILLS.ToString(); }
             }
 
             //END GAME
@@ -147,6 +149,7 @@ namespace GameManager
                 Vector3 worldPosition = new Vector3(Client.transform.position.x, Client.transform.position.y+1.5f, Client.transform.position.z);  
                 Vector3 screenPosition = Camera.main.WorldToScreenPoint(worldPosition);
                 otherUserName.GetComponent<RectTransform>().position = screenPosition;
+                otherKills.GetComponent<RectTransform>().position = screenPosition;
             } 
         }
         void Start()

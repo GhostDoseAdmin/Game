@@ -461,7 +461,7 @@ public class NPCController : MonoBehaviour
 
 
         //------PUSH PLAYER AWAY
-        if (distance < 0.4f)
+        if (!teddy && distance < 0.4f)
         {
             Vector3 pushDirection = transform.forward;//target.transform.position - transform.position;
             pushDirection.y = 0f; // Set Y component to 0
@@ -470,6 +470,17 @@ public class NPCController : MonoBehaviour
             Vector3 targetPosition = target.transform.position + pushDirection * pushDistance; // The target position
             float speed = 1.5f; // The speed of the movement
             target.transform.position = Vector3.Lerp(target.transform.position, targetPosition, speed * Time.deltaTime);
+        }
+        //------PUSH TEDDY AWAY
+        if (teddy && distance < 1f)
+        {
+            Vector3 pushDirection = -transform.forward;//target.transform.position - transform.position;
+            pushDirection.y = 0f; // Set Y component to 0
+            pushDirection.Normalize();
+            float pushDistance = 5f; // The distance to push the target object
+            Vector3 targetPosition = target.transform.position + pushDirection * pushDistance; // The target position
+            float speed = 1.5f; // The speed of the movement
+            transform.position = Vector3.Lerp(transform.position, targetPosition, speed * Time.deltaTime);
         }
 
         //ZAP
@@ -749,7 +760,7 @@ public class NPCController : MonoBehaviour
                     AudioManager.instance.Play(audioString + i.ToString(), thisPlayerSource);
                     //Debug.Log("PLAYING AUDIO " + audioString + i.ToString());
                 }
-                if(!otherPlayer) { GameDriver.instance.KILLS += 1; }
+                if (!otherPlayer) { GameDriver.instance.KILLS += 1; } else { GameDriver.instance.OTHER_KILLS += 1; }
                 dead = true;
                 GetComponent<Teleport>().teleport = 0;
                 GetComponent<Teleport>().canTeleport = true;
