@@ -41,10 +41,10 @@ namespace GameManager
         public GameObject reviveIndicator;
         public Image DemonScreamerUI;
         public Vector3 playerStartPos;
-        public TextMeshProUGUI TimeElapsedUI;
+        public TextMeshProUGUI TimeElapsedUI, killcountUI;
         public TextMeshProUGUI QuitBtnText;
         public GameObject quitUI, infoUI, thisLevel, thisUser;
-
+        public int KILLS = 0;
         //public NetworkDriver ND;
 
         //GHOST EFFECT LIGHT REFS
@@ -92,6 +92,7 @@ namespace GameManager
 
                 // Update the TextMeshProUGUI element
                 TimeElapsedUI.text = formattedTime;
+                killcountUI.text = "CAPTURES: " + KILLS.ToString();
             }
 
             //END GAME
@@ -319,7 +320,7 @@ namespace GameManager
                     Player.GetComponent<PlayerController>().isTravis = false;
                     Client.GetComponent<ClientPlayerController>().isTravis = true;
                 }
-
+                KILLS = 0;
                 Debug.Log("I AM READY");
                 NetworkDriver.instance.SCENE_READY = true;
                 //NetworkDriver.instance.sioCom.Instance.Emit("event", JsonConvert.SerializeObject(new { otherssceneready = true }), false);
