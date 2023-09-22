@@ -31,6 +31,8 @@ public class ZozoControl : MonoBehaviour
     private bool startCharging;
     public GameObject zozoSizzleFX, zozoSizzleEnvFX;
     public float HP = 1000;
+    public bool DEAD = false;
+
     //public int HP = 1000;
     //private int laserBlocked;
     //public bool blocked = false;
@@ -55,17 +57,31 @@ public class ZozoControl : MonoBehaviour
         laserChargeVFXstartScale = laserChargeVFX.transform.localScale;
 
         if (GetComponentInParent<VictimControl>() != null) { this.gameObject.name = "ZOZO-" + GetComponentInParent<VictimControl>().gameObject.name; this.gameObject.SetActive(false); }
+
+        GameDriver.instance.zozoHealthUI.gameObject.transform.parent.gameObject.SetActive(false);
+    }
+    private void OnDisable()
+    {
+        GameDriver.instance.zozoHealthUI.gameObject.transform.parent.gameObject.SetActive(false);
     }
 
-
+    private void OnEnable()
+    {
+        GameDriver.instance.zozoHealthUI.gameObject.transform.parent.gameObject.SetActive(true);
+    }
     private float canLaserTimer;
     public void Update()
     {
-        if (HP < 1000) { 
+        if (HP < 1000 && !DEAD) { 
             HP += 1; 
             if (!NetworkDriver.instance.TWOPLAYER) { HP -= 0.5f; } 
         }
-       
+        if (GameDriver.instance.zozoHealthUI.gameObject.transform.parent.gameObject.activeSelf)
+        {
+            float healthPrecent = HP / 1000;
+            GameDriver.instance.zozoHealthUI.fillAmount = healthPrecent;
+        }
+
 
         if (zozoSizzleFX.transform.localScale.x > 0) { zozoSizzleFX.transform.localScale = Vector3.Lerp(zozoSizzleFX.transform.localScale, zozoSizzleFX.transform.localScale * 0.05f, Time.deltaTime * 1); }
         if (zozoSizzleEnvFX.transform.localScale.x > 0) { zozoSizzleEnvFX.transform.localScale = Vector3.Lerp(zozoSizzleEnvFX.transform.localScale, zozoSizzleEnvFX.transform.localScale * 0.05f, Time.deltaTime * 1); }
@@ -291,10 +307,7 @@ public class ZozoControl : MonoBehaviour
         }
     }
 
-    private void OnEnable()
-    {
-        Debug.Log("ACTIVING ZOZO");
-    }
+
 
     //------------LASER HEAD------------------
     void OnAnimatorIK()

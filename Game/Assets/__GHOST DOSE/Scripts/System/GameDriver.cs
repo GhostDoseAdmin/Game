@@ -44,6 +44,8 @@ namespace GameManager
         public TextMeshProUGUI TimeElapsedUI, killcountUI;
         public TextMeshProUGUI QuitBtnText;
         public GameObject quitUI, infoUI, thisLevel, thisUser;
+            
+        public Image zozoHealthUI;
         public int KILLS = 0;
         public int OTHER_KILLS = 0;
         //public NetworkDriver ND;

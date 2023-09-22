@@ -43,6 +43,7 @@ public class VictimControl : Item
     private bool zozoFXendOn;
     private bool setSpiritsFree;
     public GameObject ZOZO;
+    
     private bool canDestroyZozo;
     Vector3 ZOZOstartPos;
     Quaternion ZOZOstartRot;
@@ -69,8 +70,6 @@ public class VictimControl : Item
         zozoEffectEndStartSize = zozoEffectEnd.transform.localScale;
         ZOZOstartPos = ZOZO.transform.position;
         ZOZOstartRot = ZOZO.transform.rotation;
-
-
 
     }
     private void LateUpdate()
@@ -313,6 +312,7 @@ public class VictimControl : Item
             if(NetworkDriver.instance.HOST && ZOZO.GetComponent<ZozoControl>().HP<=0)
             {
                 //ZOZO.GetComponent<ZozoControl>().HP = -9999999;
+                ZOZO.GetComponent<ZozoControl>().DEAD = true;
                 canDestroyZozo = false;
                // if (NetworkDriver.instance.HOST) { 
                     Invoke("DestroyZozo1", 0.5f);
@@ -494,6 +494,7 @@ public class VictimControl : Item
     public void SpawnZOZO()
     {
         ZOZO.GetComponent<ZozoControl>().HP = 1000;
+        ZOZO.GetComponent<ZozoControl>().DEAD = false;
         ZOZO.SetActive(true);
         //ZOZO.GetComponent<ZozoControl>().canLaser = true;
         //ZOZO.GetComponent<ZozoControl>().ChargeLaser();
@@ -521,7 +522,6 @@ public class VictimControl : Item
         AudioManager.instance.Play("EMPHit", null);
         AudioManager.instance.Play("zozolaugh", null);
 
-        ZOZO.GetComponent<ZozoControl>().HP = -9999999;
         fadeMusicOut = true;
         //AudioManager.instance.StopPlaying("zozomusicloop", null);
         ZOZO.transform.GetChild(0).GetComponent<SkinnedMeshRenderer>().enabled = true;
