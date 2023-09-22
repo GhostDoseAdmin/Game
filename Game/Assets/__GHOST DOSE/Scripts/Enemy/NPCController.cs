@@ -441,7 +441,7 @@ public class NPCController : MonoBehaviour
     public void Zap()
     {
         animEnemy.Play("zapAni"); canZap = false;
-        if (!brute) { Invoke("ZapReset", 8f); }{ Invoke("ZapReset", 1f); }//COOL DOWN FOR JUMP AND ZAP 15f
+        if (!brute) { Invoke("ZapReset", 8f); }{ Invoke("ZapReset", 5f); }//COOL DOWN FOR JUMP AND ZAP 15f
         if (NetworkDriver.instance.HOST && NetworkDriver.instance.TWOPLAYER) { NetworkDriver.instance.sioCom.Instance.Emit("event", JsonConvert.SerializeObject(new { obj = this.gameObject.name, zap = true }), false); }
     }
     public void Attack()
