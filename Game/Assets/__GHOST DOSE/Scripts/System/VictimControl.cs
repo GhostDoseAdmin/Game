@@ -190,37 +190,38 @@ public class VictimControl : Item
             GameObject.Find("PlayerCamera").GetComponent<Camera_Controller>().InvokeShake(2f, Mathf.InverseLerp(20f, 0f, Vector3.Distance(GameDriver.instance.Player.transform.position,transform.position)));
         }
             //EXPLOSIONG
-            if(zozoFXendOn)
-            if (zozoEffectEnd.transform.localScale.x < 100){zozoEffectEnd.transform.localScale = Vector3.Lerp(zozoEffectEnd.transform.localScale, zozoEffectEnd.transform.localScale * 2f, Time.deltaTime * 1);}
+            if (zozoFXendOn)
+            {
+                if (zozoEffectEnd.transform.localScale.x < 100) { zozoEffectEnd.transform.localScale = Vector3.Lerp(zozoEffectEnd.transform.localScale, zozoEffectEnd.transform.localScale * 2f, Time.deltaTime * 1); }
+            }
 
             if (zozoRise)
             {   
-            //ARISE
-            if (zozoDummy.transform.position.y < zozoDummyStartPos.y + 8)
-            {
-                zozoDummy.transform.GetChild(0).GetComponent<SkinnedMeshRenderer>().materials[0].SetFloat("_EMFAlpha", 0.2f); zozoAlpha = 0.2f;
-                zozoDummy.transform.GetChild(0).GetComponent<SkinnedMeshRenderer>().materials[0].SetFloat("_Alpha", 0);
-                Vector3 currPos = zozoDummy.transform.position;               
-                currPos.y += 7f * Time.deltaTime;                
-                zozoDummy.transform.position = currPos;                
-                currPos = main.transform.position; 
-                currPos.y += 5f * Time.deltaTime; 
-                main.transform.position = currPos;
-                main.transform.Rotate(0f, 5f * Time.deltaTime, 0f);
-            }
-            else {//DONE ARISING
-                foreach (GameObject victim in Victims) { 
-                    victim.GetComponent<Animator>().SetBool("falling", true);
-                    if (main.transform.position.y < mainStartPos.y + 3f) { victim.GetComponent<Person>().darkLight.SetActive(true); }
+                //ARISE
+                if (zozoDummy.transform.position.y < zozoDummyStartPos.y + 8)
+                {
+                    zozoDummy.transform.GetChild(0).GetComponent<SkinnedMeshRenderer>().materials[0].SetFloat("_EMFAlpha", 0.2f); zozoAlpha = 0.2f;
+                    zozoDummy.transform.GetChild(0).GetComponent<SkinnedMeshRenderer>().materials[0].SetFloat("_Alpha", 0);
+                    Vector3 currPos = zozoDummy.transform.position;               
+                    currPos.y += 7f * Time.deltaTime;                
+                    zozoDummy.transform.position = currPos;                
+                    currPos = main.transform.position; 
+                    currPos.y += 5f * Time.deltaTime; 
+                    main.transform.position = currPos;
+                    main.transform.Rotate(0f, 5f * Time.deltaTime, 0f);
                 }
-                Vector3 currPos = main.transform.position; currPos.y -= 0.007f; main.transform.position = currPos;//DROP VICTIMS
-                zozoAlpha += 0.0005f;
-                if (zozoEffectMid.activeSelf == true) { if (zozoAlpha > 0) { zozoAlpha -= 0.0006f; } }
-                zozoDummy.transform.GetChild(0).GetComponent<SkinnedMeshRenderer>().materials[0].SetFloat("_EMFAlpha", zozoAlpha);
-                //zozoDummy.transform.GetChild(0).GetComponent<SkinnedMeshRenderer>().materials[0].SetFloat("_Alpha", zozoAlpha);
-
+                else {//DONE ARISING
+                    foreach (GameObject victim in Victims) { 
+                        victim.GetComponent<Animator>().SetBool("falling", true);
+                        if (main.transform.position.y < mainStartPos.y + 3f) { victim.GetComponent<Person>().darkLight.SetActive(true); }
+                    }
+                    Vector3 currPos = main.transform.position; currPos.y -= 0.007f; main.transform.position = currPos;//DROP VICTIMS
+                    zozoAlpha += 0.0005f;
+                    if (zozoEffectMid.activeSelf == true) { if (zozoAlpha > 0) { zozoAlpha -= 0.0006f; } }
+                    zozoDummy.transform.GetChild(0).GetComponent<SkinnedMeshRenderer>().materials[0].SetFloat("_EMFAlpha", zozoAlpha);
+                    //zozoDummy.transform.GetChild(0).GetComponent<SkinnedMeshRenderer>().materials[0].SetFloat("_Alpha", zozoAlpha);
+                }
             }
-        }
         //ZOZO ENTRACE END
         if(zozoEnd)
         {
@@ -314,7 +315,7 @@ public class VictimControl : Item
                 //ZOZO.GetComponent<ZozoControl>().HP = -9999999;
                 canDestroyZozo = false;
                // if (NetworkDriver.instance.HOST) { 
-                    Invoke("DestroyZozo", 0.5f);
+                    Invoke("DestroyZozo1", 0.5f);
                     if (NetworkDriver.instance.TWOPLAYER) { NetworkDriver.instance.sioCom.Instance.Emit("event", JsonConvert.SerializeObject($"{{'obj':'{gameObject.name}','type':'destroy','event':'zozo'}}"), false); } 
                // }
             }
@@ -503,7 +504,7 @@ public class VictimControl : Item
         canDestroyZozo = true;
     }
 
-    public void DestroyZozo()
+    public void DestroyZozo1()
     {
         GameObject explosion = Instantiate(prefabZozoDeathExplo, ZOZO.transform.position, ZOZO.transform.rotation);
         explosion.GetComponent<bruteExplosion>().main = ZOZO;

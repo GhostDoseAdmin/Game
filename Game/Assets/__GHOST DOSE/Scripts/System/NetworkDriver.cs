@@ -413,7 +413,7 @@ namespace NetworkSystem
                     {
                         if (dict["event"] == "setfree") { obj.GetComponent<VictimControl>().SetSpiritsFree(); }
                         if (dict["event"] == "summon") { obj.GetComponent<VictimControl>().SummonZozo(); }
-                        if (dict["event"] == "zozo") { obj.GetComponent<VictimControl>().DestroyZozo(); }
+                        if (dict["event"] == "zozo") { obj.GetComponent<VictimControl>().DestroyZozo1(); }
 
                         if (dict["event"] == "pickup")
                         {
