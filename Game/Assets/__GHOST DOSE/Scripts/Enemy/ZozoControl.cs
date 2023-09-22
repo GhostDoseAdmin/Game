@@ -33,6 +33,9 @@ public class ZozoControl : MonoBehaviour
     public float HP = 1000;
     public bool DEAD = false;
 
+
+    private float timer = 0f;
+    private float interval = 3f;
     //public int HP = 1000;
     //private int laserBlocked;
     //public bool blocked = false;
@@ -82,6 +85,21 @@ public class ZozoControl : MonoBehaviour
             GameDriver.instance.zozoHealthUI.fillAmount = healthPrecent;
         }
 
+        if (NetworkDriver.instance.HOST)
+        {
+            // Increment the timer by the time passed since the last frame.
+            timer += Time.deltaTime;
+
+            // Check if the timer has reached the desired interval (3 seconds).
+            if (timer >= interval)
+            {
+                // Call your function here.
+                NetworkDriver.instance.sioCom.Instance.Emit("event", JsonConvert.SerializeObject($"{{'obj':'{gameObject.name}','type':{HP},'event':'zozohp'}}"), false);
+
+                // Reset the timer.
+                timer = 0f;
+            }
+        }
 
         if (zozoSizzleFX.transform.localScale.x > 0) { zozoSizzleFX.transform.localScale = Vector3.Lerp(zozoSizzleFX.transform.localScale, zozoSizzleFX.transform.localScale * 0.05f, Time.deltaTime * 1); }
         if (zozoSizzleEnvFX.transform.localScale.x > 0) { zozoSizzleEnvFX.transform.localScale = Vector3.Lerp(zozoSizzleEnvFX.transform.localScale, zozoSizzleEnvFX.transform.localScale * 0.05f, Time.deltaTime * 1); }
