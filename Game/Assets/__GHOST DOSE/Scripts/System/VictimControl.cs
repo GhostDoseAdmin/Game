@@ -496,9 +496,10 @@ public class VictimControl : Item
         ZOZO.GetComponent<ZozoControl>().HP = 1000;
         ZOZO.GetComponent<ZozoControl>().DEAD = false;
         ZOZO.SetActive(true);
+       
         //ZOZO.GetComponent<ZozoControl>().canLaser = true;
         //ZOZO.GetComponent<ZozoControl>().ChargeLaser();
-       zozoDummy.SetActive(false);
+        zozoDummy.SetActive(false);
         zozoEnd = true;
         zozoFXendOn = false;
         GameDriver.instance.WriteGuiMsg("Keep ZOZO in the light!", 60f, false, Color.yellow);
