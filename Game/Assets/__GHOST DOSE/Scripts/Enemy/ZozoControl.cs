@@ -71,7 +71,13 @@ public class ZozoControl : MonoBehaviour
     private void OnEnable()
     {
         GameDriver.instance.zozoHealthUI.gameObject.transform.parent.gameObject.SetActive(true);
+        GetComponent<NavMeshAgent>().enabled = false; Invoke("NavMeshReset",0.1f);
     }
+    private void NavMeshReset()
+    {
+        GetComponent<NavMeshAgent>().enabled = true;
+    }
+
     private float canLaserTimer;
     public void Update()
     {
