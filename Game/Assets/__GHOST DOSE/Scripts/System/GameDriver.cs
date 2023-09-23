@@ -56,6 +56,9 @@ namespace GameManager
         [HideInInspector] public Light ClientWeapLight;
         [HideInInspector] public Light ClientFlashLight;
 
+
+        private float timer = 0f;
+        private float interval = 30f;
         //[HideInInspector] public GameObject mySelectedRig;
         //[HideInInspector] public GameObject theirSelectedRig;
         public GameObject gearuicam, gearuik2, gearuiemp, gearuilaser, candleUI;
@@ -96,7 +99,24 @@ namespace GameManager
                 // Update the TextMeshProUGUI element
                 TimeElapsedUI.text = formattedTime;
                 killcountUI.text = "CAPTURES: " + KILLS.ToString();
-                if (NetworkDriver.instance.TWOPLAYER) { otherKills.GetComponent<TextMeshProUGUI>().text =OTHER_KILLS.ToString(); }
+                if (NetworkDriver.instance.TWOPLAYER) { 
+                    otherKills.GetComponent<TextMeshProUGUI>().text =OTHER_KILLS.ToString();
+
+                    //-----------------SYNC UP KILLS--------------------------------
+                    // Increment the timer by the time passed since the last frame.
+                    timer += Time.deltaTime;
+
+                    // Check if the timer has reached the desired interval (3 seconds).
+                    if (timer >= interval)
+                    {
+                        // Call your function here.
+                        NetworkDriver.instance.sioCom.Instance.Emit("event", JsonConvert.SerializeObject($"{{'amount':'{KILLS}','event':'captures'}}"), false);
+
+                        // Reset the timer.
+                        timer = 0f;
+                    }
+
+                }
             }
 
             //END GAME
