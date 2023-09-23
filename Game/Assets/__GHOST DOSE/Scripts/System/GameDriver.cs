@@ -110,7 +110,7 @@ namespace GameManager
                     if (timer >= interval)
                     {
                         // Call your function here.
-                        NetworkDriver.instance.sioCom.Instance.Emit("event", JsonConvert.SerializeObject($"{{'amount':'{KILLS}','event':'captures'}}"), false);
+                        NetworkDriver.instance.sioCom.Instance.Emit("event", JsonConvert.SerializeObject($"{{'amount':'{KILLS}','event':'captures','type':''}}"), false);
 
                         // Reset the timer.
                         timer = 0f;
