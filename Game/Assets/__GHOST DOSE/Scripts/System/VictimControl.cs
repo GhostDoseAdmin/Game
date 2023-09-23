@@ -276,7 +276,7 @@ public class VictimControl : Item
                 {
                     Vector3 oppositeForce = ZOZO.transform.forward * 300f;
                     oppositeForce.y = 0f; // Set the y component to 0
-
+                    Debug.Log(Vector3.Distance(GameDriver.instance.Player.transform.position, ZOZOpos2d));
                     if (Vector3.Distance(GameDriver.instance.Player.transform.position, ZOZOpos2d) > 15)
                     {
                         if(canStopPlayer)
