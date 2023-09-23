@@ -277,7 +277,7 @@ public class VictimControl : Item
                     Vector3 oppositeForce = ZOZO.transform.forward * 300f;
                     oppositeForce.y = 0f; // Set the y component to 0
 
-                    if (Vector3.Distance(GameDriver.instance.Player.transform.position, ZOZO.transform.position) > 12)
+                    if (Vector3.Distance(GameDriver.instance.Player.transform.position, ZOZOpos2d) > 15)
                     {
                         if(canStopPlayer)
                         {
@@ -286,7 +286,7 @@ public class VictimControl : Item
                             GameDriver.instance.Player.GetComponent<HealthSystem>().HealthDamage(10, -oppositeForce);
                         }
                     }
-                    if (Vector3.Distance(GameDriver.instance.Client.transform.position, ZOZO.transform.position) > 12)
+                    if (Vector3.Distance(GameDriver.instance.Client.transform.position, ZOZOpos2d) > 15)
                     {
                         if (canStopOther)
                         {
