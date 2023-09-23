@@ -71,7 +71,7 @@ public class ZozoControl : MonoBehaviour
     private void OnEnable()
     {
         GameDriver.instance.zozoHealthUI.gameObject.transform.parent.gameObject.SetActive(true);
-        GetComponent<NavMeshAgent>().enabled = false; Invoke("NavMeshReset",0.1f);
+        GetComponent<NavMeshAgent>().enabled = false; Invoke("NavMeshReset",3f);
     }
     private void NavMeshReset()
     {
