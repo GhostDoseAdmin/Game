@@ -838,7 +838,7 @@ AnimatorState:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_Name: React
-  m_Speed: 4
+  m_Speed: 2
   m_CycleOffset: 0
   m_Transitions:
   - {fileID: -6608014594005039778}
@@ -852,7 +852,7 @@ AnimatorState:
   m_MirrorParameterActive: 0
   m_CycleOffsetParameterActive: 0
   m_TimeParameterActive: 0
-  m_Motion: {fileID: 1810751051594626386}
+  m_Motion: {fileID: 7400000, guid: 2702e76aac45c1f4181013e42c3d59b1, type: 2}
   m_Tag: 
   m_SpeedParameter: 
   m_MirrorParameter: 
@@ -881,7 +881,7 @@ AnimatorStateMachine:
     m_Position: {x: 2.463379, y: -307.57385, z: 0}
   - serializedVersion: 1
     m_State: {fileID: 5042668886534124932}
-    m_Position: {x: 320, y: -240, z: 0}
+    m_Position: {x: 310, y: -240, z: 0}
   - serializedVersion: 1
     m_State: {fileID: 6219617504258652597}
     m_Position: {x: 560, y: -180, z: 0}
@@ -1040,7 +1040,7 @@ AnimatorState:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_Name: Attack
-  m_Speed: 1.2
+  m_Speed: 1
   m_CycleOffset: 0
   m_Transitions:
   - {fileID: 640465537300097410}

@@ -395,7 +395,8 @@ namespace NetworkSystem
                             if (enemy.name == dict["obj"])
                             {
                                 if (!enemy.activeSelf) { enemy.SetActive(true); }
-                                enemy.GetComponent<NPCController>().active_timer = timer_delay * 5;//DISABLE IF NO MESSAGES BEYOND 0.6s
+                                //enemy.GetComponent<NPCController>().active_timer = timer_delay * 5;//DISABLE IF NO MESSAGES BEYOND 0.6s
+                                enemy.GetComponent<NPCController>().KeepActive(timer_delay * 5, true);
                                 enemy.GetComponent<NPCController>().zapClient = 30;
                             }
                         }
@@ -459,7 +460,8 @@ namespace NetworkSystem
                         if (enemy.name == dict["obj"])
                         {
                             if (!enemy.activeSelf) { enemy.SetActive(true); }
-                            enemy.GetComponent<NPCController>().active_timer = timer_delay * 5;//DISABLE IF NO MESSAGES BEYOND 0.6s
+                            //enemy.GetComponent<NPCController>().active_timer = timer_delay * 5;//DISABLE IF NO MESSAGES BEYOND 0.6s
+                            enemy.GetComponent<NPCController>().KeepActive(timer_delay * 5, false);
                             if (enemy.GetComponent<Teleport>().teleport == 0 || (enemy.GetComponent<Teleport>().teleport == 1.5 && float.Parse(dict["tp"]) == 3f))
                             {
                                 enemy.GetComponent<Teleport>().teleport = float.Parse(dict["tp"]);
@@ -490,8 +492,8 @@ namespace NetworkSystem
                                 //--------ACTIVE-----------
                                 //if (obj.Value["ax"] != null) { enemy.SetActive(bool.Parse(obj.Value["ax"])); }
                                 if (!enemy.activeSelf) { enemy.SetActive(true); } //if (!enemy.tag.Contains("ZOZO")){
-                                enemy.GetComponent<NPCController>().active_timer = timer_delay * 5;//DISABLE IF NO MESSAGES BEYOND 0.6s
-
+                                //enemy.GetComponent<NPCController>().active_timer = timer_delay * 5;//DISABLE IF NO MESSAGES BEYOND 0.6s
+                                enemy.GetComponent<NPCController>().KeepActive(timer_delay * 5, true);
                                 //--------TARGET-----------
                                 if (obj.Value.ContainsKey("dmg"))
                                 {
@@ -527,8 +529,8 @@ namespace NetworkSystem
                                 //--------ACTIVE-----------
                                 //if (obj.Value["ax"] != null) { enemy.SetActive(bool.Parse(obj.Value["ax"])); }
                                 if (!enemy.activeSelf) { enemy.SetActive(true); } //if (!enemy.tag.Contains("ZOZO")){
-                                enemy.GetComponent<NPCController>().active_timer = timer_delay * 5;//DISABLE IF NO MESSAGES BEYOND 0.6s
-
+                                //enemy.GetComponent<NPCController>().active_timer = timer_delay * 5;//DISABLE IF NO MESSAGES BEYOND 0.6s
+                                enemy.GetComponent<NPCController>().KeepActive(timer_delay * 5, true);
                                 //--------TARGET-----------
                                 if (obj.Value.ContainsKey("dmg"))
                                 {
@@ -560,7 +562,8 @@ namespace NetworkSystem
                                 //--------ACTIVE-----------
                                 //if (obj.Value["ax"] != null) { enemy.SetActive(bool.Parse(obj.Value["ax"])); }
                                 if (!enemy.activeSelf) { enemy.SetActive(true); } //if (!enemy.tag.Contains("ZOZO")){
-                                enemy.GetComponent<NPCController>().active_timer = timer_delay * 5;//DISABLE IF NO MESSAGES BEYOND 0.6s
+                                enemy.GetComponent<NPCController>().KeepActive(timer_delay * 5, true);
+                                //enemy.GetComponent<NPCController>().active_timer = timer_delay * 5;//DISABLE IF NO MESSAGES BEYOND 0.6s
                                                                                                    //--------POSITION---------
                                 Vector3 targPos;
                                 if (obj.Value["x"] != null)

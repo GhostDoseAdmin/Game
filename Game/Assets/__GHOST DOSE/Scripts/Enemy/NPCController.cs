@@ -158,11 +158,19 @@ public class NPCController : MonoBehaviour
         //Debug.Log("----------------------------------------" + HIT_COL.GetComponent<SphereCollider>().enabled);
         if (NetworkDriver.instance.isMobile) { head.GetComponent<SphereCollider>().radius = 0.28f; }
 
+    }
 
-
-
-
-
+    public void KeepActive(float timer, bool testIfAlive)
+    {
+        active_timer = timer;
+            //IF DEAD ON CLIENT BUT NOT ON HOST (DEBUG)
+            if(testIfAlive && dead)
+            {
+            dead = false;
+            healthEnemy = 1;
+            this.gameObject.transform.GetChild(0).GetComponent<SkinnedMeshRenderer>().enabled = true;
+            //if still getting data from host, reveal skin and make not dead and give some health
+        }
     }
 
     public Vector3 serverPosition;
@@ -240,6 +248,7 @@ public class NPCController : MonoBehaviour
             {
                this.gameObject.SetActive(false);
             }
+
         }
 
         p1_dist = Vector3.Distance(head.position, Player.transform.position);
@@ -723,8 +732,14 @@ public class NPCController : MonoBehaviour
                    // Flinch(false);
                 //}
                 if (damageAmount > 60) { //SHOTGUN & HEADSHOT
+                    //Flinch(true);
                     if (!brute) { Flinch(true); } 
-                    else { Flinch(false); } 
+                    else {
+                        if (damageAmount == 101 || damageAmount == 202) { Flinch(false); }//headshot damage
+                        else { Flinch(true); } //shotgun
+
+
+                    } 
                 } 
                 else { 
                     if (!brute) { Flinch(false); } 

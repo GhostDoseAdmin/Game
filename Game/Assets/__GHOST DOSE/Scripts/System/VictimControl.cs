@@ -532,7 +532,7 @@ public class VictimControl : Item
         ZOZO.GetComponent<Animator>().enabled = true;
         ZOZO.GetComponent<NavMeshAgent>().enabled = true;
         ZOZO.GetComponent<NPCController>().enabled = true;
-        ZOZO.GetComponent<Teleport>().canTeleport = true;
+        //ZOZO.GetComponent<Teleport>().canTeleport = true;
 
         ZOZO.transform.position = ZOZOstartPos;
         ZOZO.transform.rotation = ZOZOstartRot;
