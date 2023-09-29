@@ -274,6 +274,7 @@ public class ShootingSystem : MonoBehaviour
                                 if (isHeadshot) { Damage = headShotDamage;
                                     if (NetworkDriver.instance.isMobile && !NetworkDriver.instance.TWOPLAYER) { Damage = headShotDamage * 2; }
                                 }
+                                    if (target.tag == "ZOZO" && NetworkDriver.instance.isMobile) { Damage *= 2; }
                                 //Debug.Log("---------------------------------------" + damage);
                                 target.GetComponent<NPCController>().TakeDamage(Damage, false);
                             }

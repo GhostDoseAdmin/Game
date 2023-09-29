@@ -86,13 +86,10 @@ public class RigManager : MonoBehaviour
             if (skinCode.text.ToUpper().Contains(code.ToUpper())) { 
                 PlayerPrefs.SetInt("skull", 1);
                 skinCode.text = "SKULLCODE";
-                AudioManager.instance.Play("headshot", null);
+                AudioManager.instance.Play("zozolaugh", null);
                 UpdateSkinsList();
             } //save prefab for this code + make rig available
         }
-       
-
-       
     }
     public void UpdatePlayerRig(string rigName, bool isTravis, bool otherPlayer)
     {

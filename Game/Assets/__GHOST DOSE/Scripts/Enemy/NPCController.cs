@@ -529,7 +529,7 @@ public class NPCController : MonoBehaviour
                 if (animEnemy.GetCurrentAnimatorClipInfo(0).Length>0 && animEnemy.GetCurrentAnimatorClipInfo(0)[0].clip.name != "EnemyAttack")
                 {
                     GetComponent<NavMeshAgent>().speed = chaseSpeed;//DOESNT AFFECT THIS
-                    if (agro) { GetComponent<NavMeshAgent>().speed = chaseSpeed * 2; }
+                    if (agro && !ZOZO) { GetComponent<NavMeshAgent>().speed = chaseSpeed * 2; }
                 }
                 if (animEnemy.GetCurrentAnimatorClipInfo(0).Length>0 && (animEnemy.GetCurrentAnimatorClipInfo(0)[0].clip.name == "agro" || animEnemy.GetCurrentAnimatorClipInfo(0)[0].clip.name == "ReactV2")) { GetComponent<NavMeshAgent>().speed = 0; }
                 //GetComponent<NavMeshAgent>().enabled = true;
@@ -750,6 +750,9 @@ public class NPCController : MonoBehaviour
 
             //-----------RETREAT-------------------
             if (healthEnemy < startHealth * retreatThreshold) { if (hasRetreated == 0) { hasRetreated = 1; } }
+
+            //ZOZO DAMAGE
+            if (ZOZO) { GetComponent<ZozoControl>().HP -= damageAmount; }
 
             //-----------DEATH--------------------
             if (healthEnemy <= 0 && !dead)

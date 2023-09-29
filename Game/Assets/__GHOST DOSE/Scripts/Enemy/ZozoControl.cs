@@ -31,11 +31,12 @@ public class ZozoControl : MonoBehaviour
     private bool startCharging;
     public GameObject zozoSizzleFX, zozoSizzleEnvFX;
     public float HP = 1000;
+    public float HPMAX = 1000;
     public bool DEAD = false;
 
 
     private float timer = 0f;
-    private float interval = 3f;
+    private float interval = 2f;
     //public int HP = 1000;
     //private int laserBlocked;
     //public bool blocked = false;
@@ -47,6 +48,7 @@ public class ZozoControl : MonoBehaviour
         audioSource2.spatialBlend = 1.0f;
         audioSourceSizzle = gameObject.AddComponent<AudioSource>();
         audioSourceSizzle.spatialBlend = 1.0f;
+       
 
     }
     // Start is called before the first frame update
@@ -59,9 +61,13 @@ public class ZozoControl : MonoBehaviour
         chargeLightStart = chargeLight.transform.localPosition;
         laserChargeVFXstartScale = laserChargeVFX.transform.localScale;
 
-        if (GetComponentInParent<VictimControl>() != null) { this.gameObject.name = "ZOZO-" + GetComponentInParent<VictimControl>().gameObject.name; this.gameObject.SetActive(false); }
+       // if (GetComponentInParent<VictimControl>() != null) { this.gameObject.name = "ZOZO-" + GetComponentInParent<VictimControl>().gameObject.name; this.gameObject.SetActive(false); }
 
-        GameDriver.instance.zozoHealthUI.gameObject.transform.parent.gameObject.SetActive(false);
+       // GameDriver.instance.zozoHealthUI.gameObject.transform.parent.gameObject.SetActive(false);
+
+        HP = HPMAX;
+        if(NetworkDriver.instance.isMobile) { GetComponent<NPCController>().damage *=(int)0.5; GetComponent<NPCController>().laserDamage *= (int)0.5; }
+        
     }
     private void OnDisable()
     {
@@ -81,13 +87,14 @@ public class ZozoControl : MonoBehaviour
     private float canLaserTimer;
     public void Update()
     {
-        if (HP < 1000 && !DEAD) { 
-            HP += 1; 
-            if (!NetworkDriver.instance.TWOPLAYER) { HP -= 0.5f; } 
+        if (HP < HPMAX && !DEAD) {
+
+            // HP += 1; 
+            // if (!NetworkDriver.instance.TWOPLAYER) { HP -= 0.5f; } //single player
         }
         if (GameDriver.instance.zozoHealthUI.gameObject.transform.parent.gameObject.activeSelf)
         {
-            float healthPrecent = HP / 1000;
+            float healthPrecent = HP / HPMAX;
             GameDriver.instance.zozoHealthUI.fillAmount = healthPrecent;
         }
 
@@ -208,10 +215,12 @@ public class ZozoControl : MonoBehaviour
     }
     public void ZOZOFlinch(bool hard, bool env)
     {
-        HP -= 1.2f;
+         HP -= 1.2f; 
+        if(NetworkDriver.instance.isMobile) { HP -= 10f; }
+
         //Debug.Log("----------------------------------ZOZO FLINCHING-------------------------------");
         if (!env) { zozoSizzleFX.transform.localScale = new Vector3(14f, 14f, 14f); }
-        if (env) { zozoSizzleEnvFX.transform.localScale = new Vector3(14f, 14f, 14f); HP -= 4; }
+        if (env) { zozoSizzleEnvFX.transform.localScale = new Vector3(14f, 14f, 14f); if (NetworkDriver.instance.isMobile) { HP -= 20; } }
 
         if (zozoSizzleFX.transform.localScale.x > 1)
         {
@@ -233,7 +242,6 @@ public class ZozoControl : MonoBehaviour
 
         if (hard)
         {
-            HP -= 4;
             if (GetComponent<Animator>().GetCurrentAnimatorClipInfo(0).Length > 0 && GetComponent<Animator>().GetCurrentAnimatorClipInfo(0)[0].clip.name != "agro" && !GetComponent<NPCController>().zozoLaser && zozoCanFlinsh && !GetComponent<Animator>().GetBool("Attack")) // && !animEnemy.GetCurrentAnimatorStateInfo(0).IsName("Attack")
             {
                 zozoCanFlinsh = false;

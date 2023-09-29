@@ -48,8 +48,9 @@ public class CamFlash : MonoBehaviour
 
         GameObject[] ghosts = GameObject.FindGameObjectsWithTag("Ghost");
         GameObject[] shadowers = GameObject.FindGameObjectsWithTag("Shadower");
+        GameObject ZoZo = GameObject.FindGameObjectWithTag("ZOZO");
 
-        
+
         foreach (GameObject shadower in shadowers)
         {
             NPCController enemy = shadower.GetComponent<NPCController>();
@@ -67,7 +68,10 @@ public class CamFlash : MonoBehaviour
                 ghostObjects.Add(enemy);
             }
         }
-
+        if (ZoZo)
+        {
+            ghostObjects.Add(ZoZo.GetComponent<NPCController>());
+        }
 
         foreach (NPCController ghost in ghostObjects)
         {

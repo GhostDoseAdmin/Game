@@ -129,7 +129,7 @@ public class GhostVFX : MonoBehaviour
     {
         updateCall++;
         //if (updateCall > 2)
-        if ((updateCall > 1 && GeometryUtility.TestPlanesAABB(GeometryUtility.CalculateFrustumPlanes(Camera.main), skin.GetComponent<SkinnedMeshRenderer>().bounds)) || (GetComponent<Teleport>().teleport!=0))//
+        if (((updateCall > 1 && GeometryUtility.TestPlanesAABB(GeometryUtility.CalculateFrustumPlanes(Camera.main), skin.GetComponent<SkinnedMeshRenderer>().bounds)) || (GetComponent<Teleport>().teleport!=0))||(GetComponent<ZozoControl>()!=null))//
         {
             updateCall = 0;
             
@@ -197,6 +197,8 @@ public class GhostVFX : MonoBehaviour
                             if (NetworkDriver.instance.HOST){ GetComponent<NPCController>().alertLevelPlayer += 10; }
                             GetComponentInChildren<Outline>().OutlineWidth = 4; 
                             if (!invisible) { TriggerWanderSound(); }
+                           // GameDriver.instance.WriteGuiMsg("HITTING ZOZO ", 0.2f, false, UnityEngine.Color.red);
+                            if (GetComponent<ZozoControl>() != null) { GetComponent<ZozoControl>().ZOZOFlinch(false, false); if (camflashplayer || camflashclient) { GetComponent<ZozoControl>().ZOZOFlinch(true, false); } }
                         }
                         if (!Shadower) { visible = true; visibilitySet = true; } else { visible = false; visibilitySet = true; }
                     }
@@ -228,6 +230,7 @@ public class GhostVFX : MonoBehaviour
                         {
                             if (NetworkDriver.instance.HOST) { GetComponent<NPCController>().alertLevelClient += 10; }
                             GetComponentInChildren<Outline>().OutlineWidth = 4;
+                            if (GetComponent<ZozoControl>() != null) { GetComponent<ZozoControl>().ZOZOFlinch(false, false); if (camflashplayer || camflashclient) { GetComponent<ZozoControl>().ZOZOFlinch(true, false); } }
                         }
 
                         if (!Shadower) { visible = true; visibilitySet = true; } else { visible = false; visibilitySet = true; }
@@ -358,6 +361,7 @@ public class GhostVFX : MonoBehaviour
                     visibilitySet = true;
                     if (!Shadower) { visible = true; }
                     else { visible = false; } // shadower 
+                    if (GetComponent<ZozoControl>() != null) { GetComponent<ZozoControl>().ZOZOFlinch(false, true);  }
                 }
             }
         }
@@ -387,7 +391,6 @@ public class GhostVFX : MonoBehaviour
             if (hit.collider.GetComponentInParent<NPCController>().gameObject == this.gameObject)
             {
                 targetHit = true;
-                if(GetComponent<ZozoControl>() != null) { GetComponent<ZozoControl>().ZOZOFlinch(false, env); if (camflashplayer || camflashclient) { GetComponent<ZozoControl>().ZOZOFlinch(true, env); } }
                 //FLICKER
                 if (GetComponent<Animator>().GetCurrentAnimatorClipInfo(0).Length > 0 && GetComponent<Animator>().GetCurrentAnimatorClipInfo(0)[0].clip.name == "agro" && light.GetComponent<GhostLight>() != null) { if (light.GetComponent<GhostLight>().canFlicker) { light.GetComponent<GhostLight>().InvokeFlicker(1f); } }
                 break;
