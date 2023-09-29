@@ -10,7 +10,7 @@ using GameManager;
 using TMPro;
 using UnityEngine.LowLevel;
 using UnityEngine.SceneManagement;
-
+using InteractionSystem;
 
 [System.Serializable]
 public class RigManager : MonoBehaviour
@@ -52,10 +52,19 @@ public class RigManager : MonoBehaviour
     [HideInInspector] public float[] leveldata;
     [HideInInspector] public string currentRigName, otherPlayerRigName;
 
-  
+    //EXCLUSIVE SKIN UNLOCKS
+    public TMP_InputField skinCode;
+    public string[] unlockCodes;
+    public List<GameObject> travExclusiveSkin;
+    public List<GameObject> wesExclusiveSkin;
+
+
+
     // Start is called before the first frame update
     void Start()
     {
+
+
         leveldata = new float[5];//NUMBER OF LEVELS, index 0 not used
         util = new utilities();
         
@@ -66,7 +75,25 @@ public class RigManager : MonoBehaviour
             UpdatePlayerRig(travBasicRigs[0].name, true, false);
         }
     }
- 
+
+    private void Update()
+    {
+        //CHECK CODE
+        foreach (string code in unlockCodes)
+        {
+            //Debug.Log("COMPARING " +  code + "to " + skinCode.text);
+
+            if (skinCode.text.ToUpper().Contains(code.ToUpper())) { 
+                PlayerPrefs.SetInt("skull", 1);
+                skinCode.text = "SKULLCODE";
+                AudioManager.instance.Play("headshot", null);
+                UpdateSkinsList();
+            } //save prefab for this code + make rig available
+        }
+       
+
+       
+    }
     public void UpdatePlayerRig(string rigName, bool isTravis, bool otherPlayer)
     {
         Debug.Log("-----------------UPDATING RIG with name" + rigName);
@@ -234,6 +261,15 @@ public class RigManager : MonoBehaviour
                     }
                 }
             }
+
+        }
+        //UNLOCK SKINS
+        if (PlayerPrefs.GetInt("skull") == 1)
+        {
+            if (NetworkDriver.instance.isTRAVIS) { thisRewardsList = travExclusiveSkin; }
+            else { thisRewardsList = wesExclusiveSkin; }
+
+            updatedList.Add(thisRewardsList[0]);//SKULL SKIN INDEX
         }
 
         //UPDATE LIST
