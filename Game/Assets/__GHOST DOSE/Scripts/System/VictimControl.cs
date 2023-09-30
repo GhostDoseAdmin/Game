@@ -495,7 +495,7 @@ public class VictimControl : Item
         AudioManager.instance.UpdateVolume("zozomusicloop", null, zozoMusicVol);
         zozoFXendOn = true;
         zozoEffectEnd.SetActive(true);
-        //Invoke("SpawnZOZO", 10f);
+        if (!TEST) { Invoke("SpawnZOZO", 10f); }
     }
 
     public void SpawnZOZO()
