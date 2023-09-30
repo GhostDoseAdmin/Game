@@ -61,8 +61,8 @@ public class ZozoControl : MonoBehaviour
         chargeLightStart = chargeLight.transform.localPosition;
         laserChargeVFXstartScale = laserChargeVFX.transform.localScale;
 
-        //if (GetComponentInParent<VictimControl>() != null) { this.gameObject.name = "ZOZO-" + GetComponentInParent<VictimControl>().gameObject.name; this.gameObject.SetActive(false); }
-        //GameDriver.instance.zozoHealthUI.gameObject.transform.parent.gameObject.SetActive(false);
+        if (GetComponentInParent<VictimControl>() != null) { this.gameObject.name = "ZOZO-" + GetComponentInParent<VictimControl>().gameObject.name; this.gameObject.SetActive(false); }
+        GameDriver.instance.zozoHealthUI.gameObject.transform.parent.gameObject.SetActive(false);
 
         if (!NetworkDriver.instance.TWOPLAYER) { HPMAX *= 0.75f; }
         HP = HPMAX;
