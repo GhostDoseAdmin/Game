@@ -493,7 +493,7 @@ public class VictimControl : Item
 
     public void SpawnZOZO()
     {
-        ZOZO.GetComponent<ZozoControl>().HP = 1000;
+        ZOZO.GetComponent<ZozoControl>().HP = ZOZO.GetComponent<ZozoControl>().HP = ZOZO.GetComponent<ZozoControl>().MAXHP;
         ZOZO.GetComponent<ZozoControl>().DEAD = false;
         ZOZO.SetActive(true);
        
