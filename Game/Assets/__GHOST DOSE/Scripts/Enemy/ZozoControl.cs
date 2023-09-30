@@ -31,7 +31,7 @@ public class ZozoControl : MonoBehaviour
     private bool startCharging;
     public GameObject zozoSizzleFX, zozoSizzleEnvFX;
     public float HP = 1000;
-    public float HPMAX = 500;//5000
+    public float HPMAX = 5000;//5000
     public bool DEAD = false;
 
 
