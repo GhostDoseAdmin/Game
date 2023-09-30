@@ -31,7 +31,7 @@ public class ZozoControl : MonoBehaviour
     private bool startCharging;
     public GameObject zozoSizzleFX, zozoSizzleEnvFX;
     public float HP = 1000;
-    public float HPMAX = 5000;
+    public float HPMAX = 500;//5000
     public bool DEAD = false;
 
 
@@ -66,7 +66,6 @@ public class ZozoControl : MonoBehaviour
 
         if (!NetworkDriver.instance.TWOPLAYER) { HPMAX *= 0.75f; }
         HP = HPMAX;
-        HP = HPMAX * 0.2f;
         // if(NetworkDriver.instance.isMobile) { GetComponent<NPCController>().damage *=(int)0.5; GetComponent<NPCController>().laserDamage *= (int)0.5; }
 
     }
