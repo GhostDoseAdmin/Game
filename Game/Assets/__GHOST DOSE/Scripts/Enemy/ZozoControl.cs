@@ -107,7 +107,8 @@ public class ZozoControl : MonoBehaviour
             if (timer >= interval)
             {
                 // Call your function here.
-                NetworkDriver.instance.sioCom.Instance.Emit("event", JsonConvert.SerializeObject($"{{'obj':'{gameObject.name}','type':'{HP}','event':'zozohp'}}"), false);
+                if (HP > 0) { NetworkDriver.instance.sioCom.Instance.Emit("event", JsonConvert.SerializeObject($"{{'obj':'{gameObject.name}','type':'{HP}','event':'zozohp'}}"), false); }
+
 
                 // Reset the timer.
                 timer = 0f;

@@ -415,7 +415,7 @@ namespace NetworkSystem
                         if (dict["event"] == "setfree") { obj.GetComponent<VictimControl>().SetSpiritsFree(); }
                         if (dict["event"] == "summon") { obj.GetComponent<VictimControl>().SummonZozo(); }
                         if (dict["event"] == "zozo") { obj.GetComponent<VictimControl>().DestroyZozo1(); }
-                        if (dict["event"] == "zozohp") { Debug.Log(dict["type"]); obj.GetComponent<ZozoControl>().HP = float.Parse(dict["type"]); }
+                        if (dict["event"] == "zozohp") { Debug.Log(dict["type"]); if (obj != null) { obj.GetComponent<ZozoControl>().HP = float.Parse(dict["type"]); } }
                         if (dict["event"] == "captures") {GameDriver.instance.OTHER_KILLS = int.Parse(dict["amount"]); }
 
                         if (dict["event"] == "pickup")
