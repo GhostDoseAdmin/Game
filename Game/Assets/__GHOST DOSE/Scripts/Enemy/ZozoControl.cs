@@ -31,7 +31,7 @@ public class ZozoControl : MonoBehaviour
     private bool startCharging;
     public GameObject zozoSizzleFX, zozoSizzleEnvFX;
     public float HP = 1000;
-    public float HPMAX = 1000;
+    private float HPMAX = 5000;
     public bool DEAD = false;
 
 
@@ -61,12 +61,13 @@ public class ZozoControl : MonoBehaviour
         chargeLightStart = chargeLight.transform.localPosition;
         laserChargeVFXstartScale = laserChargeVFX.transform.localScale;
 
-       // if (GetComponentInParent<VictimControl>() != null) { this.gameObject.name = "ZOZO-" + GetComponentInParent<VictimControl>().gameObject.name; this.gameObject.SetActive(false); }
+        //if (GetComponentInParent<VictimControl>() != null) { this.gameObject.name = "ZOZO-" + GetComponentInParent<VictimControl>().gameObject.name; this.gameObject.SetActive(false); }
+        //GameDriver.instance.zozoHealthUI.gameObject.transform.parent.gameObject.SetActive(false);
 
-       // GameDriver.instance.zozoHealthUI.gameObject.transform.parent.gameObject.SetActive(false);
-
+        if (!NetworkDriver.instance.TWOPLAYER) { HPMAX *= 0.75f; }
         HP = HPMAX;
-        if(NetworkDriver.instance.isMobile) { GetComponent<NPCController>().damage *=(int)0.5; GetComponent<NPCController>().laserDamage *= (int)0.5; }
+       
+       // if(NetworkDriver.instance.isMobile) { GetComponent<NPCController>().damage *=(int)0.5; GetComponent<NPCController>().laserDamage *= (int)0.5; }
         
     }
     private void OnDisable()
