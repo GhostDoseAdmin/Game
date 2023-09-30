@@ -318,7 +318,7 @@ public class VictimControl : Item
                 ZOZO.GetComponent<ZozoControl>().DEAD = true;
                 canDestroyZozo = false;
                // if (NetworkDriver.instance.HOST) { 
-                    Invoke("DestroyZozo1", 0.5f);
+                    Invoke("DestroyZozo1", 0.01f);
                     if (NetworkDriver.instance.TWOPLAYER) { NetworkDriver.instance.sioCom.Instance.Emit("event", JsonConvert.SerializeObject($"{{'obj':'{gameObject.name}','type':'destroy','event':'zozo'}}"), false); } 
                // }
             }
