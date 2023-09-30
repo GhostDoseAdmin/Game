@@ -91,6 +91,7 @@ public class VictimControl : Item
     void Update()
     {
         //CANDLES
+        candleCount = 12;//--------------------------TEST
         if (NetworkDriver.instance.TWOPLAYER) { maxCandles = 12; }
         else { maxCandles = 6; }
         GameDriver.instance.candleUI.GetComponent<TextMeshProUGUI>().text = candleCount.ToString() + "/" + maxCandles.ToString();
@@ -462,9 +463,12 @@ public class VictimControl : Item
         zozo = true;
         startCircle = false;
         AudioManager.instance.Play("enterzozomusic", null);
-        Invoke("SpawnInitialEffect", 15f);
-        Invoke("SpawnMidEffect", 39f);
-        Invoke("Climax", 50f);//CLIMAX
+       // Invoke("SpawnInitialEffect", 15f);
+       // Invoke("SpawnMidEffect", 39f);
+       // Invoke("Climax", 50f);//CLIMAX
+
+
+        Invoke("SpawnZOZO", 1f);//-----------------TEST------------------------
         zozoDummy.SetActive(true);
 
 
@@ -488,7 +492,7 @@ public class VictimControl : Item
         AudioManager.instance.UpdateVolume("zozomusicloop", null, zozoMusicVol);
         zozoFXendOn = true;
         zozoEffectEnd.SetActive(true);
-        Invoke("SpawnZOZO", 10f);
+        //Invoke("SpawnZOZO", 10f);
     }
 
     public void SpawnZOZO()
