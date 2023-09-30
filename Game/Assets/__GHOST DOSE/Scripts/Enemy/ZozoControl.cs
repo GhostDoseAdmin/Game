@@ -66,9 +66,9 @@ public class ZozoControl : MonoBehaviour
 
         if (!NetworkDriver.instance.TWOPLAYER) { HPMAX *= 0.75f; }
         HP = HPMAX;
-       
-       // if(NetworkDriver.instance.isMobile) { GetComponent<NPCController>().damage *=(int)0.5; GetComponent<NPCController>().laserDamage *= (int)0.5; }
-        
+        HP = HPMAX * 0.2f;
+        // if(NetworkDriver.instance.isMobile) { GetComponent<NPCController>().damage *=(int)0.5; GetComponent<NPCController>().laserDamage *= (int)0.5; }
+
     }
     private void OnDisable()
     {
