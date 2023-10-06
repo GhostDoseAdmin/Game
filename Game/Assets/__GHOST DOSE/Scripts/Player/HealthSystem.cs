@@ -7,6 +7,8 @@ using GameManager;
 using NetworkSystem;
 using Newtonsoft.Json;
 using GameManager;
+using UnityEditor.PackageManager;
+
 public class HealthSystem : MonoBehaviour
 {
 	[Header("HEALTH PARAMETRS")]
@@ -173,8 +175,12 @@ public class HealthSystem : MonoBehaviour
 	{
 		if (NetworkDriver.instance.TWOPLAYER)
 		{
-			GameDriver.instance.DeathCam.SetActive(true);
-			GameDriver.instance.mainCam.SetActive(false);
+			if(GameDriver.instance.Client.GetComponent<ClientPlayerController>().hp > 0)
+			{
+                GameDriver.instance.DeathCam.SetActive(true);
+                GameDriver.instance.mainCam.SetActive(false);
+            }
+
 		}
         
         Instantiate(death, transform.position, transform.rotation);
