@@ -178,15 +178,18 @@ namespace GameManager
             }
             //----------------------------------OTHER USERNAME--------------------------------
             //NetworkDriver.instance.otherUSERNAME = "DEEZ NUTS";
-            if (NetworkDriver.instance.otherUSERNAME.Length > 0 && Client!=null && GeometryUtility.TestPlanesAABB(GeometryUtility.CalculateFrustumPlanes(Camera.main), Client.GetComponentInChildren<SkinnedMeshRenderer>(false).bounds))
+            if (mainCam.activeSelf)
             {
-                otherUserName.GetComponent<TextMeshProUGUI>().text = NetworkDriver.instance.otherUSERNAME;
-                // Update the name tag position based on the player's position
-                Vector3 worldPosition = new Vector3(Client.transform.position.x, Client.transform.position.y+1.5f, Client.transform.position.z);  
-                Vector3 screenPosition = Camera.main.WorldToScreenPoint(worldPosition);
-                otherUserName.GetComponent<RectTransform>().position = screenPosition;
-                otherKills.GetComponent<RectTransform>().position = screenPosition;
-            } 
+                if (NetworkDriver.instance.otherUSERNAME.Length > 0 && Client != null && GeometryUtility.TestPlanesAABB(GeometryUtility.CalculateFrustumPlanes(Camera.main), Client.GetComponentInChildren<SkinnedMeshRenderer>(false).bounds))
+                {
+                    otherUserName.GetComponent<TextMeshProUGUI>().text = NetworkDriver.instance.otherUSERNAME;
+                    // Update the name tag position based on the player's position
+                    Vector3 worldPosition = new Vector3(Client.transform.position.x, Client.transform.position.y + 1.5f, Client.transform.position.z);
+                    Vector3 screenPosition = Camera.main.WorldToScreenPoint(worldPosition);
+                    otherUserName.GetComponent<RectTransform>().position = screenPosition;
+                    otherKills.GetComponent<RectTransform>().position = screenPosition;
+                }
+            }
         }
         void Start()
         {
