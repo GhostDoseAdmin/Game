@@ -171,8 +171,12 @@ public class HealthSystem : MonoBehaviour
 
 	public void Death()
 	{
-        GameDriver.instance.mainCam.SetActive(false);
-        GameDriver.instance.DeathCam.SetActive(true);
+		if (NetworkDriver.instance.TWOPLAYER)
+		{
+			GameDriver.instance.DeathCam.SetActive(true);
+			GameDriver.instance.mainCam.SetActive(false);
+		}
+        
         Instantiate(death, transform.position, transform.rotation);
 		//if (NetworkDriver.instance.TWOPLAYER) { NetworkDriver.instance.sioCom.Instance.Emit("death", 'x':'{transform.position.x.ToString("F2")}', 'y':'{transform.position.y.ToString("F2")}', 'z':'{transform.position.z.ToString("F2")', true); }
 		if (NetworkDriver.instance.TWOPLAYER) { NetworkDriver.instance.sioCom.Instance.Emit("death", JsonConvert.SerializeObject(new {x = transform.position.x, y = transform.position.y, z = transform.position.z }), false); }
