@@ -61,7 +61,7 @@ public class PlayerDeath : MonoBehaviour
     }
     private void OnTriggerEnter(Collider other)
     {
-        if (other.gameObject.tag == "Player")
+        if (other.gameObject.GetComponent<ClientPlayerController>() == null)
         {
             reviveIndicator.SetActive(true);
             reviveIndicator.GetComponent<Animator>().Play("Reviving");
@@ -69,7 +69,7 @@ public class PlayerDeath : MonoBehaviour
     }
     private void OnTriggerExit(Collider other)
     {
-        if (other.gameObject.tag == "Player")
+        if (other.gameObject.GetComponent<ClientPlayerController>() == null)
         {
             reviveIndicator.SetActive(false);
         }
