@@ -66,7 +66,7 @@ namespace GameManager
         public GameObject gearuicam, gearuik2, gearuiemp, gearuilaser, candleUI;
         
         private static utilities util;
-
+        public float lostGameDebugCounter = 0;
         private void Update()
         {
             //INFO MENU
@@ -123,6 +123,12 @@ namespace GameManager
             //CAMERA TOGGLE
             if (!mainCam.activeSelf && !DeathCam.activeSelf) { mainCam.SetActive(true); }
 
+            //LOST GAME DEBUG
+            if (NetworkDriver.instance.TWOPLAYER && NetworkDriver.instance.lostGame)
+            {
+                lostGameDebugCounter += Time.deltaTime;
+                if (lostGameDebugCounter >= 5) { LostGame(); }
+            }
 
             //END GAME
             if (NetworkDriver.instance.GAMESTARTED)
@@ -133,7 +139,7 @@ namespace GameManager
                     {
                         NetworkDriver.instance.lostGame = true;
                         WriteGuiMsg("Investigation Failed", 5f, false, Color.red);
-                        Invoke("LostGame", 5f);
+                        //Invoke("LostGame", 5f);
                        
                        // NetworkDriver.instance.EndGame();
                     }
