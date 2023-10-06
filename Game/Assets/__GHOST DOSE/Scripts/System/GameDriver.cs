@@ -56,6 +56,8 @@ namespace GameManager
         [HideInInspector] public Light ClientWeapLight;
         [HideInInspector] public Light ClientFlashLight;
 
+        public GameObject DeathCam;
+        public GameObject mainCam = null;
 
         private float timer = 0f;
         private float interval = 30f;
@@ -304,7 +306,6 @@ namespace GameManager
                 playerStartPos = Player.transform.position;
                 //SETUP CAMERA
                 playerUI.SetActive(true);
-                GameObject mainCam = null;
 
                 mainCam = GameObject.Find("PlayerCamera"); 
                 mainCam.GetComponent<Camera_Controller>().player = Player.transform;

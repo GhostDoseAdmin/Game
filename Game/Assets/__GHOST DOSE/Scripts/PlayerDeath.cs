@@ -51,6 +51,8 @@ public class PlayerDeath : MonoBehaviour
                 if (GameDriver.instance.Player.GetComponent<HealthSystem>().dead) {
                     GameDriver.instance.Player.gameObject.SetActive(true);
                     GameDriver.instance.Player.GetComponent<HealthSystem>().Revive();
+                    GameDriver.instance.mainCam.SetActive(true);
+                    GameDriver.instance.DeathCam.SetActive(false);
                 }
                 reviveIndicator.SetActive(false);
                 Destroy(this.gameObject);
