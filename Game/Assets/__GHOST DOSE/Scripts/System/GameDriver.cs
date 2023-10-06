@@ -127,6 +127,7 @@ namespace GameManager
             if (NetworkDriver.instance.TWOPLAYER && NetworkDriver.instance.lostGame)
             {
                 lostGameDebugCounter += Time.deltaTime;
+                WriteGuiMsg("Investigation Failed", 5f, false, Color.red);
                 if (lostGameDebugCounter >= 5) { LostGame(); }
             }
 
