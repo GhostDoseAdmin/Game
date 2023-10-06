@@ -307,9 +307,9 @@ namespace NetworkSystem
             sioCom.Instance.On("death", (payload) =>
             {
                 Debug.Log(" RECEIVED DEATH  " + payload);
-                //JObject data = JObject.Parse(payload);
-                //Dictionary<string, string> dict = data.ToObject<Dictionary<string, string>>();
-                otherPlayerDeath = Instantiate(GameDriver.instance.Client.GetComponent<ClientPlayerController>().death, GameDriver.instance.Client.transform.position, GameDriver.instance.Client.transform.rotation);
+                JObject data = JObject.Parse(payload);
+                Dictionary<string, string> dict = data.ToObject<Dictionary<string, string>>();
+                otherPlayerDeath = Instantiate(GameDriver.instance.Client.GetComponent<ClientPlayerController>().death, new Vector3(float.Parse(dict["x"]), float.Parse(dict["y"]), float.Parse(dict["z"])), GameDriver.instance.Client.transform.rotation);
                 otherPlayerDeath.GetComponent<PlayerDeath>().otherPlayer = true;
                 GameDriver.instance.Client.SetActive(false);
                 GameDriver.instance.Client.GetComponent<ClientPlayerController>().hp = 0;
