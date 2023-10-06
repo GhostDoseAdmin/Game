@@ -62,7 +62,7 @@ public class RemExplo : MonoBehaviour
 
         if (!isClients)
         {
-            Dictionary<string, Dictionary<string, string>> dmgObjs = new Dictionary<string, Dictionary<string, string>>();
+            Dictionary<string, Dictionary<string, int>> dmgObjs = new Dictionary<string, Dictionary<string, int>>();
 
             foreach (NPCController enemy in enemyEmitList)
             {
@@ -70,8 +70,8 @@ public class RemExplo : MonoBehaviour
                 Debug.Log("------------------------ REMPOD DAMAGE " + enemy.gameObject.name);
                 enemy.TakeDamage(200, false);
                 //Network
-                Dictionary<string, string> dmgDict = new Dictionary<string, string>();
-                dmgDict.Add("dmg", "200");
+                Dictionary<string, int> dmgDict = new Dictionary<string, int>();
+                dmgDict.Add("dmg", 200);
                 dmgObjs.Add(enemy.gameObject.name, dmgDict);
 
             }

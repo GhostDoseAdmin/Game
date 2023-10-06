@@ -480,9 +480,9 @@ namespace NetworkSystem
                     JObject data = JObject.Parse(payload);
                     Debug.Log("REM POD-------------------------------------- " + data);
                     //Debug.Log("SYNCING " + data);
-                    Dictionary<string, Dictionary<string, string>> dict = data.ToObject<Dictionary<string, Dictionary<string, string>>>();
+                    Dictionary<string, Dictionary<string, int>> dict = data.ToObject<Dictionary<string, Dictionary<string, int>>>();
                     // Log the object positions to the console
-                    foreach (KeyValuePair<string, Dictionary<string, string>> obj in dict)
+                    foreach (KeyValuePair<string, Dictionary<string, int>> obj in dict)
                     {
                         //search list of enemies for corresopnding obj
                         foreach (GameObject enemy in GameDriver.instance.GetComponent<DisablerControl>().enemyObjects)
@@ -497,7 +497,7 @@ namespace NetworkSystem
                                 //--------TARGET-----------
                                 if (obj.Value.ContainsKey("dmg"))
                                 {
-                                    enemy.GetComponent<NPCController>().TakeDamage(int.Parse(obj.Value["dmg"]), true);
+                                    enemy.GetComponent<NPCController>().TakeDamage(obj.Value["dmg"], true);
                                 }
                             }
                         }
