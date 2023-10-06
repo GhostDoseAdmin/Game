@@ -126,7 +126,7 @@ namespace GameManager
             {
                 if (NetworkDriver.instance.TWOPLAYER)
                 {
-                    if (Player!=null && Client!=null && Player.GetComponent<HealthSystem>().Health<=0 && Client.GetComponent<ClientPlayerController>().hp==0)
+                    if (Player!=null && Client!=null && Player.GetComponent<HealthSystem>().Health<=0 && Client.GetComponent<ClientPlayerController>().hp<=0)
                     {
                         NetworkDriver.instance.lostGame = true;
                         WriteGuiMsg("Investigation Failed", 1f, false, Color.red);
