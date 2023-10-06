@@ -69,7 +69,7 @@ public class PlayerDeath : MonoBehaviour
     }
     private void OnTriggerExit(Collider other)
     {
-        if (other.gameObject.GetComponent<ClientPlayerController>() != null)
+        if (other.gameObject.GetComponent<ClientPlayerController>() != null) 
         {
             reviveIndicator.SetActive(false);
         }
