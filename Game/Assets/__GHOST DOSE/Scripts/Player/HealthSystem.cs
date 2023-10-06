@@ -91,16 +91,7 @@ public class HealthSystem : MonoBehaviour
 		//Treatment();
 	}
 
-	public void Revive()
-	{
-		//PLAYER MADE ACTIVE BY PLAYERDEATH OBJECT
-		Health = maxHealth;
-		dead = false;
-        if (NetworkDriver.instance.TWOPLAYER) {
-            NetworkDriver.instance.sioCom.Instance.Emit("event", JsonConvert.SerializeObject(new { obj = this.gameObject.name, revive = true }), false);
-        }
 
-    }
 
 	void UpdateHealth()
 	{
@@ -179,7 +170,20 @@ public class HealthSystem : MonoBehaviour
 
     }
 
-	public void Death()
+    public void Revive()
+    {
+        //PLAYER MADE ACTIVE BY PLAYERDEATH OBJECT
+        GameDriver.instance.mainCam.SetActive(true);
+        GameDriver.instance.DeathCam.SetActive(false);
+        Health = maxHealth;
+        dead = false;
+        if (NetworkDriver.instance.TWOPLAYER)
+        {
+            NetworkDriver.instance.sioCom.Instance.Emit("event", JsonConvert.SerializeObject(new { obj = this.gameObject.name, revive = true }), false);
+        }
+
+    }
+    public void Death()
 	{
 		if (NetworkDriver.instance.TWOPLAYER)
 		{
