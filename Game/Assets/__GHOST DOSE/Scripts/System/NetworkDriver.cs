@@ -623,6 +623,7 @@ namespace NetworkSystem
             //--------------PLAYER DISCONNECT-----------------
             sioCom.Instance.On("player_disconnect", (payload) => { if (SceneManager.GetActiveScene().name == "Lobby") { GameObject.Find("LobbyManager").GetComponent<LobbyControlV2>().LeaveRoom(); }
                 //if (SceneManager.GetActiveScene().name != "EndGame") { GameDriver.instance.WriteGuiMsg("Other Player Disconnected! ", 10f, false, Color.red); HOST = true; }
+                GameDriver.instance.WriteGuiMsg("Other Player Disconnected! ", 10f, false, Color.red); HOST = true;
                 EndGame();
             });
         }
