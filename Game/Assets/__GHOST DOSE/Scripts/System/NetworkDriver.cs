@@ -315,6 +315,7 @@ namespace NetworkSystem
                 GameDriver.instance.Client.GetComponent<ClientPlayerController>().hp = 0;
                 if(GameDriver.instance.Player.GetComponent<HealthSystem>().Health<=0)
                 {
+                    GameDriver.instance.Player.GetComponent<HealthSystem>().CancelInvoke("CamSwitch");
                     GameDriver.instance.DeathCam.SetActive(false);
                     GameDriver.instance.mainCam.SetActive(true);
                 }

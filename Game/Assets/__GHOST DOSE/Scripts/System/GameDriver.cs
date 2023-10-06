@@ -121,11 +121,11 @@ namespace GameManager
                 }
             }
             //CAMERA TOGGLE
-            
-            if(!mainCam.activeSelf && !DeathCam.activeSelf) { mainCam.SetActive(true); }
+            if (!mainCam.activeSelf && !DeathCam.activeSelf) { mainCam.SetActive(true); }
+
 
             //END GAME
-            if(NetworkDriver.instance.GAMESTARTED)
+            if (NetworkDriver.instance.GAMESTARTED)
             {
                 if (NetworkDriver.instance.TWOPLAYER)
                 {
