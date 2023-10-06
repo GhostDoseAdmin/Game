@@ -59,12 +59,12 @@ public class PlayerDeath : MonoBehaviour
             }
         }
 
-        //
-        if (GetComponent<ClientPlayerController>().hp <= 0) { reviveIndicator.SetActive(false); }
+        //YOUR ALIVE / CLIENT DEAT
+        if (GameDriver.instance.Player.GetComponent<HealthSystem>().Health <= 0 && GameDriver.instance.Client.GetComponent<ClientPlayerController>().hp <= 0) { reviveIndicator.SetActive(false); }
     }
     private void OnTriggerEnter(Collider other)
     {
-        if (other.gameObject.GetComponent<ClientPlayerController>() != null)
+        if (other.gameObject.tag=="Player")
         {
             reviveIndicator.SetActive(true);
             reviveIndicator.GetComponent<Animator>().Play("Reviving");
@@ -72,7 +72,7 @@ public class PlayerDeath : MonoBehaviour
     }
     private void OnTriggerExit(Collider other)
     {
-        if (other.gameObject.GetComponent<ClientPlayerController>() != null) 
+        if (other.gameObject.tag == "Player") 
         {
             reviveIndicator.SetActive(false);
         }
