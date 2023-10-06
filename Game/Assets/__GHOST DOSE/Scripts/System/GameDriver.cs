@@ -134,7 +134,7 @@ namespace GameManager
                         NetworkDriver.instance.lostGame = true;
                         WriteGuiMsg("Investigation Failed", 5f, false, Color.red);
                         Invoke("LostGame", 5f);
-                        Debug.Log("-------------------------------------------------END GAME");
+                       
                        // NetworkDriver.instance.EndGame();
                     }
                 }
@@ -362,6 +362,7 @@ namespace GameManager
 
         public void LostGame()
         {
+            Debug.Log("-------------------------------------------------END GAME");
             NetworkDriver.instance.EndGame();
         }
         public void DemonColdSpotScreamer()
