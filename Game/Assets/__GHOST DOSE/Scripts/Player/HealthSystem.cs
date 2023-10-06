@@ -171,14 +171,21 @@ public class HealthSystem : MonoBehaviour
         }
 	}
 
+	public void CamSwitch()
+	{
+
+        GameDriver.instance.DeathCam.SetActive(true);
+        GameDriver.instance.mainCam.SetActive(false);
+
+    }
+
 	public void Death()
 	{
 		if (NetworkDriver.instance.TWOPLAYER)
 		{
 			if(GameDriver.instance.Client.GetComponent<ClientPlayerController>().hp > 0)
 			{
-                GameDriver.instance.DeathCam.SetActive(true);
-                GameDriver.instance.mainCam.SetActive(false);
+				Invoke("CamSwitch", 5f);
             }
 
 		}
