@@ -313,6 +313,9 @@ namespace NetworkSystem
                 otherPlayerDeath.GetComponent<PlayerDeath>().otherPlayer = true;
                 GameDriver.instance.Client.SetActive(false);
                 GameDriver.instance.Client.GetComponent<ClientPlayerController>().hp = 0;
+                GameDriver.instance.DeathCam.SetActive(false);
+                GameDriver.instance.mainCam.SetActive(true);
+
             });
             //-----------------LASER  ----------------->
             sioCom.Instance.On("laser", (payload) =>

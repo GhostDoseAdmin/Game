@@ -129,7 +129,7 @@ namespace GameManager
                     if (Player!=null && Client!=null && Player.GetComponent<HealthSystem>().Health<=0 && Client.GetComponent<ClientPlayerController>().hp<=0)
                     {
                         NetworkDriver.instance.lostGame = true;
-                        WriteGuiMsg("Investigation Failed", 1f, false, Color.red);
+                        WriteGuiMsg("Investigation Failed", 5f, false, Color.red);
                         Invoke("LostGame", 5f);
                     }
                 }
@@ -139,7 +139,7 @@ namespace GameManager
                     {
                         Debug.Log("------------------------------------DEAD");
                         NetworkDriver.instance.lostGame = true;
-                        WriteGuiMsg("Investigation Failed", 1f, false, Color.red);
+                        WriteGuiMsg("Investigation Failed", 5f, false, Color.red);
                         Invoke("LostGame", 5f);
                     }
                 }
