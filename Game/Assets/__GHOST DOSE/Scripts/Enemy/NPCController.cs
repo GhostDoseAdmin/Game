@@ -750,12 +750,10 @@ public class NPCController : MonoBehaviour
                 if (damageAmount > 60) { //SHOTGUN & HEADSHOT
                     //Flinch(true);
                     if (!brute) { Flinch(true); } 
-                    else {
+                    /*else {
                         if (damageAmount == 101 || damageAmount == 202) { Flinch(false); }//headshot damage
                         else { Flinch(true); } //shotgun
-
-
-                    } 
+                    }*/ 
                 } 
                 else { 
                     if (!brute) { Flinch(false); } 
