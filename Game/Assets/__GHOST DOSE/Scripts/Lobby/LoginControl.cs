@@ -124,7 +124,8 @@ public class LoginControl : MonoBehaviour
     {
         usernameField.SetActive(true);
         signOut.SetActive(false);
-        PlayerPrefs.SetInt("login_saved", 0);
+        //PlayerPrefs.SetInt("login_saved", 0);
+        PlayerPrefs.DeleteAll();
         GetComponentInChildren<TextMeshProUGUI>().text = "LOGIN";
     }
     

@@ -381,7 +381,7 @@ public class ShootingSystem : MonoBehaviour
         target = null;
         isVisible = false;
         GameObject targ = EasyTarget(distance);
-        if (GetComponent<PlayerController>().gamePad.camSup.AIMMODE)
+        if (GetComponent<PlayerController>().gamePad.camSup.AIMMODE)//AIMING
         {
             Damage = 60;
             RectTransform rect = headShotIndicatorUI.GetComponent<RectTransform>();//CENTER OF CROSSHAIR
@@ -425,9 +425,9 @@ public class ShootingSystem : MonoBehaviour
             }
 
         }
-        else//FALL BACK TO EASYTARGET
+        else//FALL BACK TO EASYTARGET / BLINDFIRE
         {
-            Damage = 100;
+            Damage = 100;//100
             target = targ;
         }
     }

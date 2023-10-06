@@ -53,7 +53,7 @@ public class PlayerDeath : MonoBehaviour
                     GameDriver.instance.Player.GetComponent<HealthSystem>().Revive();
                 }
                 reviveIndicator.SetActive(false);
-                Destroy(this.gameObject);
+               // Destroy(this.gameObject);
             }
         }
     }

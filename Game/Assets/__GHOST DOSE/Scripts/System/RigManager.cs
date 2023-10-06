@@ -260,7 +260,7 @@ public class RigManager : MonoBehaviour
             }
 
         }
-        //UNLOCK SKINS
+        //SKULL SKINS
         if (PlayerPrefs.GetInt("skull") == 1)
         {
             if (NetworkDriver.instance.isTRAVIS) { thisRewardsList = travExclusiveSkin; }
