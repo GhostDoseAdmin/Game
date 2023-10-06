@@ -125,20 +125,22 @@ namespace GameManager
 
 
             //END GAME
-            if(NetworkDriver.instance.GAMESTARTED && !NetworkDriver.instance.lostGame)
+            if(NetworkDriver.instance.GAMESTARTED)
             {
                 if (NetworkDriver.instance.TWOPLAYER)
                 {
                     if (Player!=null && Client!=null && Player.GetComponent<HealthSystem>().Health<=0 && Client.GetComponent<ClientPlayerController>().hp<=0)
                     {
-                        NetworkDriver.instance.lostGame = true;
+                        /*NetworkDriver.instance.lostGame = true;
                         WriteGuiMsg("Investigation Failed", 5f, false, Color.red);
                         Invoke("LostGame", 5f);
+                        */
+                        NetworkDriver.instance.EndGame();
                     }
                 }
                 else
                 {
-                    if (Player!=null && Player.GetComponent<HealthSystem>().Health <= 0)
+                    if (Player!=null && Player.GetComponent<HealthSystem>().Health <= 0 && !NetworkDriver.instance.lostGame)
                     {
                         Debug.Log("------------------------------------DEAD");
                         NetworkDriver.instance.lostGame = true;
