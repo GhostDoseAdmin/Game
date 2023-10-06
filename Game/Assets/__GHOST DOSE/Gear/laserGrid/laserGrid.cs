@@ -72,7 +72,7 @@ public class laserGrid : MonoBehaviour
         
         if (!OTHERPLAYER)
         {
-            Dictionary<string, Dictionary<string, string>> dmgObjs = new Dictionary<string, Dictionary<string, string>>();
+            Dictionary<string, Dictionary<string, int>> dmgObjs = new Dictionary<string, Dictionary<string, int>>();
 
             //ADD TARGET FROM CROSSHAIR
             NPCController crosshairTarget = null;
@@ -91,12 +91,15 @@ public class laserGrid : MonoBehaviour
                 // Calculate the damage based on the normalized distance
                 float calculatedDamage = Mathf.Lerp(200, 50, normalizedDistance);
 
-                enemy.TakeDamage((int)calculatedDamage, false);
-                Debug.Log("------------------------ LASERGRID " + enemy.gameObject.name + " DAMAGE " + (int)calculatedDamage);
+                //Convert float to int
+                int finalDamage = (int)calculatedDamage;
+
+                enemy.TakeDamage(finalDamage, false);
+                Debug.Log("------------------------ LASERGRID " + enemy.gameObject.name + " DAMAGE " + finalDamage);
 
                 //Network
-                Dictionary<string, string> dmgDict = new Dictionary<string, string>();
-                dmgDict.Add("dmg", ((int)calculatedDamage).ToString());
+                Dictionary<string, int> dmgDict = new Dictionary<string, int>();
+                dmgDict.Add("dmg", finalDamage);
                 dmgObjs.Add(enemy.gameObject.name, dmgDict);
 
             }
