@@ -58,6 +58,9 @@ public class PlayerDeath : MonoBehaviour
                 Destroy(this.gameObject);
             }
         }
+
+        //
+        if (GetComponent<ClientPlayerController>().hp <= 0) { reviveIndicator.SetActive(false); }
     }
     private void OnTriggerEnter(Collider other)
     {

@@ -120,6 +120,9 @@ namespace GameManager
 
                 }
             }
+            //CAMERA TOGGLE
+            
+
 
             //END GAME
             if(NetworkDriver.instance.GAMESTARTED && !NetworkDriver.instance.lostGame)
