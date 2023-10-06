@@ -729,6 +729,8 @@ namespace NetworkSystem
         // BEAT LEVEL
         public void EndGame()
         {
+            GameDriver.instance.mainCam.SetActive(true);
+
             SCENE_READY = false; OTHERS_SCENE_READY = false;
             timeElapsed = Time.time -startTime;
             GameObject.Find("PlayerCamera").transform.SetParent(GameDriver.instance.gameObject.transform);
