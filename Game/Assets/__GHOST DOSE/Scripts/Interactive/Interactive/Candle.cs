@@ -21,8 +21,17 @@ public class Candle : Item
 
         //HealthSystem.kitinstance.CollectKit(this.kit);
         NetworkDriver.instance.sioCom.Instance.Emit("event", JsonConvert.SerializeObject($"{{'obj':'{gameObject.name}','type':'cand','event':'pickup','pass':'none'}}"), false);
-        GameObject.Find("OuijaBoardManager").GetComponentInChildren<VictimControl>().candleCount++;
-        DestroyWithSound(false);
+        if(GameObject.Find("OuijaBoardManager").GetComponentInChildren<VictimControl>().candleCount < GameObject.Find("OuijaBoardManager").GetComponentInChildren<VictimControl>().maxCandles)
+        {
+            GameObject.Find("OuijaBoardManager").GetComponentInChildren<VictimControl>().candleCount++;
+            
+            if (GameObject.Find("OuijaBoardManager").GetComponentInChildren<VictimControl>().candleCount >= GameObject.Find("OuijaBoardManager").GetComponentInChildren<VictimControl>().maxCandles)
+            {
+                AudioManager.instance.Play("candle", null);
+            }
+            DestroyWithSound(false);
+        }
+
     }
 
 

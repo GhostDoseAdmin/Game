@@ -53,7 +53,7 @@ public class VictimControl : Item
     private bool fadeMusicOut;
     public bool canTest;
     public float zozoTimer;
-    private int maxCandles = 6;
+    public int maxCandles = 6;
     private bool canStopPlayer = true;
     private bool canStopOther = true;
 
