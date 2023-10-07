@@ -126,7 +126,7 @@ public class HealthSystem : MonoBehaviour
          GetComponent<PlayerController>().damageForce = force;
         GetComponent<Rigidbody>().AddForce(force, ForceMode.Impulse);
         GetComponent<Animator>().Play("Flinch", 0, 0f); //-1
-       GameObject.Find("PlayerCamera").GetComponent<Camera_Controller>().InvokeShake(1f, 2f); 
+		if (GameDriver.instance.mainCam.activeSelf) { GameDriver.instance.mainCam.GetComponent<Camera_Controller>().InvokeShake(1f, 2f); }
         Health -= damage;
 		//healthLevel.fillAmount -= damage * 0.01f;
 		Invoke("changeHealthUIColor",0.5f);

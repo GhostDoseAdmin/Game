@@ -167,9 +167,11 @@ public class ZozoControl : MonoBehaviour
                 laserLights.SetActive(true);
                 laserActive = true;
                 //shake
-                if (GameObject.Find("Hit") != null) { GameObject.Find("PlayerCamera").GetComponent<Camera_Controller>().InvokeShake(0.5f, Mathf.InverseLerp(20f, 0f, Vector3.Distance(GameDriver.instance.Player.transform.position, GameObject.Find("Hit").transform.position))); }
-                GameObject.Find("PlayerCamera").GetComponent<Camera_Controller>().InvokeShake(0.5f, Mathf.InverseLerp(20f, 0f, Vector3.Distance(GameDriver.instance.Player.transform.position, transform.position))); ;
-
+                if (GameDriver.instance.mainCam.activeSelf)
+                {
+                    if (GameObject.Find("Hit") != null) { GameDriver.instance.mainCam.GetComponent<Camera_Controller>().InvokeShake(0.5f, Mathf.InverseLerp(20f, 0f, Vector3.Distance(GameDriver.instance.Player.transform.position, GameObject.Find("Hit").transform.position))); }
+                    GameDriver.instance.mainCam.GetComponent<Camera_Controller>().InvokeShake(0.5f, Mathf.InverseLerp(20f, 0f, Vector3.Distance(GameDriver.instance.Player.transform.position, transform.position))); ;
+                }
                 if (GetComponent<NPCController>().target) { transform.rotation = Quaternion.RotateTowards(transform.rotation, Quaternion.LookRotation(GetComponent<NPCController>().target.transform.position - transform.position), 50f * Time.deltaTime); }
                 //LASER BLOCKED
                 /*if (NetworkDriver.instance.HOST && hasTriedLaser)
@@ -326,7 +328,7 @@ public class ZozoControl : MonoBehaviour
 
     private void FootStep()
     {
-        GameObject.Find("PlayerCamera").GetComponent<Camera_Controller>().InvokeShake(0.5f, Mathf.InverseLerp(20f, 0f, Vector3.Distance(GameDriver.instance.Player.transform.position, transform.position)));
+        if (GameDriver.instance.mainCam.activeSelf) { GameObject.Find("PlayerCamera").GetComponent<Camera_Controller>().InvokeShake(0.5f, Mathf.InverseLerp(20f, 0f, Vector3.Distance(GameDriver.instance.Player.transform.position, transform.position))); }
         Light[] allLights = GameObject.FindObjectsOfType<Light>(); // Find all the Light components in the scene
 
         foreach (Light light in allLights)
