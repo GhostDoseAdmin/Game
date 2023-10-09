@@ -77,7 +77,7 @@ namespace NetworkSystem
             //FindObjectsOfType<GameDriver>(true)[0].gameObject.SetActive(true);
         }
 
-        private void ConnectionTimeout() { if (!connected) { GameDriver.instance.WriteGuiMsg("Trouble reaching servers!", 30f, false, Color.red); timeout = true; } }
+        private void ConnectionTimeout() { if (!connected) { GameDriver.instance.WriteGuiMsg("Trouble reaching servers! Restarting...", 30f, false, Color.red); timeout = true; Invoke("ResetGameDebug",2f); } }
        
         
         public void Reconnect()
@@ -113,7 +113,7 @@ namespace NetworkSystem
                 if (payload != null)
                 {
                     connected = true;
-                    if (!hasEverConnected) { GameDriver.instance.WriteGuiMsg("Connected Successfully!", 5f, false, Color.white); hasEverConnected = true; }
+                    if (!hasEverConnected) { GameDriver.instance.WriteGuiMsg("Connected Successfully!", 5f, false, Color.white); hasEverConnected = true; CancelInvoke("ResetGameDebug"); }
                     if (SceneManager.GetActiveScene().name == "Lobby") { GameObject.Find("LobbyManager").GetComponent<LobbyControlV2>().loginCanvas.SetActive(true); }
                     else { sioCom.Instance.Emit("join", ROOM, true); } //PlayerPrefs.GetString("room")}
                     //GameDriver.instance.WriteGuiMsg("Checking Room " + GameDriver.instance.ROOM,1f, true);
@@ -176,6 +176,8 @@ namespace NetworkSystem
                         place++;
 
                     }
+
+                    getLeaderboard = false;
                 }
             });
             //-----------------JOIN ROOM----------------->
@@ -624,6 +626,7 @@ namespace NetworkSystem
             sioCom.Instance.On("player_disconnect", (payload) => { if (SceneManager.GetActiveScene().name == "Lobby") { GameObject.Find("LobbyManager").GetComponent<LobbyControlV2>().LeaveRoom(); }
                 //if (SceneManager.GetActiveScene().name != "EndGame") { GameDriver.instance.WriteGuiMsg("Other Player Disconnected! ", 10f, false, Color.red); HOST = true; }
                 GameDriver.instance.WriteGuiMsg("Other Player Disconnected! ", 10f, false, Color.red); HOST = true;
+                lostGame = true;
                 EndGame();
             });
         }
@@ -773,8 +776,15 @@ namespace NetworkSystem
             sioCom.Instance.Close();
             DestroyImmediate(GameObject.Find("Player").transform.parent.gameObject);
             SceneManager.LoadScene("Lobby");
+            DestroyImmediate(GameObject.Find("Firesplash.UnityAssets.SocketIO.SIODispatcher"));//DESTROY SOCKET
             DestroyImmediate(this.gameObject);
         }
 
+        public void ResetGameDebug()
+        {
+            SceneManager.LoadScene("BootLoader");
+            DestroyImmediate(GameObject.Find("Firesplash.UnityAssets.SocketIO.SIODispatcher"));//DESTROY SOCKET
+            DestroyImmediate(this.gameObject);
+        }
     }
 }

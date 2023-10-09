@@ -73,6 +73,7 @@ public class Teleport : MonoBehaviour
                 // if (Vector3.Distance(transform.position, GetComponent<NPCController>().target.transform.position) > 3)//3
                 if ((Time.time > coolDown + 15f))
                 {
+                    
                         CheckTeleport(false, false);
                 }
             }

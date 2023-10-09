@@ -68,10 +68,10 @@ public class RemExplo : MonoBehaviour
             {
 
                 Debug.Log("------------------------ REMPOD DAMAGE " + enemy.gameObject.name);
-                enemy.TakeDamage(200, false);
+                enemy.TakeDamage(500, false);
                 //Network
                 Dictionary<string, int> dmgDict = new Dictionary<string, int>();
-                dmgDict.Add("dmg", 200);
+                dmgDict.Add("dmg", 500);
                 dmgObjs.Add(enemy.gameObject.name, dmgDict);
 
             }

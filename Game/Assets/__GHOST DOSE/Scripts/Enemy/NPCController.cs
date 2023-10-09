@@ -289,8 +289,38 @@ public class NPCController : MonoBehaviour
         else { if (!activateOutline) { outline.OutlineWidth -= (distance*0.0025f); } }
 
         if (outline.OutlineWidth < 0) { outline.OutlineWidth = 0; }
-        
+
+
+
+        //FORCE AGRO
+        if(!agro && target == null)
+        {
+            if (Vector3.Distance(Player.transform.position, transform.position) < 2)
+            {
+                if (NetworkDriver.instance.TWOPLAYER) { NetworkDriver.instance.sioCom.Instance.Emit("event", JsonConvert.SerializeObject(new { shoot = true, obj = gameObject.name, dmg = 1 }), false); }
+                GetComponent<NPCController>().TakeDamage(1, false);
+            }
         }
+
+        //PLAYER FLINCH
+        /*if (target == null)
+        {
+            if (Vector3.Distance(transform.position, Player.transform.position) < 2)
+            {
+                if (Player.GetComponent<PlayerController>().canFlinch)
+                {
+                    Vector3 oppositeForce = GetComponent<NPCController>().transform.forward * force * 0.1f;
+                    oppositeForce.y = 0f; // Set the y component to 0
+                                          //AudioManager.instance.Play("EnemyHit", main.GetComponent<NPCController>().audioSource);
+                    Player.GetComponent<HealthSystem>().HealthDamage(0, oppositeForce);
+                }
+
+
+            }
+        }*/
+
+
+    }
 
 
     public void OnDisable()
@@ -566,7 +596,10 @@ public class NPCController : MonoBehaviour
     public void FindTargetRayCast()
     {
         //if (target == null)
-        if(!agro)
+
+   
+
+        if (!agro)
         {
             //CHANGE RANGE IF CAN ZAP
 
@@ -596,8 +629,8 @@ public class NPCController : MonoBehaviour
             }
             if (distance <= 2)
             {
-                if ( Mathf.Abs(Player.transform.position.y - transform.position.y) <= 2) { range = startRange + 2; persist = startPersist * 2; angleView = 360; alertLevelPlayer += 200; }
-                if ( Mathf.Abs(Client.transform.position.y - transform.position.y) <= 2) { range = startRange + 2; persist = startPersist * 2; angleView = 360; alertLevelClient += 200; }
+                if ( Mathf.Abs(Player.transform.position.y - transform.position.y) <= 2) {  range = startRange + 2; persist = startPersist * 2; angleView = 360; alertLevelPlayer += 200; }
+                if ( Mathf.Abs(Client.transform.position.y - transform.position.y) <= 2) {  range = startRange + 2; persist = startPersist * 2; angleView = 360; alertLevelClient += 200; }
             }
 
             //LOOK AROUND
@@ -656,6 +689,7 @@ public class NPCController : MonoBehaviour
     {
         canZap = true;
         hasLooked = true;
+
         //NEW TARGET
         if (newTarget != target) {
             Debug.Log("----------------------------------ENGAGING-----------------------------------------" + newTarget);
@@ -689,11 +723,18 @@ public class NPCController : MonoBehaviour
     {
         if (!hard)
         {
-            if ((animEnemy.GetCurrentAnimatorClipInfo(0).Length > 0 && animEnemy.GetCurrentAnimatorClipInfo(0)[0].clip.name != "agro" && distance >= hitRange + 0.5f && canFlinch)) // && !animEnemy.GetCurrentAnimatorStateInfo(0).IsName("Attack")
+            Debug.Log("---------------------------------------------SHOTGUN");
+            if (canFlinch && animEnemy.GetCurrentAnimatorClipInfo(0).Length > 0)
             {
-                //Debug.Log("-----------------------------FLINCH");
-                if (!teddy) { animEnemy.Play("React"); }
-                if (teddy && canAttack) { animEnemy.Play("React"); }
+                if (animEnemy.GetCurrentAnimatorClipInfo(0)[0].clip.name != "agro") //&& !animEnemy.GetCurrentAnimatorStateInfo(0).IsName("Attack") 
+                {
+                    if(distance >= hitRange + 0.5f) //&& !animEnemy.GetCurrentAnimatorStateInfo(0).IsName("Attack")
+                    {
+                        if (!teddy) { animEnemy.Play("React"); }
+                        if (teddy && canAttack) { animEnemy.Play("React"); }
+                    }
+
+                }
             }
         }
         else { animEnemy.Play("ReactV2");  }
@@ -742,6 +783,7 @@ public class NPCController : MonoBehaviour
             //CAMSHOT
             if (damageAmount <= 0) { range += 2; angleView = startAngleView + 30; if (!brute) { Flinch(false); } }
             //--------AGRO-----------
+            bool canAgro = true;
             if (damageAmount > 0)
             {
                // if (agro) { 
@@ -750,15 +792,16 @@ public class NPCController : MonoBehaviour
                 if (damageAmount > 60) { //SHOTGUN & HEADSHOT
                     //Flinch(true);
                     if (!brute) { Flinch(true); } 
-                    /*else {
-                        if (damageAmount == 101 || damageAmount == 202) { Flinch(false); }//headshot damage
-                        else { Flinch(true); } //shotgun
-                    }*/ 
+                    else {//BRUTE FLINCHES
+                        //if (damageAmount == 101 || damageAmount == 202) { Flinch(false); }//headshot damage
+                        if (damageAmount == 500) { Flinch(true); canAgro = false; }//EMP DAMAGE
+                        else { Flinch(false);  } //shotgun
+                    }
                 } 
                 else { 
                     if (!brute) { Flinch(false); } 
                 }
-                Agro(otherPlayer);
+                if (canAgro) { Agro(otherPlayer); }
 
             }
 

@@ -121,7 +121,7 @@ namespace GameManager
                 }
             }
             //CAMERA TOGGLE
-            if (!mainCam.activeSelf && !DeathCam.activeSelf) { mainCam.SetActive(true); }
+            if (SceneManager.GetActiveScene().name != "Lobby") { if (!mainCam.activeSelf && !DeathCam.activeSelf) { mainCam.SetActive(true); } }
 
             //LOST GAME DEBUG
             if (NetworkDriver.instance.TWOPLAYER && NetworkDriver.instance.lostGame)
@@ -178,7 +178,7 @@ namespace GameManager
             }
             //----------------------------------OTHER USERNAME--------------------------------
             //NetworkDriver.instance.otherUSERNAME = "DEEZ NUTS";
-            if (mainCam.activeSelf)
+            if (SceneManager.GetActiveScene().name != "Lobby"  && mainCam.activeSelf)
             {
                 if (NetworkDriver.instance.otherUSERNAME.Length > 0 && Client != null && GeometryUtility.TestPlanesAABB(GeometryUtility.CalculateFrustumPlanes(Camera.main), Client.GetComponentInChildren<SkinnedMeshRenderer>(false).bounds))
                 {
