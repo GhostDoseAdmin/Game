@@ -586,16 +586,20 @@ public class NPCController : MonoBehaviour
             //ATTACK TARGET
             else
             {
-                //---------LOOKING-------
-                // Rotate towards the target position along the y-axis only
-                transform.rotation = Quaternion.RotateTowards(transform.rotation, Quaternion.LookRotation(target.transform.position - transform.position), 100f * Time.deltaTime);
+                if(this.gameObject.transform.GetChild(0).GetComponent<SkinnedMeshRenderer>().enabled)
+                {
+                    //---------LOOKING-------
+                    // Rotate towards the target position along the y-axis only
+                    transform.rotation = Quaternion.RotateTowards(transform.rotation, Quaternion.LookRotation(target.transform.position - transform.position), 100f * Time.deltaTime);
 
-                animEnemy.SetBool("Fighting", true);
-                animEnemy.SetBool("Run", true);
-                animEnemy.SetBool("Attack", true);
-                //GetComponent<NavMeshAgent>().enabled = false;
-                GetComponent<NavMeshAgent>().speed = 0;
-                navmesh.isStopped = true;
+                    animEnemy.SetBool("Fighting", true);
+                    animEnemy.SetBool("Run", true);
+                    animEnemy.SetBool("Attack", true);
+                    //GetComponent<NavMeshAgent>().enabled = false;
+                    GetComponent<NavMeshAgent>().speed = 0;
+                    navmesh.isStopped = true;
+                }
+
             }
         }
 
@@ -883,7 +887,7 @@ public class NPCController : MonoBehaviour
                 }
                 if (!otherPlayer) { GameDriver.instance.KILLS += 1; } else { GameDriver.instance.OTHER_KILLS += 1; }
                 dead = true;
-                if (!NetworkDriver.instance.HOST) { transform.position = new Vector3(0,-9999,0); }
+               
                 GetComponent<Teleport>().teleport = 0;
                 GetComponent<Teleport>().canTeleport = true;
                 zapActive = false;
