@@ -405,10 +405,11 @@ namespace NetworkSystem
                     //INFO SELECTION
                     if (dict.ContainsKey("info")) {
                         // Find an object by name in the list
-                        GameObject trait = GameDriver.instance.victimInfoTraits.Find(obj => obj.name.Contains(dict["obj"]));
-
-                        if (trait != null){ trait.GetComponent<infoCheckedToggle>().other.SetActive(bool.Parse(dict["info"]));}
-                    
+                        foreach (GameObject trait in GameDriver.instance.victimInfoTraits)
+                        {
+                            Debug.Log("-------------------TESTING TRAIT " + trait.name);
+                            if (trait.name.Contains(dict["obj"])) { trait.GetComponent<infoCheckedToggle>().other.SetActive(bool.Parse(dict["info"])); }
+                        }
                     }
 
                     //ENEMY
