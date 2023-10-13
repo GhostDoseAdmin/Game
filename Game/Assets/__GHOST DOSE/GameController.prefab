@@ -2264,6 +2264,7 @@ MonoBehaviour:
   speed: 0
   prevSpeed: 0
   emitDamage: 0
+  emitScreamer: 0
   damageForce: {x: 0, y: 0, z: 0}
   currentAni: 
   fireK2: 0
@@ -3865,6 +3866,7 @@ MonoBehaviour:
   speed: 0
   prevSpeed: 0
   emitDamage: 0
+  emitScreamer: 0
   damageForce: {x: 0, y: 0, z: 0}
   currentAni: 
   fireK2: 0
@@ -5746,7 +5748,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -23.751099, y: -0.8191026}
+  m_AnchoredPosition: {x: -23.75113, y: -0.81903076}
   m_SizeDelta: {x: 160, y: 30}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &1340337141277683372
@@ -6360,7 +6362,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -21.293999, y: 1.63797}
+  m_AnchoredPosition: {x: -21.294022, y: 1.6379089}
   m_SizeDelta: {x: 160, y: 30}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &2609536919779216549
@@ -7153,6 +7155,15 @@ MonoBehaviour:
   Player: {fileID: 0}
   Client: {fileID: 0}
   mobileController: {fileID: 80994945764019513}
+  victimInfoTraits:
+  - {fileID: 8744243754197453291}
+  - {fileID: 1278814757619258629}
+  - {fileID: 8486559940503953255}
+  - {fileID: 6093448024231699130}
+  - {fileID: 4127835746088678124}
+  - {fileID: 9196643426119305768}
+  - {fileID: 6699771552964352923}
+  - {fileID: 2111167907930721495}
   infiniteAmmo: 0
   infiniteHealth: 0
   playerUI: {fileID: 80994944349006720}
@@ -7924,7 +7935,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -24.570068, y: 0}
+  m_AnchoredPosition: {x: -24.570038, y: -0.000015258789}
   m_SizeDelta: {x: 160, y: 30}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &3313139233332458709
@@ -10562,7 +10573,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -22, y: -3.2759933}
+  m_AnchoredPosition: {x: -21.999939, y: -3.2759705}
   m_SizeDelta: {x: 160, y: 30}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &2524403218577222323
@@ -16653,7 +16664,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -20, y: -3.2759933}
+  m_AnchoredPosition: {x: -19.99997, y: -3.2759705}
   m_SizeDelta: {x: 160, y: 30}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &3756116629766745768
@@ -16864,7 +16875,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -20.47502, y: -0.8191026}
+  m_AnchoredPosition: {x: -20.475037, y: -0.81903076}
   m_SizeDelta: {x: 160, y: 30}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &6279910078481556143
@@ -17539,7 +17550,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: -21.293999, y: 0}
+  m_AnchoredPosition: {x: -21.294022, y: -0.000015258789}
   m_SizeDelta: {x: 160, y: 30}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &2409102732474437796

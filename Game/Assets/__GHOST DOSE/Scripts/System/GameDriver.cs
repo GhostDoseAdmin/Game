@@ -8,6 +8,7 @@ using UnityEngine.LowLevel;
 using UnityEngine.UI;
 using static UnityEngine.GraphicsBuffer;
 using System.Drawing;
+using System.Collections.Generic;
 
 namespace GameManager
 {
@@ -20,9 +21,10 @@ namespace GameManager
         public GameObject Player;
         public GameObject Client;
         public MobileController mobileController;
+        public List<GameObject> victimInfoTraits;
         //public string ROOM;
         //public bool ROOM_VALID;//they joined valid room
-        
+
         //public bool GAMESTART = false;
         //public bool twoPlayer = false;
 
