@@ -408,7 +408,7 @@ namespace NetworkSystem
                         foreach (GameObject trait in GameDriver.instance.victimInfoTraits)
                         {
                             Debug.Log("-------------------TESTING TRAIT " + trait.name);
-                            if (trait.name.Contains(dict["obj"])) { trait.GetComponent<infoCheckedToggle>().other.SetActive(bool.Parse(dict["info"])); }
+                            if (trait.name.Contains(dict["obj"])) { Debug.Log("-------------------TRAIT FOUND " + dict["obj"]); trait.GetComponent<infoCheckedToggle>().other.SetActive(bool.Parse(dict["info"])); }
                         }
                     }
 
