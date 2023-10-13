@@ -407,7 +407,7 @@ namespace NetworkSystem
                         // Find an object by name in the list
                         GameObject trait = GameDriver.instance.victimInfoTraits.Find(obj => obj.name.Contains(dict["obj"]));
 
-                        if (trait != null){obj.GetComponent<infoCheckedToggle>().other.SetActive(bool.Parse(dict["info"]));}
+                        if (trait != null){ trait.GetComponent<infoCheckedToggle>().other.SetActive(bool.Parse(dict["info"]));}
                     
                     }
 
