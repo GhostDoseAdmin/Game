@@ -403,12 +403,21 @@ namespace NetworkSystem
                     if (dict.ContainsKey("pingMap")) { Debug.Log("____________PING MAP"); GameDriver.instance.pingArrow(GameDriver.instance.Client.GetComponent<ClientPlayerController>().targetPos.position,true); }
 
                     //INFO SELECTION
-                    if (dict.ContainsKey("info")) {
+                    if (dict.ContainsKey("info"))
+                    {
                         // Find an object by name in the list
                         foreach (GameObject trait in GameDriver.instance.victimInfoTraits)
                         {
                             Debug.Log("-------------------TESTING TRAIT " + trait.name);
-                            if (trait.name.Contains(dict["obj"])) { Debug.Log("-------------------TRAIT FOUND " + dict["obj"]); trait.GetComponent<infoCheckedToggle>().other.SetActive(bool.Parse(dict["info"])); }
+                            if (trait.name.Contains(dict["obj"]))
+                            {
+                                Debug.Log("-------------------TRAIT FOUND " + dict["obj"]);
+                                infoCheckedToggle infoToggle = trait.GetComponent<infoCheckedToggle>();
+                                if (infoToggle != null)
+                                {
+                                    infoToggle.other.SetActive(bool.Parse(dict["info"]));
+                                }
+                            }
                         }
                     }
 
