@@ -415,8 +415,10 @@ namespace NetworkSystem
                                 infoCheckedToggle infoToggle = trait.GetComponent<infoCheckedToggle>();
                                 if (infoToggle != null)
                                 {
+                                    Debug.Log("-------------------------ACTIVATING TRAIT");
                                     infoToggle.other.SetActive(bool.Parse(dict["info"]));
                                 }
+                                else { Debug.Log("-------------------------TRAIT IS NULL"); }
                             }
                         }
                     }
