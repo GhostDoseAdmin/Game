@@ -404,7 +404,7 @@ namespace NetworkSystem
 
                     //INFO SELECTION
                     if (dict.ContainsKey("info")) {
-                        obj.GetComponent<infoCheckedToggle>().other.SetActive(bool.Parse(dict["info"]));
+                        if (obj != null) { obj.GetComponent<infoCheckedToggle>().other.SetActive(bool.Parse(dict["info"])); }
                     }
 
                     //ENEMY
