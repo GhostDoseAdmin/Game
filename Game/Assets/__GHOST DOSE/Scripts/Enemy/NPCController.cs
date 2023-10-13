@@ -236,7 +236,7 @@ public class NPCController : MonoBehaviour
         //---CLIENT SIDE PREDICTION--close position gap
         if (!NetworkDriver.instance.HOST)
         {
-            if (target == null)
+            //if (target == null)
             {
                 if (Vector3.Distance(transform.position, serverPosition) > 0.2f) { transform.position = Vector3.Lerp(transform.position, serverPosition, 0.02f); }
 
@@ -793,7 +793,7 @@ public class NPCController : MonoBehaviour
             }
             if (!ZOZO) { AudioManager.instance.Play("Agro", null); if (brute) { AudioManager.instance.Play("BruteAgro", audioSource); } }
             else { AudioManager.instance.Play("zozoAgro", null); }
-            if (healthEnemy > 0) { animEnemy.Play("agro"); Debug.Log("-----------------------------------------AGROdfzdsfee3453454"); }
+            if (healthEnemy > 0) { animEnemy.Play("agro"); }
             if (GameDriver.instance.mainCam.activeSelf) { GameDriver.instance.mainCam.GetComponent<Camera_Controller>().InvokeShake(1f, 1f); }
             range = 20; agro = true; angleView = 360;
             Invoke("AgroTimeout", 20f);
