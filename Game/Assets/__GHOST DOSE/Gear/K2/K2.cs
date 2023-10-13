@@ -20,7 +20,7 @@ public class K2 : MonoBehaviour
 
     void Start()
     {
-        hud = Camera.main.gameObject.GetComponent<Aiming>().K2;
+        if (GameDriver.instance.mainCam.activeSelf) { hud = Camera.main.gameObject.GetComponent<Aiming>().K2; }
         closestEnemyDist = 20f;//MAX DISTANCE
             if (GetComponentInParent<Animator>().gameObject.name == "Player") { isClient = false; }
             else if (GetComponentInParent<Animator>().gameObject.name == "Client") { isClient = true; }
@@ -83,7 +83,7 @@ public class K2 : MonoBehaviour
             newK2wave.transform.rotation = newYRotation;
             newK2wave.GetComponent<K2Wave>().isClient = isClient;
             newK2wave.GetComponent<K2Wave>().K2Source = this.gameObject;
-            newK2wave.GetComponent<K2Wave>().hud = hud;
+            if (GameDriver.instance.mainCam.activeSelf) { newK2wave.GetComponent<K2Wave>().hud = hud; }
             if (!otherPlayer) { GameDriver.instance.Player.GetComponent<PlayerController>().fireK2 = true; }//EMIT FIRE
         }
     }

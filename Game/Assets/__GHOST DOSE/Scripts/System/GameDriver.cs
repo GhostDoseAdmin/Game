@@ -6,6 +6,8 @@ using InteractionSystem;
 using Newtonsoft.Json;
 using UnityEngine.LowLevel;
 using UnityEngine.UI;
+using static UnityEngine.GraphicsBuffer;
+using System.Drawing;
 
 namespace GameManager
 {
@@ -29,8 +31,8 @@ namespace GameManager
         private GameObject TRAVIS;
         //public GameObject loginCanvas;
         public GameObject playerUI;
-        public GameObject GamePlayManager;
-        public GameObject otherUserName,otherKills;
+        //public GameObject GamePlayManager;
+        public GameObject otherUserName,otherKills, mapPingUI, otherKeyUI;
 
         public GameObject travisBasic;
         public GameObject westinBasic;
@@ -67,8 +69,11 @@ namespace GameManager
         
         private static utilities util;
         public float lostGameDebugCounter = 0;
+
+        UnityEngine.Color arrow_col;
         private void Update()
         {
+
             //INFO MENU
             if (Input.GetKeyUp(KeyCode.I))
             {
@@ -127,7 +132,7 @@ namespace GameManager
             if (NetworkDriver.instance.TWOPLAYER && NetworkDriver.instance.lostGame)
             {
                 lostGameDebugCounter += Time.deltaTime;
-                WriteGuiMsg("Investigation Failed", 5f, false, Color.red);
+                WriteGuiMsg("Investigation Failed", 5f, false, UnityEngine.Color.red);
                 if (lostGameDebugCounter >= 5) { LostGame(); }
             }
 
@@ -139,7 +144,7 @@ namespace GameManager
                     if (Player!=null && Client!=null && Player.GetComponent<HealthSystem>().Health<=0 && Client.GetComponent<ClientPlayerController>().hp<=0 && !NetworkDriver.instance.lostGame)
                     {
                         NetworkDriver.instance.lostGame = true;
-                        WriteGuiMsg("Investigation Failed", 5f, false, Color.red);
+                        WriteGuiMsg("Investigation Failed", 5f, false, UnityEngine.Color.red);
                         //Invoke("LostGame", 5f);
                        
                        // NetworkDriver.instance.EndGame();
@@ -151,7 +156,7 @@ namespace GameManager
                     {
                         Debug.Log("------------------------------------DEAD");
                         NetworkDriver.instance.lostGame = true;
-                        WriteGuiMsg("Investigation Failed", 5f, false, Color.red);
+                        WriteGuiMsg("Investigation Failed", 5f, false, UnityEngine.Color.red);
                         Invoke("LostGame", 5f);
                     }
                 }
@@ -163,7 +168,7 @@ namespace GameManager
             {
                 if (DemonScreamerUI.gameObject.activeSelf)
                 {
-                    Color color = DemonScreamerUI.color;
+                    UnityEngine.Color color = DemonScreamerUI.color;
                     color.a -= 0.5f * Time.deltaTime;
                     DemonScreamerUI.color = color;
                 }
@@ -173,31 +178,145 @@ namespace GameManager
             //---------------------------------WAITING FOR OTHER PLAYER----------------------------------
             if (Player!=null && NetworkDriver.instance.TWOPLAYER && !NetworkDriver.instance.OTHERS_SCENE_READY)
             {
-                WriteGuiMsg("Waiting for other player...", 1f, false, Color.red);
+                WriteGuiMsg("Waiting for other player...", 1f, false, UnityEngine.Color.red);
                 Player.transform.position = playerStartPos;
             }
-            //----------------------------------OTHER USERNAME--------------------------------
-            //NetworkDriver.instance.otherUSERNAME = "DEEZ NUTS";
-            if (SceneManager.GetActiveScene().name != "Lobby"  && mainCam.activeSelf)
+
+            //---------------VICTIM INFO PANEL------------------
+            info_timer += Time.deltaTime;
+
+            //---------------PING ARROW/ OTHERKEYUI-----------------------
+            if (NetworkDriver.instance.TWOPLAYER)
             {
-                if (NetworkDriver.instance.otherUSERNAME.Length > 0 && Client != null && GeometryUtility.TestPlanesAABB(GeometryUtility.CalculateFrustumPlanes(Camera.main), Client.GetComponentInChildren<SkinnedMeshRenderer>(false).bounds))
+
+                //------MAP PING INDICATOR-------
+                ping_timer += Time.deltaTime;
+                if (Player.GetComponent<PlayerController>().gearAim && ping_timer >= 3f)
                 {
-                    otherUserName.GetComponent<TextMeshProUGUI>().text = NetworkDriver.instance.otherUSERNAME;
-                    // Update the name tag position based on the player's position
-                    Vector3 worldPosition = new Vector3(Client.transform.position.x, Client.transform.position.y + 1.5f, Client.transform.position.z);
-                    Vector3 screenPosition = Camera.main.WorldToScreenPoint(worldPosition);
-                    otherUserName.GetComponent<RectTransform>().position = screenPosition;
-                    otherKills.GetComponent<RectTransform>().position = screenPosition;
+                    //draw button
+                    if (NetworkDriver.instance.isMobile) { Player.GetComponent<PlayerController>().gamePad.pingBTN.gameObject.SetActive(true); }
+                    //SHOW BUTTON
+                    if ((!NetworkDriver.instance.isMobile && Input.GetKeyUp(KeyCode.V)) || (NetworkDriver.instance.isMobile && Player.GetComponent<PlayerController>().gamePad.pingBTN.GetComponent<GPButton>().buttonReleased))
+                    {
+                        pingArrow(Player.GetComponent<PlayerController>().targetPos.position, false);
+                        NetworkDriver.instance.sioCom.Instance.Emit("event", JsonConvert.SerializeObject(new { pingMap = 1 }), false);
+
+                        //NetworkDriver.instance.sioCom.Instance.Emit("event", JsonConvert.SerializeObject(new { pingMap = 1, x = transform.position.x, y = transform.position.y, z = transform.position.z }), false);
+                        ping_timer = 0f;
+
+                        //PING ARROW
+                        UnityEngine.Color color = mapPingUI.GetComponent<Image>().color;
+                        color.a = 1;
+                        mapPingUI.GetComponent<Image>().color = color;
+                    }
                 }
+                else { if (NetworkDriver.instance.isMobile) { Player.GetComponent<PlayerController>().gamePad.pingBTN.gameObject.SetActive(false); } }
+
+                if (SceneManager.GetActiveScene().name != "Lobby" && mainCam.activeSelf)
+                {
+                    UnityEngine.Color color = mapPingUI.GetComponent<Image>().color;
+
+                    //CHOOSING VICTIM
+                    if (NetworkDriver.instance.LevelManager.GetComponentInChildren<VictimControl>().otherPlayerChoice != null)
+                    {
+                        //Debug.Log("----------------------------------ARROW LOCATION " + pingLoc);
+                        color.a = 1;
+                        pingLoc = NetworkDriver.instance.LevelManager.GetComponentInChildren<VictimControl>().otherPlayerChoice.transform.position + (Vector3.up * 1.5f);
+                    }
+                    else
+                    {
+                        //PING ARROW FADE
+                        color.a -= 0.1f * Time.deltaTime;
+                    }
+                    mapPingUI.GetComponent<Image>().color = color;
+                    Camera mainCamera = Camera.main;
+                    // Calculate the viewport position of the point
+
+                    //--------------PING ARROW---------------
+                    Vector3 viewportPos = mainCamera.WorldToViewportPoint(pingLoc);
+                    // Check if the point is within the camera's viewport
+                    bool isWithinViewport = viewportPos.x >= 0 && viewportPos.x <= 1 && viewportPos.y >= 0 && viewportPos.y <= 1 && viewportPos.z > 0;
+                    if (isWithinViewport)
+                    {
+                        Vector3 screenPosition = mainCamera.WorldToScreenPoint(pingLoc);
+                        mapPingUI.GetComponent<RectTransform>().position = screenPosition;
+                    }
+
+                    //------------OTHER PLAYER UI----------
+                    viewportPos = mainCamera.WorldToViewportPoint(Client.transform.position);
+                    // Check if the point is within the camera's viewport
+                    isWithinViewport = viewportPos.x >= 0 && viewportPos.x <= 1 && viewportPos.y >= 0 && viewportPos.y <= 1 && viewportPos.z > 0;
+                    if (isWithinViewport)
+                    {
+                        // The point is within the camera's frustum
+                        Vector3 screenPosition = mainCamera.WorldToScreenPoint(Client.transform.position);
+
+                        if (otherKeyUI.activeSelf) { otherKeyUI.GetComponent<RectTransform>().position = screenPosition; }//---------OTHER KEY UI---------
+                        otherUserName.GetComponent<TextMeshProUGUI>().text = NetworkDriver.instance.otherUSERNAME;
+                        otherUserName.GetComponent<RectTransform>().position = screenPosition;
+                        otherKills.GetComponent<RectTransform>().position = screenPosition;
+
+                    }
+                    else
+                    {
+                        otherKeyUI.GetComponent<RectTransform>().position = new Vector3(-999, -999, -999);
+                    }
+                }
+                
             }
+
+
+        }//<________________________________END UPDATED________________________________________>
+        public float info_timer = 0;
+
+
+        public Vector3 pingLoc;
+        private float ping_timer = 0f;
+        public void pingArrow(Vector3 location, bool otherPlayer)
+        {
+            //DETERMINE LOCATION OF ARROW BASEDO ON INTERSECTION
+            LayerMask mask = 1 << LayerMask.NameToLayer("Default") | 1 << LayerMask.NameToLayer("Ghost");
+            Vector3 startPoint;
+            if (!otherPlayer) { startPoint = Player.transform.position + Vector3.up; }
+            else { startPoint = Client.transform.position + Vector3.up; ; }
+            Vector3 endPoint = location;
+            // Calculate the direction vector from start to end points.
+            Vector3 direction = endPoint - startPoint;
+            // Create a ray from the startPoint in the calculated direction.
+            Ray ray = new Ray(startPoint, direction);
+            // Create a RaycastHit variable to store information about the hit point.
+            RaycastHit hit;
+            // Perform the raycast and check for an intersection on the default layer (Layer 0).
+            if (Physics.Raycast(ray, out hit, Mathf.Infinity, mask))
+            {
+                // An intersection occurred on the default layer.
+                pingLoc = hit.point;
+                // You can use intersectionPoint for further calculations or actions.
+                Debug.Log("Intersection Point: " + pingLoc);
+            }
+
+            //PING ARROW FADE
+            UnityEngine.Color color = mapPingUI.GetComponent<Image>().color;
+            if (!otherPlayer) { color = UnityEngine.Color.yellow; } else { color = arrow_col; }
+            color.a = 1;
+            mapPingUI.GetComponent<Image>().color = color;
         }
+
+
         void Start()
         {
-            //QUIT BUTTON
+            
             if (SceneManager.GetActiveScene().name != "Lobby")
             {
+                //QUIT BUTTON
                 if (NetworkDriver.instance.isMobile) { QuitBtnText.text = "MENU"; }
                 else { QuitBtnText.text = "MENU (ESC)"; }
+
+                //PING ARROW
+                arrow_col = mapPingUI.GetComponent<Image>().color;
+                UnityEngine.Color color = mapPingUI.GetComponent<Image>().color;
+                color.a =0;
+                mapPingUI.GetComponent<Image>().color = color;
             }
         }
         void Awake()
@@ -362,6 +481,9 @@ namespace GameManager
                     Client.GetComponent<ClientPlayerController>().isTravis = true;
                 }
                 KILLS = 0;
+
+               
+
                 Debug.Log("I AM READY");
                 NetworkDriver.instance.SCENE_READY = true;
                 //NetworkDriver.instance.sioCom.Instance.Emit("event", JsonConvert.SerializeObject(new { otherssceneready = true }), false);
@@ -375,14 +497,33 @@ namespace GameManager
             Debug.Log("-------------------------------------------------END GAME");
             NetworkDriver.instance.EndGame();
         }
-        public void DemonColdSpotScreamer()
+        public void DemonColdSpotScreamer(bool otherPlayer)
         {
-            DemonScreamerUI.gameObject.SetActive(true);
 
-            Color color = DemonScreamerUI.color;
-            color.a = 1f;
-            DemonScreamerUI.color = color;
-            Invoke("disableDemonScreamer",3f);
+            if (!otherPlayer)
+            {
+                Player.GetComponent<PlayerController>().emitScreamer = true;
+                DemonScreamerUI.gameObject.SetActive(true);
+                UnityEngine.Color color = DemonScreamerUI.color;
+                color.a = 1f;
+                DemonScreamerUI.color = color;
+                Invoke("disableDemonScreamer", 3f);
+            }
+            else { Client.GetComponent<ClientPlayerController>().Flinch(Vector3.zero, true); }
+            
+            AudioManager.instance.Play("demonscream", null);
+
+            if (NetworkDriver.instance.HOST)
+            {
+                foreach (GameObject enemy in GetComponent<DisablerControl>().enemyObjects)
+                {
+                    if (!otherPlayer)
+                    {
+                        if (Vector3.Distance(Player.transform.position, enemy.transform.position) < 7) { enemy.GetComponent<NPCController>().alertLevelPlayer = 500; };
+                    }
+                    else { if (Vector3.Distance(Client.transform.position, enemy.transform.position) < 7) { enemy.GetComponent<NPCController>().alertLevelClient = 500; }; }
+                }
+            }
         }
 
         private void disableDemonScreamer()
@@ -393,7 +534,7 @@ namespace GameManager
         //----------------SYSTEM CONSOLE-------------------------
         public GameObject loadingIcon;
         public GameObject systemConsole;
-        public void WriteGuiMsg(string msg, float timer, bool loading, Color color)
+        public void WriteGuiMsg(string msg, float timer, bool loading, UnityEngine.Color color)
         {
             
 

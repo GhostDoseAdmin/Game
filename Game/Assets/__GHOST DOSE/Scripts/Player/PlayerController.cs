@@ -4,7 +4,7 @@ using UnityEngine.UI;
 using Newtonsoft.Json;
 using NetworkSystem;
 using GameManager;
-using System.Net;
+
 
 
 public class PlayerController : MonoBehaviour
@@ -88,6 +88,7 @@ public class PlayerController : MonoBehaviour
 	public float prevSpeed;
 	private string prevEmit;
 	public bool emitDamage;
+	public bool emitScreamer;
 	public Vector3 damageForce;
 	public string currentAni="";
 	public bool fireK2;
@@ -183,7 +184,7 @@ public class PlayerController : MonoBehaviour
 
         if (anim.GetCurrentAnimatorClipInfo(0).Length > 0){ currentAni = anim.GetCurrentAnimatorClipInfo(0)[0].clip.name; }
 
-		if (currentAni != "React")
+		if (currentAni != "React" && currentAni != "ReactV2" )
 		{
             Locomotion();
 
@@ -278,6 +279,13 @@ public class PlayerController : MonoBehaviour
 				{
 					runString = $",'r':''";
 				}
+				//--------------- DEMON SCREAMER EMIT-----------------
+				string screamerString = "";
+				if (emitScreamer==true)
+				{
+					screamerString = $",'ds':''";
+					emitScreamer = false;
+                }
 				//--------------- POSITION EMIT-----------------
 				string posString = "";
 				currPos = transform.position.x.ToString("F2") + transform.position.z.ToString("F2");
@@ -308,7 +316,7 @@ public class PlayerController : MonoBehaviour
 					emitKill = false;
 				}*/
             //--------------- E M I T   S T R I N G ----------------------
-            string actions = $"{{'flintensity':'{gameObject.GetComponent<FlashlightSystem>().FlashLight.intensity}','ax':'{crosshairPos.x.ToString("F0")}','ay':'{crosshairPos.y.ToString("F0")}','az':'{crosshairPos.z.ToString("F0")}'{flashLightString}{k2String}{gearString}{aimString}{walkString}{strafeString}{runString}{posString}{dodgeString}}}";
+            string actions = $"{{'flintensity':'{gameObject.GetComponent<FlashlightSystem>().FlashLight.intensity}','ax':'{crosshairPos.x.ToString("F0")}','ay':'{crosshairPos.y.ToString("F0")}','az':'{crosshairPos.z.ToString("F0")}'{flashLightString}{k2String}{gearString}{aimString}{walkString}{strafeString}{runString}{posString}{dodgeString}{screamerString}}}";
             //Debug.Log("------------------------------------------SENDING STRING " + actions);
 
             //Debug.Log("emitting data " + actions);
@@ -349,7 +357,7 @@ public class PlayerController : MonoBehaviour
 		}
        
 		//-------DODGE
-         if (strafe != 0 && Input.GetKeyDown(strafe > 0 ? KeyCode.D : KeyCode.A))
+        /*if (strafe != 0 && Input.GetKeyDown(strafe > 0 ? KeyCode.D : KeyCode.A))
         {
             if (Time.time - lastTapTime < doubleTapTimeThreshold)
             {
@@ -359,7 +367,7 @@ public class PlayerController : MonoBehaviour
 				
             }
             lastTapTime = Time.time;
-        }
+        }*/
         //---------------------A N I M A T I O N --------------------------
 		//running ani
         if (NetworkDriver.instance.isMobile) {
@@ -429,13 +437,13 @@ public class PlayerController : MonoBehaviour
 	}
 	#endregion
 
-	public bool canFlinch;
-	public void TriggerCanFlinch()
+	public bool canFlinch; //---------USED FOR DDOGE
+	/*public void TriggerCanFlinch() 
 	{
 		canFlinch = !canFlinch;
 		Debug.Log("-------------------CAN FLINCH-------------------" + canFlinch);
 
-	}
+	}*/
 	//--------------------THROWING (REM POD)-----------------------
 	void Throwing()
 	{

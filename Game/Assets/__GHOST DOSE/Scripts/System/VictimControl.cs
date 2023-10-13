@@ -135,7 +135,7 @@ public class VictimControl : Item
             {
                 canTest = false;
                 Vector3 currPos = main.transform.position;
-                currPos.y += 0.01f;
+                currPos.y += 0.5f * Time.deltaTime;
                 main.transform.position = currPos;//descend
 
                 //EXPAND DOME
@@ -286,7 +286,7 @@ public class VictimControl : Item
                         {
                             canStopPlayer = false;
                             Invoke("ResetCanStopPlayer", 1f);
-                            GameDriver.instance.Player.GetComponent<HealthSystem>().HealthDamage(10, -oppositeForce);
+                            GameDriver.instance.Player.GetComponent<HealthSystem>().HealthDamage(10, -oppositeForce, false);
                         }
                     }
                     if (Vector3.Distance(GameDriver.instance.Client.transform.position, ZOZOpos2d) > 15)
@@ -295,7 +295,7 @@ public class VictimControl : Item
                         {
                             canStopOther = false;
                             Invoke("ResetCanStopOther", 1f);
-                            GameDriver.instance.Client.GetComponent<ClientPlayerController>().Flinch(-oppositeForce);
+                            GameDriver.instance.Client.GetComponent<ClientPlayerController>().Flinch(-oppositeForce, false);
                         }
                     }
                 }
@@ -389,13 +389,31 @@ public class VictimControl : Item
     {
         GameDriver.instance.WriteGuiMsg("Shoot the correct lost soul", 10f, false, Color.yellow);
     }
-    public void testAnswer(GameObject victim)
-    {
-       //SetSpiritsFree(); return;
-        // GameDriver.instance.WriteGuiMsg("TEST ANSWER " + victim.name, 2f);
 
-        if (startCircle && main.transform.position.y >= mainStartPos.y + 3)
+    public GameObject playerChoice, otherPlayerChoice;
+    public void testAnswer(GameObject victim, bool otherPlayer)
+    {
+        //SetSpiritsFree(); return;
+         GameDriver.instance.WriteGuiMsg("VICTIM " + victim.name, 5f, false, Color.red);
+
+        bool canChoose = false;
+
+        if (NetworkDriver.instance.TWOPLAYER)
         {
+            if (!otherPlayer) { playerChoice = victim; }
+            else { otherPlayerChoice = victim; }
+
+            if (playerChoice != null && otherPlayerChoice != null)//both players have chosen a victim
+            {
+                if (playerChoice != otherPlayerChoice) { GameDriver.instance.WriteGuiMsg("Both players must choose the same soul!", 5f, false, Color.red); }
+                else { canChoose = true; GameDriver.instance.WriteGuiMsg("", 0.01f, false, Color.white); }
+            }
+        }
+        else { canChoose = true; }//SINGLE PLAYER
+ 
+        if (canChoose && startCircle && main.transform.position.y >= mainStartPos.y + 3)
+        {
+            playerChoice = null; otherPlayerChoice = null;
             if (victim == ChosenVictim)
             {
              SetSpiritsFree();// GameDriver.instance.WriteGuiMsg("RIGHT ANWER" + victim.name, 10f, false);

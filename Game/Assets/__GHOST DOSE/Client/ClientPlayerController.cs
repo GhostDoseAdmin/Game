@@ -390,10 +390,11 @@ public class ClientPlayerController : MonoBehaviour
     }
 
 
-    public void Flinch(Vector3 force)
+    public void Flinch(Vector3 force, bool hardFlinch)
     {
         GetComponent<Rigidbody>().AddForce(force, ForceMode.Impulse);
-        GetComponent<Animator>().Play("Flinch", -1, 0f);
+        if (!hardFlinch) { GetComponent<Animator>().Play("Flinch", -1, 0f); }//-1
+        else { GetComponent<Animator>().Play("HardFlinch", -1, 0f); }
     }
 
 

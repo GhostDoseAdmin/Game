@@ -19,30 +19,29 @@ public class Candle : Item
     public override void ActivateObject(bool otherPlayer)
     {
 
-        //HealthSystem.kitinstance.CollectKit(this.kit);
-        NetworkDriver.instance.sioCom.Instance.Emit("event", JsonConvert.SerializeObject($"{{'obj':'{gameObject.name}','type':'cand','event':'pickup','pass':'none'}}"), false);
-        if(GameObject.Find("OuijaBoardManager").GetComponentInChildren<VictimControl>().candleCount < GameObject.Find("OuijaBoardManager").GetComponentInChildren<VictimControl>().maxCandles)
-        {
-            GameObject.Find("OuijaBoardManager").GetComponentInChildren<VictimControl>().candleCount++;
-            
-            if (GameObject.Find("OuijaBoardManager").GetComponentInChildren<VictimControl>().candleCount >= GameObject.Find("OuijaBoardManager").GetComponentInChildren<VictimControl>().maxCandles)
-            {
-                AudioManager.instance.Play("candle", null);
-            }
             DestroyWithSound(false);
-        }
-
     }
 
 
     public void DestroyWithSound(bool otherPlayer)
     {
-        if (!otherPlayer) { AudioManager.instance.Play("PickUp", null); }
-        /*if (!otherPlayer) { AudioManager.instance.Play("PickUp", GameObject.Find("Player").GetComponent<PlayerController>().audioSource); }
-        else { AudioManager.instance.Play("PickUp", GameObject.Find("Client").GetComponent<ClientPlayerController>().audioSource); }*/
-        transform.position = new Vector3(transform.position.x, -9999, transform.position.z);//MIMIC DESTROY
-        Invoke("Respawn", respawnTime);
-        //Destroy(gameObject);
+
+        if (!otherPlayer) { NetworkDriver.instance.sioCom.Instance.Emit("event", JsonConvert.SerializeObject($"{{'obj':'{gameObject.name}','type':'cand','event':'pickup','pass':'none'}}"), false); }
+        if (GameObject.Find("OuijaBoardManager").GetComponentInChildren<VictimControl>().candleCount < GameObject.Find("OuijaBoardManager").GetComponentInChildren<VictimControl>().maxCandles)
+        {
+            GameObject.Find("OuijaBoardManager").GetComponentInChildren<VictimControl>().candleCount++;
+
+            if (GameObject.Find("OuijaBoardManager").GetComponentInChildren<VictimControl>().candleCount >= GameObject.Find("OuijaBoardManager").GetComponentInChildren<VictimControl>().maxCandles)
+            {
+                AudioManager.instance.Play("candle", null);
+            }
+            if (!otherPlayer) { AudioManager.instance.Play("PickUp", null); }
+
+            //DESTROY
+            transform.position = new Vector3(transform.position.x, -9999, transform.position.z);//MIMIC DESTROY
+            Invoke("Respawn", respawnTime);
+
+        }
     }
 
     void Respawn()

@@ -186,13 +186,13 @@ public class Camera_Controller : MonoBehaviour
     private void Update()
     {
 
-        if (Input.GetKeyDown(InputManager.instance.switchCamera))
+        /*if (Input.GetKeyDown(InputManager.instance.switchCamera))
         {
             if (cameraType == CameraType.FPS)
                 cameraType = CameraType.TPS;
             else if (cameraType == CameraType.TPS)
                 cameraType = CameraType.FPS;
-        }
+        }*/
 
 
 

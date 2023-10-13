@@ -86,7 +86,7 @@ namespace NetworkSystem
             PING = 0;
             sioCom.Instance.Close();
             StartCoroutine(connectSIO());
-            Invoke("ConnectionTimeout", 10f);
+            Invoke("ConnectionTimeout", 15f);
         }
         IEnumerator connectSIO()//--------CONNECT HELPER--------->
         {
@@ -121,7 +121,7 @@ namespace NetworkSystem
                     //sioCom.Instance.Emit("join", GameDriver.instance.ROOM, true); //PlayerPrefs.GetString("room")
                 }
             });
-            Invoke("ConnectionTimeout", 10f);
+            Invoke("ConnectionTimeout", 15f);
             //-----------------CHECK USERNAME ----------------->
             sioCom.Instance.On("check_username", (payload) =>
             {
@@ -300,8 +300,9 @@ namespace NetworkSystem
                     if (dict.ContainsKey("fl")) { GameDriver.instance.Client.GetComponent<ClientPlayerController>().ToggleFlashlight(bool.Parse(dict["fl"])); }//FLASHLIGHT
                     if (dict.ContainsKey("k2")) { GameDriver.instance.Client.GetComponent<ClientPlayerController>().k2.GetComponent<K2>().fire(true); }
                     if (dict.ContainsKey("gear")) { if (GameDriver.instance.Client.GetComponent<ClientPlayerController>().gear != int.Parse(dict["gear"])) { GameDriver.instance.Client.GetComponent<ClientPlayerController>().ChangeGear(int.Parse(dict["gear"])); } }//gear changes
-                    if (dict.ContainsKey("dmg")) { if (bool.Parse(dict["dmg"])) { GameDriver.instance.Client.GetComponent<ClientPlayerController>().Flinch(new Vector3(float.Parse(dict["fx"]), float.Parse(dict["fy"]), float.Parse(dict["fz"]))); } }
+                    //if (dict.ContainsKey("dmg")) { if (bool.Parse(dict["dmg"])) { GameDriver.instance.Client.GetComponent<ClientPlayerController>().Flinch(new Vector3(float.Parse(dict["fx"]), float.Parse(dict["fy"]), float.Parse(dict["fz"]))); } }
                     if (dict.ContainsKey("dg")) { GameDriver.instance.Client.GetComponent<ClientPlayerController>().dodge = int.Parse(dict["dg"]); }
+                    if (dict.ContainsKey("ds")) { GameDriver.instance.DemonColdSpotScreamer(true); }
                 }
 
             });
@@ -374,11 +375,11 @@ namespace NetworkSystem
                     if (dict.ContainsKey("shoot")) {
                         if (int.Parse(dict["dmg"]) != -1)
                         {
-                            Debug.Log(" SHOOT EVENT  " + payload);
+                            //Debug.Log(" SHOOT EVENT  " + payload);
                             GameDriver.instance.Client.GetComponent<ClientPlayerController>().triggerShoot = true;//shoot ani
                             if (obj != null && obj.GetComponent<NPCController>()!=null) { obj.GetComponent<NPCController>().TakeDamage(int.Parse(dict["dmg"]), true); } //do flinch
                         }
-                        else { LevelManager.GetComponentInChildren<VictimControl>().testAnswer(obj); }
+                        else { LevelManager.GetComponentInChildren<VictimControl>().testAnswer(obj, true); Debug.Log("----------------TEST ANSWER ---------OTHER PLAYER "); }
                     }
                     //REM POD
                     if (dict.ContainsKey("remthrow"))
@@ -398,6 +399,14 @@ namespace NetworkSystem
                         GameDriver.instance.Client.GetComponent<ClientPlayerController>().hp = 99999;
                         GameDriver.instance.reviveIndicator.SetActive(false);
                     }
+                     //PING MAP
+                    if (dict.ContainsKey("pingMap")) { Debug.Log("____________PING MAP"); GameDriver.instance.pingArrow(GameDriver.instance.Client.GetComponent<ClientPlayerController>().targetPos.position,true); }
+
+                    //INFO SELECTION
+                    if (dict.ContainsKey("info")) {
+                        obj.GetComponent<infoCheckedToggle>().other.SetActive(bool.Parse(dict["info"]));
+                    }
+
                     //ENEMY
                     if (dict.ContainsKey("zap")) {
                         foreach (GameObject enemy in GameDriver.instance.GetComponent<DisablerControl>().enemyObjects)
@@ -587,10 +596,11 @@ namespace NetworkSystem
                                 if (obj.Value.ContainsKey("tx"))
                                 {
                                     string target = obj.Value["tx"];
-                                    if (target.Contains("Player")) { enemy.GetComponent<NPCController>().Engage(GameDriver.instance.Client.transform); }
-                                    if (target.Contains("Client")) { enemy.GetComponent<NPCController>().Engage(GameDriver.instance.Player.transform); }
+                                    if (target == "pl") { enemy.GetComponent<NPCController>().Engage(GameDriver.instance.Client.transform); }
+                                    if (target == "cl") { enemy.GetComponent<NPCController>().Engage(GameDriver.instance.Player.transform); }
                                     if (target.Length < 2) { enemy.GetComponent<NPCController>().target = null; }
                                 }
+                                else { enemy.GetComponent<NPCController>().target = null; }
                                 //--------PATROL-----------
                                 if (obj.Value.ContainsKey("dx"))
                                 {
@@ -623,11 +633,15 @@ namespace NetworkSystem
             //--------------DISCONNECT-----------------
             sioCom.Instance.On("disconnect", (payload) => { Debug.LogWarning("Disconnected: " + payload); });
             //--------------PLAYER DISCONNECT-----------------
-            sioCom.Instance.On("player_disconnect", (payload) => { if (SceneManager.GetActiveScene().name == "Lobby") { GameObject.Find("LobbyManager").GetComponent<LobbyControlV2>().LeaveRoom(); }
+            sioCom.Instance.On("player_disconnect", (payload) => {
+                if (SceneManager.GetActiveScene().name == "Lobby") { GameObject.Find("LobbyManager").GetComponent<LobbyControlV2>().LeaveRoom(); }
+                else {
+                    lostGame = true;
+                    EndGame();
+                }
                 //if (SceneManager.GetActiveScene().name != "EndGame") { GameDriver.instance.WriteGuiMsg("Other Player Disconnected! ", 10f, false, Color.red); HOST = true; }
                 GameDriver.instance.WriteGuiMsg("Other Player Disconnected! ", 10f, false, Color.red); HOST = true;
-                lostGame = true;
-                EndGame();
+
             });
         }
 
@@ -651,23 +665,32 @@ namespace NetworkSystem
                         propsDict.Add("x", obj.gameObject.transform.position.x.ToString("F2"));
                         propsDict.Add("y", obj.gameObject.transform.position.y.ToString("F2"));
                         propsDict.Add("z", obj.gameObject.transform.position.z.ToString("F2"));
-                        if (obj.GetComponent<NPCController>().prev_dest != obj.GetComponent<NPCController>().destination) { propsDict.Add("dx", obj.GetComponent<NPCController>().destination.name); }
-                        obj.GetComponent<NPCController>().prev_dest = obj.GetComponent<NPCController>().destination;
-                        if (obj.GetComponent<NPCController>().prev_targ != obj.GetComponent<NPCController>().target) { if (obj.GetComponent<NPCController>().target != null) { propsDict.Add("tx", obj.GetComponent<NPCController>().target.name); } else { propsDict.Add("tx", ""); } }
-                        obj.GetComponent<NPCController>().prev_targ = obj.GetComponent<NPCController>().target;
-                        //DISABLE IS DONE LOCALLY ON NPC CONTROLLER FOR CLIENT & DISABLECONTROLLER ON HOST
+                        //if (obj.GetComponent<NPCController>().prev_dest != obj.GetComponent<NPCController>().destination) { propsDict.Add("dx", obj.GetComponent<NPCController>().destination.name); }
+                        //obj.GetComponent<NPCController>().prev_dest = obj.GetComponent<NPCController>().destination;
+
+                        if (obj.GetComponent<NPCController>().emitNewDest == true) { obj.GetComponent<NPCController>().emitNewDest = false; propsDict.Add("dx", obj.GetComponent<NPCController>().destination.name); }
+
+
+                        //string target = "";
+                        if (obj.GetComponent<NPCController>().target != null)
+                        {
+                            string target = "";//<--
+                            target = obj.GetComponent<NPCController>().target.name;
+                            if (target.Contains("Player")) { target = "pl"; }
+                            if (target.Contains("Client")) { target = "cl"; }
+                            propsDict.Add("tx", target);//<-----
+                        }
+                        //propsDict.Add("tx", target); 
                         
-                        //obj.Value.ContainsKey("dx")
-                       
-                        //propsDict.Add("ax", obj.gameObject.activeSelf.ToString());
-                        //propsDict.Add("tp", obj.GetComponent<NPCController>().teleport);
+                        //DISABLE IS DONE LOCALLY ON NPC CONTROLLER FOR CLIENT & DISABLECONTROLLER ON HOST
+
 
                         syncObjects.Add(obj.name, propsDict);
                     }
                 }
 
 
-                Debug.Log("SYNCING ----------------------------------------------");
+                //Debug.Log("SYNCING ----------------------------------------------");
                 if (syncObjects.Count > 0) { sioCom.Instance.Emit("sync", JsonConvert.SerializeObject(syncObjects), false); }
                 timer = Time.time;//cooldown
             }
@@ -679,7 +702,7 @@ namespace NetworkSystem
         private float timer_delay = 0.8f;//0.5
         public void Update()
         {
-            //GameDriver.instance.WriteGuiMsg("OTHERS_SCENE_READY " + OTHERS_SCENE_READY, 9999f, false, Color.red);
+            GameDriver.instance.WriteGuiMsg("HOST " + HOST, 9999f, false, Color.magenta);
 
             //----------------------------------SYNC ACTIVE ENEMIES-----------------------------------------
             if (OTHERS_SCENE_READY && SCENE_READY && HOST) //&& GameDriver.instance.twoPlayer

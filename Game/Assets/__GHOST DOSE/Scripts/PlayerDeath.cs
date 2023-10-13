@@ -27,6 +27,9 @@ public class PlayerDeath : MonoBehaviour
         StartCoroutine(util.ReactivateAnimator(deathAnimator));
         deathAnimator.GetComponentInChildren<K2>().gameObject.SetActive(false);
 
+        //DestroyImmediate(GetComponentInChildren<FlashlightSystem>().FlashLight);
+        //DestroyImmediate(GetComponentInChildren<FlashlightSystem>().WeaponLight);
+
         //DEATH SOUND
         string audioString;
         if (!otherPlayer)

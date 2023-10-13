@@ -13,7 +13,8 @@ namespace InteractionSystem
 
         [Header("CAMERA")]
         [Space(10)]
-        public KeyCode switchCamera;
+        //public KeyCode switchCamera;
+        public KeyCode ping;
 
         [Header("FLASHLIGHT BUTTON")]
         [Space(10)]

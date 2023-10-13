@@ -119,13 +119,14 @@ public class HealthSystem : MonoBehaviour
 
     }
 
-	public void HealthDamage(int damage , Vector3 force)
+	public void HealthDamage(int damage , Vector3 force, bool hardFlinch)
     {
         healthLevel.color = Color.red;
          //GetComponent<PlayerController>().emitDamage = true;
          GetComponent<PlayerController>().damageForce = force;
         GetComponent<Rigidbody>().AddForce(force, ForceMode.Impulse);
-        GetComponent<Animator>().Play("Flinch", 0, 0f); //-1
+		if (!hardFlinch) { GetComponent<Animator>().Play("Flinch", 0, 0f); }//-1
+		else { GetComponent<Animator>().Play("HardFlinch", 0, 0f); }
 		if (GameDriver.instance.mainCam.activeSelf) { GameDriver.instance.mainCam.GetComponent<Camera_Controller>().InvokeShake(1f, 2f); }
         Health -= damage;
 		//healthLevel.fillAmount -= damage * 0.01f;

@@ -280,7 +280,7 @@ public class ShootingSystem : MonoBehaviour
                             }
                             if (target != null && target.tag == "Victim")
                             {
-                                victimManager.GetComponent<VictimControl>().testAnswer(target);
+                                victimManager.GetComponent<VictimControl>().testAnswer(target, false);
                                 //used to emit answer
                                 Damage = -1;
                             }

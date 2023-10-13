@@ -76,9 +76,11 @@ public class Door : Item
             this.animator.SetBool("Open", true);
             this.animator.SetBool("Close", false);
         }
-
-        if (NetworkDriver.instance.TWOPLAYER && !otherPlayer) { NetworkDriver.instance.sioCom.Instance.Emit("event", JsonConvert.SerializeObject($"{{'obj':'{gameObject.name}','type':'door','event':'openclose'}}"), false); }
-
+        if (NetworkDriver.instance.TWOPLAYER)
+        {
+            if (otherPlayer) { GameDriver.instance.otherKeyUI.SetActive(false); }
+            if (!otherPlayer) { NetworkDriver.instance.sioCom.Instance.Emit("event", JsonConvert.SerializeObject($"{{'obj':'{gameObject.name}','type':'door','event':'openclose'}}"), false); }
+        }
     }
 
     public void Locked(bool otherPlayer)

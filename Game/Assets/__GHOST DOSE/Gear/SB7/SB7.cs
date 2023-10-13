@@ -99,30 +99,32 @@ public class SB7 : MonoBehaviour
     {
         if (Random.value < demonChance)
         {
-            GameDriver.instance.DemonColdSpotScreamer();
-            GameDriver.instance.Player.GetComponent<HealthSystem>().Health -= GameDriver.instance.Player.GetComponent<HealthSystem>().Health*0.5f;
-            AudioManager.instance.Play("demonscream", null);
 
             //HURT PLAYER
-            GameObject thisPlayer = GetComponentInParent<Animator>().gameObject;
+             GameObject thisPlayer = GetComponentInParent<Animator>().gameObject;
             Vector3 oppositeForce = (currentColdSpot.transform.position - thisPlayer.transform.position) * 1500f;
             oppositeForce.y = 0f; // Set the y component to 0
             if (thisPlayer.gameObject.name == "Player")
             {
-                if (thisPlayer.GetComponent<PlayerController>().canFlinch)
+                //if (thisPlayer.GetComponent<PlayerController>().canFlinch)
                 {
-                    thisPlayer.GetComponent<HealthSystem>().HealthDamage((int)(thisPlayer.GetComponent<HealthSystem>().Health*0.25f), oppositeForce);
+                    GameDriver.instance.DemonColdSpotScreamer(false);
+                    thisPlayer.GetComponent<HealthSystem>().HealthDamage((int)(thisPlayer.GetComponent<HealthSystem>().Health*0.25f), oppositeForce, true);
                 }
-
             }
+            /*
             if (thisPlayer.name == "Client")
             {
-                thisPlayer.GetComponent<ClientPlayerController>().Flinch(oppositeForce);
+                thisPlayer.GetComponent<ClientPlayerController>().Flinch(oppositeForce, true);
             }
-
+            */
             Invoke("GotAnswer", 2f);
             return;
         }
+
+
+
+
         victim = GameObject.Find("VictimManager").GetComponent<VictimControl>().ChosenVictim;
         Sound s = null;
 

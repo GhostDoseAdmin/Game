@@ -8,7 +8,7 @@ using UnityEngine.UI;
 public class MobileController : MonoBehaviour
 {
     public GameObject flashlight, gear, interact;
-    public GPButton  flashlightBTN, interactBTN, gearBTN;
+    public GPButton  flashlightBTN, interactBTN, gearBTN, pingBTN;
     public VariableJoystick joystick, joystickAim;
     //public RayAimer aimer;
     public Camera_Supplyer camSup;
@@ -20,12 +20,13 @@ public class MobileController : MonoBehaviour
         Player = GameDriver.instance.Player.GetComponent<PlayerController>();
         SS = Player.GetComponent<ShootingSystem>();
         camSup = Camera.main.GetComponent<Camera_Supplyer>(); //!!!!!!!!!!!!!!!!!!!!!!!!MOUSE CONTROLS
+        //if (!NetworkDriver.instance.TWOPLAYER) { pingBTN.gameObject.SetActive(false); }
         if (!NetworkDriver.instance.isMobile) { gameObject.SetActive(false); }
+        
     }
     // Update is called once per frame
     void Update()
     {
-
         //INTERACT
         if(canPickUp)
         {

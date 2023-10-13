@@ -133,7 +133,7 @@ public class Teleport : MonoBehaviour
                     if (randomXOffset < 0f) { randomXOffset = Random.Range(-minRadius, -maxRadius); } else { randomXOffset = Random.Range(minRadius, maxRadius); }
                     if (randomYOffset < 0f) { randomYOffset = Random.Range(-minRadius, -maxRadius); } else { randomYOffset = Random.Range(minRadius, maxRadius); }
                     Vector3 randomOffset = new Vector3(randomXOffset, 0f, randomYOffset);
-                    transform.position = target.position + randomOffset;
+                    if (target != null) { transform.position = target.position + randomOffset; }
                     LayerMask mask = 1 << LayerMask.NameToLayer("Default") | 1 << LayerMask.NameToLayer("Player");
                     if (!Physics.Linecast(transform.position, target.position, mask)) { relocate--; }//if cant see target try again
 
