@@ -78,17 +78,21 @@ public class RigManager : MonoBehaviour
 
     private void Update()
     {
-        //CHECK CODE
-        foreach (string code in unlockCodes)
+        if (!NetworkDriver.instance.lostGame)
         {
-            //Debug.Log("COMPARING " +  code + "to " + skinCode.text);
+            //CHECK CODE
+            foreach (string code in unlockCodes)
+            {
+                //Debug.Log("COMPARING " +  code + "to " + skinCode.text);
 
-            if (skinCode.text.ToUpper().Contains(code.ToUpper())) { 
-                PlayerPrefs.SetInt("skull", 1);
-                skinCode.text = "SKULLCODE";
-                AudioManager.instance.Play("zozolaugh", null);
-                UpdateSkinsList();
-            } //save prefab for this code + make rig available
+                if (skinCode.text.ToUpper().Contains(code.ToUpper()))
+                {
+                    PlayerPrefs.SetInt("skull", 1);
+                    skinCode.text = "SKULLCODE";
+                    AudioManager.instance.Play("zozolaugh", null);
+                    UpdateSkinsList();
+                } //save prefab for this code + make rig available
+            }
         }
     }
     public void UpdatePlayerRig(string rigName, bool isTravis, bool otherPlayer)
