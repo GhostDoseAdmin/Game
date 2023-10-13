@@ -186,7 +186,7 @@ namespace GameManager
             info_timer += Time.deltaTime;
 
             //---------------PING ARROW/ OTHERKEYUI-----------------------
-            if (NetworkDriver.instance.TWOPLAYER)
+            if (NetworkDriver.instance.TWOPLAYER && SceneManager.GetActiveScene().name != "Lobby")
             {
 
                 //------MAP PING INDICATOR-------
