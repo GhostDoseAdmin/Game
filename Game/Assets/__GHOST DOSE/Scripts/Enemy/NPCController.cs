@@ -170,7 +170,7 @@ public class NPCController : MonoBehaviour
             if(testIfAlive && dead)
             {
             syncDeath++;
-                if (syncDeath >= 2) //if received 2 messages from HOST - REVIVE
+                if (syncDeath >= 5) //if received  messages from HOST - REVIVE - LWV 2
                 {
                     syncDeath = 0;
                     dead = false;
