@@ -710,7 +710,7 @@ public class NPCController : MonoBehaviour
 
             //AGRO
             //if (Vector3.Distance(newTarget.transform.position, transform.position) < 3)
-            if(Player.GetComponent<Animator>().GetBool("Running"))
+            if(Player.GetComponent<Animator>().GetBool("Running") && !teddy)
                 {
 
                 Vector3 oppositeForce = GetComponent<NPCController>().transform.forward * force * 0.1f;
