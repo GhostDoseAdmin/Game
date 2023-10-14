@@ -232,12 +232,12 @@ public class PlayerController : MonoBehaviour
             }*/
 				//--------------- FLASHLIGHT EMIT-----------------
 				string flashLightString = "";
-				if (emitFlashlight){
+				//if (emitFlashlight){
 				bool anyFlashlight = false;
 				if (GetComponent<FlashlightSystem>().FlashLight.GetComponent<Light>().enabled || GetComponent<FlashlightSystem>().WeaponLight.GetComponent<Light>().enabled) { anyFlashlight = true; }
-				flashLightString = $",'fl':'{anyFlashlight}'";
-                emitFlashlight = false;
-				}
+				if(anyFlashlight){ flashLightString = $",'fl':'{anyFlashlight}'"; }
+                //emitFlashlight = false;
+				
 				//--------------- K2 EMIT-----------------
 				string k2String ="";
 				if (fireK2){
