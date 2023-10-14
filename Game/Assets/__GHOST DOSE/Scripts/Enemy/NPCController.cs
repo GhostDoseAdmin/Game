@@ -807,7 +807,7 @@ public class NPCController : MonoBehaviour
     }
     public void TakeDamage(int damageAmount, bool otherPlayer)
     {
-        if (!onlyOnceThisFrame)//prevent flash from interrupting
+        if ((!onlyOnceThisFrame && damageAmount<=1) || (damageAmount>1))//prevent flash from interrupting
         {
             onlyOnceThisFrame = true;
            

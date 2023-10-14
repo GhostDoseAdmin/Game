@@ -4,6 +4,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using NetworkSystem;
+using GameManager;
 
 public class Candle : Item
 {
@@ -33,6 +34,7 @@ public class Candle : Item
 
             if (GameObject.Find("OuijaBoardManager").GetComponentInChildren<VictimControl>().candleCount >= GameObject.Find("OuijaBoardManager").GetComponentInChildren<VictimControl>().maxCandles)
             {
+                GameDriver.instance.WriteGuiMsg("Pentagram active!", 5f, false, Color.red);
                 AudioManager.instance.Play("candle", null);
             }
             if (!otherPlayer) { AudioManager.instance.Play("PickUp", null); }
