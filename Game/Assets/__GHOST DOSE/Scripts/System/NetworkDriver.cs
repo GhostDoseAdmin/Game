@@ -675,8 +675,8 @@ namespace NetworkSystem
                         //if (obj.GetComponent<NPCController>().prev_dest != obj.GetComponent<NPCController>().destination) { propsDict.Add("dx", obj.GetComponent<NPCController>().destination.name); }
                         //obj.GetComponent<NPCController>().prev_dest = obj.GetComponent<NPCController>().destination;
 
-                        if (obj.GetComponent<NPCController>().emitNewDest == true) { obj.GetComponent<NPCController>().emitNewDest = false; propsDict.Add("dx", obj.GetComponent<NPCController>().destination.name); }
-
+                        //if (obj.GetComponent<NPCController>().emitNewDest == true) { obj.GetComponent<NPCController>().emitNewDest = false; propsDict.Add("dx", obj.GetComponent<NPCController>().destination.name); }
+                        propsDict.Add("dx", obj.GetComponent<NPCController>().destination.name);
 
                         //string target = "";
                         if (obj.GetComponent<NPCController>().target != null)

@@ -236,23 +236,23 @@ public class NPCController : MonoBehaviour
         //---CLIENT SIDE PREDICTION--close position gap
         if (!NetworkDriver.instance.HOST)
         {
-            //if (target == null)
+            if (target == null)
             {
                 if (Vector3.Distance(transform.position, serverPosition) > 0.2f) { transform.position = Vector3.Lerp(transform.position, serverPosition, 0.02f); }
 
                 if (!teddy && !brute)
                 {
-                    if (Vector3.Distance(transform.position, serverPosition) > 5f) { transform.position = serverPosition; }
+                    if (Vector3.Distance(transform.position, serverPosition) > 5f) { transform.position = serverPosition; GetComponent<NavMeshAgent>().enabled = false; Invoke("ResetNavmesh", 0.1f); }
                     //if (!agro) { if (Vector3.Distance(transform.position, serverPosition) > 3.5f) { transform.position = serverPosition; } }
                     //else { if (Vector3.Distance(transform.position, serverPosition) > 5f) { transform.position = serverPosition; } }
                 }
                 if (teddy)
                 {
-                    if (Vector3.Distance(transform.position, serverPosition) > 5f) { transform.position = serverPosition; }
+                    if (Vector3.Distance(transform.position, serverPosition) > 5f) { transform.position = serverPosition; GetComponent<NavMeshAgent>().enabled = false; Invoke("ResetNavmesh", 0.1f); }
                 }
                 if (brute)
                 {
-                    if (!zapActive) { if (Vector3.Distance(transform.position, serverPosition) > 5f) { transform.position = serverPosition; } }
+                    if (!zapActive) { if (Vector3.Distance(transform.position, serverPosition) > 5f) { transform.position = serverPosition; GetComponent<NavMeshAgent>().enabled = false; Invoke("ResetNavmesh", 0.1f); } }
                 }
             }
                 //-------------ACTIVE TIMER------------
@@ -279,7 +279,9 @@ public class NPCController : MonoBehaviour
 
         if (this.gameObject.activeSelf) { if (teleport == 0) { AI(); } }
 
-        if (NetworkDriver.instance.HOST) { if (teleport == 0 && canAttack) { FindTargetRayCast(); } } //dtermines & finds target
+        if (NetworkDriver.instance.HOST) { 
+            if (teleport == 0 && canAttack) { FindTargetRayCast(); } 
+        } //dtermines & finds target
 
         if (teleport > 0) { target = GetComponent<Teleport>().target; }
 
@@ -310,8 +312,10 @@ public class NPCController : MonoBehaviour
         // if (Player.GetComponent<HealthSystem>().Health <= 0 && destination == PlayerWP) { alertLevelPlayer = 0; alerted = false; hasLooked = true; Invoke("ResetNavmesh", 3f); }
 
 
-        if (Client.GetComponent<ClientPlayerController>().hp <= 0) { if (alertLevelClient > 0) { GetComponent<NavMeshAgent>().enabled = false; alertLevelClient = 0; Invoke("ResetNavmesh", 2f); }  }
+        if (Client.GetComponent<ClientPlayerController>().hp <= 0) { if (alertLevelClient > 0) { GetComponent<NavMeshAgent>().enabled = false; Invoke("ResetNavmesh", 2f); alertLevelClient = 0;  }  }
         if (Player.GetComponent<HealthSystem>().Health <= 0) { if (alertLevelPlayer > 0) { GetComponent<NavMeshAgent>().enabled = false; alertLevelPlayer = 0; Invoke("ResetNavmesh", 2f); } }
+
+
     }
 
 
@@ -320,6 +324,11 @@ public class NPCController : MonoBehaviour
         transform.GetChild(0).GetComponent<Outline>().OutlineWidth = 0;
         GetComponent<NPCController>().activateOutline = false;
     }
+    /*public void OnEnable()
+    {
+         GetComponent<NavMeshAgent>().enabled = false;
+        Invoke("ResetNavmesh", 2f);
+    }*/
 
     public void ClientUpdateDestination(GameObject newDest)
     {
@@ -417,8 +426,8 @@ public class NPCController : MonoBehaviour
                         if (NetworkDriver.instance.HOST) { destination= wayPoint[curWayPoint].gameObject; } //Debug.Log("WALKING TO DESTINATION " + destination.name);
 
                         Vector3 destination2D = new Vector3(destination.transform.position.x, transform.position.y, destination.transform.position.z);
-                        
-                        navmesh.SetDestination(destination2D);
+
+                        if (GetComponent<NavMeshAgent>().isOnNavMesh) { navmesh.SetDestination(destination2D); }
 
                         float distance = Vector3.Distance(transform.position, destination2D);
 
@@ -445,25 +454,25 @@ public class NPCController : MonoBehaviour
 
                     Vector3 destination2D = new Vector3(destination.transform.position.x, transform.position.y, destination.transform.position.z);
 
-                    navmesh.SetDestination(destination2D);
+                    if (GetComponent<NavMeshAgent>().isOnNavMesh) { navmesh.SetDestination(destination2D); }
 
                     float distance = Vector3.Distance(transform.position, destination2D);
 
                     if (distance > 1f)
                     {
-                        navmesh.isStopped = false;
+                        if (GetComponent<NavMeshAgent>().isOnNavMesh) { navmesh.isStopped = false; }
                         animEnemy.SetBool("Walk", true);
                     }
                     else//waypoint reached
                     {
-                        navmesh.isStopped = true;
+                        if (GetComponent<NavMeshAgent>().isOnNavMesh) { navmesh.isStopped = true; }
                         animEnemy.SetBool("Walk", false);
                         if (hasRetreated == 1) { hasRetreated = 2; range = startRange; angleView = startAngleView; }
                     }
                 }
                 else
                 {
-                    navmesh.isStopped = true;
+                    if (GetComponent<NavMeshAgent>().isOnNavMesh) { navmesh.isStopped = true; }
                     animEnemy.SetBool("Walk", false);
                 }
             }
@@ -503,7 +512,7 @@ public class NPCController : MonoBehaviour
 
         float distance = Vector3.Distance(transform.position, new Vector3(target.position.x, transform.position.y, target.position.z));//measured at same level Yaxis
                                                                                                                                        //-----------DISENGAGE--------------------
-        if (NetworkDriver.instance.HOST)
+        if (NetworkDriver.instance.HOST && GetComponent<Teleport>().teleport==0)
         {
             if (distance > 15 && !ZOZO && !agro) { Disengage(); return; }
             if (teddy && distance > 10) { Disengage(); return; }
@@ -574,7 +583,7 @@ public class NPCController : MonoBehaviour
                 if (animEnemy.GetCurrentAnimatorClipInfo(0).Length>0 && animEnemy.GetCurrentAnimatorClipInfo(0)[0].clip.name != "EnemyAttack")
                 {
                     GetComponent<NavMeshAgent>().speed = chaseSpeed;//DOESNT AFFECT THIS
-                    if (agro && !ZOZO) { GetComponent<NavMeshAgent>().speed = chaseSpeed * 2; }
+                    if (agro && !ZOZO) { GetComponent<NavMeshAgent>().speed = chaseSpeed * 1.5f; }
 
                 }
                 if (animEnemy.GetCurrentAnimatorClipInfo(0).Length>0 && (animEnemy.GetCurrentAnimatorClipInfo(0)[0].clip.name == "agro" || animEnemy.GetCurrentAnimatorClipInfo(0)[0].clip.name == "ReactV2")) { GetComponent<NavMeshAgent>().speed = 0; }
@@ -631,7 +640,7 @@ public class NPCController : MonoBehaviour
             if(Player.GetComponent<HealthSystem>().Health > 0)
             {
                 if (p1_dist < 7) { if (Mathf.Abs(Player.transform.position.y - transform.position.y) <= 2) { if (Player.GetComponent<Animator>().GetBool("Running")) { range = startRange + 2; alertLevelPlayer += 6; } } }
-                if (p1_dist < 5) { if ((Player.GetComponent<Animator>().GetFloat("Walk") > 0 || Player.GetComponent<Animator>().GetFloat("Strafe") > 0) && (Mathf.Abs(Player.transform.position.y - transform.position.y) <= 2)) { alertLevelPlayer += 3; } }
+                if (p1_dist < 5) { if ((Player.GetComponent<Animator>().GetFloat("Walk") > 0 || Player.GetComponent<Animator>().GetFloat("Strafe") > 0) && (Mathf.Abs(Player.transform.position.y - transform.position.y) <= 2)) { alertLevelPlayer += 6; } }
                 if (p1_dist < 5) { if (Player.GetComponent<Animator>().GetBool("Running") && (Mathf.Abs(Player.transform.position.y - transform.position.y) <= 2)) { range = startRange + 2; angleView = 360; alertLevelPlayer += 200; } }
                 if (p1_dist < 2) { if (Mathf.Abs(Player.transform.position.y - transform.position.y) <= 2) { range = startRange + 2; angleView = 360; alertLevelPlayer += 200; } }
 
@@ -639,10 +648,10 @@ public class NPCController : MonoBehaviour
             }
             if (Client.GetComponent<ClientPlayerController>().hp > 0)
             { //7,5,3,2
-                if (p2_dist < 5) { if (Mathf.Abs(Client.transform.position.y - transform.position.y) <= 2) { if (Client.GetComponent<Animator>().GetBool("Running")) { range = startRange + 2; alertLevelClient += 4; } } }
-                if (p2_dist < 3) { if ((Client.GetComponent<Animator>().GetFloat("Walk") > 0 || Client.GetComponent<Animator>().GetFloat("Strafe") > 0) && (Mathf.Abs(Client.transform.position.y - transform.position.y) <= 2)) { alertLevelClient += 2; } }
-                if (p2_dist < 2) { if (Client.GetComponent<Animator>().GetBool("Running") && (Mathf.Abs(Client.transform.position.y - transform.position.y) <= 2)) { range = startRange + 2; angleView = 120; alertLevelClient += 50; } }
-                if (p2_dist < 1.5) { if (Mathf.Abs(Client.transform.position.y - transform.position.y) <= 2) { range = startRange + 2; angleView = 240; alertLevelClient += 50; } }
+                if (p2_dist < 7) { if (Mathf.Abs(Client.transform.position.y - transform.position.y) <= 2) { if (Client.GetComponent<Animator>().GetBool("Running")) { range = startRange + 2; alertLevelClient += 6; } } }
+                if (p2_dist < 5) { if ((Client.GetComponent<Animator>().GetFloat("Walk") > 0 || Client.GetComponent<Animator>().GetFloat("Strafe") > 0) && (Mathf.Abs(Client.transform.position.y - transform.position.y) <= 2)) { alertLevelClient += 6; } }
+                if (p2_dist < 5) { if (Client.GetComponent<Animator>().GetBool("Running") && (Mathf.Abs(Client.transform.position.y - transform.position.y) <= 2)) { range = startRange + 2; angleView = 90; alertLevelClient += 200; } }
+                if (p2_dist < 2) { if (Mathf.Abs(Client.transform.position.y - transform.position.y) <= 2) { range = startRange + 2; angleView = 240; alertLevelClient += 200; } }
             }
 
                
@@ -718,7 +727,7 @@ public class NPCController : MonoBehaviour
 
                     if (newTarget == Player.transform)
                     {
-                        persist = startPersist * 2;
+                        //persist = startPersist * 2;
                         Player.GetComponent<HealthSystem>().HealthDamage(100, oppositeForce, true);
                         if (NetworkDriver.instance.TWOPLAYER) { NetworkDriver.instance.sioCom.Instance.Emit("event", JsonConvert.SerializeObject(new { shoot = true, obj = gameObject.name, dmg = 1 }), false); }
                         GetComponent<NPCController>().TakeDamage(1, false);//FORCE AGRO
@@ -734,7 +743,7 @@ public class NPCController : MonoBehaviour
             Debug.Log("----------------------------------ENGAGING-----------------------------------------" + newTarget);
             GetComponent<Teleport>().coolDown = Time.time + Random.Range(0, 10); //RESET teleport
             if (!engageSound) { if (ZOZO) { AudioManager.instance.Play("zozoEngage", null); } else { AudioManager.instance.Play("EnemyEngage", null); } engageSound = true; Invoke("resetEngageSound",10f); } 
-            follow = persist; if (!agroEngage) { animEnemy.Play("Chase"); }
+            follow = persist; if (!agroEngage) { if (animEnemy.GetCurrentAnimatorClipInfo(0).Length > 0 && animEnemy.GetCurrentAnimatorClipInfo(0)[0].clip.name != "agro") { animEnemy.Play("Chase"); } else { agro = true; } }
         }
         target = newTarget; 
     }
@@ -784,7 +793,7 @@ public class NPCController : MonoBehaviour
     {
         if (!agro)
         {
-            persist = startPersist * 2;
+            
             //if (NetworkDriver.instance.HOST)
             {   //AQUIRE TARGET
 
@@ -843,7 +852,7 @@ public class NPCController : MonoBehaviour
                     if (damageAmount >1 && !brute) { Flinch(false); } 
                 }
 
-                if (canAgro) { Agro(otherPlayer); }
+                if (canAgro) { Agro(otherPlayer); persist = startPersist * 2; if (damageAmount == 1) { persist = startPersist; } }
 
                 //AGRO OTHER PLAYER FLINCH
                 if (damageAmount == 1 && otherPlayer)

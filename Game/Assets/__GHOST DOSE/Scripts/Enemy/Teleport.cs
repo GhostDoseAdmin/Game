@@ -6,6 +6,7 @@ using UnityEngine.AI;
 using UnityEngine.InputSystem.Controls;
 using InteractionSystem;
 using Newtonsoft.Json;
+using static UnityEngine.GraphicsBuffer;
 
 public class Teleport : MonoBehaviour
 {
@@ -30,6 +31,7 @@ public class Teleport : MonoBehaviour
     private bool isWaypoint;
     public bool DEATH;
     private Outline outline;
+
    
     void Start()
     {
@@ -73,7 +75,7 @@ public class Teleport : MonoBehaviour
                 // if (Vector3.Distance(transform.position, GetComponent<NPCController>().target.transform.position) > 3)//3
                 if ((Time.time > coolDown + 15f))
                 {
-                    
+                        target = GetComponent<NPCController>().target;
                         CheckTeleport(false, false);
                 }
             }
@@ -86,14 +88,14 @@ public class Teleport : MonoBehaviour
             if (!GetComponent<NPCController>().dead || GetComponent<NPCController>().ZOZO) {GameObject TPVFX = Instantiate(teleportVFX); TPVFX.transform.position = new Vector3(this.gameObject.transform.position.x, this.gameObject.transform.position.y+1f, this.gameObject.transform.position.z); }
             if (NetworkDriver.instance.HOST) { NetworkDriver.instance.sioCom.Instance.Emit("teleport", JsonConvert.SerializeObject($"{{'obj':'{gameObject.name}','tp':'1','x':'{transform.position.x}','y':'{transform.position.y}','z':'{transform.position.z}'}}"), false); }
             fadeTimer = Time.time;
-            if (GetComponent<NPCController>().target != null) { target = GetComponent<NPCController>().target; }
+           // if (GetComponent<NPCController>().target != null) { target = GetComponent<NPCController>().target; }
             if (target != null && GetComponent<NPCController>().healthEnemy>0) { AudioManager.instance.Play("Disappear", null); }
             if (!NetworkDriver.instance.HOST) { GetComponent<NPCController>().enabled = false; }
             debugAttack = true;
             GetComponent<NavMeshAgent>().enabled = false;
             GetComponent<Animator>().enabled = false;
             b4Pos = transform.position;
-            if (GetComponent<NPCController>().healthEnemy > 0 && !isWaypoint) { AudioManager.instance.Play("haunting", null); }
+            if (GetComponent<NPCController>().healthEnemy > 0 && !isWaypoint && GetComponent<NPCController>().target!=null) { AudioManager.instance.Play("haunting", null); Debug.Log("-----------------------------------------HAUnTING"); }
             //GetComponent<NPCController>().SKEL_ROOT.GetComponent<CapsuleCollider>().isTrigger = true;
             //GetComponent<NPCController>().HIT_COL.GetComponent<SphereCollider>().isTrigger = true;
             //Debug.Log("-------------TELEPORTING");
