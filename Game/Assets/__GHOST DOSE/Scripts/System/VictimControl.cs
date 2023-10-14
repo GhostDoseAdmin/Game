@@ -394,7 +394,7 @@ public class VictimControl : Item
     public void testAnswer(GameObject victim, bool otherPlayer)
     {
         //SetSpiritsFree(); return;
-         GameDriver.instance.WriteGuiMsg("VICTIM " + victim.name, 5f, false, Color.red);
+         //GameDriver.instance.WriteGuiMsg("VICTIM " + victim.name, 5f, false, Color.red);
 
         bool canChoose = false;
 

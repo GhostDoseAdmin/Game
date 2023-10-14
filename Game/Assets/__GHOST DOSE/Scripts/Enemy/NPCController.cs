@@ -170,7 +170,7 @@ public class NPCController : MonoBehaviour
             if(testIfAlive && dead)
             {
             syncDeath++;
-                if (syncDeath >= 5) //if received  messages from HOST - REVIVE - LWV 2
+                if (syncDeath >= 5) //if received 5 messages from HOST - REVIVE - LWV 2
                 {
                     syncDeath = 0;
                     dead = false;
@@ -638,11 +638,11 @@ public class NPCController : MonoBehaviour
 
             }
             if (Client.GetComponent<ClientPlayerController>().hp > 0)
-            {
-                if (p2_dist < 7) { if (Mathf.Abs(Client.transform.position.y - transform.position.y) <= 2) { if (Client.GetComponent<Animator>().GetBool("Running")) { range = startRange + 2; alertLevelClient += 6; } } }
-                if (p2_dist < 5) { if ((Client.GetComponent<Animator>().GetFloat("Walk") > 0 || Client.GetComponent<Animator>().GetFloat("Strafe") > 0) && (Mathf.Abs(Client.transform.position.y - transform.position.y) <= 2)) { alertLevelClient += 3; } }
-                if (p2_dist < 3) { if (Client.GetComponent<Animator>().GetBool("Running") && (Mathf.Abs(Client.transform.position.y - transform.position.y) <= 2)) { range = startRange + 2; angleView = 360; alertLevelClient += 200; } }
-                if (p2_dist < 2) { if (Mathf.Abs(Client.transform.position.y - transform.position.y) <= 2) { range = startRange + 2; angleView = 360; alertLevelClient += 200; } }
+            { //7,5,3,2
+                if (p2_dist < 5) { if (Mathf.Abs(Client.transform.position.y - transform.position.y) <= 2) { if (Client.GetComponent<Animator>().GetBool("Running")) { range = startRange + 2; alertLevelClient += 4; } } }
+                if (p2_dist < 3) { if ((Client.GetComponent<Animator>().GetFloat("Walk") > 0 || Client.GetComponent<Animator>().GetFloat("Strafe") > 0) && (Mathf.Abs(Client.transform.position.y - transform.position.y) <= 2)) { alertLevelClient += 2; } }
+                if (p2_dist < 2) { if (Client.GetComponent<Animator>().GetBool("Running") && (Mathf.Abs(Client.transform.position.y - transform.position.y) <= 2)) { range = startRange + 2; angleView = 120; alertLevelClient += 50; } }
+                if (p2_dist < 1.5) { if (Mathf.Abs(Client.transform.position.y - transform.position.y) <= 2) { range = startRange + 2; angleView = 240; alertLevelClient += 50; } }
             }
 
                
