@@ -9,6 +9,7 @@ using UnityEngine.UI;
 using static UnityEngine.GraphicsBuffer;
 using System.Drawing;
 using System.Collections.Generic;
+using UnityEditor.Rendering;
 
 namespace GameManager
 {
@@ -19,7 +20,7 @@ namespace GameManager
 
         //public bool isTRAVIS = true;//which character is the player playing
         public GameObject Player;
-        public GameObject Client;
+        public GameObject Client;//<--------------------------------THIS IS ACTUALLY OTHER PLAYER!!!, nothing to do with client/server relationship
         public MobileController mobileController;
         public List<GameObject> victimInfoTraits;
         //public string ROOM;
@@ -28,7 +29,7 @@ namespace GameManager
         //public bool GAMESTART = false;
         //public bool twoPlayer = false;
 
-        public bool infiniteAmmo, infiniteHealth;
+        public bool infiniteAmmo, infiniteHealth, cineCamActive;
         private GameObject WESTIN;
         private GameObject TRAVIS;
         //public GameObject loginCanvas;
@@ -60,7 +61,7 @@ namespace GameManager
         [HideInInspector] public Light ClientWeapLight;
         [HideInInspector] public Light ClientFlashLight;
 
-        public GameObject DeathCam;
+        public GameObject DeathCam, cineCam;
         public GameObject mainCam = null;
 
         private float timer = 0f;
@@ -73,6 +74,7 @@ namespace GameManager
         public float lostGameDebugCounter = 0;
 
         UnityEngine.Color arrow_col;
+
         private void Update()
         {
 
@@ -127,7 +129,7 @@ namespace GameManager
 
                 }
             }
-            //CAMERA TOGGLE
+            //CAMERA TOGGLE - CHECK HEALTHSYSTEM for CAM TOGGLE
             if (SceneManager.GetActiveScene().name != "Lobby") { if (!mainCam.activeSelf && !DeathCam.activeSelf) { mainCam.SetActive(true); } }
 
             //LOST GAME DEBUG
@@ -266,6 +268,28 @@ namespace GameManager
                 }
                 
             }
+
+            //------------------------------CINECAM-----------------------------------
+            if(cineCamActive)
+            {
+                if (Input.GetKeyDown(KeyCode.C))
+                {
+                    if (!cineCam.activeSelf) { 
+                        cineCam.SetActive(true);
+                        mainCam.GetComponent<Camera>().rect = new Rect(0.76f, -0.26f, 0.61f, 0.49f);
+                        GetComponentInChildren<Canvas>().enabled = false;
+                    }
+                    else { 
+                        cineCam.SetActive(false);
+                        mainCam.GetComponent<Camera>().rect = new Rect(0, 0, 1, 1);
+                        GetComponentInChildren<Canvas>().enabled = true;
+                    }
+                }
+                if (Input.GetKeyDown(KeyCode.L))
+                {
+                    cineCam.GetComponent<cineCam>().lockPos = !cineCam.GetComponent<cineCam>().lockPos;
+                }
+            }    
 
 
         }//<________________________________END UPDATED________________________________________>
