@@ -289,6 +289,10 @@ namespace GameManager
                 {
                     cineCam.GetComponent<cineCam>().lockPos = !cineCam.GetComponent<cineCam>().lockPos;
                 }
+                if (Input.GetKeyDown(KeyCode.K))
+                {
+                    Player.GetComponent<PlayerController>().lockControl = !Player.GetComponent<PlayerController>().lockControl;
+                }
             }    
 
 

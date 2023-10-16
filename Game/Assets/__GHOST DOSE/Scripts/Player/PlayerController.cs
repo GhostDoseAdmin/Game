@@ -110,6 +110,7 @@ public class PlayerController : MonoBehaviour
     public AudioSource audioSource2, audioSource3;
     public AudioSource audioSourceSpeech;
 
+	public bool lockControl = false;
     #region Start
 
 
@@ -186,14 +187,17 @@ public class PlayerController : MonoBehaviour
 
 		if (currentAni != "React" && currentAni != "ReactV2" )
 		{
-            Locomotion();
+			if (!lockControl) { Locomotion(); }
 
 			if (currentAni != "dodgeRightAni" && currentAni != "dodgeLeftAni" )
 			{
-				Running();
-				ChangeGear(false, false);
-				Throwing();
-				GearAim();
+				if (!lockControl)
+				{
+					Running();
+					ChangeGear(false, false);
+					Throwing();
+					GearAim();
+				}
 				CheckFlashlight();
 			}
 			else

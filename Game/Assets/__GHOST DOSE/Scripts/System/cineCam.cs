@@ -37,6 +37,17 @@ public class cineCam : MonoBehaviour
 
         }
 
+        // Increase moveSpeed when the up arrow key is pressed
+        if (Input.GetKey(KeyCode.UpArrow))
+        {
+            moveSpeed += 1.0f;
+        }
+
+        // Decrease moveSpeed when the down arrow key is pressed, but ensure it doesn't go below a minimum value
+        if (Input.GetKey(KeyCode.DownArrow))
+        {
+            moveSpeed = Mathf.Max(moveSpeed - 1.0f, 0.0f); // Adjust the minimum value as needed
+        }
 
     }
 }
