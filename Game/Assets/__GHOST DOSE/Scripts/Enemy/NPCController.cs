@@ -136,10 +136,13 @@ public class NPCController : MonoBehaviour
         //SINGLE PLAYER HANDICAP
         if (!NetworkDriver.instance.TWOPLAYER)
         {
+            //NERF BRUTE AND TEDDY
             if (teddy || brute)
             {
-                healthEnemy = (int)(healthEnemy * 0.5f); 
+                healthEnemy = (int)(healthEnemy * 0.5f);
             }
+            //NERF REGULAR GHOSTS
+            //else { if (NetworkDriver.instance.isMobile) { healthEnemy = (int)(healthEnemy * 0.5f); } }
         }
 
         startHealth = healthEnemy;
@@ -640,7 +643,7 @@ public class NPCController : MonoBehaviour
             if(Player.GetComponent<HealthSystem>().Health > 0)
             {
                 if (p1_dist < 7) { if (Mathf.Abs(Player.transform.position.y - transform.position.y) <= 2) { if (Player.GetComponent<Animator>().GetBool("Running")) { range = startRange + 2; alertLevelPlayer += 6; } } }
-                if (p1_dist < 5) { if ((Player.GetComponent<Animator>().GetFloat("Walk") > 0 || Player.GetComponent<Animator>().GetFloat("Strafe") > 0) && (Mathf.Abs(Player.transform.position.y - transform.position.y) <= 2)) { alertLevelPlayer += 6; } }
+                if (p1_dist < 5) { if ((Player.GetComponent<Animator>().GetFloat("Walk") > 0 || Player.GetComponent<Animator>().GetFloat("Strafe") > 0) && (Mathf.Abs(Player.transform.position.y - transform.position.y) <= 2)) { alertLevelPlayer += 4; } }
                 if (p1_dist < 5) { if (Player.GetComponent<Animator>().GetBool("Running") && (Mathf.Abs(Player.transform.position.y - transform.position.y) <= 2)) { range = startRange + 2; angleView = 360; alertLevelPlayer += 200; } }
                 if (p1_dist < 2) { if (Mathf.Abs(Player.transform.position.y - transform.position.y) <= 2) { range = startRange + 2; angleView = 360; alertLevelPlayer += 200; } }
 
@@ -649,7 +652,7 @@ public class NPCController : MonoBehaviour
             if (Client.GetComponent<ClientPlayerController>().hp > 0)
             { //7,5,3,2
                 if (p2_dist < 7) { if (Mathf.Abs(Client.transform.position.y - transform.position.y) <= 2) { if (Client.GetComponent<Animator>().GetBool("Running")) { range = startRange + 2; alertLevelClient += 6; } } }
-                if (p2_dist < 5) { if ((Client.GetComponent<Animator>().GetFloat("Walk") > 0 || Client.GetComponent<Animator>().GetFloat("Strafe") > 0) && (Mathf.Abs(Client.transform.position.y - transform.position.y) <= 2)) { alertLevelClient += 6; } }
+                if (p2_dist < 5) { if ((Client.GetComponent<Animator>().GetFloat("Walk") > 0 || Client.GetComponent<Animator>().GetFloat("Strafe") > 0) && (Mathf.Abs(Client.transform.position.y - transform.position.y) <= 2)) { alertLevelClient += 4; } }
                 if (p2_dist < 5) { if (Client.GetComponent<Animator>().GetBool("Running") && (Mathf.Abs(Client.transform.position.y - transform.position.y) <= 2)) { range = startRange + 2; angleView = 90; alertLevelClient += 200; } }
                 if (p2_dist < 2) { if (Mathf.Abs(Client.transform.position.y - transform.position.y) <= 2) { range = startRange + 2; angleView = 240; alertLevelClient += 200; } }
             }

@@ -259,9 +259,16 @@ public class ShootingSystem : MonoBehaviour
                 {
                     canShoot = true;
                     GameObject victimManager = GameObject.Find("OuijaBoardManager").GetComponent<OuijaSessionControl>().OuijaSessions[GameObject.Find("OuijaBoardManager").GetComponent<OuijaSessionControl>().currentSession];
-                    //AudioManager.instance.Play("ShotCam");
+                //AudioManager.instance.Play("ShotCam");
+                if (!NetworkDriver.instance.isMobile)
+                {
                     if (GetComponent<PlayerController>().gear == 1) { camBatteryUI.fillAmount -= 0.1f; }
                     if (GetComponent<PlayerController>().gear == 4) { gridBatteryUI.fillAmount -= 0.2f; }
+                }
+                else {
+                    if (GetComponent<PlayerController>().gear == 1) { camBatteryUI.fillAmount -= 0.075f; }
+                    if (GetComponent<PlayerController>().gear == 4) { gridBatteryUI.fillAmount -= 0.15f; }
+                }
                     muzzleFlash.Play();
                     Shell.Play();
                     //DO DAMAGE
@@ -272,7 +279,7 @@ public class ShootingSystem : MonoBehaviour
                             {
                                 if (target.GetComponent<NPCController>().animEnemy.GetCurrentAnimatorClipInfo(0).Length > 0 && target.GetComponent<NPCController>().animEnemy.GetCurrentAnimatorClipInfo(0)[0].clip.name == "agro") { Damage = 20; }
                                 if (isHeadshot) { Damage = headShotDamage;
-                                    if (NetworkDriver.instance.isMobile && !NetworkDriver.instance.TWOPLAYER) { Damage = headShotDamage * 2; }
+                                    //if (NetworkDriver.instance.isMobile && !NetworkDriver.instance.TWOPLAYER) { Damage = headShotDamage * 2; }
                                 }
                                     if (target.tag == "ZOZO" && NetworkDriver.instance.isMobile) { Damage *= 2; }
                                 //Debug.Log("---------------------------------------" + damage);
@@ -307,7 +314,7 @@ public class ShootingSystem : MonoBehaviour
                         laserGrid.GetComponent<laserGrid>().Shoot(false); //SetActive(true);
                     }
 
-                    camera.fieldOfView = recoil;//40
+                    if(!NetworkDriver.instance.isMobile){camera.fieldOfView = recoil;}//40
                     shootTimer = Time.time;//cooldown
 
                 }

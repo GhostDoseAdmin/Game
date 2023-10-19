@@ -214,8 +214,10 @@ namespace NetworkSystem
             sioCom.Instance.On("pong", (payload) =>
             {
                 //GameDriver.instance.WriteGuiMsg("Waiting for another player", 10f, false, Color.white);
+              
                 Debug.Log("PONG RECEIVED " + payload);
                 if (PING == 0) { PING = Time.time - pingTimer; Debug.Log("MY PING IS " + PING); }
+                if (HOSTOVERRIDE) { PING = 0; }
                 JObject data = JObject.Parse(payload);
                 Dictionary<string, string> dict = data.ToObject<Dictionary<string, string>>();
                 if (dict["sid"] != sioCom.Instance.SocketID)//OTHERS PING

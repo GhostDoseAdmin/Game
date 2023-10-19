@@ -177,7 +177,7 @@ namespace GameManager
                     DemonScreamerUI.color = color;
                 }
             }
-            if(infiniteAmmo) { if (Player != null) { Player.GetComponent<ShootingSystem>().camBatteryUI.fillAmount = 1; } }
+            if(infiniteAmmo) { if (Player != null) { Player.GetComponent<ShootingSystem>().camBatteryUI.fillAmount = 1; Player.GetComponent<ShootingSystem>().gridBatteryUI.fillAmount = 1; } }
 
             //---------------------------------WAITING FOR OTHER PLAYER----------------------------------
             if (Player!=null && NetworkDriver.instance.TWOPLAYER && !NetworkDriver.instance.OTHERS_SCENE_READY)
@@ -190,84 +190,88 @@ namespace GameManager
             info_timer += Time.deltaTime;
 
             //---------------PING ARROW/ OTHERKEYUI-----------------------
-            if (NetworkDriver.instance.TWOPLAYER && SceneManager.GetActiveScene().name != "Lobby")
+            if (SceneManager.GetActiveScene().name != "Lobby")
             {
-
-                //------MAP PING INDICATOR-------
-                ping_timer += Time.deltaTime;
-                if (Player.GetComponent<PlayerController>().gearAim && ping_timer >= 3f)
+                if (NetworkDriver.instance.TWOPLAYER)
                 {
-                    //draw button
-                    if (NetworkDriver.instance.isMobile) { Player.GetComponent<PlayerController>().gamePad.pingBTN.gameObject.SetActive(true); }
-                    //SHOW BUTTON
-                    if ((!NetworkDriver.instance.isMobile && Input.GetKeyUp(KeyCode.V)) || (NetworkDriver.instance.isMobile && Player.GetComponent<PlayerController>().gamePad.pingBTN.GetComponent<GPButton>().buttonReleased))
+                    //------MAP PING INDICATOR-------
+                    ping_timer += Time.deltaTime;
+                    if (Player.GetComponent<PlayerController>().gearAim && ping_timer >= 3f)
                     {
-                        pingArrow(Player.GetComponent<PlayerController>().targetPos.position, false);
-                        NetworkDriver.instance.sioCom.Instance.Emit("event", JsonConvert.SerializeObject(new { pingMap = 1 }), false);
+                        //draw button
+                        if (NetworkDriver.instance.isMobile) { Player.GetComponent<PlayerController>().gamePad.pingBTN.gameObject.SetActive(true); }
+                        //SHOW BUTTON
+                        if ((!NetworkDriver.instance.isMobile && Input.GetKeyUp(KeyCode.V)) || (NetworkDriver.instance.isMobile && Player.GetComponent<PlayerController>().gamePad.pingBTN.GetComponent<GPButton>().buttonReleased))
+                        {
+                            pingArrow(Player.GetComponent<PlayerController>().targetPos.position, false);
+                            NetworkDriver.instance.sioCom.Instance.Emit("event", JsonConvert.SerializeObject(new { pingMap = 1 }), false);
 
-                        //NetworkDriver.instance.sioCom.Instance.Emit("event", JsonConvert.SerializeObject(new { pingMap = 1, x = transform.position.x, y = transform.position.y, z = transform.position.z }), false);
-                        ping_timer = 0f;
+                            //NetworkDriver.instance.sioCom.Instance.Emit("event", JsonConvert.SerializeObject(new { pingMap = 1, x = transform.position.x, y = transform.position.y, z = transform.position.z }), false);
+                            ping_timer = 0f;
 
-                        //PING ARROW
+                            //PING ARROW
+                            UnityEngine.Color color = mapPingUI.GetComponent<Image>().color;
+                            color.a = 1;
+                            mapPingUI.GetComponent<Image>().color = color;
+                        }
+                    }
+                    else { if (NetworkDriver.instance.isMobile) { Player.GetComponent<PlayerController>().gamePad.pingBTN.gameObject.SetActive(false); } }
+
+                    if (mainCam.activeSelf)
+                    {
                         UnityEngine.Color color = mapPingUI.GetComponent<Image>().color;
-                        color.a = 1;
+
+                        //CHOOSING VICTIM
+                        if (NetworkDriver.instance.LevelManager.GetComponentInChildren<VictimControl>().otherPlayerChoice != null)
+                        {
+                            //Debug.Log("----------------------------------ARROW LOCATION " + pingLoc);
+                            color.a = 1;
+                            pingLoc = NetworkDriver.instance.LevelManager.GetComponentInChildren<VictimControl>().otherPlayerChoice.transform.position + (Vector3.up * 1.5f);
+                        }
+                        else
+                        {
+                            //PING ARROW FADE
+                            color.a -= 0.1f * Time.deltaTime;
+                        }
                         mapPingUI.GetComponent<Image>().color = color;
+                        Camera mainCamera = Camera.main;
+                        // Calculate the viewport position of the point
+
+                        //--------------PING ARROW---------------
+                        Vector3 viewportPos = mainCamera.WorldToViewportPoint(pingLoc);
+                        // Check if the point is within the camera's viewport
+                        bool isWithinViewport = viewportPos.x >= 0 && viewportPos.x <= 1 && viewportPos.y >= 0 && viewportPos.y <= 1 && viewportPos.z > 0;
+                        if (isWithinViewport)
+                        {
+                            Vector3 screenPosition = mainCamera.WorldToScreenPoint(pingLoc);
+                            mapPingUI.GetComponent<RectTransform>().position = screenPosition;
+                        }
+
+                        //------------OTHER PLAYER UI----------
+                        viewportPos = mainCamera.WorldToViewportPoint(Client.transform.position);
+                        // Check if the point is within the camera's viewport
+                        isWithinViewport = viewportPos.x >= 0 && viewportPos.x <= 1 && viewportPos.y >= 0 && viewportPos.y <= 1 && viewportPos.z > 0;
+                        if (isWithinViewport)
+                        {
+                            // The point is within the camera's frustum
+                            Vector3 screenPosition = mainCamera.WorldToScreenPoint(Client.transform.position);
+
+                            if (otherKeyUI.activeSelf) { otherKeyUI.GetComponent<RectTransform>().position = screenPosition; }//---------OTHER KEY UI---------
+                            otherUserName.GetComponent<TextMeshProUGUI>().text = NetworkDriver.instance.otherUSERNAME;
+                            otherUserName.GetComponent<RectTransform>().position = screenPosition;
+                            otherKills.GetComponent<RectTransform>().position = screenPosition;
+
+                        }
+                        else
+                        {
+                            otherKeyUI.GetComponent<RectTransform>().position = new Vector3(-999, -999, -999);
+                        }
                     }
-                }
+
+                }//SINGLE PLAYER HIDE BUTTON
                 else { if (NetworkDriver.instance.isMobile) { Player.GetComponent<PlayerController>().gamePad.pingBTN.gameObject.SetActive(false); } }
-
-                if (SceneManager.GetActiveScene().name != "Lobby" && mainCam.activeSelf)
-                {
-                    UnityEngine.Color color = mapPingUI.GetComponent<Image>().color;
-
-                    //CHOOSING VICTIM
-                    if (NetworkDriver.instance.LevelManager.GetComponentInChildren<VictimControl>().otherPlayerChoice != null)
-                    {
-                        //Debug.Log("----------------------------------ARROW LOCATION " + pingLoc);
-                        color.a = 1;
-                        pingLoc = NetworkDriver.instance.LevelManager.GetComponentInChildren<VictimControl>().otherPlayerChoice.transform.position + (Vector3.up * 1.5f);
-                    }
-                    else
-                    {
-                        //PING ARROW FADE
-                        color.a -= 0.1f * Time.deltaTime;
-                    }
-                    mapPingUI.GetComponent<Image>().color = color;
-                    Camera mainCamera = Camera.main;
-                    // Calculate the viewport position of the point
-
-                    //--------------PING ARROW---------------
-                    Vector3 viewportPos = mainCamera.WorldToViewportPoint(pingLoc);
-                    // Check if the point is within the camera's viewport
-                    bool isWithinViewport = viewportPos.x >= 0 && viewportPos.x <= 1 && viewportPos.y >= 0 && viewportPos.y <= 1 && viewportPos.z > 0;
-                    if (isWithinViewport)
-                    {
-                        Vector3 screenPosition = mainCamera.WorldToScreenPoint(pingLoc);
-                        mapPingUI.GetComponent<RectTransform>().position = screenPosition;
-                    }
-
-                    //------------OTHER PLAYER UI----------
-                    viewportPos = mainCamera.WorldToViewportPoint(Client.transform.position);
-                    // Check if the point is within the camera's viewport
-                    isWithinViewport = viewportPos.x >= 0 && viewportPos.x <= 1 && viewportPos.y >= 0 && viewportPos.y <= 1 && viewportPos.z > 0;
-                    if (isWithinViewport)
-                    {
-                        // The point is within the camera's frustum
-                        Vector3 screenPosition = mainCamera.WorldToScreenPoint(Client.transform.position);
-
-                        if (otherKeyUI.activeSelf) { otherKeyUI.GetComponent<RectTransform>().position = screenPosition; }//---------OTHER KEY UI---------
-                        otherUserName.GetComponent<TextMeshProUGUI>().text = NetworkDriver.instance.otherUSERNAME;
-                        otherUserName.GetComponent<RectTransform>().position = screenPosition;
-                        otherKills.GetComponent<RectTransform>().position = screenPosition;
-
-                    }
-                    else
-                    {
-                        otherKeyUI.GetComponent<RectTransform>().position = new Vector3(-999, -999, -999);
-                    }
-                }
-                
             }
+            
 
             //------------------------------CINECAM-----------------------------------
             if(cineCamActive)
@@ -310,6 +314,7 @@ namespace GameManager
             if (!otherPlayer) { startPoint = Player.transform.position + Vector3.up; }
             else { startPoint = Client.transform.position + Vector3.up; ; }
             Vector3 endPoint = location;
+            //if (NetworkDriver.instance.isMobile && !otherPlayer) { endPoint = endPoint + Vector3.up; }
             // Calculate the direction vector from start to end points.
             Vector3 direction = endPoint - startPoint;
             // Create a ray from the startPoint in the calculated direction.
