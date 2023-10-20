@@ -44,6 +44,7 @@ public class RigManager : MonoBehaviour
     [HideInInspector] public GameObject otherPlayerProp;
     [HideInInspector] public GameObject otherPlayerRig;
 
+    public bool isFemale = false;
     private bool hasRetrievedSkins = false;
     private static utilities util;
 
@@ -99,7 +100,7 @@ public class RigManager : MonoBehaviour
     public void UpdatePlayerRig(string rigName, bool isTravis, bool otherPlayer)
     {
         Debug.Log("-----------------UPDATING RIG with name" + rigName);
-
+        if (rigName.Contains("female")) { isFemale = true; }
         GameObject playerProp;
         GameObject currentRig;
 
