@@ -11,6 +11,7 @@ namespace InteractionSystem
         public static AudioManager instance;
         public AudioMixerGroup mixerGroup;
         public Sound[] sounds;
+        public AudioSource[] audioSources;
 
         void Awake()
         {
@@ -23,13 +24,17 @@ namespace InteractionSystem
                 instance = this;
             }
 
+            int i = 0;
+            audioSources = new AudioSource[sounds.Length];
             foreach (Sound s in sounds)
             {
                 s.source = gameObject.AddComponent<AudioSource>();
+                audioSources[i] = s.source;
                 s.source.clip = s.clip;
                 s.source.loop = s.loop;
-
                 s.source.outputAudioMixerGroup = mixerGroup;
+                
+                i++;
             }
         }
 
@@ -116,7 +121,21 @@ namespace InteractionSystem
         }
 
 
-
+        // Check if a specific clip is playing
+        public bool IsClipPlaying(string clipName)
+        {
+            foreach (AudioSource audioSource in audioSources)
+            {
+                //Debug.Log(audioSource.clip.name);
+                if (audioSource.isPlaying && audioSource.clip != null && audioSource.clip.name.Contains(clipName))
+                {
+                   // Debug.Log(clipName + "IS PLAYING");
+                    return true;
+                }
+            }
+           // Debug.Log(clipName + "IS NOT PLAYING");
+            return false;
+        }
 
 
 
