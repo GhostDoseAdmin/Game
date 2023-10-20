@@ -20,6 +20,7 @@ public class RigManager : MonoBehaviour
      
     public GameObject[] travBasicRigs;
     public GameObject[] wesBasicRigs;
+    public GameObject[] CharacterRigs;
 
     public int[] lvl1SpeedTeirs;
     public int[] lvl2SpeedTeirs;
@@ -46,7 +47,7 @@ public class RigManager : MonoBehaviour
     private bool hasRetrievedSkins = false;
     private static utilities util;
 
-    [HideInInspector] public GameObject SkinsList;
+    [HideInInspector] public GameObject SkinsList, CharacterList;
     [HideInInspector] public GameObject skin;
 
     [HideInInspector] public float[] leveldata;
@@ -264,6 +265,7 @@ public class RigManager : MonoBehaviour
             }
 
         }
+
         //SKULL SKINS
         if (PlayerPrefs.GetInt("skull") == 1)
         {
@@ -283,7 +285,7 @@ public class RigManager : MonoBehaviour
         {
             Destroy(child.gameObject);
         }
-        //CREATE NEW SKINS FOR CANVAS
+        //CREATE NEW SKINS FOR CANVAS (THUMBNAIL)
         foreach (GameObject rig in updatedList)
         {
             //Debug.Log(rig.name);
@@ -291,6 +293,22 @@ public class RigManager : MonoBehaviour
             {
                 GameObject placeHolderSkin = Instantiate(skin, SkinsList.transform);//create skin thumbnail
                 placeHolderSkin.transform.GetChild(0).GetComponent<Skin>().rig = rig;//REFERS TO THUMBNAIL
+            }
+        }
+
+        //--------------------CHARACTERS-----------------------------
+        //DELETE SKINS (PREVENT DUPLICATES)
+        foreach (Transform child in CharacterList.transform)
+        {
+            Destroy(child.gameObject);
+        }
+        foreach (GameObject character in CharacterRigs)
+        {
+            //Debug.Log(rig.name);
+            if (skin != null)
+            {
+                GameObject placeHolderSkin = Instantiate(skin, CharacterList.transform);//create skin thumbnail
+                placeHolderSkin.transform.GetChild(0).GetComponent<Skin>().rig = character;//REFERS TO THUMBNAIL
             }
         }
 
