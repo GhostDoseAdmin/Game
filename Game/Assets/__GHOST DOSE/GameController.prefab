@@ -2278,6 +2278,7 @@ MonoBehaviour:
   audioSource2: {fileID: 0}
   audioSource3: {fileID: 0}
   audioSourceSpeech: {fileID: 0}
+  lockControl: 0
   doubleTapTimeThreshold: 0.3
   stick: {fileID: 3802063595043796119}
   region: {fileID: 3802063594872477332}
@@ -3880,6 +3881,7 @@ MonoBehaviour:
   audioSource2: {fileID: 0}
   audioSource3: {fileID: 0}
   audioSourceSpeech: {fileID: 0}
+  lockControl: 0
   doubleTapTimeThreshold: 0.3
   stick: {fileID: 3802063595043796119}
   region: {fileID: 3802063594872477332}
@@ -9207,6 +9209,16 @@ MonoBehaviour:
     loop: 0
     mixerGroup: {fileID: 0}
     source: {fileID: 0}
+  - name: femaledeath
+    clip: {fileID: 8300000, guid: fde552a02436ed94aa0438a9c2c84d32, type: 3}
+    volume: 1
+    volumeVariance: 0
+    pitch: 1
+    pitchVariance: 0
+    loop: 0
+    mixerGroup: {fileID: 0}
+    source: {fileID: 0}
+  audioSources: []
 --- !u!1 &4958532036471478998
 GameObject:
   m_ObjectHideFlags: 0
