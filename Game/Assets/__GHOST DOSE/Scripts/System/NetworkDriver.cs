@@ -711,7 +711,7 @@ namespace NetworkSystem
         private float timer_delay = 0.8f;//0.5
         public void Update()
         {
-            GameDriver.instance.WriteGuiMsg("HOST " + HOST, 9999f, false, Color.magenta);
+            //GameDriver.instance.WriteGuiMsg("HOST " + HOST, 9999f, false, Color.magenta);
 
             //----------------------------------SYNC ACTIVE ENEMIES-----------------------------------------
             if (OTHERS_SCENE_READY && SCENE_READY && HOST) //&& GameDriver.instance.twoPlayer
