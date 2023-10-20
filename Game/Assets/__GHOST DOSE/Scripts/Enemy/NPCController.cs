@@ -799,7 +799,7 @@ public class NPCController : MonoBehaviour
             
             //if (NetworkDriver.instance.HOST)
             {   //AQUIRE TARGET
-
+                if (!otherPlayer) { transform.LookAt(Player.transform); alertLevelPlayer = unawareness * 2; } else { transform.LookAt(Client.transform); alertLevelClient = unawareness * 2; }
                 if (NetworkDriver.instance.HOST) { if (!otherPlayer) { target = Player.transform; } else { target = Client.transform; } }
                 follow = persist;
             }
@@ -831,7 +831,7 @@ public class NPCController : MonoBehaviour
             //if (animEnemy.GetCurrentAnimatorClipInfo(0)[0].clip!= null && animEnemy.GetCurrentAnimatorClipInfo(0)[0].clip.name != "agro" && GetComponent<Teleport>().teleport==0) { healthEnemy -= damageAmount; }
             if (damageAmount > 1) { healthEnemy -= damageAmount; }
             //MAKE SUSPECIOUS
-            if (!otherPlayer) { transform.LookAt(Player.transform); alertLevelPlayer = unawareness * 2; } else { transform.LookAt(Client.transform); alertLevelClient = unawareness * 2; }
+            //if (!otherPlayer) { transform.LookAt(Player.transform); alertLevelPlayer = unawareness * 2; } else { transform.LookAt(Client.transform); alertLevelClient = unawareness * 2; }
 
             //CAMSHOT
             if (damageAmount <= 0) { range += 2; angleView = startAngleView + 30; if (!brute) { Flinch(false); } }

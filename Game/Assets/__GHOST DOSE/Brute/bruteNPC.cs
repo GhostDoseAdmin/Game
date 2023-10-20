@@ -7,7 +7,7 @@ public class bruteNPC : MonoBehaviour
 {
     AudioSource audioSource1, audioSource2;
     public Sound[] footSteps;
-    private bool bruteMusic;
+    //private bool bruteMusic;
     private void Awake()
     {
         audioSource1 = gameObject.AddComponent<AudioSource>();
@@ -19,9 +19,12 @@ public class bruteNPC : MonoBehaviour
 
     public void Update()
     {
-        if(GetComponent<NPCController>().closestPlayer!=null && !bruteMusic && Vector3.Distance(transform.position, GetComponent<NPCController>().closestPlayer.transform.position) <15) {
-            bruteMusic = true;
-            AudioManager.instance.Play("BruteMusic", null);
+        if(GetComponent<NPCController>().closestPlayer!=null && Vector3.Distance(transform.position, GetComponent<NPCController>().closestPlayer.transform.position) <15) {
+            //bruteMusic = true;
+            if (!AudioManager.instance.IsClipPlaying("MusicHeartBeatv2"))
+            {
+                AudioManager.instance.Play("BruteMusic", null);
+            }
         }
     }
 
