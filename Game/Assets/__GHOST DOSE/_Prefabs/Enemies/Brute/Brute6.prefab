@@ -422,8 +422,8 @@ MonoBehaviour:
   hitRange: 2
   chaseSpeed: 1
   spawnTimer: 99999
-  damage: 300
-  force: 250
+  damage: 600
+  force: 500
   retreatThreshold: 0
   unawareness: 250
   xrayvision: 0
@@ -463,6 +463,7 @@ MonoBehaviour:
   serverPosition: {x: 0, y: 0, z: 0}
   active_timer: 0
   zapClient: 0
+  emitNewDest: 1
 --- !u!114 &878244703916540972
 MonoBehaviour:
   m_ObjectHideFlags: 0
