@@ -174,7 +174,7 @@ public class ClientPlayerController : MonoBehaviour
         anim = GetComponent<Animator>();
 
         //FEMALE
-        if (transform.GetChild(0).name.ToLower().Contains("female")) { isFemale = true; } else { isFemale = false; }
+        if (transform.GetChild(1).name.ToLower().Contains("female")) { isFemale = true; } else { isFemale = false; }
 
     }
 
