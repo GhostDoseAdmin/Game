@@ -878,7 +878,7 @@ public class NPCController : MonoBehaviour
             {
 
                 //PLAY KILL SOUNDS
-                //if (!NetworkDriver.instance.GetComponent<RigManager>().isFemale)
+                if (Random.value < 0.5f)
                 {
                     int i = Random.Range(1, 4);
                     AudioSource thisPlayerSource = null;
