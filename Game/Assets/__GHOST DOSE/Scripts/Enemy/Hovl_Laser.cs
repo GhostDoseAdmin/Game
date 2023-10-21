@@ -121,12 +121,12 @@ public class Hovl_Laser : MonoBehaviour
 
                     if (hit.collider.gameObject.name == "Player")
                     {
-                        hit.collider.gameObject.GetComponent<HealthSystem>().HealthDamage(GetComponentInParent<NPCController>().laserDamage, oppositeForce, false);
+                        hit.collider.gameObject.GetComponent<HealthSystem>().HealthDamage(GetComponentInParent<NPCController>().laserDamage, oppositeForce, true);
                     }
                     if (hit.collider.gameObject.name == "Client")
                     {
                         //AudioManager.instance.Play("EnemyHit", GetComponentInParent<NPCController>().audioSource);
-                        hit.collider.gameObject.GetComponent<ClientPlayerController>().Flinch(oppositeForce, false);//FLINCH DOESNT NEED FORCE AS PLAY IS MOVED BY THAT PLAYER ANYWAY UPDATED POS
+                        hit.collider.gameObject.GetComponent<ClientPlayerController>().Flinch(oppositeForce, true);//FLINCH DOESNT NEED FORCE AS PLAY IS MOVED BY THAT PLAYER ANYWAY UPDATED POS
                     }
 
                         collideTimer = Time.time;//cooldown
