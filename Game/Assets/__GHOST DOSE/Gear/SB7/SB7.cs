@@ -14,6 +14,7 @@ public class SB7 : MonoBehaviour
     int questionIndex;
     public List<Sound> QuestionsTravis;
     public List<Sound> QuestionsWestin;
+    public List<Sound> QuestionsFemale;
     public List<Sound> AnswersYoung;
     public List<Sound> AnswersEvil;
     public List<Sound> AnswersMurdered;
@@ -85,6 +86,9 @@ public class SB7 : MonoBehaviour
         if (GetComponentInParent<PlayerController>() != null && !GetComponentInParent<PlayerController>().isTravis) { questionList = QuestionsWestin; }
         if (GetComponentInParent<ClientPlayerController>() != null && GetComponentInParent<ClientPlayerController>().isTravis) { questionList = QuestionsTravis; }
         if (GetComponentInParent<ClientPlayerController>() != null && !GetComponentInParent<ClientPlayerController>().isTravis) { questionList = QuestionsWestin; }
+        //FEMALE
+        if (GetComponentInParent<PlayerController>() != null && GetComponentInParent<PlayerController>().isFemale) { questionList = QuestionsFemale; }
+        if (GetComponentInParent<ClientPlayerController>() != null && GetComponentInParent<ClientPlayerController>().isFemale) { questionList = QuestionsFemale; }
 
         questionIndex = currentColdSpot.GetComponent<ColdSpot>().questionIndexYoungEvilMurderGender;//Random.Range(0, questionList.Count);
         audioSourceVoices.clip = questionList[questionIndex].clip;

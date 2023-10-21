@@ -4,6 +4,7 @@ using GameManager;
 using Unity.VisualScripting;
 using UnityEditor;
 using NetworkSystem;
+using Microsoft.Cci;
 
 public class ClientPlayerController : MonoBehaviour
 {
@@ -117,6 +118,7 @@ public class ClientPlayerController : MonoBehaviour
     private string currentAni;
     public bool isTravis;
     public bool canFlinch;
+    public bool isFemale = false;
     //public bool wlOn, flOn;//weaplight and flashlight
 
 
@@ -170,6 +172,10 @@ public class ClientPlayerController : MonoBehaviour
         //ND = GameObject.Find("GameController").GetComponent<GameDriver>().ND;
 
         anim = GetComponent<Animator>();
+
+        //FEMALE
+        if (transform.GetChild(0).name.ToLower().Contains("female")) { isFemale = true; } else { isFemale = false; }
+
     }
 
         #endregion

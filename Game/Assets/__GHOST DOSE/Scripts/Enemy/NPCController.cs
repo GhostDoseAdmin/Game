@@ -878,23 +878,26 @@ public class NPCController : MonoBehaviour
             {
 
                 //PLAY KILL SOUNDS
-               // if (Random.value < 0.5f)
+                //if (!NetworkDriver.instance.GetComponent<RigManager>().isFemale)
                 {
                     int i = Random.Range(1, 4);
-                    AudioSource thisPlayerSource;
-                    string audioString;
-                    if (!otherPlayer)
+                    AudioSource thisPlayerSource = null;
+                    string audioString="";
+                    if (!otherPlayer && !GameDriver.instance.Player.GetComponent<PlayerController>().isFemale)
                     { //PLAYER
                         thisPlayerSource = GameDriver.instance.Player.GetComponent<PlayerController>().audioSourceSpeech;
                         if (GameDriver.instance.Player.GetComponent<PlayerController>().isTravis) { audioString = "travkill"; } else { audioString = "weskill"; }
                     }
                     else
                     {//CLIENT
-                        thisPlayerSource = GameDriver.instance.Client.GetComponent<ClientPlayerController>().audioSourceSpeech;
-                        if (GameDriver.instance.Client.GetComponent<ClientPlayerController>().isTravis) { audioString = "travkill"; } else { audioString = "weskill"; }
+                        if (!GameDriver.instance.Client.GetComponent<ClientPlayerController>().isFemale) {
+                            thisPlayerSource = GameDriver.instance.Client.GetComponent<ClientPlayerController>().audioSourceSpeech;
+                            if (GameDriver.instance.Client.GetComponent<ClientPlayerController>().isTravis) { audioString = "travkill"; } else { audioString = "weskill"; }
+                        }
 
                     }
-                    AudioManager.instance.Play(audioString + i.ToString(), thisPlayerSource);
+                    if (thisPlayerSource != null) { AudioManager.instance.Play(audioString + i.ToString(), thisPlayerSource); }
+
                     //Debug.Log("PLAYING AUDIO " + audioString + i.ToString());
                 }
                 if (!otherPlayer) { GameDriver.instance.KILLS += 1; } else { GameDriver.instance.OTHER_KILLS += 1; }

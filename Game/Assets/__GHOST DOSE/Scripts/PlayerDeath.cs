@@ -32,15 +32,24 @@ public class PlayerDeath : MonoBehaviour
 
         //DEATH SOUND
         string audioString;
-        if (!otherPlayer)
-        { //PLAYER
-            if (GameDriver.instance.Player.GetComponent<PlayerController>().isTravis) { audioString = "travdeath"; } else { audioString = "wesdeath"; }
-        }
-        else
-        {//CLIENT
-            if (GameDriver.instance.Client.GetComponent<ClientPlayerController>().isTravis) { audioString = "travdeath"; } else { audioString = "wesdeath"; }
+       
+        {
+
+            if (!otherPlayer)
+            { //PLAYER
+                if (GameDriver.instance.Player.GetComponent<PlayerController>().isTravis) { audioString = "travdeath"; } else { audioString = "wesdeath"; }
+                if (GameDriver.instance.Player.GetComponent<PlayerController>().isFemale) { audioString = "femaledeath"; }
+            }
+            else
+            {//CLIENT
+                if (GameDriver.instance.Client.GetComponent<ClientPlayerController>().isTravis) { audioString = "travdeath"; } else { audioString = "wesdeath"; }
+                if (GameDriver.instance.Client.GetComponent<ClientPlayerController>().isFemale) { audioString = "femaledeath"; }
+
+            }
 
         }
+
+
         AudioManager.instance.Play(audioString, null);
     }
     public void Update()

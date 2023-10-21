@@ -111,6 +111,7 @@ public class PlayerController : MonoBehaviour
     public AudioSource audioSourceSpeech;
 
 	public bool lockControl = false;
+	public bool isFemale = false;
     #region Start
 
 
@@ -163,6 +164,9 @@ public class PlayerController : MonoBehaviour
         k2.SetActive(false);
         fireK2 = false;
 		canFlinch = true;
+
+		//FEMALE
+        if (transform.GetChild(0).name.ToLower().Contains("female")) { isFemale = true; } else { isFemale = false; }
 
     }
 
