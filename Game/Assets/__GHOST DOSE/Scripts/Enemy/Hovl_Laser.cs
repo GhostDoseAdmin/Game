@@ -27,7 +27,7 @@ public class Hovl_Laser : MonoBehaviour
     private ParticleSystem[] Effects;
     private ParticleSystem[] Hit;
     private float collideTimer;
-    private float collideDelay = 1f;
+    private float collideDelay = 1.5f;
     private AudioSource laserSound;
     public bool LASERGRID = false;
     private float laserGridOpacity = 0.5f;
@@ -114,24 +114,26 @@ public class Hovl_Laser : MonoBehaviour
                         if (target != null) { GetComponentInParent<ZozoLaser>().laserGridOrigin.AddEnemyToEmitList(target); }
                     }
 
-                if (hit.collider.gameObject.name == "Player" && Time.time > collideTimer + collideDelay)
-                {
                     Vector3 oppositeForce = GetComponentInParent<NPCController>().transform.forward * GetComponentInParent<NPCController>().laserForce;
                     oppositeForce.y = 0f; // Set the y component to 0
 
-                    if (hit.collider.gameObject.name == "Player")
+                    if (hit.collider.gameObject.name == "Player" && Time.time > collideTimer + collideDelay)
                     {
-                        hit.collider.gameObject.GetComponent<HealthSystem>().HealthDamage(GetComponentInParent<NPCController>().laserDamage, oppositeForce, true);
+
+
+                        //if (hit.collider.gameObject.name == "Player")
+                        {
+                            hit.collider.gameObject.GetComponent<HealthSystem>().HealthDamage(GetComponentInParent<NPCController>().laserDamage, oppositeForce, true);
+                        }
+                            collideTimer = Time.time;//cooldown
                     }
+
                     if (hit.collider.gameObject.name == "Client")
                     {
                         //AudioManager.instance.Play("EnemyHit", GetComponentInParent<NPCController>().audioSource);
                         hit.collider.gameObject.GetComponent<ClientPlayerController>().Flinch(oppositeForce, true);//FLINCH DOESNT NEED FORCE AS PLAY IS MOVED BY THAT PLAYER ANYWAY UPDATED POS
                     }
-
-                        collideTimer = Time.time;//cooldown
                 }
-            }
             else
             {
                 //End laser position if doesn't collide with object

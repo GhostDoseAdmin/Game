@@ -226,7 +226,7 @@ namespace GameManager
                         {
                             //Debug.Log("----------------------------------ARROW LOCATION " + pingLoc);
                             color.a = 1;
-                            pingLoc = NetworkDriver.instance.LevelManager.GetComponentInChildren<VictimControl>().otherPlayerChoice.transform.position + (Vector3.up * 1.5f);
+                            pingLoc = NetworkDriver.instance.LevelManager.GetComponentInChildren<VictimControl>().otherPlayerChoice.transform.position + (Vector3.up * 2f);
                         }
                         else
                         {

@@ -239,7 +239,7 @@ public class NPCController : MonoBehaviour
         //---CLIENT SIDE PREDICTION--close position gap
         if (!NetworkDriver.instance.HOST)
         {
-            if (target == null)
+            if (target == null || ZOZO)
             {
                 if (Vector3.Distance(transform.position, serverPosition) > 0.2f) { transform.position = Vector3.Lerp(transform.position, serverPosition, 0.02f); }
 
