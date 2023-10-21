@@ -48,6 +48,7 @@ public class HealthSystem : MonoBehaviour
 
 	public static HealthSystem kitinstance;
 
+	public bool canFlinch = true;
 
 	/*private void Awake()
 	{
@@ -125,13 +126,23 @@ public class HealthSystem : MonoBehaviour
          //GetComponent<PlayerController>().emitDamage = true;
          GetComponent<PlayerController>().damageForce = force;
         GetComponent<Rigidbody>().AddForce(force, ForceMode.Impulse);
-		if (!hardFlinch) { GetComponent<Animator>().Play("Flinch", 0, 0f); }//-1
-		else { GetComponent<Animator>().Play("HardFlinch", 0, 0f); }
+		if (canFlinch)
+		{
+			if (!hardFlinch) { GetComponent<Animator>().Play("Flinch", 0, 0f); }//-1
+			else { GetComponent<Animator>().Play("HardFlinch", 0, 0f); }
+			canFlinch = false; Invoke("ResetCanFlinch",1f);
+
+        }
 		if (GameDriver.instance.mainCam.activeSelf) { GameDriver.instance.mainCam.GetComponent<Camera_Controller>().InvokeShake(1f, 2f); }
         Health -= damage;
 		//healthLevel.fillAmount -= damage * 0.01f;
 		Invoke("changeHealthUIColor",0.5f);
 	}
+	public void ResetCanFlinch()
+	{
+		canFlinch = true;
+
+    }
 
 	private void changeHealthUIColor()
 	{
