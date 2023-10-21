@@ -894,7 +894,7 @@ public class NPCController : MonoBehaviour
                        // if (!GameDriver.instance.Client.GetComponent<ClientPlayerController>().isFemale) {
                             thisPlayerSource = GameDriver.instance.Client.GetComponent<ClientPlayerController>().audioSourceSpeech;
                             if (GameDriver.instance.Client.GetComponent<ClientPlayerController>().isTravis) { audioString = "travkill"; } else { audioString = "weskill"; }
-                        if (GameDriver.instance.Client.GetComponent<PlayerController>().isFemale) { audioString = "femalekill"; }
+                        if (GameDriver.instance.Client.GetComponent<ClientPlayerController>().isFemale) { audioString = "femalekill"; }
                         //}
 
                     }
