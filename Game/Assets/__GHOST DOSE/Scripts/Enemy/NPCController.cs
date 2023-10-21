@@ -883,17 +883,19 @@ public class NPCController : MonoBehaviour
                     int i = Random.Range(1, 4);
                     AudioSource thisPlayerSource = null;
                     string audioString="";
-                    if (!otherPlayer && !GameDriver.instance.Player.GetComponent<PlayerController>().isFemale)
+                    if (!otherPlayer)
                     { //PLAYER
                         thisPlayerSource = GameDriver.instance.Player.GetComponent<PlayerController>().audioSourceSpeech;
                         if (GameDriver.instance.Player.GetComponent<PlayerController>().isTravis) { audioString = "travkill"; } else { audioString = "weskill"; }
+                        if (GameDriver.instance.Player.GetComponent<PlayerController>().isFemale) { audioString = "femalekill"; }
                     }
                     else
                     {//CLIENT
-                        if (!GameDriver.instance.Client.GetComponent<ClientPlayerController>().isFemale) {
+                       // if (!GameDriver.instance.Client.GetComponent<ClientPlayerController>().isFemale) {
                             thisPlayerSource = GameDriver.instance.Client.GetComponent<ClientPlayerController>().audioSourceSpeech;
                             if (GameDriver.instance.Client.GetComponent<ClientPlayerController>().isTravis) { audioString = "travkill"; } else { audioString = "weskill"; }
-                        }
+                        if (GameDriver.instance.Client.GetComponent<PlayerController>().isFemale) { audioString = "femalekill"; }
+                        //}
 
                     }
                     if (thisPlayerSource != null) { AudioManager.instance.Play(audioString + i.ToString(), thisPlayerSource); }

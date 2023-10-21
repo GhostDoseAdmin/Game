@@ -940,6 +940,7 @@ MonoBehaviour:
   audioSourceSpeech: {fileID: 0}
   isTravis: 0
   canFlinch: 0
+  isFemale: 0
 --- !u!114 &80994944818137944
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2279,6 +2280,7 @@ MonoBehaviour:
   audioSource3: {fileID: 0}
   audioSourceSpeech: {fileID: 0}
   lockControl: 0
+  isFemale: 0
   doubleTapTimeThreshold: 0.3
   stick: {fileID: 3802063595043796119}
   region: {fileID: 3802063594872477332}
@@ -3882,6 +3884,7 @@ MonoBehaviour:
   audioSource3: {fileID: 0}
   audioSourceSpeech: {fileID: 0}
   lockControl: 0
+  isFemale: 0
   doubleTapTimeThreshold: 0.3
   stick: {fileID: 3802063595043796119}
   region: {fileID: 3802063594872477332}
@@ -9211,6 +9214,33 @@ MonoBehaviour:
     source: {fileID: 0}
   - name: femaledeath
     clip: {fileID: 8300000, guid: fde552a02436ed94aa0438a9c2c84d32, type: 3}
+    volume: 1
+    volumeVariance: 0
+    pitch: 1
+    pitchVariance: 0
+    loop: 0
+    mixerGroup: {fileID: 0}
+    source: {fileID: 0}
+  - name: femalekill1
+    clip: {fileID: 8300000, guid: ce1da86f900bebb408a769370d2f737f, type: 3}
+    volume: 1
+    volumeVariance: 0
+    pitch: 1
+    pitchVariance: 0
+    loop: 0
+    mixerGroup: {fileID: 0}
+    source: {fileID: 0}
+  - name: femalekill2
+    clip: {fileID: 8300000, guid: 1145ce4d9c8b9ce489c2288fe8f34e99, type: 3}
+    volume: 1
+    volumeVariance: 0
+    pitch: 1
+    pitchVariance: 0
+    loop: 0
+    mixerGroup: {fileID: 0}
+    source: {fileID: 0}
+  - name: femalekill3
+    clip: {fileID: 8300000, guid: 1f0825e9683511240b069aeadba6205e, type: 3}
     volume: 1
     volumeVariance: 0
     pitch: 1
