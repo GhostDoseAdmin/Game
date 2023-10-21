@@ -172,6 +172,43 @@ MonoBehaviour:
     loop: 0
     mixerGroup: {fileID: 0}
     source: {fileID: 0}
+  QuestionsFemale:
+  - name: young
+    clip: {fileID: 8300000, guid: b146da41c9d42bc45b0947aee3581312, type: 3}
+    volume: 1
+    volumeVariance: 0
+    pitch: 0
+    pitchVariance: 0
+    loop: 0
+    mixerGroup: {fileID: 0}
+    source: {fileID: 0}
+  - name: evil
+    clip: {fileID: 8300000, guid: b789daf4f82f6e14fab42d2b8fe4df36, type: 3}
+    volume: 1
+    volumeVariance: 0
+    pitch: 0
+    pitchVariance: 0
+    loop: 0
+    mixerGroup: {fileID: 0}
+    source: {fileID: 0}
+  - name: murder
+    clip: {fileID: 8300000, guid: 1aa834e198daf88439beaac43920c094, type: 3}
+    volume: 1
+    volumeVariance: 0
+    pitch: 0
+    pitchVariance: 0
+    loop: 0
+    mixerGroup: {fileID: 0}
+    source: {fileID: 0}
+  - name: gender
+    clip: {fileID: 8300000, guid: 2657d7d5047c0f444acbde959241b95a, type: 3}
+    volume: 1
+    volumeVariance: 0
+    pitch: 0
+    pitchVariance: 0
+    loop: 0
+    mixerGroup: {fileID: 0}
+    source: {fileID: 0}
   AnswersYoung:
   - name: no
     clip: {fileID: 8300000, guid: 9239dc50d44b41f4d86190fda54c2fca, type: 3}
@@ -248,7 +285,6 @@ MonoBehaviour:
     loop: 0
     mixerGroup: {fileID: 0}
     source: {fileID: 0}
-  demon: 0
 --- !u!1 &4252270883736930297
 GameObject:
   m_ObjectHideFlags: 0
