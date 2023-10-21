@@ -8448,7 +8448,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 21300000, guid: 67978d08b4bb5a441b5ddcfa0c377e32, type: 3}
+  m_Sprite: {fileID: 21300000, guid: 3027c4665f9de8c409b4f3488d701964, type: 3}
   m_Type: 3
   m_PreserveAspect: 0
   m_FillCenter: 1
@@ -9250,6 +9250,15 @@ MonoBehaviour:
     source: {fileID: 0}
   - name: femalecamdead
     clip: {fileID: 8300000, guid: 619e4d2f04fda9842a0afa96a34525da, type: 3}
+    volume: 1
+    volumeVariance: 0
+    pitch: 1
+    pitchVariance: 0
+    loop: 0
+    mixerGroup: {fileID: 0}
+    source: {fileID: 0}
+  - name: Ping
+    clip: {fileID: 8300000, guid: a7091f7b917d7e943beb06db935303c5, type: 3}
     volume: 1
     volumeVariance: 0
     pitch: 1
