@@ -243,6 +243,7 @@ public class ShootingSystem : MonoBehaviour
                     string audioString;
                     if (NetworkDriver.instance.isTRAVIS) { audioString = "travbattery"; }
                     else { audioString = "wesbattery"; }
+                    if(GetComponent<PlayerController>().isFemale) { audioString = "femalecamdead"; }
                     AudioManager.instance.Play(audioString, GameDriver.instance.Player.GetComponent<PlayerController>().audioSourceSpeech);
 
                 //AUTO SWITCH TO CAM
