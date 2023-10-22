@@ -399,12 +399,19 @@ public class ClientPlayerController : MonoBehaviour
     public void Flinch(Vector3 force, bool hardFlinch)
     {
         GetComponent<Rigidbody>().AddForce(force, ForceMode.Impulse);
-        if (!hardFlinch) { GetComponent<Animator>().Play("Flinch", -1, 0f); }//-1
-        else { GetComponent<Animator>().Play("HardFlinch", -1, 0f); }
+        if (canFlinch)
+        {
+            if (!hardFlinch) { GetComponent<Animator>().Play("Flinch", -1, 0f); }//-1
+            else { GetComponent<Animator>().Play("HardFlinch", -1, 0f); }
+            canFlinch = false; Invoke("ResetCanFlinch", 1f);
+        }
+    }
+    public void ResetCanFlinch()
+    {
+        canFlinch = true;
     }
 
-
-	public void Flashlight()//TRIGGRED BY EMIT
+    public void Flashlight()//TRIGGRED BY EMIT
 	{
         if (flashlighton)
         {

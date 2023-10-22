@@ -413,7 +413,6 @@ public class VictimControl : Item
  
         if (canChoose && startCircle && main.transform.position.y >= mainStartPos.y + 3)
         {
-            playerChoice = null; otherPlayerChoice = null;
             if (victim == ChosenVictim)
             {
              SetSpiritsFree();// GameDriver.instance.WriteGuiMsg("RIGHT ANWER" + victim.name, 10f, false);
@@ -445,6 +444,7 @@ public class VictimControl : Item
 
     public void SetSpiritsFree()
     {
+        playerChoice = null; otherPlayerChoice = null;
         revertGear();
         Pentagram.GetComponent<MeshRenderer>().materials[0].SetColor("_Color", Color.blue);
         //pentagramLight.GetComponent<Light>().color = Color.blue;
@@ -469,6 +469,7 @@ public class VictimControl : Item
     }*/
     public void SummonZozo()
     {
+        playerChoice = null; otherPlayerChoice = null;
         revertGear();
         zozoDummy.transform.GetChild(0).GetComponent<SkinnedMeshRenderer>().materials[0].SetFloat("_Alpha", 0f);
         zozoDummy.transform.GetChild(0).GetComponent<SkinnedMeshRenderer>().materials[0].SetFloat("_EMFAlpha", 0.3f);
