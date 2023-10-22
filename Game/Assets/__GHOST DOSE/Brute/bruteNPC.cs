@@ -54,16 +54,19 @@ public class bruteNPC : MonoBehaviour
 
     private void FootStep()
     {
-        if (GameDriver.instance.mainCam.activeSelf) { GameDriver.instance.mainCam.GetComponent<Camera_Controller>().InvokeShake(0.5f, Mathf.InverseLerp(20f, 0f, Vector3.Distance(GameDriver.instance.Player.transform.position, transform.position))); }
-        Light[] allLights = GameObject.FindObjectsOfType<Light>(); // Find all the Light components in the scene
-
-        foreach (Light light in allLights)
+        if (AudioManager.instance.IsClipPlaying("MusicHeartBeatv2"))
         {
-            float distanceToLight = Vector3.Distance(transform.position, light.transform.position); // Calculate the distance to the light
+            if (GameDriver.instance.mainCam.activeSelf) { GameDriver.instance.mainCam.GetComponent<Camera_Controller>().InvokeShake(0.5f, Mathf.InverseLerp(20f, 0f, Vector3.Distance(GameDriver.instance.Player.transform.position, transform.position))); }
+            Light[] allLights = GameObject.FindObjectsOfType<Light>(); // Find all the Light components in the scene
 
-            if (distanceToLight <= 20f) // If the light is within range, call the InvokeFlicker method
+            foreach (Light light in allLights)
             {
-                if (light.GetComponent<GhostLight>() != null) { if (light.GetComponent<GhostLight>().canFlicker) { light.GetComponent<GhostLight>().InvokeFlicker(1f); } }
+                float distanceToLight = Vector3.Distance(transform.position, light.transform.position); // Calculate the distance to the light
+
+                if (distanceToLight <= 20f) // If the light is within range, call the InvokeFlicker method
+                {
+                    if (light.GetComponent<GhostLight>() != null) { if (light.GetComponent<GhostLight>().canFlicker) { light.GetComponent<GhostLight>().InvokeFlicker(1f); } }
+                }
             }
         }
     }

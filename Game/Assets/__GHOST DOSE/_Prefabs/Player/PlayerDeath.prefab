@@ -10,7 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 7205628360387074505}
   - component: {fileID: 3667981800848938536}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: DeathAnimator
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -64,7 +64,7 @@ GameObject:
   - component: {fileID: 8796939414661805867}
   - component: {fileID: 8960666733301202184}
   - component: {fileID: 4573792621455445897}
-  m_Layer: 0
+  m_Layer: 5
   m_Name: PlayerDeath
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -101,7 +101,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   deathAnimator: {fileID: 3695439080273459195}
   otherPlayer: 0
-  loadIndicator: {fileID: 5090428388690349090, guid: b7b2e169bd98a2841bc54efeffb5dbb1, type: 3}
 --- !u!65 &4573792621455445897
 BoxCollider:
   m_ObjectHideFlags: 0
