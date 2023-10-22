@@ -407,7 +407,7 @@ RectTransform:
   m_GameObject: {fileID: 80994944589355701}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 2.0046, y: 2.0046, z: 2.0046}
+  m_LocalScale: {x: 0.47797486, y: 0.47797486, z: 0.47797486}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 80994944349006721}
@@ -415,7 +415,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.2424594, y: 0.2424594}
   m_AnchorMax: {x: 0.7575406, y: 0.7575406}
-  m_AnchoredPosition: {x: -5.585144, y: -46.33023}
+  m_AnchoredPosition: {x: -0.9, y: -12}
   m_SizeDelta: {x: 163.80504, y: 302.06802}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &80994944589355696
@@ -2368,6 +2368,7 @@ MonoBehaviour:
   dead: 0
   pickUp: PickUp
   treatmentKit: TreatmentKit
+  canFlinch: 1
 --- !u!114 &80994945419842348
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2550,7 +2551,7 @@ RectTransform:
   m_GameObject: {fileID: 80994945442095359}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 0.11058252, y: 0.06984929, z: 0.110582486}
+  m_LocalScale: {x: 0.06662155, y: 0.042081404, z: 0.06662153}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 80994946079788078}
@@ -2558,7 +2559,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: -90}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: -264.8, y: 163.5}
+  m_AnchoredPosition: {x: -264.8, y: 154.8}
   m_SizeDelta: {x: 512, y: 688}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!222 &80994945442095355
@@ -3972,6 +3973,7 @@ MonoBehaviour:
   dead: 0
   pickUp: PickUp
   treatmentKit: TreatmentKit
+  canFlinch: 1
 --- !u!114 &80994946202897752
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -9214,7 +9216,7 @@ MonoBehaviour:
     source: {fileID: 0}
   - name: femaledeath
     clip: {fileID: 8300000, guid: fde552a02436ed94aa0438a9c2c84d32, type: 3}
-    volume: 1
+    volume: 0.4
     volumeVariance: 0
     pitch: 1
     pitchVariance: 0
@@ -9223,7 +9225,7 @@ MonoBehaviour:
     source: {fileID: 0}
   - name: femalekill1
     clip: {fileID: 8300000, guid: ce1da86f900bebb408a769370d2f737f, type: 3}
-    volume: 1
+    volume: 0.4
     volumeVariance: 0
     pitch: 1
     pitchVariance: 0
@@ -9232,7 +9234,7 @@ MonoBehaviour:
     source: {fileID: 0}
   - name: femalekill2
     clip: {fileID: 8300000, guid: 1145ce4d9c8b9ce489c2288fe8f34e99, type: 3}
-    volume: 1
+    volume: 0.4
     volumeVariance: 0
     pitch: 1
     pitchVariance: 0
@@ -9241,7 +9243,7 @@ MonoBehaviour:
     source: {fileID: 0}
   - name: femalekill3
     clip: {fileID: 8300000, guid: 1f0825e9683511240b069aeadba6205e, type: 3}
-    volume: 1
+    volume: 0.4
     volumeVariance: 0
     pitch: 1
     pitchVariance: 0
@@ -9250,7 +9252,7 @@ MonoBehaviour:
     source: {fileID: 0}
   - name: femalecamdead
     clip: {fileID: 8300000, guid: 619e4d2f04fda9842a0afa96a34525da, type: 3}
-    volume: 1
+    volume: 0.4
     volumeVariance: 0
     pitch: 1
     pitchVariance: 0
