@@ -7,7 +7,7 @@ public class Item : MonoBehaviour
     public AudioSource audioSource;
     public bool playerOn, clientOn;
 
-    public void Awake()
+    public virtual void Awake()
     {
         audioSource = gameObject.AddComponent<AudioSource>();
         audioSource.spatialBlend = 1.0f;

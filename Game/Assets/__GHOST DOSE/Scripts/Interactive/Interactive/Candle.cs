@@ -12,6 +12,13 @@ public class Candle : Item
     Vector3 startPos;
     public float respawnTime;
 
+
+    public override void Awake()
+    {
+        //EMPTY TO REMOVE AUDIO SOURCE
+    }
+
+
     private void Start()
     {
         startPos = transform.position;

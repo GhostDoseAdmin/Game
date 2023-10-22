@@ -14,6 +14,11 @@ public class FirstAidKit : Item
     public float respawnTime;
     Vector3 startPos;
 
+    public override void Awake()
+    {
+        //EMPTY TO REMOVE AUDIO SOURCE
+    }
+
     private void Start()
     {
         startPos = transform.position;

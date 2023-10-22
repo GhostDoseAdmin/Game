@@ -200,7 +200,7 @@ namespace GameManager
                     {
                         //draw button
                         if (NetworkDriver.instance.isMobile) { Player.GetComponent<PlayerController>().gamePad.pingBTN.gameObject.SetActive(true); }
-                        //SHOW BUTTON
+                        //PRESS BUTTON
                         if ((!NetworkDriver.instance.isMobile && Input.GetKeyUp(KeyCode.V)) || (NetworkDriver.instance.isMobile && Player.GetComponent<PlayerController>().gamePad.pingBTN.GetComponent<GPButton>().buttonReleased))
                         {
                             pingArrow(Player.GetComponent<PlayerController>().targetPos.position, false);
@@ -210,9 +210,9 @@ namespace GameManager
                             ping_timer = 0f;
 
                             //PING ARROW
-                            UnityEngine.Color color = mapPingUI.GetComponent<Image>().color;
-                            color.a = 1;
-                            mapPingUI.GetComponent<Image>().color = color;
+                            //UnityEngine.Color color = mapPingUI.GetComponent<Image>().color;
+                            //color.a = 1;
+                            //mapPingUI.GetComponent<Image>().color = color;
                         }
                     }
                     else { if (NetworkDriver.instance.isMobile) { Player.GetComponent<PlayerController>().gamePad.pingBTN.gameObject.SetActive(false); } }
@@ -335,6 +335,8 @@ namespace GameManager
             if (!otherPlayer) { color = UnityEngine.Color.yellow; } else { color = arrow_col; }
             color.a = 1;
             mapPingUI.GetComponent<Image>().color = color;
+            AudioManager.instance.Play("Ping",null);
+           
         }
 
 
