@@ -763,7 +763,7 @@ namespace NetworkSystem
 
 
         //DISCONNECTS
-        void PlayerInactive() { Disconnects("Other Player Inactive!"); }
+        void PlayerInactive() { if (GameDriver.instance.Client.GetComponent<ClientPlayerController>().hp > 0) { Disconnects("Other Player Inactive!"); } }
         void Disconnects(string message)
         {
             if (SceneManager.GetActiveScene().name == "Lobby") { GameObject.Find("LobbyManager").GetComponent<LobbyControlV2>().LeaveRoom(); }
