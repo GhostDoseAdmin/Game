@@ -363,7 +363,11 @@ public class NPCController : MonoBehaviour
         if (GetComponent<Teleport>().teleport > 0) {return; }
         if (teddy) { alerted = false; alertLevelPlayer = 0; alertLevelClient = 0; }
 
-        if (target != null) { hasLooked = true; Attack();         }
+        GetComponent<NavMeshAgent>().updateRotation = true;
+        if (animEnemy.GetCurrentAnimatorClipInfo(0).Length > 0 && animEnemy.GetCurrentAnimatorClipInfo(0)[0].clip.name == "lookAroundAni") { GetComponent<NavMeshAgent>().updateRotation = false; }
+        
+
+            if (target != null) { hasLooked = true; Attack();         }
         //-------------------------WAY POINTS ------------------------
         else if (target == null)
         {

@@ -77,7 +77,6 @@ namespace GameManager
 
         private void Update()
         {
-
             //INFO MENU
             if (Input.GetKeyUp(KeyCode.I))
             {
@@ -99,6 +98,10 @@ namespace GameManager
             //GAME TIMER
             if (NetworkDriver.instance.GAMESTARTED)
             {
+                //TEST
+                //if (NetworkDriver.instance.HOST) { if (Player.GetComponent<HealthSystem>().Health > 0) { Player.GetComponent<HealthSystem>().Health = 1;  } }
+
+
                 // Calculate the elapsed time in minutes and seconds
                 float elapsedSeconds = Time.time - NetworkDriver.instance.startTime;
                 int minutes = Mathf.FloorToInt(elapsedSeconds / 60f);

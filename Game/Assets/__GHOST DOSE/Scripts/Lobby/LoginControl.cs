@@ -182,6 +182,19 @@ public class LoginControl : MonoBehaviour
         if (setupPin && currentUser != usernameField.GetComponent<TMP_InputField>().text) { currentUser = usernameField.GetComponent<TMP_InputField>().text; saving = false; userfound = false; checkingUser = false; confirmPin = false; setupPin = false; pinField.GetComponent<TMP_InputField>().text = "";  pinField.SetActive(false); GameDriver.instance.WriteGuiMsg("", 0.1f, false, Color.white); }
         //CANCEL LOGIN
         if (userfound) { if (currentUser != usernameField.GetComponent<TMP_InputField>().text) { currentUser = usernameField.GetComponent<TMP_InputField>().text; userfound = false; pinField.GetComponent<TMP_InputField>().text = ""; pinField.SetActive(false); GameDriver.instance.WriteGuiMsg("", 0.1f, false, Color.white); } }
+
+        //HIDE START BUTTON
+        if (NetworkDriver.instance.connected)
+        {
+            GetComponent<Image>().enabled = true;
+            GetComponentInChildren<TextMeshProUGUI>().enabled = true;
+        }
+        else {
+            GetComponent<Image>().enabled = false;
+            GetComponentInChildren<TextMeshProUGUI>().enabled = false;
+        }
+        
+    
     }
 
 

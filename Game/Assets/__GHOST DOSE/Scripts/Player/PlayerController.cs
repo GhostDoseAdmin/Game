@@ -4,8 +4,7 @@ using UnityEngine.UI;
 using Newtonsoft.Json;
 using NetworkSystem;
 using GameManager;
-
-
+using UnityEngine.AI;
 
 public class PlayerController : MonoBehaviour
 {
@@ -174,12 +173,14 @@ public class PlayerController : MonoBehaviour
 
     void Start()
 	{
-
         //GetComponent<WeaponParameters>().EnableInventoryPistol();
         GameDriver.instance.gearuicam.SetActive(true);
         anim = GetComponent<Animator>();
     }
     #endregion
+
+
+
 
     #region Update
 
@@ -299,36 +300,39 @@ public class PlayerController : MonoBehaviour
 				currPos = transform.position.x.ToString("F2") + transform.position.z.ToString("F2");
 				if (currPos != prevPos || emitPos) { posString = $",'x':'{transform.position.x.ToString("F2")}','y':'{transform.position.y.ToString("F2")}','z':'{transform.position.z.ToString("F2")}'"; }
                 prevPos = currPos; emitPos = false;
-                /*string posString ="";
-				if(emitPos || anim.GetCurrentAnimatorClipInfo(0)[0].clip.name=="React"){
-                posString = $",'x':'{transform.position.x.ToString("F2")}','y':'{transform.position.y.ToString("F2")}','z':'{transform.position.z.ToString("F2")}'";
-				emitPos = false;
-                }*/
+            /*string posString ="";
+            if(emitPos || anim.GetCurrentAnimatorClipInfo(0)[0].clip.name=="React"){
+            posString = $",'x':'{transform.position.x.ToString("F2")}','y':'{transform.position.y.ToString("F2")}','z':'{transform.position.z.ToString("F2")}'";
+            emitPos = false;
+            }*/
 
-				//--------------- CAMSHOT EMIT-----------------
-                /*string shotString = "";
-				if (emitShoot)
-				{
-					shotString = $",'shoot':'{shotName}'";
-					if (shotName.Length > 1)					{
-						shotString = $",'shoot':'{shotName}','sdmg':'{shotDmg}'";
-					}
-					shotName = "";
-					emitShoot = false;
-				}*/
+            //--------------- CAMSHOT EMIT-----------------
+            /*string shotString = "";
+            if (emitShoot)
+            {
+                shotString = $",'shoot':'{shotName}'";
+                if (shotName.Length > 1)					{
+                    shotString = $",'shoot':'{shotName}','sdmg':'{shotDmg}'";
+                }
+                shotName = "";
+                emitShoot = false;
+            }*/
 
-				//--------------- KILL EMIT-----------------
-				/*string killString = "";
-				if (emitKill){
-					killString = $",'kill':''";
-					emitKill = false;
-				}*/
+            //--------------- KILL EMIT-----------------
+            /*string killString = "";
+            if (emitKill){
+                killString = $",'kill':''";
+                emitKill = false;
+            }*/
             //--------------- E M I T   S T R I N G ----------------------
-            string actions = $"{{'flintensity':'{gameObject.GetComponent<FlashlightSystem>().FlashLight.intensity}','ax':'{crosshairPos.x.ToString("F0")}','ay':'{crosshairPos.y.ToString("F0")}','az':'{crosshairPos.z.ToString("F0")}'{flashLightString}{k2String}{gearString}{aimString}{walkString}{strafeString}{runString}{posString}{dodgeString}{screamerString}}}";
+            //'flintensity':'{gameObject.GetComponent<FlashlightSystem>().FlashLight.intensity}',
+            string actions = $"{{'ax':'{crosshairPos.x.ToString("F0")}','ay':'{crosshairPos.y.ToString("F0")}','az':'{crosshairPos.z.ToString("F0")}'{flashLightString}{k2String}{gearString}{aimString}{walkString}{strafeString}{runString}{posString}{dodgeString}{screamerString}}}";
             //Debug.Log("------------------------------------------SENDING STRING " + actions);
 
             //Debug.Log("emitting data " + actions);
-            if (actions != prevEmit) {  NetworkDriver.instance.sioCom.Instance.Emit("player_action", JsonConvert.SerializeObject(actions), false); prevEmit = actions; }
+            //if (actions != prevEmit) {  
+				NetworkDriver.instance.sioCom.Instance.Emit("player_action", JsonConvert.SerializeObject(actions), false); prevEmit = actions; 
+			//}
 			
 			
 			emit_timer = Time.time;//cooldown

@@ -7,6 +7,7 @@ using Newtonsoft.Json.Linq;
 using GameManager;
 using UnityEngine.SceneManagement;
 using TMPro;
+using System.Security;
 
 namespace NetworkSystem
 {
@@ -55,6 +56,7 @@ namespace NetworkSystem
         public bool lostGame = false;
         private bool hasEverConnected = false;
         public bool getLeaderboard = false; //used to determine if this client was the one that sent the request
+        public string endGameDisconnect = null;
 
         public bool VIBRATE;
         public void Awake()
@@ -283,7 +285,7 @@ namespace NetworkSystem
             sioCom.Instance.On("player_action", (payload) =>
             {
                 if (!OTHERS_SCENE_READY && SCENE_READY) { OTHERS_SCENE_READY = true; UpdateGameState(); }
-                // Debug.Log("PLAYER ACTION" + payload);
+                 Debug.Log("PLAYER ACTION" + payload);
                 //GameDriver.instance.WriteGuiMsg("OTHER PLAYER LOADED - GAME START" + GameDriver.instance.GAMESTART + " opl " + otherPlayerLoaded, 999f, false, Color.white);
                 if (OTHERS_SCENE_READY && SCENE_READY)
                 {
@@ -298,7 +300,7 @@ namespace NetworkSystem
                     if (dict.ContainsKey("w")) { GameDriver.instance.Client.GetComponent<ClientPlayerController>().targWalk = float.Parse(dict["w"]); } else { GameDriver.instance.Client.GetComponent<ClientPlayerController>().targWalk = 0; } //WALK
                     if (dict.ContainsKey("s")) { GameDriver.instance.Client.GetComponent<ClientPlayerController>().targStrafe = float.Parse(dict["s"]); } else { GameDriver.instance.Client.GetComponent<ClientPlayerController>().targStrafe = 0; } //STRAFE
                     if (dict.ContainsKey("aim")) { GameDriver.instance.Client.GetComponent<ClientPlayerController>().aim = true; } else { GameDriver.instance.Client.GetComponent<ClientPlayerController>().aim = false; }
-                    GameDriver.instance.Client.GetComponent<ClientPlayerController>().gameObject.GetComponent<ClientFlashlightSystem>().FlashLight.intensity = float.Parse(dict["flintensity"]);
+                    //GameDriver.instance.Client.GetComponent<ClientPlayerController>().gameObject.GetComponent<ClientFlashlightSystem>().FlashLight.intensity = float.Parse(dict["flintensity"]);
                     if (dict.ContainsKey("fl")) { GameDriver.instance.Client.GetComponent<ClientPlayerController>().ToggleFlashlight(true); }//FLASHLIGHT
                     else { GameDriver.instance.Client.GetComponent<ClientPlayerController>().ToggleFlashlight(false); }
                     if (dict.ContainsKey("k2")) { GameDriver.instance.Client.GetComponent<ClientPlayerController>().k2.GetComponent<K2>().fire(true); }
@@ -306,6 +308,7 @@ namespace NetworkSystem
                     //if (dict.ContainsKey("dmg")) { if (bool.Parse(dict["dmg"])) { GameDriver.instance.Client.GetComponent<ClientPlayerController>().Flinch(new Vector3(float.Parse(dict["fx"]), float.Parse(dict["fy"]), float.Parse(dict["fz"]))); } }
                     if (dict.ContainsKey("dg")) { GameDriver.instance.Client.GetComponent<ClientPlayerController>().dodge = int.Parse(dict["dg"]); }
                     if (dict.ContainsKey("ds")) { GameDriver.instance.DemonColdSpotScreamer(true); }
+                    //Invoke("PlayerInactive", 180f);
                 }
 
             });
@@ -640,18 +643,9 @@ namespace NetworkSystem
             });
 
             //--------------DISCONNECT-----------------
-            sioCom.Instance.On("disconnect", (payload) => { Debug.LogWarning("Disconnected: " + payload); });
+            sioCom.Instance.On("disconnect", (payload) => {if (GAMESTARTED){Disconnects("Disconnected!");}});
             //--------------PLAYER DISCONNECT-----------------
-            sioCom.Instance.On("player_disconnect", (payload) => {
-                if (SceneManager.GetActiveScene().name == "Lobby") { GameObject.Find("LobbyManager").GetComponent<LobbyControlV2>().LeaveRoom(); }
-                else {
-                    lostGame = true;
-                    EndGame();
-                }
-                //if (SceneManager.GetActiveScene().name != "EndGame") { GameDriver.instance.WriteGuiMsg("Other Player Disconnected! ", 10f, false, Color.red); HOST = true; }
-                GameDriver.instance.WriteGuiMsg("Other Player Disconnected! ", 10f, false, Color.red); HOST = true;
-
-            });
+            sioCom.Instance.On("player_disconnect", (payload) => {Disconnects("Other Player Disconnected!");});
         }
 
 
@@ -711,7 +705,10 @@ namespace NetworkSystem
         private float timer_delay = 0.8f;//0.5
         public void Update()
         {
-            if (NETWORK_TEST) { GameDriver.instance.WriteGuiMsg("HOST " + HOST, 9999f, false, Color.magenta); }
+            //if (NETWORK_TEST) {
+                GameDriver.instance.WriteGuiMsg("HOST " + HOST, 9999f, false, Color.magenta); 
+            //}
+
 
             //----------------------------------SYNC ACTIVE ENEMIES-----------------------------------------
             if (OTHERS_SCENE_READY && SCENE_READY && HOST) //&& GameDriver.instance.twoPlayer
@@ -762,6 +759,23 @@ namespace NetworkSystem
 
 
         }
+
+
+        //DISCONNECTS
+        void PlayerInactive() { Disconnects("Other Player Inactive!"); }
+        void Disconnects(string message)
+        {
+            if (SceneManager.GetActiveScene().name == "Lobby") { GameObject.Find("LobbyManager").GetComponent<LobbyControlV2>().LeaveRoom(); }
+            else
+            {
+                lostGame = true;
+                EndGame();
+            }
+            //if (SceneManager.GetActiveScene().name != "EndGame") { GameDriver.instance.WriteGuiMsg("Other Player Disconnected! ", 10f, false, Color.red); HOST = true; }
+            endGameDisconnect = message;
+            GameDriver.instance.WriteGuiMsg(message, 10f, false, Color.red); HOST = true;
+        }
+
 
         // BEAT LEVEL
         public void EndGame()
