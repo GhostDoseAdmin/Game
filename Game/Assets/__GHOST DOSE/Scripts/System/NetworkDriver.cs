@@ -308,6 +308,7 @@ namespace NetworkSystem
                     //if (dict.ContainsKey("dmg")) { if (bool.Parse(dict["dmg"])) { GameDriver.instance.Client.GetComponent<ClientPlayerController>().Flinch(new Vector3(float.Parse(dict["fx"]), float.Parse(dict["fy"]), float.Parse(dict["fz"]))); } }
                     if (dict.ContainsKey("dg")) { GameDriver.instance.Client.GetComponent<ClientPlayerController>().dodge = int.Parse(dict["dg"]); }
                     if (dict.ContainsKey("ds")) { GameDriver.instance.DemonColdSpotScreamer(true); }
+                    CancelInvoke("PlayerInactive");
                     Invoke("PlayerInactive", 180f);
                 }
 
