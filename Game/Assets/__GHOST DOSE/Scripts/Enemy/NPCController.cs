@@ -364,7 +364,10 @@ public class NPCController : MonoBehaviour
         if (teddy) { alerted = false; alertLevelPlayer = 0; alertLevelClient = 0; }
 
         GetComponent<NavMeshAgent>().updateRotation = true;
-        if (animEnemy.GetCurrentAnimatorClipInfo(0).Length > 0 && animEnemy.GetCurrentAnimatorClipInfo(0)[0].clip.name == "lookAroundAni") { GetComponent<NavMeshAgent>().updateRotation = false; }
+        if (animEnemy.GetCurrentAnimatorClipInfo(0).Length > 0 && animEnemy.GetCurrentAnimatorClipInfo(0)[0].clip.name == "lookAroundAni") { 
+            GetComponent<NavMeshAgent>().updateRotation = false;
+            if (!NetworkDriver.instance.HOST) { if (destination != PlayerWP && destination != ClientWP) { hasLooked = true; alerted = false; } }//cancel look around
+        }
         
 
             if (target != null) { hasLooked = true; Attack();         }

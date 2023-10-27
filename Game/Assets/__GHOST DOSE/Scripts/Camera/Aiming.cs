@@ -52,7 +52,7 @@ public class Aiming : MonoBehaviour {
 		    if (gear == 2) { zoom = 50; } //k2
 			if (gear == 3) { zoom = 70; }
 			if (gear == 4) { zoom = 70; } //laser
-			if (isOuija) { zoom = 20; }
+			if (isOuija) { zoom = 10; }//20
 
 		aim = false;
 		if(!NetworkDriver.instance.isMobile)
