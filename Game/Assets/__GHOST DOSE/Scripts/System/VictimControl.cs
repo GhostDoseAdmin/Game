@@ -358,8 +358,8 @@ public class VictimControl : Item
         {
             if (candleCount >= maxCandles)
             {
-                if (GameDriver.instance.Player.GetComponent<HealthSystem>().Health <= 0){ playerOn = true;}
-                if (GameDriver.instance.Client.GetComponent<ClientPlayerController>().hp <= 0) { clientOn = true; }
+                if (GameDriver.instance.Player.GetComponent<HealthSystem>().Health <= 0){ playerOn = false;}
+                if (GameDriver.instance.Client.GetComponent<ClientPlayerController>().hp <= 0) { clientOn = false; }
 
                 if ((playerOn && clientOn && NetworkDriver.instance.TWOPLAYER) || (!NetworkDriver.instance.TWOPLAYER && playerOn))
                 {
