@@ -330,9 +330,9 @@ public class PlayerController : MonoBehaviour
             //Debug.Log("------------------------------------------SENDING STRING " + actions);
 
             //Debug.Log("emitting data " + actions);
-            //if (actions != prevEmit) {  
+            if (actions != prevEmit) {  
 				NetworkDriver.instance.sioCom.Instance.Emit("player_action", JsonConvert.SerializeObject(actions), false); prevEmit = actions; 
-			//}
+			}
 			
 			
 			emit_timer = Time.time;//cooldown

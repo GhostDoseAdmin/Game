@@ -308,7 +308,7 @@ namespace NetworkSystem
                     //if (dict.ContainsKey("dmg")) { if (bool.Parse(dict["dmg"])) { GameDriver.instance.Client.GetComponent<ClientPlayerController>().Flinch(new Vector3(float.Parse(dict["fx"]), float.Parse(dict["fy"]), float.Parse(dict["fz"]))); } }
                     if (dict.ContainsKey("dg")) { GameDriver.instance.Client.GetComponent<ClientPlayerController>().dodge = int.Parse(dict["dg"]); }
                     if (dict.ContainsKey("ds")) { GameDriver.instance.DemonColdSpotScreamer(true); }
-                    //Invoke("PlayerInactive", 180f);
+                    Invoke("PlayerInactive", 180f);
                 }
 
             });
@@ -706,7 +706,7 @@ namespace NetworkSystem
         public void Update()
         {
             //if (NETWORK_TEST) {
-                GameDriver.instance.WriteGuiMsg("HOST " + HOST, 9999f, false, Color.magenta); 
+                //GameDriver.instance.WriteGuiMsg("HOST " + HOST, 9999f, false, Color.magenta); 
             //}
 
 
