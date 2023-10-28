@@ -22,7 +22,7 @@ public class Aiming : MonoBehaviour {
 
     private int smoothZoom = 5;//10
 	public int normal = 60;//field of view
-	private float isZoomed = 0;
+	public float isZoomed = 0;
 
 	public GameObject player;
 	//private MobileController gamePad;
@@ -52,7 +52,7 @@ public class Aiming : MonoBehaviour {
 		    if (gear == 2) { zoom = 50; } //k2
 			if (gear == 3) { zoom = 70; }
 			if (gear == 4) { zoom = 70; } //laser
-			if (isOuija) { zoom = 10; }//20
+			if (isOuija) { zoom = 35; }//20
 
 		aim = false;
 		if(!NetworkDriver.instance.isMobile)
@@ -91,7 +91,7 @@ public class Aiming : MonoBehaviour {
             }
 			if (isZoomed == 1 )
 			{
-				if (!NetworkDriver.instance.isMobile) { GetComponent<Camera>().fieldOfView = Mathf.Lerp(GetComponent<Camera>().fieldOfView, zoom, Time.deltaTime * smoothZoom); }
+				if (!NetworkDriver.instance.isMobile || isOuija) { GetComponent<Camera>().fieldOfView = Mathf.Lerp(GetComponent<Camera>().fieldOfView, zoom, Time.deltaTime * smoothZoom); }
 			}
 		}
 		else
@@ -103,7 +103,7 @@ public class Aiming : MonoBehaviour {
         }
 		if (isZoomed == 0)
 		{
-			if (!NetworkDriver.instance.isMobile) { GetComponent<Camera>().fieldOfView = Mathf.Lerp(GetComponent<Camera>().fieldOfView, normal, Time.deltaTime * smoothZoom); }
+			if (!NetworkDriver.instance.isMobile || isOuija) { GetComponent<Camera>().fieldOfView = Mathf.Lerp(GetComponent<Camera>().fieldOfView, normal, Time.deltaTime * smoothZoom); }
 		}
 
        

@@ -23,6 +23,7 @@ public class EndGameControl : MonoBehaviour
         if (NetworkDriver.instance.lostGame)
         {
             missionFailed.SetActive(true);
+            missionFailed.GetComponent<TextMeshPro>().text = "MISSION FAILED";
             if (NetworkDriver.instance.endGameDisconnect != null) { missionFailed.GetComponent<TextMeshPro>().text = NetworkDriver.instance.endGameDisconnect; }
             highScore.SetActive(false);
             elapsedTime.SetActive(false);

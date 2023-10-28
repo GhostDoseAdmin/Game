@@ -27,7 +27,7 @@ public class Hovl_Laser : MonoBehaviour
     private ParticleSystem[] Effects;
     private ParticleSystem[] Hit;
     private float collideTimer;
-    private float collideDelay = 2f;//1.5f
+    private float collideDelay = 2.5f;//1.5f
     private AudioSource laserSound;
     public bool LASERGRID = false;
     private float laserGridOpacity = 0.5f;
