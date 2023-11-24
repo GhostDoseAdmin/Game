@@ -15,7 +15,7 @@ public class ShadowCaster : MonoBehaviour
 
     private void Awake()
     {
-        ghostVFXObjects = FindObjectsOfType<GhostVFX>();
+       // ghostVFXObjects = FindObjectsOfType<GhostVFX>();
     }
 
     /*private void OnEnable() {
@@ -63,7 +63,7 @@ public class ShadowCaster : MonoBehaviour
         Shader.SetGlobalTexture("_ShadowTex", depthTarget);
        */
 
-        foreach (GhostVFX ghostVFX in ghostVFXObjects)
+       // foreach (GhostVFX ghostVFX in ghostVFXObjects)
         {
             // Debug.Log("--------------------------------UPDATING SHADER INFO-----------------------------------");
             //if (ghostVFX != null) { ghostVFX.UpdateShaderValues(); }

@@ -114,12 +114,12 @@ public class Hovl_Laser : MonoBehaviour
                         if (target != null) { GetComponentInParent<ZozoLaser>().laserGridOrigin.AddEnemyToEmitList(target); }
                     }
 
-                    Vector3 oppositeForce = GetComponentInParent<NPCController>().transform.forward * GetComponentInParent<NPCController>().laserForce;
-                    oppositeForce.y = 0f; // Set the y component to 0
+
 
                     if (hit.collider.gameObject.name == "Player" && Time.time > collideTimer + collideDelay)
                     {
-
+                        Vector3 oppositeForce = GetComponentInParent<NPCController>().transform.forward * GetComponentInParent<NPCController>().laserForce;
+                        oppositeForce.y = 0f; // Set the y component to 0
 
                         //if (hit.collider.gameObject.name == "Player")
                         {
@@ -130,6 +130,9 @@ public class Hovl_Laser : MonoBehaviour
 
                     if (hit.collider.gameObject.name == "Client")
                     {
+                        Vector3 oppositeForce = GetComponentInParent<NPCController>().transform.forward * GetComponentInParent<NPCController>().laserForce;
+                        oppositeForce.y = 0f; // Set the y component to 0
+
                         //AudioManager.instance.Play("EnemyHit", GetComponentInParent<NPCController>().audioSource);
                         hit.collider.gameObject.GetComponent<ClientPlayerController>().Flinch(oppositeForce, true);//FLINCH DOESNT NEED FORCE AS PLAY IS MOVED BY THAT PLAYER ANYWAY UPDATED POS
                     }

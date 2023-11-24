@@ -77,6 +77,21 @@ namespace GameManager
 
         private void Update()
         {
+
+            //TERRAIN CLIPPING RENDERER (PERFORMANCE)
+
+            // Set culling distance for all layers except terrain
+            Camera.main.layerCullDistances = new float[32]; // 32 is the maximum number of layers
+
+            for (int i = 0; i < Camera.main.layerCullDistances.Length; i++)
+            {
+                //if (i != 16)
+                {
+                    Camera.main.layerCullDistances[i] = 0;
+                }
+            }
+
+
             //INFO MENU
             if (Input.GetKeyUp(KeyCode.I))
             {
@@ -522,7 +537,6 @@ namespace GameManager
                 }
                 KILLS = 0;
 
-               
 
                 Debug.Log("I AM READY");
                 NetworkDriver.instance.SCENE_READY = true;

@@ -12,7 +12,7 @@ public class LoginControl : MonoBehaviour
     public GameObject pinField;
     public GameObject yesButton;
     public GameObject noButton;
-    public GameObject signOut;
+    public GameObject signOut, deleteAccount;
     public GameObject mainMenu;
     public GameObject screenMask;
     private string currentUser;
@@ -21,8 +21,8 @@ public class LoginControl : MonoBehaviour
     private string testNewPin;
     private bool saving;
     private bool checkingUser = false;
-    private bool userfound = false;
-    private bool authenticating = false;
+    public bool userfound = false;
+    public bool authenticating = false;
     private bool newAccount = false;
 
 
@@ -40,7 +40,11 @@ public class LoginControl : MonoBehaviour
             signOut.SetActive(false);
             usernameField.SetActive(true);
         }
+
+        savedPin = PlayerPrefs.GetString("pin");
+
     }
+    public string savedPin;
     public void Clicked()
     {
         if (NetworkDriver.instance.connected)
@@ -51,9 +55,11 @@ public class LoginControl : MonoBehaviour
                 if (userfound && !authenticating)
                 {
                     authenticating = true;
+                    savedPin = pinField.GetComponent<TMP_InputField>().text;
                     NetworkDriver.instance.sioCom.Instance.Emit("login", JsonConvert.SerializeObject(new { username = usernameField.GetComponent<TMP_InputField>().text, pin = pinField.GetComponent<TMP_InputField>().text }), false);
+                    Debug.Log("ATTEMPTING LOGIN");
                 }
-
+                //SETUP NEW USER
                 if (!userfound)
                 {
                     if (!saving)
@@ -76,6 +82,7 @@ public class LoginControl : MonoBehaviour
                                 //SAVING ACCOUNT
                                 if (pinField.GetComponent<TMP_InputField>().text == testNewPin)
                                 {
+                                    savedPin = pinField.GetComponent<TMP_InputField>().text;
                                     GameDriver.instance.WriteGuiMsg("Saving Account!", 5f, true, Color.white);
                                     NetworkDriver.instance.sioCom.Instance.Emit("save_user", JsonConvert.SerializeObject(new { username = usernameField.GetComponent<TMP_InputField>().text, pin = pinField.GetComponent<TMP_InputField>().text }), false);
                                     saving = true;
@@ -88,6 +95,8 @@ public class LoginControl : MonoBehaviour
                 }
             }
             else { MainMenu(); }
+
+            if (loggedIn) { MainMenu(); }
         }
     }
     public void MainMenu()
@@ -97,7 +106,6 @@ public class LoginControl : MonoBehaviour
             NetworkDriver.instance.USERNAME = PlayerPrefs.GetString("username");
         }
         else { NetworkDriver.instance.USERNAME = usernameField.GetComponent<TMP_InputField>().text; }
-
         if (newAccount) { GameDriver.instance.WriteGuiMsg("Account Created Successfully!", 5f, false, Color.yellow); }
         yesButton.SetActive(false);
         noButton.SetActive(false);
@@ -111,13 +119,19 @@ public class LoginControl : MonoBehaviour
         PlayerPrefs.SetInt("login_saved", 1);
         PlayerPrefs.SetString("username", usernameField.GetComponent<TMP_InputField>().text);
         GameDriver.instance.WriteGuiMsg("Login saved", 5f, false, Color.yellow);
-        MainMenu();
+        //MainMenu();
+        yesButton.SetActive(false);
+        noButton.SetActive(false);
+        GetComponentInChildren<TextMeshProUGUI>().text = "START";
     }
     public void NoClicked()    {
         PlayerPrefs.SetInt("login_saved", 0);
         PlayerPrefs.SetString("username", "");
         GameDriver.instance.WriteGuiMsg("", 0.1f, false, Color.yellow);
-        MainMenu();
+        //MainMenu();
+        yesButton.SetActive(false);
+        noButton.SetActive(false);
+        GetComponentInChildren<TextMeshProUGUI>().text = "START";
     }
     
     public void RemoveLogin()
@@ -126,6 +140,7 @@ public class LoginControl : MonoBehaviour
         signOut.SetActive(false);
         //PlayerPrefs.SetInt("login_saved", 0);
         PlayerPrefs.DeleteAll();
+        loggedIn = false;
         GetComponentInChildren<TextMeshProUGUI>().text = "LOGIN";
     }
     
@@ -136,9 +151,10 @@ public class LoginControl : MonoBehaviour
         yesButton.SetActive(true);
         noButton.SetActive(true);
         this.gameObject.GetComponent<Image>().enabled = false;
-        this.gameObject.GetComponent<Button>().enabled = false;
+        //this.gameObject.GetComponent<Button>().enabled = false;
         transform.GetChild(0).gameObject.SetActive(false);
         GameDriver.instance.WriteGuiMsg("Stay logged in?", 999f, false, Color.yellow);
+        GetComponentInChildren<TextMeshProUGUI>().text = "START";
 
     }
     public void UserFound()
@@ -163,12 +179,17 @@ public class LoginControl : MonoBehaviour
     public void SavingSuccess()
     {
         newAccount = true;
+        loggedIn = true;
+        PlayerPrefs.SetString("pin", savedPin);
         //GameDriver.instance.WriteGuiMsg("User saved successfully!", 5f, false, Color.green);
         SaveLogin();
     }
+    public bool loggedIn = false;
     public void LoginSuccess()
     {
         GameDriver.instance.WriteGuiMsg("Logging in!", 5f, true, Color.green);
+        PlayerPrefs.SetString("pin", savedPin);
+        loggedIn = true;
         SaveLogin();
     }
     public void LoginFail()
@@ -176,10 +197,57 @@ public class LoginControl : MonoBehaviour
         GameDriver.instance.WriteGuiMsg("Wrong PIN. Login failed!", 999f, false, Color.red);
         authenticating = false;
     }
+
+    private bool testDeletePin;
+    public void DeleteAccount()
+    {
+        GameDriver.instance.WriteGuiMsg("Type PIN to DELETE", 5f, false, Color.yellow);
+        pinField.SetActive(true);
+        pinField.GetComponent<TMP_InputField>().text = "";
+        testDeletePin = true;
+        yesButton.SetActive(false);
+        noButton.SetActive(false);
+        usernameField.SetActive(false);
+        Invoke("CancelDeleteAcct", 5f);
+    }
+    public void CancelDeleteAcct()
+    {
+        testDeletePin = false;
+        pinField.SetActive(false);
+    }
+    public void DeleteUserSuccess()
+    {
+        GameDriver.instance.WriteGuiMsg("ACCOUNT DELETED!", 5f, false, Color.green);
+    }
+    public void DeleteUserFail()
+    {
+        GameDriver.instance.WriteGuiMsg("ACCOUNT DELETE FAILED!", 5f, false, Color.red);
+    }
+    private void DeletePendingMsg()
+    {
+        GameDriver.instance.WriteGuiMsg("Deleting...", 15f, true, Color.yellow);
+    }
+
     private void Update()
     {
+
+        //DELETE ACCOUNT BUTTON
+        if (loggedIn) { deleteAccount.SetActive(true); } else { deleteAccount.SetActive(false); }
+
+        //DELETE ACCOUNT PIN
+        if (testDeletePin && pinField.GetComponent<TMP_InputField>().text == savedPin)
+        {
+            authenticating = false;
+            pinField.SetActive(false);
+            testDeletePin = false;
+            RemoveLogin();
+            NetworkDriver.instance.sioCom.Instance.Emit("delete_user", JsonConvert.SerializeObject(new { username = usernameField.GetComponent<TMP_InputField>().text }), false);
+            Invoke("DeletePendingMsg", 0.01f);
+            usernameField.GetComponent<TMP_InputField>().text = "";
+        }
+
         //CANCEL PIN SETUP - username changed
-        if (setupPin && currentUser != usernameField.GetComponent<TMP_InputField>().text) { currentUser = usernameField.GetComponent<TMP_InputField>().text; saving = false; userfound = false; checkingUser = false; confirmPin = false; setupPin = false; pinField.GetComponent<TMP_InputField>().text = "";  pinField.SetActive(false); GameDriver.instance.WriteGuiMsg("", 0.1f, false, Color.white); }
+         if (setupPin && currentUser != usernameField.GetComponent<TMP_InputField>().text) { currentUser = usernameField.GetComponent<TMP_InputField>().text; saving = false; userfound = false; checkingUser = false; confirmPin = false; setupPin = false; pinField.GetComponent<TMP_InputField>().text = "";  pinField.SetActive(false); GameDriver.instance.WriteGuiMsg("", 0.1f, false, Color.white); }
         //CANCEL LOGIN
         if (userfound) { if (currentUser != usernameField.GetComponent<TMP_InputField>().text) { currentUser = usernameField.GetComponent<TMP_InputField>().text; userfound = false; pinField.GetComponent<TMP_InputField>().text = ""; pinField.SetActive(false); GameDriver.instance.WriteGuiMsg("", 0.1f, false, Color.white); } }
 
@@ -188,10 +256,12 @@ public class LoginControl : MonoBehaviour
         {
             GetComponent<Image>().enabled = true;
             GetComponentInChildren<TextMeshProUGUI>().enabled = true;
+
         }
         else {
             GetComponent<Image>().enabled = false;
             GetComponentInChildren<TextMeshProUGUI>().enabled = false;
+
         }
         
     

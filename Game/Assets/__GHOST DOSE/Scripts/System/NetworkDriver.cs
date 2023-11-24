@@ -136,6 +136,13 @@ namespace NetworkSystem
                 if (payload == "success") { GameObject.Find("LoginControl").GetComponent<LoginControl>().SavingSuccess(); }
                 else { GameObject.Find("LoginControl").GetComponent<LoginControl>().SavingFailed(); }
             });
+            //-----------------CONFIRMED DELETED ----------------->
+            sioCom.Instance.On("delete_user", (payload) =>
+            {
+                Debug.Log(payload);
+                if (payload == "success") { GameObject.Find("LoginControl").GetComponent<LoginControl>().DeleteUserSuccess(); }
+                else { GameObject.Find("LoginControl").GetComponent<LoginControl>().DeleteUserFail(); }
+            });
             //-----------------LOGIN ----------------->
             sioCom.Instance.On("login", (payload) =>
             {

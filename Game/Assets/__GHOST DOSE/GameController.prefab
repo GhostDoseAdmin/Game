@@ -4163,7 +4163,7 @@ Camera:
   m_Enabled: 1
   serializedVersion: 2
   m_ClearFlags: 1
-  m_BackGroundColor: {r: 0.19215687, g: 0.3019608, b: 0.4745098, a: 0}
+  m_BackGroundColor: {r: 0.21698111, g: 0.21698111, b: 0.21698111, a: 0}
   m_projectionMatrixMode: 1
   m_GateFitMode: 2
   m_FOVAxisMode: 0
@@ -4177,7 +4177,7 @@ Camera:
     width: 1
     height: 1
   near clip plane: 0.01
-  far clip plane: 200
+  far clip plane: 40
   field of view: 60
   orthographic: 0
   orthographic size: 5
@@ -4304,6 +4304,7 @@ MonoBehaviour:
   gear: 0
   isOuija: 0
   normal: 60
+  isZoomed: 0
   player: {fileID: 80994945419842321}
   aim: 0
 --- !u!114 &80994946238739780
