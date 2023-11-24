@@ -161,7 +161,9 @@ public class ShootingSystem : MonoBehaviour
                 //TARGET PARAMS
                 targetParams(range); //GetComponent<FlashlightSystem>().FlashLight.range
             }
-            else { targetParamsMobile(range); }
+            else { 
+                targetParamsMobile(range);
+            }
             if (isVisible)
             {
                 if (target != null) { 
