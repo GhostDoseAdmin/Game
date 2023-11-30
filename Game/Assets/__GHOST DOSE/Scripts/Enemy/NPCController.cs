@@ -179,6 +179,7 @@ public class NPCController : MonoBehaviour
                     dead = false;
                     healthEnemy = 1;
                     this.gameObject.transform.GetChild(0).GetComponent<SkinnedMeshRenderer>().enabled = true;
+                    
                     //if still getting data from host, reveal skin and make not dead and give some health
                 }
 
@@ -289,18 +290,22 @@ public class NPCController : MonoBehaviour
         if (teleport > 0) { target = GetComponent<Teleport>().target; }
 
         //----------------------RESET OUTLINE---------------------
-        if (GameObject.Find("K2") == null)
+        //K2 NOT OUT
+        //if (GameObject.Find("K2") == null)
+        if(!Player.GetComponent<PlayerController>().k2.activeSelf)
         {
-            activateOutline = false;
-            if (outline.OutlineWidth > 0) { outline.OutlineWidth -= 0.01f; }
+            //activateOutline = false;
+            if (outline.OutlineWidth > 0) { outline.OutlineWidth -= 0.12f * Time.deltaTime; }
         }
-        else
+        /*else//k2 OUT
         {
-            if (outline.OutlineWidth > 0) { outline.OutlineWidth -= 0.005f; } 
-        }
-        if (activateOutline){if (outline.OutlineWidth < 7) { outline.OutlineWidth += 0.1f;  } else { activateOutline = false; }}//fade in
-        if (distance > 15) { if (outline.OutlineWidth > 0) { outline.OutlineWidth -= 0.1f; activateOutline = false; } }//fade fast out of range
-        else { if (!activateOutline) { outline.OutlineWidth -= (distance*0.0025f); } }
+            //Debug.Log("K2 OUT");
+            if (outline.OutlineWidth > 0) { outline.OutlineWidth -= 0.2f * Time.deltaTime; } 
+        }*/
+        if (activateOutline){if (outline.OutlineWidth < 7) { outline.OutlineWidth += 2f * Time.deltaTime;  } else { activateOutline = false; }}//fade in
+        //FADE BASED ON DISTANCE
+        if (distance > 15) { if (outline.OutlineWidth > 0) { outline.OutlineWidth -= 0.25f * Time.deltaTime; activateOutline = false; } }//fade fast out of range
+        else { if (!activateOutline) { outline.OutlineWidth -= (distance * 0.15f * Time.deltaTime); } }
 
         if (outline.OutlineWidth < 0) { outline.OutlineWidth = 0; }
 
@@ -420,9 +425,8 @@ public class NPCController : MonoBehaviour
                     if (alertLevelClient > unawareness * 2) { alertLevelClient = unawareness * 2; }
                 }
             }
-
             //----HAPPENS ON BOTH LOCALS
-            if(destination == ClientWP || destination == PlayerWP) {if(!hasLooked) { alerted = true;  navmesh.SetDestination(destination.transform.position);  if (Vector3.Distance(transform.position, destination.transform.position) > 1f) { navmesh.isStopped = false; animEnemy.SetBool("Walk", true); } else { alertLevelPlayer = 0; alertLevelClient = 0; if (animEnemy.GetCurrentAnimatorClipInfo(0).Length > 0 && animEnemy.GetCurrentAnimatorClipInfo(0)[0].clip.name != "lookAroundAni") { animEnemy.Play("lookAroundAni"); } } } }
+            if(destination == ClientWP || destination == PlayerWP) { float stopDist = 1f; if (!NetworkDriver.instance.HOST) { stopDist = 1.2f; } if (!hasLooked) { alerted = true;  navmesh.SetDestination(destination.transform.position);  if (Vector3.Distance(transform.position, destination.transform.position) > stopDist) { navmesh.isStopped = false; animEnemy.SetBool("Walk", true); } else { alertLevelPlayer = 0; alertLevelClient = 0; if (animEnemy.GetCurrentAnimatorClipInfo(0).Length > 0 && animEnemy.GetCurrentAnimatorClipInfo(0)[0].clip.name != "lookAroundAni") { animEnemy.Play("lookAroundAni"); } } } }
             
              //if (alertLevelPlayer <= 0 && alertLevelClient<=0) { alerted = false; }//DISENGAGE ALERT
             //-------------PATROL---------------
@@ -658,10 +662,10 @@ public class NPCController : MonoBehaviour
             }
             if (Client.GetComponent<ClientPlayerController>().hp > 0)
             { //7,5,3,2
-                if (p2_dist < 7) { if (Mathf.Abs(Client.transform.position.y - transform.position.y) <= 2) { if (Client.GetComponent<Animator>().GetBool("Running")) { range = startRange + 2; alertLevelClient += 6; } } }
-                if (p2_dist < 5) { if ((Client.GetComponent<Animator>().GetFloat("Walk") > 0 || Client.GetComponent<Animator>().GetFloat("Strafe") > 0) && (Mathf.Abs(Client.transform.position.y - transform.position.y) <= 2)) { alertLevelClient += 4; } }
-                if (p2_dist < 5) { if (Client.GetComponent<Animator>().GetBool("Running") && (Mathf.Abs(Client.transform.position.y - transform.position.y) <= 2)) { range = startRange + 2; angleView = 90; alertLevelClient += 200; } }
-                if (p2_dist < 2) { if (Mathf.Abs(Client.transform.position.y - transform.position.y) <= 2) { range = startRange + 2; angleView = 240; alertLevelClient += 200; } }
+                if (p2_dist < 7.2) { if (Mathf.Abs(Client.transform.position.y - transform.position.y) <= 2) { if (Client.GetComponent<Animator>().GetBool("Running")) { range = startRange + 2; alertLevelClient += 5; } } }
+                if (p2_dist < 5.2) { if ((Client.GetComponent<Animator>().GetFloat("Walk") > 0 || Client.GetComponent<Animator>().GetFloat("Strafe") > 0) && (Mathf.Abs(Client.transform.position.y - transform.position.y) <= 2)) { alertLevelClient += 3; } }
+                if (p2_dist < 5.2) { if (Client.GetComponent<Animator>().GetBool("Running") && (Mathf.Abs(Client.transform.position.y - transform.position.y) <= 2)) { range = startRange + 2; angleView = 90; alertLevelClient += 200; } }
+                if (p2_dist < 2.2) { if (Mathf.Abs(Client.transform.position.y - transform.position.y) <= 2) { range = startRange + 2; angleView = 240; alertLevelClient += 200; } }
             }
 
                

@@ -125,7 +125,7 @@ public class Teleport : MonoBehaviour
             if ((Time.time > timer + 2f))
             {
                 GetComponent<GhostVFX>().invisible = false;
-                GetComponent<GhostVFX>().currentMaxAlpha[0] = GetComponent<GhostVFX>().originalMaxAlpha[0]; //reset to default alpha for testing visiblity
+                if (!GetComponent<NPCController>().teddy) { GetComponent<GhostVFX>().currentMaxAlpha[0] = GetComponent<GhostVFX>().originalMaxAlpha[0]; } //reset to default alpha for testing visiblity
                 relocate++;
                 transform.position = new Vector3(transform.position.x, b4Pos.y, transform.position.z);
                 if (!isWaypoint)

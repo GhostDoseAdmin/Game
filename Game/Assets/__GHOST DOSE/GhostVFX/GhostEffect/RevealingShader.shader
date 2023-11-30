@@ -69,9 +69,9 @@ Shader "Custom/Ghost" {
             float _LightRanges[25];
 
             //SHADOW MAP DETAILS
-            float4x4 _ShadowMatrix;
-            sampler2D _ShadowTex;
-            float _ShadowBias;
+            //float4x4 _ShadowMatrix;
+            //sampler2D _ShadowTex;
+            //float _ShadowBias;
 
 
             void surf(Input IN, inout SurfaceOutputStandard o) {
@@ -94,12 +94,12 @@ Shader "Custom/Ghost" {
                     _strength[i] = abs(1 - min(max(strength * _StrengthScalarLight[i], 0), 1));
 
                     //SAMPLE SHADOW MAP
-                    float4 shadowCoords = mul(_ShadowMatrix, float4(IN.worldPos, 1.0));
-                    float lightDepth = 1.0 - tex2Dproj(_ShadowTex, shadowCoords).r;
-                    float shadow = (shadowCoords.z - 0.005) < lightDepth ? 1.0 : 0.0;
+                    //float4 shadowCoords = mul(_ShadowMatrix, float4(IN.worldPos, 1.0));
+                    //float lightDepth = 1.0 - tex2Dproj(_ShadowTex, shadowCoords).r;
+                    //float shadow = (shadowCoords.z - 0.005) < lightDepth ? 1.0 : 0.0;
 
-                   // _strength[i] = 1 - (1 - _strength[i]);
-                    _strength[i] = 1 - (shadow * (1 - _strength[i]));
+                     _strength[i] = 1 - (1 - _strength[i]);
+                    //_strength[i] = 1 - (shadow * (1 - _strength[i]));
 
 
                     minStrength = min(minStrength, _strength[i]);

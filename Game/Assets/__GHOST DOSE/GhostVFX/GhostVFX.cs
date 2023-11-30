@@ -195,7 +195,7 @@ public class GhostVFX : MonoBehaviour
                         if (GetComponent<NPCController>() != null && Mathf.Abs(GameDriver.instance.Player.transform.position.y - transform.position.y) <= 2)
                         {
                             if (NetworkDriver.instance.HOST){ GetComponent<NPCController>().alertLevelPlayer += 10; }
-                            GetComponentInChildren<Outline>().OutlineWidth = 4; 
+                            if (!Shadower) { GetComponentInChildren<Outline>().OutlineWidth = 4; } else { if (GetComponent<NPCController>().startHealth < 1000) { GetComponentInChildren<Outline>().OutlineWidth = 0; } }//REGULAR (NON BOSS) SHADOWERS IDENTIFIED BASED ON MAX HP
                             if (!invisible) { TriggerWanderSound(); }
                            // GameDriver.instance.WriteGuiMsg("HITTING ZOZO ", 0.2f, false, UnityEngine.Color.red);
                             if (GetComponent<ZozoControl>() != null) { GetComponent<ZozoControl>().ZOZOFlinch(false, false); if (camflashplayer || camflashclient) { GetComponent<ZozoControl>().ZOZOFlinch(true, false); } }
@@ -229,7 +229,7 @@ public class GhostVFX : MonoBehaviour
                         if (GetComponent<NPCController>() != null && Mathf.Abs(GameDriver.instance.Client.transform.position.y - transform.position.y) <= 2)
                         {
                             if (NetworkDriver.instance.HOST) { GetComponent<NPCController>().alertLevelClient += 10; }
-                            GetComponentInChildren<Outline>().OutlineWidth = 4;
+                            if (!Shadower) { GetComponentInChildren<Outline>().OutlineWidth = 4; } else { if (GetComponent<NPCController>().startHealth < 1000) { GetComponentInChildren<Outline>().OutlineWidth = 0; } }//REGULAR (NON BOSS) SHADOWERS IDENTIFIED BASED ON MAX HP
                             if (GetComponent<ZozoControl>() != null) { GetComponent<ZozoControl>().ZOZOFlinch(false, false); if (camflashplayer || camflashclient) { GetComponent<ZozoControl>().ZOZOFlinch(true, false); } }
                         }
 

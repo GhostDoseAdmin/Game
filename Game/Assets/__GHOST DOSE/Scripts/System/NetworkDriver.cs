@@ -62,7 +62,11 @@ namespace NetworkSystem
         public void Awake()
         {
             Debug.Log("-----------------------NETWORK DRIVER");
-            if (Application.isMobilePlatform) { isMobile = true; }
+
+            QualitySettings.vSyncCount = 0;
+            //Application.targetFrameRate = -1;
+            Application.targetFrameRate = 30;
+            if (Application.isMobilePlatform) { isMobile = true; }// else { Application.targetFrameRate = 30; }
             if (FORCEMOBILE) { isMobile = true; }
            // isMobile = true;
             //ONLY ONE CAN EXIST
@@ -88,7 +92,7 @@ namespace NetworkSystem
             PING = 0;
             sioCom.Instance.Close();
             StartCoroutine(connectSIO());
-            Invoke("ConnectionTimeout", 15f);
+            Invoke("ConnectionTimeout", 25f); //15
         }
         IEnumerator connectSIO()//--------CONNECT HELPER--------->
         {
@@ -123,7 +127,7 @@ namespace NetworkSystem
                     //sioCom.Instance.Emit("join", GameDriver.instance.ROOM, true); //PlayerPrefs.GetString("room")
                 }
             });
-            Invoke("ConnectionTimeout", 15f);
+            Invoke("ConnectionTimeout", 25f);//15
             //-----------------CHECK USERNAME ----------------->
             sioCom.Instance.On("check_username", (payload) =>
             {
@@ -306,12 +310,12 @@ namespace NetworkSystem
                     if (dict.ContainsKey("r")) { GameDriver.instance.Client.GetComponent<ClientPlayerController>().running = true; } else { GameDriver.instance.Client.GetComponent<ClientPlayerController>().running = false; }
                     if (dict.ContainsKey("w")) { GameDriver.instance.Client.GetComponent<ClientPlayerController>().targWalk = float.Parse(dict["w"]); } else { GameDriver.instance.Client.GetComponent<ClientPlayerController>().targWalk = 0; } //WALK
                     if (dict.ContainsKey("s")) { GameDriver.instance.Client.GetComponent<ClientPlayerController>().targStrafe = float.Parse(dict["s"]); } else { GameDriver.instance.Client.GetComponent<ClientPlayerController>().targStrafe = 0; } //STRAFE
-                    if (dict.ContainsKey("aim")) { GameDriver.instance.Client.GetComponent<ClientPlayerController>().aim = true; } else { GameDriver.instance.Client.GetComponent<ClientPlayerController>().aim = false; }
+                    if (dict.ContainsKey("a")) { GameDriver.instance.Client.GetComponent<ClientPlayerController>().aim = true; } else { GameDriver.instance.Client.GetComponent<ClientPlayerController>().aim = false; }
                     //GameDriver.instance.Client.GetComponent<ClientPlayerController>().gameObject.GetComponent<ClientFlashlightSystem>().FlashLight.intensity = float.Parse(dict["flintensity"]);
                     if (dict.ContainsKey("fl")) { GameDriver.instance.Client.GetComponent<ClientPlayerController>().ToggleFlashlight(true); }//FLASHLIGHT
                     else { GameDriver.instance.Client.GetComponent<ClientPlayerController>().ToggleFlashlight(false); }
                     if (dict.ContainsKey("k2")) { GameDriver.instance.Client.GetComponent<ClientPlayerController>().k2.GetComponent<K2>().fire(true); }
-                    if (dict.ContainsKey("gear")) { if (GameDriver.instance.Client.GetComponent<ClientPlayerController>().gear != int.Parse(dict["gear"])) { GameDriver.instance.Client.GetComponent<ClientPlayerController>().ChangeGear(int.Parse(dict["gear"])); } }//gear changes
+                    if (dict.ContainsKey("g")) { if (GameDriver.instance.Client.GetComponent<ClientPlayerController>().gear != int.Parse(dict["g"])) { GameDriver.instance.Client.GetComponent<ClientPlayerController>().ChangeGear(int.Parse(dict["g"])); } }//gear changes
                     //if (dict.ContainsKey("dmg")) { if (bool.Parse(dict["dmg"])) { GameDriver.instance.Client.GetComponent<ClientPlayerController>().Flinch(new Vector3(float.Parse(dict["fx"]), float.Parse(dict["fy"]), float.Parse(dict["fz"]))); } }
                     if (dict.ContainsKey("dg")) { GameDriver.instance.Client.GetComponent<ClientPlayerController>().dodge = int.Parse(dict["dg"]); }
                     if (dict.ContainsKey("ds")) { GameDriver.instance.DemonColdSpotScreamer(true); }
@@ -701,7 +705,7 @@ namespace NetworkSystem
                 }
 
 
-                //Debug.Log("SYNCING ----------------------------------------------");
+                Debug.Log("SYNCING ----------------------------------------------");
                 if (syncObjects.Count > 0) { sioCom.Instance.Emit("sync", JsonConvert.SerializeObject(syncObjects), false); }
                 timer = Time.time;//cooldown
             }
@@ -710,12 +714,23 @@ namespace NetworkSystem
 
 
         private float timer = 0f;
+        private float fps_timer = 0f;
         private float timer_delay = 0.8f;//0.5
         public void Update()
         {
             //if (NETWORK_TEST) {
-                //GameDriver.instance.WriteGuiMsg("HOST " + HOST, 9999f, false, Color.magenta); 
+            //GameDriver.instance.WriteGuiMsg("HOST " + HOST, 9999f, false, Color.magenta); 
             //}
+            // Calculate frames per second
+
+            /*fps_timer += Time.deltaTime;
+            if (fps_timer >= 0.5f)
+            {
+                float fps = 1.0f / Time.deltaTime;
+                GameDriver.instance.WriteGuiMsg("FPS " + Mathf.Ceil(fps) + " HOST " + HOST, 0.5f, false, Color.magenta);
+                fps_timer = 0f;
+            }*/
+
 
 
             //----------------------------------SYNC ACTIVE ENEMIES-----------------------------------------

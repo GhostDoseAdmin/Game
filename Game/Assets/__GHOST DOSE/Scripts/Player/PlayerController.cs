@@ -149,8 +149,14 @@ public class PlayerController : MonoBehaviour
         SB7 = util.FindChildObject(this.gameObject.transform, "SB7").gameObject;
         ouija = util.FindChildObject(this.gameObject.transform, "Ouija").gameObject;
         ouija.SetActive(false);
-        //SB7.SetActive(false);
-        
+
+        //MODEL CAMERA / Modify params due to performance issues
+        Camera CamCam = util.FindChildObject(this.gameObject.transform, "CamCam").gameObject.GetComponent<Camera>(); 
+        CamCam.cullingMask = LayerMask.GetMask("Default", "Ghost", "Enemy", "Skins");
+        CamCam.farClipPlane = 20f;
+
+
+
         camInventory.SetActive(false);
         //targetPos = GameDriver.instance.targetLook.transform;
 		//playerCam = GameObject.Find("PlayerCamera");
@@ -263,14 +269,15 @@ public class PlayerController : MonoBehaviour
 				//--------------- GEAR EMIT-----------------
 				string gearString ="";
 				if (emitGear){
-                gearString = $",'gear':'{gear}'";
+                gearString = $",'g':'{gear}'";
                 emitGear = false;
 				}
 				//--------------- AIM EMIT-----------------
 				string aimString = "";
-				if (Input.GetMouseButton(1) || gamePad.joystickAim.GetComponent<GPButton>().buttonPressed)
-            {
-					aimString = $",'aim':''";
+				//if (Input.GetMouseButton(1) || gamePad.joystickAim.GetComponent<GPButton>().buttonPressed)
+				if(gearAim)
+				{
+					aimString = $",'a':''";
 				}
 				//--------------- WALK EMIT-----------------
 				string walkString = "";

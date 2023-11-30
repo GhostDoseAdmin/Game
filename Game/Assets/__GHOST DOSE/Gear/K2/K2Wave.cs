@@ -14,12 +14,16 @@ public class K2Wave : MonoBehaviour
     public GameObject hud;
     private AudioSource audio;
 
+    private float fadeSpeed = 0.1f;
+    private float currentFade;
+
     // Start is called before the first frame update
     void Start()
     {
         audio = gameObject.AddComponent<AudioSource>();
         audio.spatialBlend = 1.0f;
         AudioManager.instance.Play("k2wave", audio);
+        currentFade = GetComponent<MeshRenderer>().material.GetFloat("_Fade");
         if (hud != null) { hud.transform.localScale = Vector3.one * 40; }
             // transform.localScale = Vector3.Lerp(transform.localScale, transform.localScale * 0.0001f, Time.deltaTime * 1);
         GetComponent<Shockwave>().NewShockwave(startPoint, 2);//3
@@ -39,8 +43,6 @@ public class K2Wave : MonoBehaviour
         if (hud != null) { hud.transform.localScale = Vector3.Lerp(hud.transform.localScale, hud.transform.localScale * 0.0015f, Time.deltaTime * 1); }
         // Get position of object to track
         Vector3 objectPosition = gameObject.transform.position;
-        // Calculate distance between object and camera
-        Vector3 cameraPosition = Camera.main.transform.position;
         // Position HUD relative to object position
         Vector2 viewportPosition = Camera.main.WorldToViewportPoint(objectPosition);
         Vector2 hudPosition = new Vector2(
@@ -62,7 +64,12 @@ public class K2Wave : MonoBehaviour
 
         //----------SHRINK AND 0.025DESTROY when Small enough
         float distance = Vector3.Distance(transform.position, startPoint);
-        GetComponent<MeshRenderer>().material.SetFloat("_Fade", GetComponent<MeshRenderer>().material.GetFloat("_Fade") - 0.0045f);
+        //GetComponent<MeshRenderer>().material.SetFloat("_Fade", GetComponent<MeshRenderer>().material.GetFloat("_Fade") - 0.0045f);
+        currentFade -= fadeSpeed * Time.deltaTime;
+        GetComponent<MeshRenderer>().material.SetFloat("_Fade", currentFade);
+        Color currentColor = transform.GetChild(0).GetComponent<MeshRenderer>().material.GetColor("_HighlightColor");
+        float newAlpha = currentColor.a - fadeSpeed * Time.deltaTime;
+        transform.GetChild(0).GetComponent<MeshRenderer>().material.SetColor("_HighlightColor", new Color(currentColor.r, currentColor.g, currentColor.b, newAlpha));
         if (hud != null)
         {
             if (GetComponent<MeshRenderer>().material.GetFloat("_Fade") < 0)

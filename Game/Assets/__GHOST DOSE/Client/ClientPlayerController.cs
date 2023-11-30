@@ -154,6 +154,7 @@ public class ClientPlayerController : MonoBehaviour
         leftHand = util.FindChildObject(this.gameObject.transform, "mixamorig:LeftHand").transform;
         k2 = util.FindChildObject(this.gameObject.transform, "K2").gameObject;
         camera = util.FindChildObject(this.gameObject.transform, "camera").gameObject;
+        Destroy(util.FindChildObject(this.gameObject.transform, "CamCam").gameObject);//Performance issue with render texture solution
         camInventory = util.FindChildObject(this.gameObject.transform, "CamInventory").gameObject;
         k2Inventory = util.FindChildObject(this.gameObject.transform, "K2Inventory").gameObject;
         ouija = util.FindChildObject(this.gameObject.transform, "Ouija").gameObject;
