@@ -25,7 +25,7 @@ public class remPodItem : Item
         if (!GameDriver.instance.Player.GetComponent<PlayerController>().hasRem && !GameDriver.instance.Player.GetComponent<PlayerController>().changingGear)
         {
             //HealthSystem.kitinstance.CollectKit(this.kit);
-            NetworkDriver.instance.sioCom.Instance.Emit("event", JsonConvert.SerializeObject($"{{'obj':'{gameObject.name}','type':'rem','event':'pickup','pass':'none'}}"), false);
+            if (!NetworkDriver.instance.OFFLINE) { NetworkDriver.instance.sioCom.Instance.Emit("event", JsonConvert.SerializeObject($"{{'obj':'{gameObject.name}','type':'rem','event':'pickup','pass':'none'}}"), false); }
             GameDriver.instance.Player.GetComponent<PlayerController>().hasRem = true;
             GameDriver.instance.Player.GetComponent<PlayerController>().gear = 2;//changes to grid +1
             GameDriver.instance.Player.GetComponent<PlayerController>().ChangeGear(false, true);

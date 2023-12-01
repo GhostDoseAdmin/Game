@@ -86,7 +86,7 @@ public class Teleport : MonoBehaviour
             if (GetComponent<NPCController>().ZOZO) { GameObject.Find("PlayerCamera").GetComponent<Camera_Controller>().InvokeShake(1f, 2f); }
             //GameObject TPVFX = Instantiate(teleportVFX); TPVFX.transform.position = new Vector3(this.gameObject.transform.position.x, this.gameObject.transform.position.y + 1f, this.gameObject.transform.position.z);
             if (!GetComponent<NPCController>().dead || GetComponent<NPCController>().ZOZO) {GameObject TPVFX = Instantiate(teleportVFX); TPVFX.transform.position = new Vector3(this.gameObject.transform.position.x, this.gameObject.transform.position.y+1f, this.gameObject.transform.position.z); }
-            if (NetworkDriver.instance.HOST) { NetworkDriver.instance.sioCom.Instance.Emit("teleport", JsonConvert.SerializeObject($"{{'obj':'{gameObject.name}','tp':'1','x':'{transform.position.x}','y':'{transform.position.y}','z':'{transform.position.z}'}}"), false); }
+            if (!NetworkDriver.instance.OFFLINE && NetworkDriver.instance.HOST) { NetworkDriver.instance.sioCom.Instance.Emit("teleport", JsonConvert.SerializeObject($"{{'obj':'{gameObject.name}','tp':'1','x':'{transform.position.x}','y':'{transform.position.y}','z':'{transform.position.z}'}}"), false); }
             fadeTimer = Time.time;
            // if (GetComponent<NPCController>().target != null) { target = GetComponent<NPCController>().target; }
             if (target != null && GetComponent<NPCController>().healthEnemy>0) { AudioManager.instance.Play("Disappear", null); }
@@ -158,7 +158,7 @@ public class Teleport : MonoBehaviour
                 if (GetComponent<GhostVFX>().invisible && !GetComponent<GhostVFX>().visible)
                 {
                     teleport = 3;
-                    if (NetworkDriver.instance.HOST) { NetworkDriver.instance.sioCom.Instance.Emit("teleport", JsonConvert.SerializeObject($"{{'obj':'{gameObject.name}','tp':'3','x':'{transform.position.x}','y':'{transform.position.y}','z':'{transform.position.z}'}}"), false); }
+                    if (!NetworkDriver.instance.OFFLINE) { if (NetworkDriver.instance.HOST) { NetworkDriver.instance.sioCom.Instance.Emit("teleport", JsonConvert.SerializeObject($"{{'obj':'{gameObject.name}','tp':'3','x':'{transform.position.x}','y':'{transform.position.y}','z':'{transform.position.z}'}}"), false); } }
                 }
             }
         }

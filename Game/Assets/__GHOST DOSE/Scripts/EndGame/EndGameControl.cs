@@ -18,6 +18,8 @@ public class EndGameControl : MonoBehaviour
         // NetworkDriver.instance.LEVELINDEX = 1;
         // NetworkDriver.instance.timeElapsed = 50;
         // NetworkDriver.instance.GetComponent<RigManager>().leveldata[NetworkDriver.instance.LEVELINDEX] = 999;
+        if (NetworkDriver.instance.OFFLINE) { Destroy(GameObject.Find("Btn_Leadboard")); }
+
         levelData = "level" + NetworkDriver.instance.LEVELINDEX + "speed";
 
         if (NetworkDriver.instance.lostGame)
@@ -38,17 +40,20 @@ public class EndGameControl : MonoBehaviour
             highScore.GetComponent<TextMeshPro>().text = "Highscore: " + PREVSPEEDSCORE.ToString("F2") + " s";
 
             //New highscore
-            if (NetworkDriver.instance.timeElapsed < PREVSPEEDSCORE)
+            if (!NetworkDriver.instance.OFFLINE)
             {
-
-                NetworkDriver.instance.sioCom.Instance.Emit("set_level_speed", JsonConvert.SerializeObject(new { username = NetworkDriver.instance.USERNAME, level = levelData, speed = NetworkDriver.instance.timeElapsed.ToString("F2") }), false);
-                bool isNewHighScore = NetworkDriver.instance.GetComponent<RigManager>().UnlockSkins(unlockSkinsPanel, PREVSPEEDSCORE, NetworkDriver.instance.timeElapsed);
-                if (isNewHighScore)
+                if (NetworkDriver.instance.timeElapsed < PREVSPEEDSCORE)
                 {
-                    highScore.GetComponent<TextMeshPro>().text = "NEW HIGH SCORE!! " + NetworkDriver.instance.timeElapsed.ToString("F2");
-                    unlockSkinsText.SetActive(true);
-                }
 
+                    NetworkDriver.instance.sioCom.Instance.Emit("set_level_speed", JsonConvert.SerializeObject(new { username = NetworkDriver.instance.USERNAME, level = levelData, speed = NetworkDriver.instance.timeElapsed.ToString("F2") }), false);
+                    bool isNewHighScore = NetworkDriver.instance.GetComponent<RigManager>().UnlockSkins(unlockSkinsPanel, PREVSPEEDSCORE, NetworkDriver.instance.timeElapsed);
+                    if (isNewHighScore)
+                    {
+                        highScore.GetComponent<TextMeshPro>().text = "NEW HIGH SCORE!! " + NetworkDriver.instance.timeElapsed.ToString("F2");
+                        unlockSkinsText.SetActive(true);
+                    }
+
+                }
             }
         }
     }

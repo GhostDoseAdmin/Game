@@ -34,7 +34,7 @@ public class Candle : Item
     public void DestroyWithSound(bool otherPlayer)
     {
 
-        if (!otherPlayer) { NetworkDriver.instance.sioCom.Instance.Emit("event", JsonConvert.SerializeObject($"{{'obj':'{gameObject.name}','type':'cand','event':'pickup','pass':'none'}}"), false); }
+        if (!otherPlayer) { if (!NetworkDriver.instance.OFFLINE) { NetworkDriver.instance.sioCom.Instance.Emit("event", JsonConvert.SerializeObject($"{{'obj':'{gameObject.name}','type':'cand','event':'pickup','pass':'none'}}"), false); } }
         if (GameObject.Find("OuijaBoardManager").GetComponentInChildren<VictimControl>().candleCount < GameObject.Find("OuijaBoardManager").GetComponentInChildren<VictimControl>().maxCandles)
         {
             GameObject.Find("OuijaBoardManager").GetComponentInChildren<VictimControl>().candleCount++;

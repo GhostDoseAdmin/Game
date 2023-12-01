@@ -28,6 +28,13 @@ public class LoginControl : MonoBehaviour
 
     public void Start()
     {
+        if (NetworkDriver.instance.OFFLINE) {
+            GetComponentInChildren<TextMeshProUGUI>().text = "START";
+            signOut.SetActive(false);
+            usernameField.SetActive(false);
+            return; 
+        }
+
         if (PlayerPrefs.GetInt("login_saved") == 1)
         {
             GetComponentInChildren<TextMeshProUGUI>().text = "START";
@@ -47,56 +54,64 @@ public class LoginControl : MonoBehaviour
     public string savedPin;
     public void Clicked()
     {
-        if (NetworkDriver.instance.connected)
+        if (!NetworkDriver.instance.OFFLINE)
         {
-            if (PlayerPrefs.GetInt("login_saved") == 0)
-            {
-                //AUTHENTICATE PIN
-                if (userfound && !authenticating)
-                {
-                    authenticating = true;
-                    savedPin = pinField.GetComponent<TMP_InputField>().text;
-                    NetworkDriver.instance.sioCom.Instance.Emit("login", JsonConvert.SerializeObject(new { username = usernameField.GetComponent<TMP_InputField>().text, pin = pinField.GetComponent<TMP_InputField>().text }), false);
-                    Debug.Log("ATTEMPTING LOGIN");
-                }
-                //SETUP NEW USER
-                if (!userfound)
-                {
-                    if (!saving)
-                    {
-                        //CHECK USERNAME
-                        if (!setupPin && !checkingUser) { checkingUser = true; NetworkDriver.instance.sioCom.Instance.Emit("check_username", JsonConvert.SerializeObject(new { username = usernameField.GetComponent<TMP_InputField>().text }), false); }
 
-                        if (setupPin)
+            if (NetworkDriver.instance.connected)
+            {
+                if (PlayerPrefs.GetInt("login_saved") == 0)
+                {
+                    //AUTHENTICATE PIN
+                    if (userfound && !authenticating)
+                    {
+                        authenticating = true;
+                        savedPin = pinField.GetComponent<TMP_InputField>().text;
+                        NetworkDriver.instance.sioCom.Instance.Emit("login", JsonConvert.SerializeObject(new { username = usernameField.GetComponent<TMP_InputField>().text, pin = pinField.GetComponent<TMP_InputField>().text }), false);
+                        Debug.Log("ATTEMPTING LOGIN");
+                    }
+                    //SETUP NEW USER
+                    if (!userfound)
+                    {
+                        if (!saving)
                         {
-                            //CHECK PIN LENGTH
-                            if (!confirmPin)
+                            //CHECK USERNAME
+                            if (!setupPin && !checkingUser) { checkingUser = true; NetworkDriver.instance.sioCom.Instance.Emit("check_username", JsonConvert.SerializeObject(new { username = usernameField.GetComponent<TMP_InputField>().text }), false); }
+
+                            if (setupPin)
                             {
-                                if (pinField.GetComponent<TMP_InputField>().text.Length < 4) { GameDriver.instance.WriteGuiMsg("Pin must be 4 numbers", 10f, false, Color.yellow); }
-                                //CONFIRM PIN
-                                else { GameDriver.instance.WriteGuiMsg("Please confirm your pin", 10f, true, Color.white); confirmPin = true; testNewPin = pinField.GetComponent<TMP_InputField>().text; pinField.GetComponent<TMP_InputField>().text = ""; return; }
-                            }
-                            //COMPARE PINS
-                            if (confirmPin)
-                            {
-                                //SAVING ACCOUNT
-                                if (pinField.GetComponent<TMP_InputField>().text == testNewPin)
+                                //CHECK PIN LENGTH
+                                if (!confirmPin)
                                 {
-                                    savedPin = pinField.GetComponent<TMP_InputField>().text;
-                                    GameDriver.instance.WriteGuiMsg("Saving Account!", 5f, true, Color.white);
-                                    NetworkDriver.instance.sioCom.Instance.Emit("save_user", JsonConvert.SerializeObject(new { username = usernameField.GetComponent<TMP_InputField>().text, pin = pinField.GetComponent<TMP_InputField>().text }), false);
-                                    saving = true;
+                                    if (pinField.GetComponent<TMP_InputField>().text.Length < 4) { GameDriver.instance.WriteGuiMsg("Pin must be 4 numbers", 10f, false, Color.yellow); }
+                                    //CONFIRM PIN
+                                    else { GameDriver.instance.WriteGuiMsg("Please confirm your pin", 10f, true, Color.white); confirmPin = true; testNewPin = pinField.GetComponent<TMP_InputField>().text; pinField.GetComponent<TMP_InputField>().text = ""; return; }
                                 }
-                                //PINS DONT MATCH
-                                else { GameDriver.instance.WriteGuiMsg("Pin's don't match! Starting over. Create a PIN", 999f, true, Color.white); confirmPin = false; pinField.GetComponent<TMP_InputField>().text = ""; }
+                                //COMPARE PINS
+                                if (confirmPin)
+                                {
+                                    //SAVING ACCOUNT
+                                    if (pinField.GetComponent<TMP_InputField>().text == testNewPin)
+                                    {
+                                        savedPin = pinField.GetComponent<TMP_InputField>().text;
+                                        GameDriver.instance.WriteGuiMsg("Saving Account!", 5f, true, Color.white);
+                                        NetworkDriver.instance.sioCom.Instance.Emit("save_user", JsonConvert.SerializeObject(new { username = usernameField.GetComponent<TMP_InputField>().text, pin = pinField.GetComponent<TMP_InputField>().text }), false);
+                                        saving = true;
+                                    }
+                                    //PINS DONT MATCH
+                                    else { GameDriver.instance.WriteGuiMsg("Pin's don't match! Starting over. Create a PIN", 999f, true, Color.white); confirmPin = false; pinField.GetComponent<TMP_InputField>().text = ""; }
+                                }
                             }
                         }
                     }
                 }
-            }
-            else { MainMenu(); }
+                else { MainMenu(); }
 
-            if (loggedIn) { MainMenu(); }
+                if (loggedIn) { MainMenu(); }
+            }
+        }
+        //OFFLINE MODE
+        else {
+            MainMenu();
         }
     }
     public void MainMenu()
@@ -252,16 +267,20 @@ public class LoginControl : MonoBehaviour
         if (userfound) { if (currentUser != usernameField.GetComponent<TMP_InputField>().text) { currentUser = usernameField.GetComponent<TMP_InputField>().text; userfound = false; pinField.GetComponent<TMP_InputField>().text = ""; pinField.SetActive(false); GameDriver.instance.WriteGuiMsg("", 0.1f, false, Color.white); } }
 
         //HIDE START BUTTON
-        if (NetworkDriver.instance.connected)
+        if (!NetworkDriver.instance.OFFLINE)
         {
-            GetComponent<Image>().enabled = true;
-            GetComponentInChildren<TextMeshProUGUI>().enabled = true;
+            if (NetworkDriver.instance.connected)
+            {
+                GetComponent<Image>().enabled = true;
+                GetComponentInChildren<TextMeshProUGUI>().enabled = true;
 
-        }
-        else {
-            GetComponent<Image>().enabled = false;
-            GetComponentInChildren<TextMeshProUGUI>().enabled = false;
+            }
+            else
+            {
+                GetComponent<Image>().enabled = false;
+                GetComponentInChildren<TextMeshProUGUI>().enabled = false;
 
+            }
         }
         
     
