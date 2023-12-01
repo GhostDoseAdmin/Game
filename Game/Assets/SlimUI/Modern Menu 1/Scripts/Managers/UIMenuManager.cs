@@ -3,6 +3,7 @@ using System.Collections;
 using UnityEngine.UI;
 using TMPro;
 using UnityEngine.SceneManagement;
+using NetworkSystem;
 
 namespace SlimUI.ModernMenu{
 	public class UIMenuManager : MonoBehaviour {
@@ -153,7 +154,13 @@ namespace SlimUI.ModernMenu{
 			exitMenu.SetActive(false);
 			if(extrasMenu) extrasMenu.SetActive(false);
 			playMenu.SetActive(true);
-		}
+			if(NetworkDriver.instance.OFFLINE)
+			{
+                GameObject.Find("Btn_DuoPlayer").SetActive(false);
+                GameObject.Find("Btn_DuoRandom").SetActive(false);
+            }
+
+        }
 		
 		public void PlayCampaignMobile(){
 			exitMenu.SetActive(false);

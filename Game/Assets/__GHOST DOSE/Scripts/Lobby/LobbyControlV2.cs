@@ -88,8 +88,11 @@ public class LobbyControlV2 : MonoBehaviour
             findRoomButton.SetActive(true);
             lookingForPlayer = false;
             if (gameMode == "single") { 
-                roomNameField.GetComponent<TMP_InputField>().text = NetworkDriver.instance.USERNAME; 
-                FindRoomSingle(); 
+                roomNameField.GetComponent<TMP_InputField>().text = NetworkDriver.instance.USERNAME;
+                if (!NetworkDriver.instance.OFFLINE) { FindRoomSingle(); } 
+                else {
+                    RoomFound();
+                }
             }
             if (gameMode == "duorandom")
             {
@@ -157,7 +160,7 @@ public class LobbyControlV2 : MonoBehaviour
         screenMask.SetActive(false);
         lobbyMenuCanvas.SetActive(true);
         foundRoom = true;
-        NetworkDriver.instance.GetComponent<RigManager>().RetreiveLevelSpeeds();
+        if (!NetworkDriver.instance.OFFLINE) { NetworkDriver.instance.GetComponent<RigManager>().RetreiveLevelSpeeds(); } else { Destroy(GameObject.Find("Btn_Skins")); }
     }
 
     public void LoadScene()

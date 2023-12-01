@@ -28,8 +28,8 @@ public class FirstAidKit : Item
     {
         AudioManager.instance.Play("GetFrom", null);
         //HealthSystem.kitinstance.CollectKit(this.kit);
-        GameObject.Find("Player").GetComponent<HealthSystem>().Health += GameObject.Find("Player").GetComponent<HealthSystem>().maxHealth* healFactor; 
-        NetworkDriver.instance.sioCom.Instance.Emit("event", JsonConvert.SerializeObject($"{{'obj':'{gameObject.name}','type':'med','event':'pickup','pass':'none'}}"), false);
+        GameObject.Find("Player").GetComponent<HealthSystem>().Health += GameObject.Find("Player").GetComponent<HealthSystem>().maxHealth* healFactor;
+        if (!NetworkDriver.instance.OFFLINE) { NetworkDriver.instance.sioCom.Instance.Emit("event", JsonConvert.SerializeObject($"{{'obj':'{gameObject.name}','type':'med','event':'pickup','pass':'none'}}"), false); }
         DestroyWithSound(false);
     }
 

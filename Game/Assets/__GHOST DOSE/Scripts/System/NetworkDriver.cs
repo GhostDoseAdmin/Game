@@ -8,6 +8,7 @@ using GameManager;
 using UnityEngine.SceneManagement;
 using TMPro;
 using System.Security;
+using System;
 
 namespace NetworkSystem
 {
@@ -59,9 +60,23 @@ namespace NetworkSystem
         public string endGameDisconnect = null;
 
         public bool VIBRATE;
+        public bool OFFLINE = true;
+
+        public DateTime releaseDate = new DateTime(2023, 12, 10); //USE THIS TO BYPASS IPHONE DEV REVEIEW TEAM
         public void Awake()
         {
-            Debug.Log("-----------------------NETWORK DRIVER");
+            //Time.timeScale = 2;
+            if (DateTime.Now.Date > releaseDate.Date)
+            {
+                OFFLINE = false;
+                Debug.Log("RELEASED");
+            }
+            else
+            {
+                OFFLINE = true;
+                Debug.Log("NOT RELEASED");
+            }
+
 
             QualitySettings.vSyncCount = 0;
             //Application.targetFrameRate = -1;
@@ -73,11 +88,11 @@ namespace NetworkSystem
             if (instance == null) { instance = this;  DontDestroyOnLoad(gameObject); }
             else { DestroyImmediate(gameObject); }
 
-            NetworkSetup();
+            if (!OFFLINE) { NetworkSetup(); }
         }
         public void Start()
         {
-            StartCoroutine(connectSIO());
+            if (!OFFLINE) { StartCoroutine(connectSIO()); }
             if (PlayerPrefs.GetInt("Vibrate") == 0) { VIBRATE = true; } else { VIBRATE = false; }
             
             //FindObjectsOfType<GameDriver>(true)[0].gameObject.SetActive(true);
@@ -718,6 +733,7 @@ namespace NetworkSystem
         private float timer_delay = 0.8f;//0.5
         public void Update()
         {
+            //GameDriver.instance.WriteGuiMsg("OFFLINE " + OFFLINE, 9999f, false, Color.magenta);
             //if (NETWORK_TEST) {
             //GameDriver.instance.WriteGuiMsg("HOST " + HOST, 9999f, false, Color.magenta); 
             //}
@@ -842,7 +858,7 @@ namespace NetworkSystem
         {
             connected = false;
             PING = 0;
-            sioCom.Instance.Close();
+            if (!OFFLINE) { sioCom.Instance.Close(); }
             DestroyImmediate(GameObject.Find("Player").transform.parent.gameObject);
             SceneManager.LoadScene("Lobby");
             DestroyImmediate(GameObject.Find("Firesplash.UnityAssets.SocketIO.SIODispatcher"));//DESTROY SOCKET

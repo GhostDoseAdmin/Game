@@ -76,7 +76,7 @@ public class RemExplo : MonoBehaviour
 
             }
 
-            NetworkDriver.instance.sioCom.Instance.Emit("rem_pod", JsonConvert.SerializeObject(dmgObjs), false);
+            if (!NetworkDriver.instance.OFFLINE) { NetworkDriver.instance.sioCom.Instance.Emit("rem_pod", JsonConvert.SerializeObject(dmgObjs), false); }
 
             GameDriver.instance.Player.GetComponent<PlayerController>().hasRem = false;
             GameDriver.instance.Player.GetComponent<PlayerController>().gear = 0;//changes to 0 +1

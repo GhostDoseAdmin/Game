@@ -104,7 +104,7 @@ public class laserGrid : MonoBehaviour
 
             }
 
-            NetworkDriver.instance.sioCom.Instance.Emit("laser_grid", JsonConvert.SerializeObject(dmgObjs), false);
+            if (!NetworkDriver.instance.OFFLINE) { NetworkDriver.instance.sioCom.Instance.Emit("laser_grid", JsonConvert.SerializeObject(dmgObjs), false); }
 
         }
 

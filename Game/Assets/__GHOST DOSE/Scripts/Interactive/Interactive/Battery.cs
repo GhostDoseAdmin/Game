@@ -32,7 +32,7 @@ public class Battery : Item
 
         //HealthSystem.kitinstance.CollectKit(this.kit);
         GameObject.Find("Player").GetComponent<ShootingSystem>().camBatteryUI.fillAmount =1;
-        NetworkDriver.instance.sioCom.Instance.Emit("event", JsonConvert.SerializeObject($"{{'obj':'{gameObject.name}','type':'bat','event':'pickup','pass':'none'}}"), false);
+        if (!NetworkDriver.instance.OFFLINE) { NetworkDriver.instance.sioCom.Instance.Emit("event", JsonConvert.SerializeObject($"{{'obj':'{gameObject.name}','type':'bat','event':'pickup','pass':'none'}}"), false); }
         DestroyWithSound(false);
     }
 
